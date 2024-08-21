@@ -29,15 +29,21 @@ end_time <- Sys.time()
 time_taken <- end_time - start_time
 print(time_taken)
 
-get_latest_trisk_result <- function(trisk_output_path, result_type)
+print(get_latest_trisk_result(trisk_output_path=trisk_output_path, result_type="npv"))
+print(get_latest_trisk_result(trisk_output_path=trisk_output_path, result_type="pd"))
+print(get_latest_trisk_result(trisk_output_path=trisk_output_path, result_type="trajectories"))
+print(get_latest_trisk_result(trisk_output_path=trisk_output_path, result_type="params"))
 
-# SMALLER RUN
+
+# SMALLER RUN (unused)
+
 single_run_params <-   list(
     scenario_geography = "Global",
     baseline_scenario = "Steel_baseline",
     target_scenario = "Steel_NZ",
     shock_year = 2030
   )
+
 single_filtered_results <- run_trisk_single_filtered(
                                       input_path=local_trisk_inputs_folder, 
                                       run_params=single_run_params,
@@ -47,10 +53,10 @@ single_filtered_results <- run_trisk_single_filtered(
                                       company_name = NULL)
 
 
-single_filtered_results["npv"]
-single_filtered_results["pd"]
-single_filtered_results["trajectories"]
-single_filtered_results["params"]
+print(single_filtered_results["npv"])
+print(single_filtered_results["pd"])
+print(single_filtered_results["trajectories"])
+print(single_filtered_results["params"])
 
 
 # SENSITIVITY ANALYSIS
@@ -83,3 +89,18 @@ sensitivity_analysis_results["params"]
 
 
 
+
+# SENSITIVITY ANALYSIS ON SUBSET
+
+sensitivity_analysis_results_on_filtered_assets <- run_trisk_sa(
+  input_path=local_trisk_inputs_folder, 
+  run_params=run_params,
+  country_iso2 = c("US", "AR"),
+  sector = "Steel",
+  technology = c("EAF-DRI", "BOF-BF")
+)
+
+sensitivity_analysis_results_on_filtered_assets["npv"]
+sensitivity_analysis_results_on_filtered_assets["pd"]
+sensitivity_analysis_results_on_filtered_assets["trajectories"]
+sensitivity_analysis_results_on_filtered_assets["params"]

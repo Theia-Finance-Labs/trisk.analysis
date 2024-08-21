@@ -1,2 +1,5 @@
-# trisk.utils
-Utility functions to use Trisk
+# trisk.analysis
+Utility functions to use with Trisk
+
+
+
