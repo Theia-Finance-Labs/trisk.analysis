@@ -41,16 +41,15 @@ print(get_latest_trisk_result(trisk_output_path = trisk_output_path, result_type
 
 # SMALLER RUN (unused)
 # Run the TRISK model with a smaller filtered dataset (currently unused)
-single_run_params <- list(
-  scenario_geography = "Global",
-  baseline_scenario = "Steel_baseline",
-  target_scenario = "Steel_NZ",
-  shock_year = 2030
-)
 
 single_filtered_results <- run_trisk_single_filtered(
   input_path = local_trisk_inputs_folder,
-  run_params = single_run_params,
+  run_params = list(
+    scenario_geography = "Global",
+    baseline_scenario = "Steel_baseline",
+    target_scenario = "Steel_NZ",
+    shock_year = 2030
+  ),
   country_iso2 = c("US", "AR"),
   sector = "Steel",
   technology = c("EAF-DRI", "BOF-BF"),

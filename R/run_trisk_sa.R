@@ -56,11 +56,16 @@ run_trisk_sa <- function(input_path, run_params, ...) {
     trisk_params <- trisk.model:::process_params(fun = trisk.model::run_trisk_model, trisk_run_params)
     run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
 
+    npv_result <- trisk.model:::prepare_npv_results(output_list, run_id) 
+    pd_result <- trisk.model:::prepare_pd_results(output_list, run_id)
+    trajectories_result <- trisk.model:::prepare_company_trajectories(output_list, run_id)
+    params_df <- trisk.model:::prepare_params_df(trisk_params, run_id)
+
     # Prepare and stack the results
-    npv_results_list[[length(npv_results_list) + 1]] <- trisk.model:::prepare_npv_results(output_list)
-    pd_results_list[[length(pd_results_list) + 1]] <- trisk.model:::prepare_pd_results(output_list)
-    company_trajectories_list[[length(company_trajectories_list) + 1]] <- trisk.model:::prepare_company_trajectories(output_list)
-    params_df_list[[length(params_df_list) + 1]] <- trisk.model:::prepare_params_df(trisk_params, run_id)
+    npv_results_list[[length(npv_results_list) + 1]] <- 
+    pd_results_list[[length(pd_results_list) + 1]] <- 
+    company_trajectories_list[[length(company_trajectories_list) + 1]] <- 
+    params_df_list[[length(params_df_list) + 1]] <- 
 
     n_completed_runs <- n_completed_runs + 1
     print(paste("Done", n_completed_runs, "/", length(run_params), "total runs"))

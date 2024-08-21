@@ -1,6 +1,7 @@
 #Custom
 workspace/*
 data-raw/data
+.DS_STORE
 
 # History files
 .Rhistory
