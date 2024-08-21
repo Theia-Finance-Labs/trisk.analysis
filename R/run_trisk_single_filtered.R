@@ -51,7 +51,7 @@ run_trisk_single_filtered <- function(input_path,
     )
     
     # Process the parameters used in the run
-    trisk_params <- trisk.model:::process_params(fun = run_trisk_model, trisk_run_params)
+    trisk_params <- trisk.model:::process_params(fun = trisk.model::run_trisk_model, trisk_run_params)
     run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
     
     # Prepare and return the results as tibbles

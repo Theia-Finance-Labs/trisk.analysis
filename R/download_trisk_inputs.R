@@ -10,9 +10,8 @@
 #' @param local_save_folder The local folder path where the downloaded files will be saved.
 #'
 #' @return No return value. The function downloads files and saves them to the specified local folder.
-#' @export 
+#' @export
 download_trisk_inputs <- function(endpoint_url, s3_path, local_save_folder) {
-
   # Ensure the local save folder exists, create it if it doesn't
   if (!dir.exists(local_save_folder)) {
     dir.create(local_save_folder, recursive = TRUE)
@@ -35,7 +34,7 @@ download_trisk_inputs <- function(endpoint_url, s3_path, local_save_folder) {
     save_path <- file.path(local_save_folder, file)
 
     # Download the file
-    download.file(file_url, save_path, mode = "wb")
+    utils::download.file(file_url, save_path, mode = "wb")
   }
 
   message("Download completed.")

@@ -1,4 +1,4 @@
-#get_latest_trisk_result.R
+# get_latest_trisk_result.R
 
 #' Get the latest TRISK result of a specified type
 #'
@@ -11,9 +11,9 @@
 #'
 #' @return A tibble containing the requested TRISK result data. If the specified file does not exist, a warning is issued, and NULL is returned.
 #' @export
-get_latest_trisk_result <- function(trisk_output_path, result_type){
-  sub_dir <- get_latest_timestamped_folder(path=trisk_output_path)
-  result <- get_single_trisk_result(sub_dir=sub_dir, result_type=result_type)
+get_latest_trisk_result <- function(trisk_output_path, result_type) {
+  sub_dir <- get_latest_timestamped_folder(path = trisk_output_path)
+  result <- get_single_trisk_result(sub_dir = sub_dir, result_type = result_type)
   return(result)
 }
 
@@ -70,22 +70,22 @@ get_single_trisk_result <- function(sub_dir, result_type) {
     "npv" = "npv_results.csv",
     "params" = "params.csv"
   )
-  
+
   # Validate result_type
   if (!result_type %in% names(file_map)) {
     stop("Invalid result_type provided. Choose from 'trajectories', 'pd', 'npv', or 'params'.")
   }
-  
+
   # Construct the full file path based on result_type
   file_path <- file.path(sub_dir, file_map[[result_type]])
-  
+
   # Check if the file exists before attempting to load it
   if (file.exists(file_path)) {
     # Read the file into a data frame
     data <- readr::read_csv(file_path)
-    return(tibble::as_tibble(data))  # Convert to tibble and return
+    return(tibble::as_tibble(data)) # Convert to tibble and return
   } else {
     warning(paste("File", file_path, "does not exist and was skipped."))
-    return(NULL)  # Return NULL if the file doesn't exist
+    return(NULL) # Return NULL if the file doesn't exist
   }
 }
