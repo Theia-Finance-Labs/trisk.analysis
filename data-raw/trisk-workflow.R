@@ -1,4 +1,4 @@
-#trisk-workflow.R
+# trisk-workflow.R
 # The main script, calling functions from other scripts
 
 # Load necessary libraries and functions
@@ -42,18 +42,18 @@ print(get_latest_trisk_result(trisk_output_path = trisk_output_path, result_type
 # SMALLER RUN (unused)
 # Run the TRISK model with a smaller filtered dataset (currently unused)
 single_run_params <- list(
-    scenario_geography = "Global",
-    baseline_scenario = "Steel_baseline",
-    target_scenario = "Steel_NZ",
-    shock_year = 2030
+  scenario_geography = "Global",
+  baseline_scenario = "Steel_baseline",
+  target_scenario = "Steel_NZ",
+  shock_year = 2030
 )
 
 single_filtered_results <- run_trisk_single_filtered(
-  input_path = local_trisk_inputs_folder, 
+  input_path = local_trisk_inputs_folder,
   run_params = single_run_params,
-  country_iso2 = c("US", "AR"), 
-  sector = "Steel", 
-  technology = c("EAF-DRI", "BOF-BF"), 
+  country_iso2 = c("US", "AR"),
+  sector = "Steel",
+  technology = c("EAF-DRI", "BOF-BF"),
   company_name = NULL
 )
 
@@ -81,7 +81,7 @@ run_params <- list(
 )
 
 sensitivity_analysis_results <- run_trisk_sa(
-  input_path = local_trisk_inputs_folder, 
+  input_path = local_trisk_inputs_folder,
   run_params = run_params
 )
 
@@ -94,7 +94,7 @@ sensitivity_analysis_results["params"]
 # SENSITIVITY ANALYSIS ON SUBSET
 # Run sensitivity analysis on a subset of assets, filtered by country, sector, and technology
 sensitivity_analysis_results_on_filtered_assets <- run_trisk_sa(
-  input_path = local_trisk_inputs_folder, 
+  input_path = local_trisk_inputs_folder,
   run_params = run_params,
   country_iso2 = c("US", "AR"),
   sector = "Steel",
