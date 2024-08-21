@@ -1,5 +1,5 @@
 #' @export 
-download_trisk_data <- function(endpoint_url, s3_path, local_save_folder) {
+download_trisk_inputs <- function(endpoint_url, s3_path, local_save_folder) {
 
   # Ensure the local save folder exists, create it if it doesn't
   if (!dir.exists(local_save_folder)) {

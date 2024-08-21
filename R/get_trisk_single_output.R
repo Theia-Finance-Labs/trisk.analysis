@@ -1,3 +1,10 @@
+get_latest_trisk_result <- function(){
+  
+
+
+}
+
+
 get_single_trisk_result <- function(sub_dir, result_type) {
   # Define the mapping of result_type to file names
   file_map <- list(
@@ -18,7 +25,7 @@ get_single_trisk_result <- function(sub_dir, result_type) {
   # Check if the file exists before attempting to load it
   if (file.exists(file_path)) {
     # Read the file into a data frame
-    data <- read.csv(file_path)
+    data <- readr::read_csv(file_path)
     return(tibble::as_tibble(data))  # Convert to tibble and return
   } else {
     warning(paste("File", file_path, "does not exist and was skipped."))

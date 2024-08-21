@@ -11,6 +11,9 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     dplyr,
-    magrittr
+    magrittr,
+    rlang,
+    readr
 Remotes:
     Theia-Finance-Labs/trisk.model
+RoxygenNote: 7.3.1

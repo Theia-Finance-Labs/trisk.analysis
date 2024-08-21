@@ -1,5 +1,5 @@
 run_trisk_single_filtered <- function(input_path, 
-                                      run_param,
+                                      run_params,
                                       country_iso2 = NULL, 
                                       sector = NULL, 
                                       technology = NULL, 
@@ -22,7 +22,7 @@ run_trisk_single_filtered <- function(input_path,
             financial_data = input_data_list$financial_data,
             carbon_data = input_data_list$carbon_data
         ),
-        run_param
+        run_params
     )
     
     # Execute the TRISK model with the combined parameters
@@ -44,4 +44,64 @@ run_trisk_single_filtered <- function(input_path,
     )
     
     return(result_tibbles)
+}
+
+
+get_filtered_assets_data <- function(input_path, 
+                                     country_iso2 = NULL, 
+                                     sector = NULL, 
+                                     technology = NULL, 
+                                     company_name = NULL) {
+    
+    # Load the input data once
+    input_data_list <- trisk.model:::st_read_agnostic(input_path)
+    
+    # Filter assets data based on the provided criteria
+    filtered_assets_data <- filter_assets(
+        assets_data = input_data_list$assets_data,
+        country_iso2 = country_iso2,
+        sector = sector,
+        technology = technology,
+        company_name = company_name
+    )
+    
+    # Update the input data list with the filtered assets data
+    input_data_list$assets_data <- filtered_assets_data
+    
+    return(input_data_list)
+}
+
+
+filter_assets <- function(assets_data, 
+                          country_iso2 = NULL, 
+                          sector = NULL, 
+                          technology = NULL, 
+                          company_name = NULL) {
+  
+  # Ensure the input data is a tibble
+  assets_data <- tibble::as_tibble(assets_data)
+  
+  # Apply filters if they are provided
+  if (!is.null(country_iso2)) {
+    assets_data <- assets_data %>%
+      dplyr::filter(country_iso2 %in% !!country_iso2)
+  }
+  
+  if (!is.null(sector)) {
+    assets_data <- assets_data %>%
+      dplyr::filter(sector %in% !!sector)
+  }
+  
+  if (!is.null(technology)) {
+    assets_data <- assets_data %>%
+      dplyr::filter(technology %in% !!technology)
+  }
+  
+  if (!is.null(company_name)) {
+    assets_data <- assets_data %>%
+      dplyr::filter(company_name %in% !!company_name)
+  }
+  
+  # Return the filtered tibble
+  return(assets_data)
 }

@@ -2,19 +2,12 @@
 #' Run Trisk sensitivity analysis
 #' @export 
 #' 
-run_trisk_sa <- function(input_path, run_params, 
-                                          country_iso2 = NULL, 
-                                          sector = NULL, 
-                                          technology = NULL, 
-                                          company_name = NULL) {
+run_trisk_sa <- function(input_path, run_params, ...) {
     
     # Get filtered assets data and other input data
     input_data_list <- get_filtered_assets_data(
         input_path = input_path,
-        country_iso2 = country_iso2,
-        sector = sector,
-        technology = technology,
-        company_name = company_name
+        ...
     )
     
     print(paste("Starting the execution of", length(run_params), "total runs"))
