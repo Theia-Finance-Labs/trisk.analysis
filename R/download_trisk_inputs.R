@@ -1,3 +1,15 @@
+# download_trisk_inputs.R
+
+#' Download TRISK input data files from a specified endpoint
+#'
+#' This function downloads TRISK input data files from a specified endpoint URL and saves them to a local folder.
+#' It ensures that the local folder exists before downloading the files. If the folder does not exist, it is created.
+#'
+#' @param endpoint_url The base URL of the endpoint from which the data files will be downloaded.
+#' @param s3_path The specific path within the endpoint where the data files are located.
+#' @param local_save_folder The local folder path where the downloaded files will be saved.
+#'
+#' @return No return value. The function downloads files and saves them to the specified local folder.
 #' @export 
 download_trisk_inputs <- function(endpoint_url, s3_path, local_save_folder) {
 

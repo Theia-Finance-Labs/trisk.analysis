@@ -1,10 +1,30 @@
+#get_latest_trisk_result.R
+
+#' Get the latest TRISK result of a specified type
+#'
+#' This function retrieves the latest TRISK result based on the specified result type.
+#' It identifies the most recent output directory using a timestamped folder structure, and then loads
+#' the corresponding result file.
+#'
+#' @param trisk_output_path The path to the TRISK output directory containing timestamped folders.
+#' @param result_type The type of result to retrieve. Valid options are "npv", "pd", "trajectories", and "params".
+#'
+#' @return A tibble containing the requested TRISK result data. If the specified file does not exist, a warning is issued, and NULL is returned.
+#' @export
 get_latest_trisk_result <- function(trisk_output_path, result_type){
   sub_dir <- get_latest_timestamped_folder(path=trisk_output_path)
   result <- get_single_trisk_result(sub_dir=sub_dir, result_type=result_type)
   return(result)
 }
 
-
+#' Get the latest timestamped folder in a directory
+#'
+#' This function finds the most recent folder in a given directory where the folder names follow a specific
+#' timestamp format (YYYYMMDD_HHMMSS).
+#'
+#' @param path The directory path containing timestamped folders.
+#'
+#' @return The relative path of the most recent timestamped folder. If no valid directories are found, a message is returned.
 get_latest_timestamped_folder <- function(path) {
   # Check if the path is a directory
   if (!dir.exists(path)) {
@@ -31,10 +51,17 @@ get_latest_timestamped_folder <- function(path) {
   # Return the full relative path
   newest_directory <- file.path(path, newest_directory)
 
-
   return(newest_directory)
 }
 
+#' Get a specific TRISK result from a given sub-directory
+#'
+#' This function retrieves a specific TRISK result file from a given sub-directory based on the provided result type.
+#'
+#' @param sub_dir The sub-directory path containing the TRISK result files.
+#' @param result_type The type of result to retrieve. Valid options are "trajectories", "pd", "npv", and "params".
+#'
+#' @return A tibble containing the requested TRISK result data. If the file does not exist, a warning is issued, and NULL is returned.
 get_single_trisk_result <- function(sub_dir, result_type) {
   # Define the mapping of result_type to file names
   file_map <- list(
