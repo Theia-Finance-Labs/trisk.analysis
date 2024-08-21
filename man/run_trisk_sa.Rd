@@ -9,17 +9,17 @@ run_trisk_sa(input_path, run_params, ...)
 \arguments{
 \item{input_path}{The path to the input data directory containing the necessary files for the TRISK model.}
 
-\item{run_params}{A list of parameter sets where each set contains the required parameters for a single TRISK model run. 
+\item{run_params}{A list of parameter sets where each set contains the required parameters for a single TRISK model run.
 Each parameter set must include `scenario_geography`, `baseline_scenario`, `target_scenario`, and `shock_year`.}
 
 \item{...}{Additional arguments passed to `get_filtered_assets_data`, such as `country_iso2`, `sector`, `technology`, and `company_name` for filtering assets.}
 }
 \value{
-A list of tibbles containing the combined results for all runs. The list includes tibbles for NPV results (`npv`), 
+A list of tibbles containing the combined results for all runs. The list includes tibbles for NPV results (`npv`),
         PD results (`pd`), company trajectories (`trajectories`), and model parameters (`params`).
 }
 \description{
-This function performs a sensitivity analysis by running the TRISK model on multiple scenarios. 
-It takes a list of parameter sets and runs the TRISK model for each set, returning a comprehensive 
+This function performs a sensitivity analysis by running the TRISK model on multiple scenarios.
+It takes a list of parameter sets and runs the TRISK model for each set, returning a comprehensive
 set of results that includes net present value (NPV), probability of default (PD), company trajectories, and model parameters.
 }

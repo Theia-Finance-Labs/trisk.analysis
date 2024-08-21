@@ -55,9 +55,9 @@ run_trisk_single_filtered <- function(input_path,
 
   # Prepare and return the results as tibbles
   result_tibbles <- list(
-    npv = tibble::as_tibble(trisk.model:::prepare_npv_results(output_list)),
-    pd = tibble::as_tibble(trisk.model:::prepare_pd_results(output_list)),
-    trajectories = tibble::as_tibble(trisk.model:::prepare_company_trajectories(output_list)),
+    npv = tibble::as_tibble(trisk.model:::prepare_npv_results(output_list, run_id)),
+    pd = tibble::as_tibble(trisk.model:::prepare_pd_results(output_list, run_id)),
+    trajectories = tibble::as_tibble(trisk.model:::prepare_company_trajectories(output_list, run_id)),
     params = tibble::as_tibble(trisk.model:::prepare_params_df(trisk_params, run_id))
   )
 

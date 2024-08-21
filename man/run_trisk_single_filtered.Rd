@@ -16,7 +16,7 @@ run_trisk_single_filtered(
 \arguments{
 \item{input_path}{The path to the input data directory containing the necessary files for the TRISK model.}
 
-\item{run_params}{A list of parameters required for running the TRISK model, including `scenario_geography`, 
+\item{run_params}{A list of parameters required for running the TRISK model, including `scenario_geography`,
 `baseline_scenario`, `target_scenario`, and `shock_year`.}
 
 \item{country_iso2}{A character vector of ISO2 country codes to filter the assets. Defaults to NULL.}
@@ -28,11 +28,11 @@ run_trisk_single_filtered(
 \item{company_name}{A character vector of company names to filter the assets. Defaults to NULL.}
 }
 \value{
-A list of tibbles containing the results of the TRISK model run. The list includes tibbles for NPV results (`npv`), 
+A list of tibbles containing the results of the TRISK model run. The list includes tibbles for NPV results (`npv`),
         PD results (`pd`), company trajectories (`trajectories`), and model parameters (`params`).
 }
 \description{
-This function runs the TRISK model for a single set of parameters, with the ability to filter assets 
-based on country, sector, technology, and company name. The function returns a set of results including 
+This function runs the TRISK model for a single set of parameters, with the ability to filter assets
+based on country, sector, technology, and company name. The function returns a set of results including
 net present value (NPV), probability of default (PD), company trajectories, and model parameters.
 }

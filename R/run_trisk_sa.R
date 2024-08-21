@@ -62,10 +62,10 @@ run_trisk_sa <- function(input_path, run_params, ...) {
     params_df <- trisk.model:::prepare_params_df(trisk_params, run_id)
 
     # Prepare and stack the results
-    npv_results_list[[length(npv_results_list) + 1]] <- 
-    pd_results_list[[length(pd_results_list) + 1]] <- 
-    company_trajectories_list[[length(company_trajectories_list) + 1]] <- 
-    params_df_list[[length(params_df_list) + 1]] <- 
+    npv_results_list[[length(npv_results_list) + 1]] <- npv_result
+    pd_results_list[[length(pd_results_list) + 1]] <- pd_result
+    company_trajectories_list[[length(company_trajectories_list) + 1]] <- trajectories_result
+    params_df_list[[length(params_df_list) + 1]] <- params_df
 
     n_completed_runs <- n_completed_runs + 1
     print(paste("Done", n_completed_runs, "/", length(run_params), "total runs"))
