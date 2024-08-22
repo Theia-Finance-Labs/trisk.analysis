@@ -53,7 +53,8 @@ run_trisk_sa <- function(input_path, run_params, ...) {
     )
 
     # Process the parameters used in the run
-    trisk_params <- trisk.model:::process_params(fun = trisk.model::run_trisk_model, trisk_run_params)
+    trisk_params <- do.call(trisk.model:::process_params, c(list(fun = trisk.model::run_trisk_model), run_param))
+
     run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
 
     npv_result <- trisk.model:::prepare_npv_results(output_list, run_id) 
