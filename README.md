@@ -59,8 +59,8 @@ The first step in the workflow is to download the necessary input data required 
 ### Usage Example
 
 ```r
-endpoint_url <- "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com"
-s3_path <- "crispy-datamodels-bucket/trisk_V2/csv"
+endpoint_url <- "https://scenarios-repository.fra1.cdn.digitaloceanspaces.com"
+s3_path <- "mock_trisk_inputs"
 local_trisk_inputs_folder <- file.path("data-raw", "data", "trisk_inputs")
 
 download_trisk_inputs(endpoint_url, s3_path, local_trisk_inputs_folder)
