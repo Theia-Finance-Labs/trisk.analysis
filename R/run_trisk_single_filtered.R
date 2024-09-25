@@ -16,6 +16,7 @@
 #'
 #' @return A list of tibbles containing the results of the TRISK model run. The list includes tibbles for NPV results (`npv`),
 #'         PD results (`pd`), company trajectories (`trajectories`), and model parameters (`params`).
+#' 
 #' @export
 run_trisk_single_filtered <- function(input_path,
                                       run_params,
@@ -54,12 +55,7 @@ run_trisk_single_filtered <- function(input_path,
   run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
 
   # Prepare and return the results as tibbles
-  result_tibbles <- list(
-    npv = tibble::as_tibble(trisk.model:::prepare_npv_results(output_list, run_id)),
-    pd = tibble::as_tibble(trisk.model:::prepare_pd_results(output_list, run_id)),
-    trajectories = tibble::as_tibble(trisk.model:::prepare_company_trajectories(output_list, run_id)),
-    params = tibble::as_tibble(trisk.model:::prepare_params_df(trisk_params, run_id))
-  )
+  result_tibbles <- trisk.model::prepare_trisk_results(output_list=output_list, trisk_params=trisk_params, run_id=run_id)
 
   return(result_tibbles)
 }

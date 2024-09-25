@@ -36,3 +36,4 @@ This function runs the TRISK model for a single set of parameters, with the abil
 based on country, sector, technology, and company name. The function returns a set of results including
 net present value (NPV), probability of default (PD), company trajectories, and model parameters.
 }
+\keyword{internal}
