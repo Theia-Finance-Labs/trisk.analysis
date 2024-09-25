@@ -1,0 +1,18 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/main-functions-demo.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/download_trisk_inputs.html</loc></url>
+<url><loc>/reference/filter_assets.html</loc></url>
+<url><loc>/reference/get_filtered_assets_data.html</loc></url>
+<url><loc>/reference/get_latest_timestamped_folder.html</loc></url>
+<url><loc>/reference/get_latest_trisk_result.html</loc></url>
+<url><loc>/reference/get_single_trisk_result.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/run_trisk_sa.html</loc></url>
+<url><loc>/reference/run_trisk_single_filtered.html</loc></url>
+</urlset>
+
