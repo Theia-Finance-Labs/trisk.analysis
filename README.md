@@ -1,3 +1,7 @@
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 # TRISK Analysis
 
 This repository contains a workflow for running the TRISK model to assess financial impacts of a transition towards a low-carbon economy based on different climate scenarios.
