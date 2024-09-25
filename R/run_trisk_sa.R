@@ -53,14 +53,18 @@ run_trisk_sa <- function(input_path, run_params, ...) {
     )
 
     # Process the parameters used in the run
-    trisk_params <- do.call(trisk.model:::process_params, c(list(fun = trisk.model::run_trisk_model), run_param))
+    trisk_params <- do.call(trisk.model::process_params, c(list(fun = trisk.model::run_trisk_model), run_param))
 
-    run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
+    run_id <- uuid::UUIDgenerate() 
 
-    npv_result <- trisk.model:::prepare_npv_results(output_list, run_id) 
-    pd_result <- trisk.model:::prepare_pd_results(output_list, run_id)
-    trajectories_result <- trisk.model:::prepare_company_trajectories(output_list, run_id)
-    params_df <- trisk.model:::prepare_params_df(trisk_params, run_id)
+
+   result_tibbles <- trisk.model::prepare_trisk_results(output_list=output_list, trisk_params=trisk_params, run_id=run_id)
+
+
+    npv_result <- result_tibbles$npv
+    pd_result <- result_tibbles$pd
+    trajectories_result <- result_tibbles$trajectories
+    params_df <- result_tibbles$params
 
     # Prepare and stack the results
     npv_results_list[[length(npv_results_list) + 1]] <- npv_result

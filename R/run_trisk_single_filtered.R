@@ -51,7 +51,7 @@ run_trisk_single_filtered <- function(input_path,
   )
 
   # Process the parameters used in the run
-  trisk_params <- trisk.model:::process_params(fun = trisk.model::run_trisk_model, trisk_run_params)
+  trisk_params <- trisk.model::process_params(fun = trisk.model::run_trisk_model, trisk_run_params)
   run_id <- uuid::UUIDgenerate() # TODO move into trisk.model:::process_params
 
   # Prepare and return the results as tibbles
@@ -77,7 +77,7 @@ get_filtered_assets_data <- function(input_path,
                                      technology = NULL,
                                      company_name = NULL) {
   # Load the input data once
-  input_data_list <- trisk.model:::st_read_agnostic(input_path)
+  input_data_list <- trisk.model::st_read_agnostic(input_path)
 
   # Filter assets data based on the provided criteria
   filtered_assets_data <- filter_assets(
