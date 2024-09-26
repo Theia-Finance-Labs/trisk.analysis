@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/main-functions-demo.html">main-functions-demo</a></li>
+<li><a class="dropdown-item" href="articles/download-data-and-run-trisk.html">download-data-and-run-trisk</a></li>
+    <li><a class="dropdown-item" href="articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
   </ul>
 </li>
       </ul>
@@ -52,235 +53,61 @@
 <div class="row">
   <main id="main" class="col-md-9"><p><!-- badges: start --> <a href="https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <!-- badges: end --></p>
 <div class="section level1">
-<div class="page-header"><h1 id="trisk-analysis">TRISK Analysis<a class="anchor" aria-label="anchor" href="#trisk-analysis"></a>
+<div class="page-header"><h1 id="triskanalysis">trisk.analysis<a class="anchor" aria-label="anchor" href="#triskanalysis"></a>
 </h1></div>
-<p>This repository contains a workflow for running the TRISK model to assess financial impacts of a transition towards a low-carbon economy based on different climate scenarios.</p>
+<p>This repository provides analytical tools to explore and interpret Trisk model outputs. The TRISK model requires specific input datasets whose requirements are explained in more details in the documentation of the <a href="https://theia-finance-labs.github.io/trisk.model/index.html" class="external-link">trisk.model</a> package.</p>
 <ul>
 <li>
-<a href="#trisk-analysis">TRISK Analysis</a>
+<a href="#triskanalysis">trisk.analysis</a>
 <ul>
-<li><a href="#introduction">Introduction</a></li>
 <li><a href="#installation">Installation</a></li>
+<li><a href="#data-input">Data Input</a></li>
 <li>
-<a href="#main-functions">Main Functions</a>
+<a href="#usecases">Usecases</a>
 <ul>
-<li>
-<a href="#download_trisk_inputs">download_trisk_inputs()</a>
-<ul>
-<li><a href="#usage-example">Usage Example</a></li>
-<li><a href="#parameters">Parameters</a></li>
-</ul>
-</li>
-<li>
-<a href="#run_trisk">run_trisk()</a>
-<ul>
-<li><a href="#usage-example-1">Usage Example</a></li>
-<li><a href="#parameters-1">Parameters</a></li>
-</ul>
-</li>
-<li>
-<a href="#run_trisk_single_filtered">run_trisk_single_filtered()</a>
-<ul>
-<li><a href="#usage-example-2">Usage Example</a></li>
-<li><a href="#parameters-2">Parameters</a></li>
-</ul>
-</li>
-<li>
-<a href="#run_trisk_sa">run_trisk_sa()</a>
-<ul>
-<li><a href="#usage-example-3">Usage Example</a></li>
-<li><a href="#parameters-3">Parameters</a></li>
+<li><a href="#sensitivity-analysis">Sensitivity analysis</a></li>
+<li><a href="#potfolio-analysis">Potfolio analysis</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h2>
-<p>The TRISK model helps in understanding the financial impacts of different climate scenarios on specific industries or sectors. This workflow guides you through setting up and running the TRISK model, including downloading necessary data, running basic and advanced scenarios, and performing sensitivity analysis.</p>
-</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>To get started, install the required packages from GitHub:</p>
+<p>You can install this package directly from GitHub using the <code>remotes</code> package in R.</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>Install the <code>remotes</code> package if you don’t have it:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Theia-Finance-Labs/trisk.analysis"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span></code></pre></div>
+</li>
+<li>
+<p>Install the package from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Theia-Finance-Labs/trisk.analysis"</span><span class="op">)</span></span></code></pre></div>
+</li>
+</ol>
 </div>
 <div class="section level2">
-<h2 id="main-functions">Main Functions<a class="anchor" aria-label="anchor" href="#main-functions"></a>
+<h2 id="data-input">Data Input<a class="anchor" aria-label="anchor" href="#data-input"></a>
+</h2>
+<p>We provide consolidated scenarios data from publicly available sources. The <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/download-data-and-run-trisk.html" class="external-link">Download and run vignette</a> showcases how to access this data.</p>
+<blockquote>
+<p><strong>Note</strong> Real-world assets and financial data is not provided due to its closed-source nature. It needs to be pre-processed independantly, following the structure of the mock datasets which are part of the download.</p>
+</blockquote>
+</div>
+<div class="section level2">
+<h2 id="usecases">Usecases<a class="anchor" aria-label="anchor" href="#usecases"></a>
 </h2>
 <div class="section level3">
-<h3 id="download_trisk_inputs">download_trisk_inputs()<a class="anchor" aria-label="anchor" href="#download_trisk_inputs"></a>
+<h3 id="sensitivity-analysis">Sensitivity analysis<a class="anchor" aria-label="anchor" href="#sensitivity-analysis"></a>
 </h3>
-<p>Downloads the necessary input data required for running the TRISK model.</p>
-<p>The function downloads several CSV files (<code>assets.csv</code>, <code>financial_features.csv</code>, <code>scenarios.csv</code>, <code>ngfs_carbon_price.csv</code>) and saves them to the specified local folder.</p>
-<div class="section level4">
-<h4 id="usage-example">Usage Example<a class="anchor" aria-label="anchor" href="#usage-example"></a>
-</h4>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">endpoint_url</span> <span class="op">&lt;-</span> <span class="st">"https://scenarios-repository.fra1.cdn.digitaloceanspaces.com"</span></span>
-<span><span class="va">s3_path</span> <span class="op">&lt;-</span> <span class="st">"mock_trisk_inputs"</span></span>
-<span><span class="va">local_trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"data-raw"</span>, <span class="st">"data"</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span><span class="va">endpoint_url</span>, <span class="va">s3_path</span>, <span class="va">local_trisk_inputs_folder</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
-</h4>
-<ul>
-<li>
-<code>endpoint_url</code>: The base URL of the endpoint from which the data files will be downloaded.</li>
-<li>
-<code>s3_path</code>: The specific path within the endpoint where the data files are located.</li>
-<li>
-<code>local_trisk_inputs_folder</code>: The local folder path where the downloaded files will be saved.</li>
-</ul>
-</div>
+<p>Example showcased in the <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html" class="external-link">Sensitivity analysis Vignette</a></p>
 </div>
 <div class="section level3">
-<h3 id="run_trisk">run_trisk()<a class="anchor" aria-label="anchor" href="#run_trisk"></a>
+<h3 id="potfolio-analysis">Potfolio analysis<a class="anchor" aria-label="anchor" href="#potfolio-analysis"></a>
 </h3>
-<p>Executes a basic TRISK model run for a specific baseline scenario and target scenario. - The time taken for the TRISK run is printed. - The latest results for various metrics (Net Present Value (<code>npv</code>), Probability of Default (<code>pd</code>), company trajectories, and parameters) are printed using the <code><a href="reference/get_latest_trisk_result.html">get_latest_trisk_result()</a></code> function.</p>
-<div class="section level4">
-<h4 id="usage-example-1">Usage Example<a class="anchor" aria-label="anchor" href="#usage-example-1"></a>
-</h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trisk_output_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"data-raw"</span>, <span class="st">"data"</span>, <span class="st">"trisk_outputs"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">start_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">run_trisk</span><span class="op">(</span></span>
-<span>  input_path <span class="op">=</span> <span class="va">local_trisk_inputs_folder</span>,</span>
-<span>  output_path <span class="op">=</span> <span class="va">trisk_output_path</span>,</span>
-<span>  baseline_scenario <span class="op">=</span> <span class="st">"Steel_baseline"</span>,</span>
-<span>  target_scenario <span class="op">=</span> <span class="st">"Steel_NZ"</span>,</span>
-<span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">end_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">time_taken</span> <span class="op">&lt;-</span> <span class="va">end_time</span> <span class="op">-</span> <span class="va">start_time</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">time_taken</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/get_latest_trisk_result.html">get_latest_trisk_result</a></span><span class="op">(</span>trisk_output_path <span class="op">=</span> <span class="va">trisk_output_path</span>, result_type <span class="op">=</span> <span class="st">"npv"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/get_latest_trisk_result.html">get_latest_trisk_result</a></span><span class="op">(</span>trisk_output_path <span class="op">=</span> <span class="va">trisk_output_path</span>, result_type <span class="op">=</span> <span class="st">"pd"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/get_latest_trisk_result.html">get_latest_trisk_result</a></span><span class="op">(</span>trisk_output_path <span class="op">=</span> <span class="va">trisk_output_path</span>, result_type <span class="op">=</span> <span class="st">"trajectories"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="reference/get_latest_trisk_result.html">get_latest_trisk_result</a></span><span class="op">(</span>trisk_output_path <span class="op">=</span> <span class="va">trisk_output_path</span>, result_type <span class="op">=</span> <span class="st">"params"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="parameters-1">Parameters<a class="anchor" aria-label="anchor" href="#parameters-1"></a>
-</h4>
-<ul>
-<li>
-<code>input_path</code>: The path to the folder containing the input data files required for the TRISK model.</li>
-<li>
-<code>output_path</code>: The path where the model’s output files will be saved.</li>
-<li>
-<code>baseline_scenario</code>: The baseline scenario to be used in the model run (e.g., “Steel_baseline”).</li>
-<li>
-<code>target_scenario</code>: The target scenario to be used in the model run (e.g., “Steel_NZ”).</li>
-<li>
-<code>scenario_geography</code>: The geographic scope of the scenario (e.g., “Global”).</li>
-</ul>
-</div>
-</div>
-<div class="section level3">
-<h3 id="run_trisk_single_filtered">run_trisk_single_filtered()<a class="anchor" aria-label="anchor" href="#run_trisk_single_filtered"></a>
-</h3>
-<p>Runs the TRISK model on a filtered dataset.</p>
-<p>Returns a list of tibbles containing the results of the TRISK model run: - <code>npv</code>: Net Present Value results. - <code>pd</code>: Probability of Default results. - <code>trajectories</code>: Company trajectories. - <code>params</code>: Model parameters used in the run.</p>
-<div class="section level4">
-<h4 id="usage-example-2">Usage Example<a class="anchor" aria-label="anchor" href="#usage-example-2"></a>
-</h4>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">single_run_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>    baseline_scenario <span class="op">=</span> <span class="st">"Steel_baseline"</span>,</span>
-<span>    target_scenario <span class="op">=</span> <span class="st">"Steel_NZ"</span>,</span>
-<span>    shock_year <span class="op">=</span> <span class="fl">2030</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">single_filtered_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_trisk_single_filtered.html">run_trisk_single_filtered</a></span><span class="op">(</span></span>
-<span>    input_path <span class="op">=</span> <span class="va">local_trisk_inputs_folder</span>, </span>
-<span>    run_params <span class="op">=</span> <span class="va">single_run_params</span>,</span>
-<span>    country_iso2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"US"</span>, <span class="st">"AR"</span><span class="op">)</span>, </span>
-<span>    sector <span class="op">=</span> <span class="st">"Steel"</span>, </span>
-<span>    technology <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EAF-DRI"</span>, <span class="st">"BOF-BF"</span><span class="op">)</span>, </span>
-<span>    company_name <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_filtered_results</span><span class="op">[</span><span class="st">"npv"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_filtered_results</span><span class="op">[</span><span class="st">"pd"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_filtered_results</span><span class="op">[</span><span class="st">"trajectories"</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">single_filtered_results</span><span class="op">[</span><span class="st">"params"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="parameters-2">Parameters<a class="anchor" aria-label="anchor" href="#parameters-2"></a>
-</h4>
-<ul>
-<li>
-<code>input_path</code>: The path to the folder containing the input data files required for the TRISK model.</li>
-<li>
-<code>run_params</code>: A list of parameters required for running the TRISK model, including <code>scenario_geography</code>, <code>baseline_scenario</code>, <code>target_scenario</code>, and <code>shock_year</code>.</li>
-<li>
-<code>country_iso2</code>: (Optional) A character vector of ISO2 country codes to filter the assets.</li>
-<li>
-<code>sector</code>: (Optional) A character vector of sectors to filter the assets.</li>
-<li>
-<code>technology</code>: (Optional) A character vector of technologies to filter the assets.</li>
-<li>
-<code>company_name</code>: (Optional) A character vector of company names to filter the assets.</li>
-</ul>
-</div>
-</div>
-<div class="section level3">
-<h3 id="run_trisk_sa">run_trisk_sa()<a class="anchor" aria-label="anchor" href="#run_trisk_sa"></a>
-</h3>
-<p>Performs sensitivity analysis with multiple TRISK model runs.</p>
-<p>Returns a list of tibbles containing the combined results for all runs: - <code>npv</code>: Net Present Value results. - <code>pd</code>: Probability of Default results. - <code>trajectories</code>: Company trajectories. - <code>params</code>: Model parameters used in the runs.</p>
-<div class="section level4">
-<h4 id="usage-example-3">Usage Example<a class="anchor" aria-label="anchor" href="#usage-example-3"></a>
-</h4>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">run_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>        scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>        baseline_scenario <span class="op">=</span> <span class="st">"Steel_baseline"</span>,</span>
-<span>        target_scenario <span class="op">=</span> <span class="st">"Steel_NZ"</span>,</span>
-<span>        shock_year <span class="op">=</span> <span class="fl">2030</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>        scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>        baseline_scenario <span class="op">=</span> <span class="st">"Steel_baseline"</span>,</span>
-<span>        target_scenario <span class="op">=</span> <span class="st">"Steel_NZ"</span>,</span>
-<span>        shock_year <span class="op">=</span> <span class="fl">2025</span></span>
-<span>    <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sensitivity_analysis_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
-<span>    input_path <span class="op">=</span> <span class="va">local_trisk_inputs_folder</span>, </span>
-<span>    run_params <span class="op">=</span> <span class="va">run_params</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sensitivity_analysis_results</span><span class="op">[</span><span class="st">"npv"</span><span class="op">]</span></span>
-<span><span class="va">sensitivity_analysis_results</span><span class="op">[</span><span class="st">"pd"</span><span class="op">]</span></span>
-<span><span class="va">sensitivity_analysis_results</span><span class="op">[</span><span class="st">"trajectories"</span><span class="op">]</span></span>
-<span><span class="va">sensitivity_analysis_results</span><span class="op">[</span><span class="st">"params"</span><span class="op">]</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="parameters-3">Parameters<a class="anchor" aria-label="anchor" href="#parameters-3"></a>
-</h4>
-<ul>
-<li>
-<code>input_path</code>: The path to the folder containing the input data files required for the TRISK model.</li>
-<li>
-<code>run_params</code>: A list of parameter sets where each set contains the required parameters for a single TRISK model run (e.g., <code>scenario_geography</code>, <code>baseline_scenario</code>, <code>target_scenario</code>, <code>shock_year</code>).</li>
-<li>
-<code>...</code>: Additional arguments for filtering assets, such as <code>country_iso2</code>, <code>sector</code>, <code>technology</code>, and <code>company_name</code>.</li>
-</ul>
-</div>
 </div>
 </div>
 </div>
