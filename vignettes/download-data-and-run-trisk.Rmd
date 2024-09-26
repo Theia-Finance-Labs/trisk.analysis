@@ -1,0 +1,55 @@
+---
+title: "download-data-and-run-trisk"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{download-data--and-run-trisk}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(trisk.model)
+```
+
+
+# Download the data
+
+```{r}
+trisk_inputs_folder <- file.path(".", "trisk_inputs")
+download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+```
+
+# Run TRISK
+
+
+```{r}
+# Set output path for TRISK results
+trisk_output_path <- file.path(".", "trisk_outputs")
+
+# Measure execution time
+start_time <- Sys.time()
+
+# Run TRISK model with baseline and target scenarios
+run_trisk(
+  input_path = trisk_inputs_folder,
+  output_path = trisk_output_path,
+  baseline_scenario = "Steel_baseline",
+  target_scenario = "Steel_NZ",
+  scenario_geography = "Global"
+)
+
+# End time
+end_time <- Sys.time()
+
+# Calculate time taken for execution
+time_taken <- end_time - start_time
+print(time_taken)
+```

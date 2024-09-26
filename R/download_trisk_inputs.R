@@ -11,7 +11,9 @@
 #'
 #' @return No return value. The function downloads files and saves them to the specified local folder.
 #' @export
-download_trisk_inputs <- function(endpoint_url, s3_path, local_save_folder) {
+download_trisk_inputs <- function(
+    local_save_folder, endpoint_url = "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com",
+    s3_path = "crispy-datamodels-bucket/trisk_V2/csv") {
   # Ensure the local save folder exists, create it if it doesn't
   if (!dir.exists(local_save_folder)) {
     dir.create(local_save_folder, recursive = TRUE)

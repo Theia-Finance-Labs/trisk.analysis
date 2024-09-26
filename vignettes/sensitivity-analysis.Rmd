@@ -1,0 +1,126 @@
+---
+title: "sensitivity-analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sensitivity-analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(fs)
+
+trisk_input_dir <- file.path(".", "trisk_inputs")
+```
+
+``` {r, echo=FALSE}
+# Define source and destination directories
+source_dir <- system.file("testdata", package = "trisk.model")
+
+# Create destination directory if it doesn't exist
+if (!dir_exists(trisk_input_dir)) {
+  dir_create(trisk_input_dir)
+}
+
+# Define the files to be copied and their new names
+files_to_copy <- c(
+  "assets_testdata.csv", "financial_features_testdata.csv",
+  "ngfs_carbon_price_testdata.csv", "scenarios_testdata.csv"
+)
+
+new_names <- c(
+  "assets.csv", "financial_features.csv",
+  "ngfs_carbon_price.csv", "scenarios.csv"
+)
+
+# Loop through the files, copy them, and rename
+for (i in seq_along(files_to_copy)) {
+  # Construct full file paths
+  source_file <- file.path(source_dir, files_to_copy[i])
+  destination_file <- file.path(trisk_input_dir, new_names[i])
+  # Copy the file to the new location with the new name
+  file_copy(source_file, destination_file, overwrite = TRUE)
+}
+
+# Print a message to indicate the operation is complete
+cat("Files have been copied and renamed in ./trisk_inputs.\n")
+```
+
+### Sensitivity Analysis
+
+Sensitivity analysis allows us to explore how changes in parameters affect the results. In this example, we vary the shock year in multiple TRISK runs.
+
+```{r}
+# Define run parameters for sensitivity analysis
+run_params <- list(
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2030
+  ),
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2025
+  )
+)
+
+# Run sensitivity analysis across multiple TRISK runs
+sensitivity_analysis_results <- run_trisk_sa(
+  input_path = trisk_input_dir,
+  run_params = run_params
+)
+
+# Print sensitivity analysis results for different result types
+print(sensitivity_analysis_results$npv)
+print(sensitivity_analysis_results$pd)
+print(sensitivity_analysis_results$trajectories)
+print(sensitivity_analysis_results$params)
+```
+
+### Sensitivity Analysis on a subset of assets filtered by country
+
+You can also perform sensitivity analysis on a filtered subset of assets. This example filters the dataset by country, sector, and technology, and then runs the analysis.
+
+```{r}
+# Define run parameters for sensitivity analysis
+run_params <- list(
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2030
+  ),
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2025
+  )
+)
+
+# Run sensitivity analysis on a subset of assets
+sensitivity_analysis_results_on_filtered_assets <- run_trisk_sa(
+  input_path = trisk_input_dir,
+  run_params = run_params,
+  country_iso2 = c("DE"), # FILTER ASSETS ON COUNTRIES
+)
+
+# Print sensitivity analysis results for the filtered subset
+print(sensitivity_analysis_results$npv)
+print(sensitivity_analysis_results$pd)
+print(sensitivity_analysis_results$trajectories)
+print(sensitivity_analysis_results$params)
+```
+
+### Plot results
