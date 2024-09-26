@@ -33,7 +33,9 @@ run_trisk_sa <- function(input_path, run_params, ...) {
 
   # Loop over each set of parameters in run_params
   for (i in seq_along(run_params)) {
-    run_param <- run_params[[i]]
+    a_run_params <- run_params[[i]]
+    run_id <- uuid::UUIDgenerate()
+    a_run_params <- c(a_run_params, list(run_id = run_id))
 
     # Merge the fixed input data with the current run parameters
     trisk_run_params <- c(
@@ -43,28 +45,22 @@ run_trisk_sa <- function(input_path, run_params, ...) {
         financial_data = input_data_list$financial_data,
         carbon_data = input_data_list$carbon_data
       ),
-      run_param
+      a_run_params
     )
 
     # Execute the TRISK model with the combined parameters
-    output_list <- do.call(
+    result_tibbles <- do.call(
       trisk.model::run_trisk_model,
       trisk_run_params
     )
 
     # Process the parameters used in the run
-    trisk_params <- do.call(trisk.model::process_params, c(list(fun = trisk.model::run_trisk_model), run_param))
-
-    run_id <- uuid::UUIDgenerate() 
-
-
-   result_tibbles <- trisk.model::prepare_trisk_results(output_list=output_list, trisk_params=trisk_params, run_id=run_id)
-
+    trisk_params <- do.call(trisk.model::process_params, c(list(fun = trisk.model::run_trisk_model), a_run_params))
+    params_df <- tibble::as_tibble(trisk_params)
 
     npv_result <- result_tibbles$npv
     pd_result <- result_tibbles$pd
-    trajectories_result <- result_tibbles$trajectories
-    params_df <- result_tibbles$params
+    trajectories_result <- result_tibbles$company_trajectories
 
     # Prepare and stack the results
     npv_results_list[[length(npv_results_list) + 1]] <- npv_result

@@ -10,11 +10,11 @@ License: LGPL (>= 3)
 Imports: 
     dplyr,
     magrittr,
-    readr,
     rlang,
     tibble,
     trisk.model,
-    uuid
+    uuid,
+    fs
 Remotes:
     Theia-Finance-Labs/trisk.model
 Encoding: UTF-8
