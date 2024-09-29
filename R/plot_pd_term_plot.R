@@ -73,8 +73,8 @@ prepare_for_pd_term_plot <- function(crispy_data_agg, facet_var) {
 draw_pd_term_plot <- function(data_pd_term, facet_var) {
 
   red_hex_color <- TRISK_HEX_RED
-  green_hex_color <- TRISK_HEX_GREY
-  grey_hex_color <- TRISK_HEX_GREEN
+  green_hex_color <- TRISK_HEX_GREEN
+  grey_hex_color <- TRISK_HEX_GREY
 
 
 
