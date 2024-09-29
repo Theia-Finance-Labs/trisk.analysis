@@ -68,6 +68,7 @@ draw_crispy_npv_change_plot <- function(
     TRISK_HEX_RED,
     TRISK_HEX_GREY,
     TRISK_HEX_GREEN
+
   )
   bar_width <- 0.9 # Adjust as needed TODO variabiliser conf
 

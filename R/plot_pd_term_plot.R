@@ -71,9 +71,11 @@ prepare_for_pd_term_plot <- function(crispy_data_agg, facet_var) {
 #'
 #' @return A ggplot object depicting the comparative analysis of PD values by term and scenario, crucial for evaluating financial risk and strategic planning.
 draw_pd_term_plot <- function(data_pd_term, facet_var) {
+
   red_hex_color <- TRISK_HEX_RED
   green_hex_color <- TRISK_HEX_GREY
   grey_hex_color <- TRISK_HEX_GREEN
+
 
 
   pd_term_plot <- ggplot2::ggplot(data_pd_term, ggplot2::aes(x = as.factor(.data$term), y = .data$pd_value, fill = .data$pd_value)) +

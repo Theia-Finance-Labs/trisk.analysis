@@ -4,6 +4,7 @@
 TRISK_DATA_INPUT_ENDPOINT <- "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com"
 TRISK_DATA_S3_PREFIX <- "crispy-datamodels-bucket/trisk_V2_legacy/csv"
 
+
 # Plots style , credit to r2dii.plot
 TRISK_HEX_RED <- "#F53D3F"
 TRISK_HEX_GREEN <- "#5D9324"
