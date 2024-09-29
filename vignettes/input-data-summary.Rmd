@@ -23,8 +23,14 @@ library(dplyr)
 
 # Download the data
 
+
+Set the download path
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
+```
+
+Download the data
+```{r}
 download_trisk_inputs(local_save_folder = trisk_inputs_folder)
 ```
 
@@ -45,4 +51,35 @@ number_of_scenario_per_sector <- scenarios %>%
 knitr::kable(number_of_scenario_per_sector) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+
+# Example Run
+
+
+Load downloaded data
+```{r}
+assets <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
+scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+financial_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
+carbon_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
+```
+
+
+Run Trisk on this data
+
+```{r}
+st_results <- run_trisk_model(
+  assets_data = assets,
+  scenarios_data = scenarios,
+  financial_data = financial_data,
+  carbon_data = carbon_data,
+  baseline_scenario =  "NGFS2023GCAM_CP",
+  target_scenario = "NGFS2023GCAM_NZ2050",
+  scenario_geography = "Global"
+)
+```
+
+```{r}
+names(st_results)
 ```

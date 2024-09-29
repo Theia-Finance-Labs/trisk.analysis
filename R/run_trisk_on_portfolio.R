@@ -86,10 +86,6 @@ run_trisk_on_portfolio <- function(assets_data,
 #'
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
-#'
-#' @examples
-#' # Example usage (not run):
-#' # checked_portfolio <- check_portfolio_and_match_company_id(portfolio_data, assets_data)
 check_portfolio_and_match_company_id <- function(portfolio_data, assets_data) {
   # List of required columns
   required_portfolio_columns <- c("company_name", "country_iso2", "exposure_value_usd", "term", "loss_given_default")
@@ -118,9 +114,6 @@ check_portfolio_and_match_company_id <- function(portfolio_data, assets_data) {
 #' @return A data frame of portfolio data with fuzzy-matched company IDs.
 #' @export
 #'
-#' @examples
-#' # Example usage (not run):
-#' # matched_portfolio <- fuzzy_match_company_ids(portfolio_data, assets_data, threshold = 0.3)
 fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2) {
   companies_with_ids <- assets_data |>
     dplyr::distinct(.data$company_id, .data$company_name)
@@ -129,7 +122,7 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2
   matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = "lv") |>
     as.data.frame() |>
     dplyr::mutate(portfolio_index = dplyr::row_number()) |>
-    tidyr::pivot_longer(cols = -portfolio_index, names_to = "npv_index", values_to = "distance") |>
+    tidyr::pivot_longer(cols = -.data$portfolio_index, names_to = "npv_index", values_to = "distance") |>
     dplyr::group_by(.data$portfolio_index) |>
     dplyr::slice_min(order_by = .data$distance, n = 1) |>
     dplyr::ungroup() |>
@@ -158,9 +151,6 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2
 #' @return A data frame of portfolio data joined with TRISK model outputs.
 #' @export
 #'
-#' @examples
-#' # Example usage (not run):
-#' # joined_data <- join_trisk_outputs_to_portfolio(portfolio_data, npv_results, pd_results)
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
   # Merge portfolio to pd results using company_id
   portfolio_with_pd <- portfolio_data |>
