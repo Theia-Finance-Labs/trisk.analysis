@@ -15,8 +15,6 @@ Imports:
     uuid,
     trisk.model,
     ggplot2,
-    r2dii.colours,
-    r2dii.plot,
     scales,
     stringdist,
     tidyr
