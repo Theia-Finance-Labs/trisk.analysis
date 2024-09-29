@@ -40,7 +40,7 @@ download_trisk_inputs(local_save_folder = trisk_inputs_folder)
 
 
 ```{r}
-scenarios <- readr::read_csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
 number_of_scenario_per_sector <- scenarios %>%
   distinct(scenario, sector, technology) %>%
   group_by(sector, technology) %>%
@@ -74,7 +74,7 @@ st_results <- run_trisk_model(
   scenarios_data = scenarios,
   financial_data = financial_data,
   carbon_data = carbon_data,
-  baseline_scenario =  "NGFS2023GCAM_CP",
+  baseline_scenario = "NGFS2023GCAM_CP",
   target_scenario = "NGFS2023GCAM_NZ2050",
   scenario_geography = "Global"
 )
