@@ -1,0 +1,98 @@
+---
+title: "run-sensitivity-analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sensitivity-analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+```
+
+
+```{r}
+assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
+scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
+financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
+ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
+```
+
+### Sensitivity Analysis
+
+Sensitivity analysis allows us to explore how changes in parameters affect the results. In this example, we show how to vary the shock year in multiple TRISK runs when defining run parameters for sensitivity analysis. 
+
+```{r}
+run_params <- list(
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2030 # SHOCK YEAR 1
+  ),
+  list(
+    scenario_geography = "Global",
+    baseline_scenario = "NGFS2023GCAM_CP",
+    target_scenario = "NGFS2023GCAM_NZ2050",
+    shock_year = 2025 # SHOCK YEAR 2
+  )
+)
+```
+
+You can also perform sensitivity analysis on a filtered subset of assets. This example filters the dataset by country, and then runs the analysis.
+
+```{r}
+# Run sensitivity analysis across multiple TRISK runs
+sensitivity_analysis_results <- run_trisk_sa(
+  assets_data = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data = ngfs_carbon_price_testdata,
+  run_params = run_params,
+  country_iso2 = c("DE") # FILTER ASSETS ON COUNTRIES
+)
+```
+
+Contrary to a simple run of trisk with the "run_trisk" function, here it is possible to navigate through multiple Trisk runs in the same dataframe, using the run_id column as an index.
+
+Consolidated NPV results
+
+```{r}
+knitr::kable(head(sensitivity_analysis_results$npv))%>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+Consolidated PD results
+
+```{r}
+knitr::kable(head(sensitivity_analysis_results$pd))%>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+Consolidated company trajectories
+
+```{r}
+knitr::kable(head(sensitivity_analysis_results$trajectories))%>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+Consolidated params dataframe
+
+```{r}
+knitr::kable(head(sensitivity_analysis_results$params))%>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+### Plot results

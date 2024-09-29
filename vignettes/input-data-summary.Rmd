@@ -1,0 +1,48 @@
+---
+title: "input-data-summary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{input-data-summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(trisk.model)
+library(dplyr)
+```
+
+
+# Download the data
+
+```{r}
+trisk_inputs_folder <- file.path(".", "trisk_inputs")
+download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+```
+
+# Descriptive statistics
+
+## Sectors covered by scenarios 
+
+
+```{r}
+scenarios <- readr::read_csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+number_of_scenario_per_sector <- scenarios %>%
+  distinct(scenario, sector, technology) %>%
+  group_by(sector, technology) %>%
+  summarise(n_scenarios = n())
+```
+
+```{r}
+knitr::kable(number_of_scenario_per_sector) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```

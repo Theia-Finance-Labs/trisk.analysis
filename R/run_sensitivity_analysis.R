@@ -6,21 +6,18 @@
 #' It takes a list of parameter sets and runs the TRISK model for each set, returning a comprehensive
 #' set of results that includes net present value (NPV), probability of default (PD), company trajectories, and model parameters.
 #'
-#' @param input_path The path to the input data directory containing the necessary files for the TRISK model.
+#' @param assets_data Data frame containing asset information.
+#' @param scenarios_data Data frame containing scenario information.
+#' @param financial_data Data frame containing financial information.
+#' @param carbon_data Data frame containing carbon price information.
 #' @param run_params A list of parameter sets where each set contains the required parameters for a single TRISK model run.
-#'        Each parameter set must include `scenario_geography`, `baseline_scenario`, `target_scenario`, and `shock_year`.
+#'        Each parameter set must include `scenario_geography`, `baseline_scenario`, `target_scenario`, and `shock_year`. Find their definition and other Trisk parameters at \code{\link[trisk.model]{run_trisk_model}}
 #' @param ... Additional arguments passed to `get_filtered_assets_data`, such as `country_iso2`, `sector`, `technology`, and `company_name` for filtering assets.
 #'
 #' @return A list of tibbles containing the combined results for all runs. The list includes tibbles for NPV results (`npv`),
 #'         PD results (`pd`), company trajectories (`trajectories`), and model parameters (`params`).
 #' @export
-run_trisk_sa <- function(input_path, run_params, ...) {
-  # Get filtered assets data and other input data
-  input_data_list <- get_filtered_assets_data(
-    input_path = input_path,
-    ...
-  )
-
+run_trisk_sa <- function(assets_data,scenarios_data , financial_data,carbon_data, run_params, ...) {
   print(paste("Starting the execution of", length(run_params), "total runs"))
 
   n_completed_runs <- 0
@@ -40,10 +37,10 @@ run_trisk_sa <- function(input_path, run_params, ...) {
     # Merge the fixed input data with the current run parameters
     trisk_run_params <- c(
       list(
-        assets_data = input_data_list$assets_data,
-        scenarios_data = input_data_list$scenarios_data,
-        financial_data = input_data_list$financial_data,
-        carbon_data = input_data_list$carbon_data
+        assets_data = assets_data,
+        scenarios_data = scenarios_data,
+        financial_data = financial_data,
+        carbon_data = carbon_data
       ),
       a_run_params
     )
