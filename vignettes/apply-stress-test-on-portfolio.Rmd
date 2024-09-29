@@ -1,0 +1,104 @@
+---
+title: "apply-stress-test-on-portfolio"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{apply-stress-test-on-portfolio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(trisk.model)
+library(magrittr)
+```
+
+# Obtain outputs 
+
+## Load the test data
+
+Load the internal datasets
+
+```{r}
+assets_testdata <- readr::read_csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
+scenarios_testdata <- readr::read_csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
+financial_features_testdata <- readr::read_csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
+ngfs_carbon_price_testdata <- readr::read_csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
+```
+
+Define the scenarios to use
+
+```{r}
+baseline_scenario <- "NGFS2023GCAM_CP"
+target_scenario <- "NGFS2023GCAM_NZ2050"
+scenario_geography <- "Global"
+```
+
+## Generate outputs
+Run the model with the provided data, after filtering assets on those available in the portfolio.
+
+### Prepare portfolio
+```{r}
+portfolio_testdata <- read.csv(system.file("testdata", "portfolio_testdata.csv", package = "trisk.analysis"))
+```
+
+Sample portfolio content (columns structure to reproduce):
+
+```{r}
+knitr::kable(portfolio_testdata) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+### Run trisk 
+
+
+```{r}
+analysis_data <- run_trisk_on_portfolio(
+  assets_data = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data = ngfs_carbon_price_testdata,
+  portfolio_data = portfolio_testdata,
+  baseline_scenario = baseline_scenario,
+  target_scenario = target_scenario,
+  scenario_geography = scenario_geography,
+  granularity = c("company_id", "sector", "technology")
+)
+```
+
+Result dataframe : 
+
+```{r}
+knitr::kable(analysis_data) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "200%", height = "400px")
+```
+
+## Plot results
+
+### Equities risk
+
+```{r}
+pipeline_crispy_npv_change_plot(analysis_data)
+```
+
+```{r}
+pipeline_crispy_exposure_change_plot(analysis_data)
+```
+### Bonds&Loans risk
+
+```{r}
+pipeline_crispy_pd_term_plot(analysis_data)
+```
+
+```{r}
+pipeline_crispy_expected_loss_plot(analysis_data)
+```
