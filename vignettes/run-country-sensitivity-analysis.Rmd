@@ -2,7 +2,7 @@
 title: "run-country-sensitivity-analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{sensitivity-analysis}
+  %\VignetteIndexEntry{run-country-sensitivity-analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
