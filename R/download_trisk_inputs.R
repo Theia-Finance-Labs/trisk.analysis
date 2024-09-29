@@ -6,7 +6,7 @@
 #' It ensures that the local folder exists before downloading the files. If the folder does not exist, it is created.
 #' Env variables containing endpoints are defined in imports.R
 #'
-#' @param endpoint_url The base URL of the endpoint from which the data files will be downloaded.
+#' @param local_save_folder Where to download outputs locally
 #'
 #' @return No return value. The function downloads files and saves them to the specified local folder.
 #' @export

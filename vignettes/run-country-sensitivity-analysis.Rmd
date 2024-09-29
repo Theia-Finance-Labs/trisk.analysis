@@ -1,5 +1,5 @@
 ---
-title: "run-sensitivity-analysis"
+title: "run-country-sensitivity-analysis"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sensitivity-analysis}
@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(trisk.analysis)
+library(magrittr)
 ```
 
 
@@ -66,7 +67,7 @@ Contrary to a simple run of trisk with the "run_trisk" function, here it is poss
 Consolidated NPV results
 
 ```{r}
-knitr::kable(head(sensitivity_analysis_results$npv))%>%
+knitr::kable(head(sensitivity_analysis_results$npv)) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
@@ -74,7 +75,7 @@ knitr::kable(head(sensitivity_analysis_results$npv))%>%
 Consolidated PD results
 
 ```{r}
-knitr::kable(head(sensitivity_analysis_results$pd))%>%
+knitr::kable(head(sensitivity_analysis_results$pd)) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
@@ -82,7 +83,7 @@ knitr::kable(head(sensitivity_analysis_results$pd))%>%
 Consolidated company trajectories
 
 ```{r}
-knitr::kable(head(sensitivity_analysis_results$trajectories))%>%
+knitr::kable(head(sensitivity_analysis_results$trajectories)) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
@@ -90,7 +91,7 @@ knitr::kable(head(sensitivity_analysis_results$trajectories))%>%
 Consolidated params dataframe
 
 ```{r}
-knitr::kable(head(sensitivity_analysis_results$params))%>%
+knitr::kable(head(sensitivity_analysis_results$params)) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```

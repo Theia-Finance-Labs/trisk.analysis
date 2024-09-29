@@ -7,7 +7,7 @@
 download_trisk_inputs(local_save_folder)
 }
 \arguments{
-\item{endpoint_url}{The base URL of the endpoint from which the data files will be downloaded.}
+\item{local_save_folder}{Where to download outputs locally}
 }
 \value{
 No return value. The function downloads files and saves them to the specified local folder.

@@ -13,7 +13,13 @@ Imports:
     rlang,
     tibble,
     uuid,
-    trisk.model
+    trisk.model,
+    ggplot2,
+    r2dii.colours,
+    r2dii.plot,
+    scales,
+    stringdist,
+    tidyr
 Remotes:
     Theia-Finance-Labs/trisk.model
 Encoding: UTF-8
@@ -22,5 +28,6 @@ Suggests:
     knitr,
     rmarkdown,
     fs,
-    kableExtra
+    kableExtra,
+    readr
 VignetteBuilder: knitr

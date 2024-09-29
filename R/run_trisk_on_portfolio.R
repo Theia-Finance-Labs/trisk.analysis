@@ -12,17 +12,11 @@
 #' @param portfolio_data Data frame containing portfolio information.
 #' @param baseline_scenario String specifying the name of the baseline scenario.
 #' @param target_scenario String specifying the name of the shock scenario.
-#' @param granularity Character vector specifying the grouping columns for aggregation.
-#'   Default is c("company_id", "sector", "technology", "term").
 #' @param ... Additional arguments passed to \code{\link[trisk.model]{run_trisk_model}}.
 #'
 #' @return A data frame containing the processed and analyzed portfolio data.
 #' @export
 #'
-#' @examples
-#' # Example usage (not run):
-#' # result <- run_trisk_on_portfolio(assets_data, scenarios_data, financial_data,
-#' #                                  carbon_data, portfolio_data, "Baseline", "Shock")
 run_trisk_on_portfolio <- function(assets_data,
                                    scenarios_data,
                                    financial_data,
@@ -35,12 +29,12 @@ run_trisk_on_portfolio <- function(assets_data,
 
   assets_data <- assets_data %>%
     dplyr::mutate(
-      asset_id = as.character(asset_id),
-      company_id = as.character(asset_id)
+      asset_id = as.character(.data$asset_id),
+      company_id = as.character(.data$asset_id)
     )
   financial_data <- financial_data %>%
     dplyr::mutate(
-      company_id = as.character(company_id)
+      company_id = as.character(.data$company_id)
     )
 
   cat("-- Matching assets to portfolio")
@@ -48,15 +42,15 @@ run_trisk_on_portfolio <- function(assets_data,
     check_portfolio_and_match_company_id(assets_data = assets_data)
 
   matched_companies <- portfolio_data %>%
-    dplyr::filter(!is.na(company_id)) %>%
-    dplyr::distinct(company_id) %>%
+    dplyr::filter(!is.na(.data$company_id)) %>%
+    dplyr::distinct(.data$company_id) %>%
     dplyr::pull()
 
   assets_data_filtered <- assets_data %>%
     dplyr::filter(.data$company_id %in% matched_companies)
 
   cat("-- Start Trisk")
-  st_results <- run_trisk_model(
+  st_results <- trisk.model::run_trisk_model(
     assets_data = assets_data_filtered,
     scenarios_data = scenarios_data,
     financial_data = financial_data,
@@ -67,12 +61,12 @@ run_trisk_on_portfolio <- function(assets_data,
 
   npv_results <- st_results$npv_results %>%
     dplyr::mutate(
-      asset_id = as.character(asset_id),
-      company_id = as.character(asset_id)
+      asset_id = as.character(.data$asset_id),
+      company_id = as.character(.data$asset_id)
     )
   pd_results <- st_results$pd_results %>%
     dplyr::mutate(
-      company_id = as.character(company_id)
+      company_id = as.character(.data$company_id)
     )
 
   analysis_data <- portfolio_data |>
@@ -135,7 +129,7 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2
   matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = "lv") |>
     as.data.frame() |>
     dplyr::mutate(portfolio_index = dplyr::row_number()) |>
-    tidyr::pivot_longer(cols = -.data$portfolio_index, names_to = "npv_index", values_to = "distance") |>
+    tidyr::pivot_longer(cols = -portfolio_index, names_to = "npv_index", values_to = "distance") |>
     dplyr::group_by(.data$portfolio_index) |>
     dplyr::slice_min(order_by = .data$distance, n = 1) |>
     dplyr::ungroup() |>
@@ -170,11 +164,11 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
   # Merge portfolio to pd results using company_id
   portfolio_with_pd <- portfolio_data |>
-    dplyr::left_join(pd_results |> dplyr::select(-company_name), by = c("company_id", "sector", "term"))
+    dplyr::left_join(pd_results |> dplyr::select(-.data$company_name), by = c("company_id", "sector", "term"))
 
   # Merge with npv results using company_id
   full_joined_data <- portfolio_with_pd |>
-    dplyr::left_join(npv_results |> dplyr::select(-company_name), by = c("run_id", "company_id", "sector", "technology"))
+    dplyr::left_join(npv_results |> dplyr::select(-.data$company_name), by = c("run_id", "company_id", "sector", "technology"))
 
   return(full_joined_data)
 }
