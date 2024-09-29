@@ -41,8 +41,8 @@ start_time <- Sys.time()
 run_trisk(
   input_path = trisk_inputs_folder,
   output_path = trisk_output_path,
-  baseline_scenario = "Steel_baseline",
-  target_scenario = "Steel_NZ",
+  baseline_scenario = "NGFS2023GCAM_CP",
+  target_scenario = "NGFS2023GCAM_NZ2050",
   scenario_geography = "Global"
 )
 

@@ -4,18 +4,10 @@
 \alias{download_trisk_inputs}
 \title{Download TRISK input data files from a specified endpoint}
 \usage{
-download_trisk_inputs(
-  local_save_folder,
-  endpoint_url = "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com",
-  s3_path = "crispy-datamodels-bucket/trisk_V2/csv"
-)
+download_trisk_inputs(local_save_folder)
 }
 \arguments{
-\item{local_save_folder}{The local folder path where the downloaded files will be saved.}
-
 \item{endpoint_url}{The base URL of the endpoint from which the data files will be downloaded.}
-
-\item{s3_path}{The specific path within the endpoint where the data files are located.}
 }
 \value{
 No return value. The function downloads files and saves them to the specified local folder.
@@ -23,4 +15,5 @@ No return value. The function downloads files and saves them to the specified lo
 \description{
 This function downloads TRISK input data files from a specified endpoint URL and saves them to a local folder.
 It ensures that the local folder exists before downloading the files. If the folder does not exist, it is created.
+Env variables containing endpoints are defined in imports.R
 }
