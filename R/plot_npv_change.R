@@ -65,9 +65,10 @@ draw_crispy_npv_change_plot <- function(
     y_var) {
   # HARDCODED PARAMETERS
   plot_color_gradient <- c(
-    r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "red") |> dplyr::pull(.data$hex),
-    r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "grey") |> dplyr::pull(.data$hex),
-    r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "green") |> dplyr::pull(.data$hex)
+    TRISK_HEX_RED,
+    TRISK_HEX_GREY,
+    TRISK_HEX_GREEN
+
   )
   bar_width <- 0.9 # Adjust as needed TODO variabiliser conf
 
@@ -86,10 +87,9 @@ draw_crispy_npv_change_plot <- function(
       midpoint = 0,
       labels = scales::percent
     ) +
-    # scale_x_discrete(position = "bottom", labels = r2dii.plot::to_title) +
     ggplot2::scale_y_continuous(labels = scales::percent) +
     ggplot2::labs(y = "Crispy npv change", x = "") +
-    r2dii.plot::theme_2dii() +
+    TRISK_PLOT_THEME_FUNC() +
     ggplot2::theme(
       legend.position = "none",
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)

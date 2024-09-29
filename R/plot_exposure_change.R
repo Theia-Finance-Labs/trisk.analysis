@@ -77,15 +77,12 @@ draw_exposure_change_plot <- function(
     y_exposure_var,
     y_value_loss_var,
     facet_var = NULL) {
-  plot_bar_color <-
-    r2dii.colours::palette_1in1000_plot |>
-    dplyr::filter(.data$label == "grey") |>
-    dplyr::pull(.data$hex)
 
-  # HARDCODED PARAMETERS
+  plot_bar_color <- TRISK_HEX_GREY
   plot_color_gradient <- c(
-    r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "red") |> dplyr::pull(.data$hex),
-    r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "green") |> dplyr::pull(.data$hex)
+    TRISK_HEX_RED,
+    TRISK_HEX_GREEN
+
   )
   bar_width <- 0.9 # Adjust as needed TODO variabiliser conf
 
@@ -110,7 +107,7 @@ draw_exposure_change_plot <- function(
       breaks = c("Loss", "Gain")
     ) +
     ggplot2::labs(y = "Value USD", x = "") +
-    r2dii.plot::theme_2dii() +
+    TRISK_PLOT_THEME_FUNC() +
     ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "M", scale = 1e-6)) +
     ggplot2::theme(
       # legend.position = "none",

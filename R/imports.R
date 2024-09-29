@@ -3,3 +3,30 @@
 
 TRISK_DATA_INPUT_ENDPOINT <- "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com"
 TRISK_DATA_S3_PREFIX <- "crispy-datamodels-bucket/trisk_V2_legacy/csv"
+
+
+# Plots style , credit to r2dii.plot
+TRISK_HEX_RED <- "#F53D3F"
+TRISK_HEX_GREEN <- "#5D9324"
+TRISK_HEX_GREY <- "#BAB6B5"
+TRISK_PLOT_THEME_FUNC <- function (base_size = 12, base_family = "Helvetica", base_line_size = base_size/22, 
+    base_rect_size = base_size/22) 
+{
+    supporting_elts_color <- "#C0C0C0"
+    margin <- margin(5, 5, 5, 5)
+    theme_classic(base_size = base_size, base_family = base_family, 
+        base_line_size = base_line_size, base_rect_size = base_rect_size) %+replace% 
+        theme(axis.line = element_line(colour = supporting_elts_color), 
+            axis.ticks = element_line(colour = supporting_elts_color), 
+            axis.text = element_text(size = base_size * 10/12, 
+                margin = margin), axis.title = element_text(margin = margin), 
+            legend.text = element_text(size = base_size * 9/12, 
+                margin = margin), legend.title = element_blank(), 
+            plot.margin = unit(c(0.5, 1, 0.5, 0.5), "cm"), plot.title = element_text(hjust = 0.5, 
+                vjust = 0.5, face = "bold", size = base_size * 
+                  14/12, margin = margin(8, 2, 8, 6)), plot.subtitle = element_text(hjust = 0.5, 
+                vjust = 0.5, size = base_size * 10/12, margin = margin(0, 
+                  2, 8, 6)), strip.background = element_blank(), 
+            strip.switch.pad.grid = unit(0.2, "cm"), strip.text = element_text(size = base_size * 
+                10/12, margin = margin))
+}

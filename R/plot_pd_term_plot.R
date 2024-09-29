@@ -71,15 +71,11 @@ prepare_for_pd_term_plot <- function(crispy_data_agg, facet_var) {
 #'
 #' @return A ggplot object depicting the comparative analysis of PD values by term and scenario, crucial for evaluating financial risk and strategic planning.
 draw_pd_term_plot <- function(data_pd_term, facet_var) {
-  red_hex_color <- r2dii.colours::palette_1in1000_plot |>
-    dplyr::filter(.data$label == "red") |>
-    dplyr::pull(.data$hex)
-  green_hex_color <- r2dii.colours::palette_1in1000_plot |>
-    dplyr::filter(.data$label == "green") |>
-    dplyr::pull(.data$hex)
-  grey_hex_color <- r2dii.colours::palette_1in1000_plot |>
-    dplyr::filter(.data$label == "grey") |>
-    dplyr::pull(.data$hex)
+
+  red_hex_color <- TRISK_HEX_RED
+  green_hex_color <- TRISK_HEX_GREY
+  grey_hex_color <- TRISK_HEX_GREEN
+
 
 
   pd_term_plot <- ggplot2::ggplot(data_pd_term, ggplot2::aes(x = as.factor(.data$term), y = .data$pd_value, fill = .data$pd_value)) +
@@ -93,7 +89,7 @@ draw_pd_term_plot <- function(data_pd_term, facet_var) {
       limit = c(min(data_pd_term$pd_value), max(data_pd_term$pd_value)),
       space = "Lab"
     ) +
-    r2dii.plot::theme_2dii() +
+    TRISK_PLOT_THEME_FUNC() +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
     ggplot2::labs(x = "Term", y = "PD Value", fill = "PD Type", title = "PD Values by Term, Type, and Business Unit")
