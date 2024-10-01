@@ -4,10 +4,10 @@
 \alias{prepare_for_pd_term_plot}
 \title{Prepare Data for PD Term Visualization}
 \usage{
-prepare_for_pd_term_plot(crispy_data_agg, facet_var)
+prepare_for_pd_term_plot(analysis_data, facet_var)
 }
 \arguments{
-\item{crispy_data_agg}{Dataset containing aggregated PD values across terms and scenarios.}
+\item{analysis_data}{Dataset containing aggregated PD values across terms and scenarios.}
 
 \item{facet_var}{Faceting variable representing sectors or business units for detailed comparative analysis.}
 }

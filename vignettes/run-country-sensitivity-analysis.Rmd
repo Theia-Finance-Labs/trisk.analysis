@@ -97,3 +97,8 @@ knitr::kable(head(sensitivity_analysis_results$params)) %>%
 ```
 
 ### Plot results
+
+```{r}
+plot_multi_trajectories(sensitivity_analysis_results$trajectories)
+```
+
