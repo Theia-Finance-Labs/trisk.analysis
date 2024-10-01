@@ -236,9 +236,7 @@ DE
 <span>  portfolio_data <span class="op">=</span> <span class="va">portfolio_testdata</span>,</span>
 <span>  baseline_scenario <span class="op">=</span> <span class="va">baseline_scenario</span>,</span>
 <span>  target_scenario <span class="op">=</span> <span class="va">target_scenario</span>,</span>
-<span>  scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span>,</span>
-<span>  granularity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"sector"</span>, <span class="st">"technology"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span>  scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Matching assets to portfolio-- Start Trisk-- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
@@ -280,12 +278,6 @@ company_id
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 run_id
 </th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_shock
-</th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 asset_id
 </th>
@@ -297,6 +289,12 @@ net_present_value_baseline
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 net_present_value_shock
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_shock
 </th>
 </tr></thead>
 <tbody>
@@ -326,13 +324,7 @@ DE
 101
 </td>
 <td style="text-align:left;">
-21f0b698-df39-45ab-982a-67a87cd828b1
-</td>
-<td style="text-align:right;">
-1.1e-06
-</td>
-<td style="text-align:right;">
-0.1680445
+443e41d4-d988-4df4-a2c1-b7d258120aef
 </td>
 <td style="text-align:left;">
 101
@@ -345,6 +337,12 @@ Company 1
 </td>
 <td style="text-align:right;">
 13549.28
+</td>
+<td style="text-align:right;">
+1.1e-06
+</td>
+<td style="text-align:right;">
+0.1680445
 </td>
 </tr>
 <tr>
@@ -373,13 +371,7 @@ DE
 102
 </td>
 <td style="text-align:left;">
-21f0b698-df39-45ab-982a-67a87cd828b1
-</td>
-<td style="text-align:right;">
-0.0e+00
-</td>
-<td style="text-align:right;">
-0.0197957
+443e41d4-d988-4df4-a2c1-b7d258120aef
 </td>
 <td style="text-align:left;">
 102
@@ -392,6 +384,12 @@ Company 2
 </td>
 <td style="text-align:right;">
 4317747.56
+</td>
+<td style="text-align:right;">
+0.0e+00
+</td>
+<td style="text-align:right;">
+0.0197957
 </td>
 </tr>
 <tr>
@@ -422,16 +420,16 @@ NA
 <td style="text-align:left;">
 NA
 </td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
 <td style="text-align:left;">
 NA
 </td>
 <td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
 NA
 </td>
 <td style="text-align:right;">
@@ -467,19 +465,19 @@ DE
 104
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
+443e41d4-d988-4df4-a2c1-b7d258120aef
 </td>
 <td style="text-align:left;">
-NA
+104
 </td>
 <td style="text-align:left;">
-NA
+Company 4
+</td>
+<td style="text-align:right;">
+497029538.6
+</td>
+<td style="text-align:right;">
+789241252.58
 </td>
 <td style="text-align:right;">
 NA
@@ -500,19 +498,15 @@ NA
 <h4 id="equities-risk">Equities risk<a class="anchor" aria-label="anchor" href="#equities-risk"></a>
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_tile()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-9-1.png" width="700">
 ### Bonds&amp;Loans risk</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 4 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_bar()`).</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
