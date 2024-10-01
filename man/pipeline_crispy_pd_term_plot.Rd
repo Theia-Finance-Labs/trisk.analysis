@@ -5,13 +5,13 @@
 \title{Visualize PD Values by Term and Business Unit}
 \usage{
 pipeline_crispy_pd_term_plot(
-  crispy_data_agg,
+  analysis_data,
   facet_var = "sector",
-  granularity = c("sector")
+  granularity = c("sector", "term")
 )
 }
 \arguments{
-\item{crispy_data_agg}{Aggregated dataset containing PD values for various terms and scenarios across different sectors or business units.}
+\item{analysis_data}{Aggregated dataset containing PD values for various terms and scenarios across different sectors or business units.}
 
 \item{facet_var}{The variable by which to facet the plot, typically representing different sectors or business units, defaulting to "ald_sector".}
 

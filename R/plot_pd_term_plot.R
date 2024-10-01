@@ -2,23 +2,24 @@
 #'
 #' Orchestrates the creation of a plot visualizing the probability of default (PD) values across different terms and sectors or business units. This function facilitates an understanding of how PD values vary by term under baseline and shock scenarios, enabling stakeholders to assess risk exposure.
 #'
-#' @param crispy_data_agg Aggregated dataset containing PD values for various terms and scenarios across different sectors or business units.
+#' @param analysis_data Aggregated dataset containing PD values for various terms and scenarios across different sectors or business units.
 #' @param facet_var The variable by which to facet the plot, typically representing different sectors or business units, defaulting to "ald_sector".
 #' @param granularity Character vector specifying the grouping columns for aggregation.
 #'
 #' @return A ggplot object showing PD values by term, differentiated by scenario, across the specified business units, aiding in strategic risk management.
 #' @export
 pipeline_crispy_pd_term_plot <- function(
-    crispy_data_agg,
+    analysis_data,
     facet_var = "sector",
-    granularity = c("sector")) {
+    granularity = c("sector", "term")) {
+
   analysis_data <- analysis_data |>
     dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
     compute_analysis_metrics()
 
   data_pd_term <- prepare_for_pd_term_plot(
-    crispy_data_agg = crispy_data_agg,
+    analysis_data = analysis_data,
     facet_var = facet_var
   )
   pd_term_plot <- draw_pd_term_plot(
@@ -35,12 +36,12 @@ pipeline_crispy_pd_term_plot <- function(
 #'
 #' Prepares the aggregated crispy data for visualization, focusing on PD values by term. It transforms the dataset to a long format suitable for plotting, allowing for a comparative view of PD values under different scenarios.
 #'
-#' @param crispy_data_agg Dataset containing aggregated PD values across terms and scenarios.
+#' @param analysis_data Dataset containing aggregated PD values across terms and scenarios.
 #' @param facet_var Faceting variable representing sectors or business units for detailed comparative analysis.
 #'
 #' @return A dataframe in long format, ready for plotting PD values by term and scenario.
-prepare_for_pd_term_plot <- function(crispy_data_agg, facet_var) {
-  data_pd_term <- crispy_data_agg |>
+prepare_for_pd_term_plot <- function(analysis_data, facet_var) {
+  data_pd_term <- analysis_data |>
     tidyr::pivot_longer(
       cols = tidyr::starts_with("pd_"),
       names_to = "pd_type",

@@ -69,9 +69,7 @@ analysis_data <- run_trisk_on_portfolio(
   portfolio_data = portfolio_testdata,
   baseline_scenario = baseline_scenario,
   target_scenario = target_scenario,
-  scenario_geography = scenario_geography,
-  granularity = c("company_id", "sector", "technology")
-)
+  scenario_geography = scenario_geography)
 ```
 
 Result dataframe : 
