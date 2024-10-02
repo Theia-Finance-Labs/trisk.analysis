@@ -43,9 +43,10 @@ We provide consolidated scenarios data from publicly available sources. The [Dow
 
 ## Usecases
 
+### Potfolio analysis
+Example showcased in the [Portfolio analysis vignette]([https://theia-finance-labs.github.io/trisk.analysis/articles/apply-trisk-on-portfolio.html](https://theia-finance-labs.github.io/trisk.analysis/articles/apply-stress-test-on-portfolio.html))
+
 ### Sensitivity analysis
 
-Example showcased in the [Sensitivity analysis Vignette](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)
-
-### Potfolio analysis
+Example showcased in the [Sensitivity analysis vignette](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)
 
