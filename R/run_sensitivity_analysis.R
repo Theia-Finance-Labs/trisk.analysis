@@ -38,11 +38,11 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
     a_run_params <- run_params[[i]]
     run_id <- uuid::UUIDgenerate()
     a_run_params <- c(a_run_params, list(run_id = run_id))
-    assets_data_filtered <- get_filtered_assets_data(assets_data, ...)
+
     # Merge the fixed input data with the current run parameters
     trisk_run_params <- c(
       list(
-        assets_data = assets_data,
+        assets_data = assets_data_filtered,
         scenarios_data = scenarios_data,
         financial_data = financial_data,
         carbon_data = carbon_data
