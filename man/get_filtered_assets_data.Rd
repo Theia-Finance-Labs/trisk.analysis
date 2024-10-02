@@ -2,10 +2,10 @@
 % Please edit documentation in R/run_sensitivity_analysis.R
 \name{get_filtered_assets_data}
 \alias{get_filtered_assets_data}
-\title{Get filtered assets data based on provided criteria}
+\title{Filter assets based on provided criteria}
 \usage{
 get_filtered_assets_data(
-  input_path,
+  assets_data,
   country_iso2 = NULL,
   sector = NULL,
   technology = NULL,
@@ -13,7 +13,7 @@ get_filtered_assets_data(
 )
 }
 \arguments{
-\item{input_path}{The path to the input data directory containing the necessary files for the TRISK model.}
+\item{assets_data}{The assets data to be filtered.}
 
 \item{country_iso2}{A character vector of ISO2 country codes to filter the assets. Defaults to NULL.}
 
@@ -24,8 +24,8 @@ get_filtered_assets_data(
 \item{company_name}{A character vector of company names to filter the assets. Defaults to NULL.}
 }
 \value{
-A list containing the filtered assets data and other input data required for the TRISK model.
+A tibble containing the filtered assets data.
 }
 \description{
-This function loads and filters the assets data based on criteria such as country, sector, technology, and company name.
+This function filters the assets data based on criteria such as country, sector, technology, and company name.
 }
