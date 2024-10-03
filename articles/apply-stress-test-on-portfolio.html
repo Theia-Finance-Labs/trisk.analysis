@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">trisk.analysis</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -324,7 +324,7 @@ DE
 101
 </td>
 <td style="text-align:left;">
-c1a64cf4-c1a8-4137-ab48-16f1deae44cb
+323ce544-13d8-4213-a818-066603090b82
 </td>
 <td style="text-align:left;">
 101
@@ -371,7 +371,7 @@ DE
 102
 </td>
 <td style="text-align:left;">
-c1a64cf4-c1a8-4137-ab48-16f1deae44cb
+323ce544-13d8-4213-a818-066603090b82
 </td>
 <td style="text-align:left;">
 102
@@ -465,7 +465,7 @@ DE
 104
 </td>
 <td style="text-align:left;">
-c1a64cf4-c1a8-4137-ab48-16f1deae44cb
+323ce544-13d8-4213-a818-066603090b82
 </td>
 <td style="text-align:left;">
 104
@@ -497,18 +497,22 @@ NA
 <div class="section level4">
 <h4 id="equities-risk">Equities risk<a class="anchor" aria-label="anchor" href="#equities-risk"></a>
 </h4>
+<p>Plot the average percentage of NPV change per technology</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<p>Plot the resulting portfolio’s exposure change</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-9-1.png" width="700">
 ### Bonds&amp;Loans risk</p>
+<p>Plot the average PDs at baseline and shock</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_bar()`).</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p>Plot the resulting portfolio’s expected loss</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_expected_loss_plot.html">pipeline_crispy_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
@@ -522,7 +526,7 @@ NA
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by The package maintainer.</p>
+  <p>Developed by Bertrand Gallice, Theia Finance Labs.</p>
 </div>
 
 <div class="pkgdown-footer-right">
