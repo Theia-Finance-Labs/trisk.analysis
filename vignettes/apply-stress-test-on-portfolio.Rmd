@@ -84,18 +84,26 @@ knitr::kable(analysis_data) %>%
 
 ### Equities risk
 
+Plot the average percentage of NPV change per technology
+
 ```{r}
 pipeline_crispy_npv_change_plot(analysis_data)
 ```
+
+Plot the resulting portfolio's exposure change 
 
 ```{r}
 pipeline_crispy_exposure_change_plot(analysis_data)
 ```
 ### Bonds&Loans risk
 
+Plot the average PDs at baseline and shock
+
 ```{r}
 pipeline_crispy_pd_term_plot(analysis_data)
 ```
+
+Plot the resulting portfolio's expected loss
 
 ```{r}
 pipeline_crispy_expected_loss_plot(analysis_data)

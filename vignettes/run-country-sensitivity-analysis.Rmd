@@ -98,6 +98,8 @@ knitr::kable(head(sensitivity_analysis_results$params)) %>%
 
 ### Plot results
 
+Plot the sum of production trajectories, scaled in percentage of the first year value. The run_id identifies each run and can be found in the parameters dataframe.
+
 ```{r}
 plot_multi_trajectories(sensitivity_analysis_results$trajectories)
 ```

@@ -1,9 +1,15 @@
 Type: Package
 Package: trisk.analysis
-Title: What the Package Does (Title Case)
-Version: 1.0.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Title: Trisk Utility Functions
+Version: 1.2.0
+Authors@R: c(  
+    person(given = "Bertrand",
+           family = "Gallice",
+           role = c("aut", "cre"),
+           email = "bertrand@2degrees-investing.org"),           
+    person(given = "Theia Finance Labs",
+           role = c("cph", "fnd"),
+           email = "1in1000@theiafinance.org"))
 Description: More about what it does (maybe more than one line) Use four
     spaces when indenting paragraphs within the Description.
 License: LGPL (>= 3)
