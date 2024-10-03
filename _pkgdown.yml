@@ -1,6 +1,10 @@
 title: "trisk.analysis"
 subtitle: "Comprehensive Analysis for Risk Modelling"
 url: ~
+repo:
+  url:
+    home: https://github.com/Theia-Finance-Labs/trisk.analysis
+    source: https://github.com/Theia-Finance-Labs/trisk.analysis
 template:
   bootstrap: 5
-
+  
