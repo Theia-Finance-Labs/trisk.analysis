@@ -12,7 +12,6 @@ pipeline_crispy_pd_term_plot <- function(
     analysis_data,
     facet_var = "sector",
     granularity = c("sector", "term")) {
-
   analysis_data <- analysis_data |>
     dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
@@ -72,7 +71,6 @@ prepare_for_pd_term_plot <- function(analysis_data, facet_var) {
 #'
 #' @return A ggplot object depicting the comparative analysis of PD values by term and scenario, crucial for evaluating financial risk and strategic planning.
 draw_pd_term_plot <- function(data_pd_term, facet_var) {
-
   red_hex_color <- TRISK_HEX_RED
   green_hex_color <- TRISK_HEX_GREEN
   grey_hex_color <- TRISK_HEX_GREY

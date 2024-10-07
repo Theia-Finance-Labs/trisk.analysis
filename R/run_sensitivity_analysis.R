@@ -30,9 +30,9 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
   pd_results_list <- list()
   company_trajectories_list <- list()
   params_df_list <- list()
-  
+
   assets_data_filtered <- get_filtered_assets_data(assets_data, ...)
-  
+
   # Loop over each set of parameters in run_params
   for (i in seq_along(run_params)) {
     a_run_params <- run_params[[i]]
@@ -101,11 +101,10 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
 #'
 #' @return A tibble containing the filtered assets data.
 get_filtered_assets_data <- function(assets_data,
-                          country_iso2 = NULL,
-                          sector = NULL,
-                          technology = NULL,
-                          company_name = NULL) {
-
+                                     country_iso2 = NULL,
+                                     sector = NULL,
+                                     technology = NULL,
+                                     company_name = NULL) {
   # Apply filters if they are provided
   if (!is.null(country_iso2)) {
     assets_data <- assets_data %>%

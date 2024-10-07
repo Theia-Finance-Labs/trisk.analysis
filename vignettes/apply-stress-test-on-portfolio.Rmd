@@ -27,10 +27,10 @@ library(magrittr)
 Load the internal datasets
 
 ```{r}
-assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork=TRUE))
-scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork=TRUE))
-financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork=TRUE))
-ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork=TRUE))
+assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
+scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
+financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
+ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
 ```
 
 Define the scenarios to use
@@ -69,7 +69,8 @@ analysis_data <- run_trisk_on_portfolio(
   portfolio_data = portfolio_testdata,
   baseline_scenario = baseline_scenario,
   target_scenario = target_scenario,
-  scenario_geography = scenario_geography)
+  scenario_geography = scenario_geography
+)
 ```
 
 Result dataframe : 
