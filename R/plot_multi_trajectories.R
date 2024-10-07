@@ -1,7 +1,7 @@
 #' Visualize Trajectory Risks Over Time by Business Unit and Sector
 #'
 #' This function generates a line plot visualizing the trajectory of risks over time for the "production_shock_scenario", segmented by business units and differentiated by sectors.
-#' 
+#'
 #' @param trajectories_data Dataframe containing yearly data on risk trajectories across different business units and sectors.
 #' @param x_var The time variable, defaulting to "year".
 #' @param facet_var The variable for faceting the plot by business units, defaulting to "ald_business_unit".
@@ -15,9 +15,7 @@ plot_multi_trajectories <- function(
     x_var = "year",
     facet_var = "technology",
     linecolor = "run_id",
-    y_in_percent=TRUE) {
-
-
+    y_in_percent = TRUE) {
   linecolor <- dplyr::intersect(colnames(trajectories_data), linecolor)
 
   data_trisk_line_plot <- prepare_for_trisk_line_plot(
@@ -31,7 +29,7 @@ plot_multi_trajectories <- function(
     x_var = x_var,
     facet_var = facet_var,
     linecolor = linecolor,
-    y_in_percent=y_in_percent
+    y_in_percent = y_in_percent
   )
 
   return(trisk_line_plot)
@@ -39,7 +37,7 @@ plot_multi_trajectories <- function(
 
 #' Prepare Data for Risk Trajectory Line Plot
 #'
-#' Prepares trajectory data for line plot visualization, calculating production percentages of the maximum value for "production_shock_scenario" only, 
+#' Prepares trajectory data for line plot visualization, calculating production percentages of the maximum value for "production_shock_scenario" only,
 #' and removing the last year of each "run_id" group.
 #'
 #' @param trajectories_data Dataset containing trajectory information across different scenarios.
@@ -72,7 +70,7 @@ prepare_for_trisk_line_plot <- function(trajectories_data, facet_var, linecolor)
 #' Draw Line Plot for Risk Trajectories
 #'
 #' Creates a line plot to depict the "production_shock_scenario" risk trajectories as a percentage of the maximum value, offering a visual comparison within business units and sectors.
-#' 
+#'
 #' @param data_trisk_line_plot Prepared data for plotting, with production percentages.
 #' @param x_var Time variable for the x-axis.
 #' @param facet_var Variable for faceting plots by business units.
@@ -86,8 +84,7 @@ draw_trisk_line_plot <- function(
     facet_var,
     linecolor,
     y_in_percent) {
-
-  if (y_in_percent){
+  if (y_in_percent) {
     trisk_line_plot <- ggplot2::ggplot(
       data_trisk_line_plot,
       ggplot2::aes(
@@ -96,7 +93,7 @@ draw_trisk_line_plot <- function(
         color = !!rlang::sym(linecolor)
       )
     ) +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+      ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 1)) +
       ggplot2::labs(
         y = "Percentage of today's production "
       )
@@ -109,25 +106,25 @@ draw_trisk_line_plot <- function(
         color = !!rlang::sym(linecolor)
       )
     ) +
-    ggplot2::scale_y_continuous(labels = function(x) scales::scientific(x)) +
-    ggplot2::labs(
-      y = "Production in raw unit"
+      ggplot2::scale_y_continuous(labels = function(x) scales::scientific(x)) +
+      ggplot2::labs(
+        y = "Production in raw unit"
       )
   }
 
   palette <- c(
-    "#1b324f",  
-    "#00c082",  
-    "#ff9623",  
-    "#574099",  
-    "#f2e06e",  
-    "#78c4d6",  
-    "#a63d57",  
-    "#FF1493",  
-    "#00CED1",  
-    "#9ACD32"   
+    "#1b324f",
+    "#00c082",
+    "#ff9623",
+    "#574099",
+    "#f2e06e",
+    "#78c4d6",
+    "#a63d57",
+    "#FF1493",
+    "#00CED1",
+    "#9ACD32"
   )
-    
+
   facets_colors <- palette[seq_along(unique(data_trisk_line_plot[[linecolor]]))]
   trisk_line_plot <- trisk_line_plot +
     ggplot2::geom_line() +
@@ -136,7 +133,7 @@ draw_trisk_line_plot <- function(
       linetype = "Scenario"
     ) +
     ggplot2::scale_color_manual(values = facets_colors) +
-    TRISK_PLOT_THEME_FUNC()+
+    TRISK_PLOT_THEME_FUNC() +
     ggplot2::theme(
       panel.background = ggplot2::element_blank(),
       panel.grid.major = ggplot2::element_blank(),

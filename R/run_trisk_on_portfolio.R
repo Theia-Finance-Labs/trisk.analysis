@@ -43,10 +43,10 @@ run_trisk_on_portfolio <- function(assets_data,
 
   matched_companies <- portfolio_data %>%
     dplyr::filter(!is.na(.data$company_id)) %>%
-    dplyr::distinct(.data$company_id, .data$country_iso2) 
+    dplyr::distinct(.data$company_id, .data$country_iso2)
 
   assets_data_filtered <- assets_data %>%
-    dplyr::inner_join(matched_companies, by=c("company_id", "country_iso2"))
+    dplyr::inner_join(matched_companies, by = c("company_id", "country_iso2"))
 
   cat("-- Start Trisk")
   st_results <- trisk.model::run_trisk_model(
@@ -156,9 +156,9 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   portfolio_with_npv <- portfolio_data |>
     dplyr::left_join(npv_results |> dplyr::select(-.data$company_name), by = c("company_id", "sector", "technology"))
 
-  # Merge portfolio to pd results 
+  # Merge portfolio to pd results
   full_joined_data <- portfolio_with_npv |>
-    dplyr::left_join(pd_results |> dplyr::select(-.data$company_name), by = c("run_id","company_id", "sector", "term"))
+    dplyr::left_join(pd_results |> dplyr::select(-.data$company_name), by = c("run_id", "company_id", "sector", "term"))
 
   return(full_joined_data)
 }

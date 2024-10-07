@@ -1,5 +1,3 @@
-# download_trisk_inputs.R
-
 #' Download TRISK input data files from a specified endpoint
 #'
 #' This function downloads TRISK input data files from a specified endpoint URL and saves them to a local folder.
@@ -8,7 +6,7 @@
 #'
 #' @param local_save_folder Where to download outputs locally
 #'
-#' @return No return value. The function downloads files and saves them to the specified local folder.
+#' @return TRUE if all files are downloaded successfully, FALSE otherwise.
 #' @export
 download_trisk_inputs <- function(local_save_folder) {
   # Ensure the local save folder exists, create it if it doesn't
@@ -24,17 +22,26 @@ download_trisk_inputs <- function(local_save_folder) {
     "ngfs_carbon_price.csv"
   )
 
-  # Loop through each file and download it
-  for (file in files) {
-    # Construct the full URL
-    file_url <- paste0(TRISK_DATA_INPUT_ENDPOINT, "/", TRISK_DATA_S3_PREFIX, "/", file)
+  # Try-catch block to handle errors
+  tryCatch(
+    {
+      # Loop through each file and download it
+      for (file in files) {
+        # Construct the full URL
+        file_url <- paste0(TRISK_DATA_INPUT_ENDPOINT, "/", TRISK_DATA_S3_PREFIX, "/", file)
 
-    # Construct the local file path
-    save_path <- file.path(local_save_folder, file)
+        # Construct the local file path
+        save_path <- file.path(local_save_folder, file)
 
-    # Download the file
-    utils::download.file(file_url, save_path, mode = "wb")
-  }
-
-  message("Download completed.")
+        # Attempt to download the file
+        utils::download.file(file_url, save_path, mode = "wb")
+      }
+      message("Download completed.")
+      return(TRUE)
+    },
+    error = function(e) {
+      message("Error occurred during download: ", conditionMessage(e))
+      return(FALSE)
+    }
+  )
 }
