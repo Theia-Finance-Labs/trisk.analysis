@@ -37,19 +37,23 @@ run_trisk_on_portfolio <- function(assets_data,
       company_id = as.character(.data$company_id)
     )
 
-  cat("-- Matching assets to portfolio")
-  portfolio_data <- portfolio_data %>%
-    check_portfolio_and_match_company_id(assets_data = assets_data)
+  if (!("company_id" %in% colnames(portfolio_data))){
+    cat("-- Fuzzy matching assets to portfolio")
+    portfolio_data <- portfolio_data %>%
+      check_portfolio_and_match_company_id(assets_data = assets_data)
 
-  matched_companies <- portfolio_data %>%
-    dplyr::filter(!is.na(.data$company_id)) %>%
-    dplyr::distinct(.data$company_id, .data$country_iso2)
+    portfolio_matched_companies <- portfolio_data %>%
+      dplyr::filter(!is.na(.data$company_id)) %>%
+      dplyr::distinct(.data$company_id, .data$country_iso2)
+  } else{
+    portfolio_matched_companies <- portfolio_data
+  }
 
   assets_data_filtered <- assets_data %>%
-    dplyr::inner_join(matched_companies, by = c("company_id", "country_iso2"))
+    dplyr::inner_join(portfolio_matched_companies, by = c("company_id", "country_iso2"))
 
   cat("-- Start Trisk")
-  st_results <- trisk.model::run_trisk_model(
+  st_results <- run_trisk_standard(
     assets_data = assets_data_filtered,
     scenarios_data = scenarios_data,
     financial_data = financial_data,
