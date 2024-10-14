@@ -17,6 +17,6 @@ prepare_for_trisk_line_plot(trajectories_data, facet_var, linecolor)
 A dataframe ready for plotting, with production percentages for "production_shock_scenario" for visualization, excluding the last year of each "run_id" group.
 }
 \description{
-Prepares trajectory data for line plot visualization, calculating production percentages of the maximum value for "production_shock_scenario" only, 
+Prepares trajectory data for line plot visualization, calculating production percentages of the maximum value for "production_shock_scenario" only,
 and removing the last year of each "run_id" group.
 }

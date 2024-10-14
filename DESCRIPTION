@@ -23,7 +23,8 @@ Imports:
     ggplot2,
     scales,
     stringdist,
-    tidyr
+    tidyr,
+    openxlsx
 Remotes:
     Theia-Finance-Labs/trisk.model
 Encoding: UTF-8
