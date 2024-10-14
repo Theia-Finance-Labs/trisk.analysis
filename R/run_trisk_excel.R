@@ -28,6 +28,7 @@ run_trisk_excel <- function(input_path, output_path, ...) {
 
     # Check if the number of rows exceeds Excel's limit
     if (nrow(data) > 1048576) {
+      print(paste("Too many rows in ", csv_file, "to save it as an excel."))
       # Rewrite as CSV with new name
       new_csv_file <- paste0(new_file_name, ".csv")
       readr::write_csv(data, file.path(results_folder, new_csv_file))
