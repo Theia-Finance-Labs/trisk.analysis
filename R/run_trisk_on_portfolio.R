@@ -50,6 +50,7 @@ run_trisk_on_portfolio <- function(assets_data,
   }
 
   assets_data_filtered <- assets_data %>%
+    dplyr::select(-c(.data$company_name)) %>%
     dplyr::inner_join(portfolio_matched_companies, by = c("company_id", "country_iso2"))
 
   cat("-- Start Trisk")
@@ -122,15 +123,26 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2
   companies_with_ids <- assets_data |>
     dplyr::distinct(.data$company_id, .data$company_name)
 
-  # Perform fuzzy matching
-  matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = "lv") |>
-    as.data.frame() |>
-    dplyr::mutate(portfolio_index = dplyr::row_number()) |>
-    tidyr::pivot_longer(cols = -.data$portfolio_index, names_to = "npv_index", values_to = "distance") |>
-    dplyr::group_by(.data$portfolio_index) |>
-    dplyr::slice_min(order_by = .data$distance, n = 1) |>
-    dplyr::ungroup() |>
-    dplyr::filter(.data$distance <= threshold * nchar(portfolio_data$company_name[.data$portfolio_index]))
+# Perform normalized Levenshtein distance fuzzy matching
+matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = "lv") |>
+  as.data.frame() |>
+  dplyr::mutate(portfolio_index = dplyr::row_number()) |>
+  tidyr::pivot_longer(cols = -.data$portfolio_index, names_to = "npv_index", values_to = "distance") |>
+  
+  # Normalize the distance by dividing by the max string length between the portfolio and company name
+  dplyr::mutate(
+    normalized_distance = .data$distance / 
+      pmax(nchar(portfolio_data$company_name[.data$portfolio_index]), 
+           nchar(companies_with_ids$company_name[as.integer(gsub("V", "", .data$npv_index))]))
+  ) |>
+  
+  # Group by the portfolio index and find the minimum normalized distance
+  dplyr::group_by(.data$portfolio_index) |>
+  dplyr::slice_min(order_by = .data$normalized_distance, n = 1) |>
+  dplyr::ungroup() |>
+  
+  # Filter by the normalized threshold
+  dplyr::filter(.data$normalized_distance <= threshold)
 
   # Join the matched company_ids to the portfolio data
   portfolio_data_with_ids <- portfolio_data |>
