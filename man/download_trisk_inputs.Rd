@@ -10,7 +10,7 @@ download_trisk_inputs(local_save_folder)
 \item{local_save_folder}{Where to download outputs locally}
 }
 \value{
-No return value. The function downloads files and saves them to the specified local folder.
+TRUE if all files are downloaded successfully, FALSE otherwise.
 }
 \description{
 This function downloads TRISK input data files from a specified endpoint URL and saves them to a local folder.
