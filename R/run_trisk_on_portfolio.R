@@ -56,6 +56,7 @@ run_trisk_on_portfolio <- function(assets_data,
     } else {
       cat("-- Fuzzy matching assets to portfolio")
       portfolio_data <- portfolio_data  |>
+        dplyr::select(-c(.data$company_id))|> 
         fuzzy_match_company_ids(
           assets_data = assets_data,
           threshold = threshold,
@@ -199,24 +200,24 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   )
 
 
-# Check if any company_name is NA
-if (any(is.na(portfolio_data$company_name))) {
-  
-  # Aggregate facts for country only
-  analysis_data <- analysis_data |> 
-    aggregate_facts_trisk(group_cols = c("country_iso2", "sector", "technology", "term"))
-  
-  # Define the join keys
-  join_keys <- c("country_iso2", "sector", "technology", "term")
-  
-  # Merge the portfolio data
-  full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
-} else {
-  # Define the join keys including run_id and company_id
-  join_keys <- c("run_id", "company_id", "country_iso2", "sector", "technology", "term")
-  
-  # Merge the portfolio data
-  full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
+  # Check if any company_name is NA
+  if (any(is.na(portfolio_data$company_name)) & any(is.na(portfolio_data$company_id))) {
+    
+    # Aggregate facts for country only
+    analysis_data <- analysis_data |> 
+      aggregate_facts_trisk(group_cols = c("country_iso2", "sector", "technology", "term"))
+    
+    # Define the join keys
+    join_keys <- c("country_iso2", "sector", "technology", "term")
+    
+    # Merge the portfolio data
+    full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
+  } else {
+    # Define the join keys including run_id and company_id
+    join_keys <- c("company_id", "country_iso2", "sector", "technology", "term")
+    
+    # Merge the portfolio data
+    full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
 }
 
 
