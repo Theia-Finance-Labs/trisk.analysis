@@ -13,7 +13,6 @@ pipeline_crispy_expected_loss_plot <- function(
     facet_var = "sector",
     granularity = c("sector")) {
   analysis_data <- analysis_data |>
-    dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
     compute_analysis_metrics()
 

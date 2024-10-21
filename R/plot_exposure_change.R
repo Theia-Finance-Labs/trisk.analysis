@@ -19,7 +19,6 @@ pipeline_crispy_exposure_change_plot <- function(
     facet_var = NULL,
     granularity = c("sector", "technology")) {
   analysis_data <- analysis_data |>
-    dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
     compute_analysis_metrics()
 

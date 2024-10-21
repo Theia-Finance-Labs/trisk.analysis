@@ -13,7 +13,6 @@ pipeline_crispy_pd_term_plot <- function(
     facet_var = "sector",
     granularity = c("sector", "term")) {
   analysis_data <- analysis_data |>
-    dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
     compute_analysis_metrics()
 

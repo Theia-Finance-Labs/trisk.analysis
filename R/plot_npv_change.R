@@ -15,7 +15,6 @@ pipeline_crispy_npv_change_plot <- function(
     y_var = "crispy_perc_value_change",
     granularity = c("sector", "technology")) {
   analysis_data <- analysis_data |>
-    dplyr::filter(!is.na(.data$company_id)) |>
     aggregate_facts(group_cols = granularity) |>
     compute_analysis_metrics()
 
