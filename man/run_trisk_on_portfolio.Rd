@@ -12,6 +12,8 @@ run_trisk_on_portfolio(
   portfolio_data,
   baseline_scenario,
   target_scenario,
+  threshold = 0.5,
+  method = "lcs",
   ...
 )
 }
@@ -29,6 +31,10 @@ run_trisk_on_portfolio(
 \item{baseline_scenario}{String specifying the name of the baseline scenario.}
 
 \item{target_scenario}{String specifying the name of the shock scenario.}
+
+\item{threshold}{max distance for validating a fuzzy match}
+
+\item{method}{String specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.}
 
 \item{...}{Additional arguments passed to \code{\link[trisk.model]{run_trisk_model}}.}
 }

@@ -12,6 +12,8 @@
 #' @param portfolio_data Data frame containing portfolio information.
 #' @param baseline_scenario String specifying the name of the baseline scenario.
 #' @param target_scenario String specifying the name of the shock scenario.
+#' @param threshold max distance for validating a fuzzy match
+#' @param method String specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
 #' @param ... Additional arguments passed to \code{\link[trisk.model]{run_trisk_model}}.
 #'
 #' @return A data frame containing the processed and analyzed portfolio data.
@@ -24,6 +26,8 @@ run_trisk_on_portfolio <- function(assets_data,
                                    portfolio_data,
                                    baseline_scenario,
                                    target_scenario,
+                                   threshold = 0.5,
+                                    method="lcs",
                                    ...) {
   # clean coltypes
 
@@ -40,7 +44,7 @@ run_trisk_on_portfolio <- function(assets_data,
   if (!("company_id" %in% colnames(portfolio_data))) {
     cat("-- Fuzzy matching assets to portfolio")
     portfolio_data <- portfolio_data %>%
-      check_portfolio_and_match_company_id(assets_data = assets_data)
+      check_portfolio_and_match_company_id(assets_data = assets_data, threshold=threshold, method=method)
 
   }
   
@@ -113,16 +117,17 @@ check_portfolio_and_match_company_id <- function(portfolio_data, assets_data) {
 #' @param portfolio_data Data frame containing portfolio information.
 #' @param assets_data Data frame containing asset information with company IDs.
 #' @param threshold Numeric value for the matching threshold. Default is 0.2.
+#' @param method tring specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
 #'
 #' @return A data frame of portfolio data with fuzzy-matched company IDs.
 #' @export
 #'
-fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.2) {
+fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5, method="lcs") {
   companies_with_ids <- assets_data |>
     dplyr::distinct(.data$company_id, .data$company_name)
 
   # Perform normalized Levenshtein distance fuzzy matching
-  matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = "lv") |>
+  matched_companies <- stringdist::stringdistmatrix(portfolio_data$company_name, companies_with_ids$company_name, method = method) |>
     as.data.frame() |>
     dplyr::mutate(portfolio_index = dplyr::row_number()) |>
     tidyr::pivot_longer(cols = -.data$portfolio_index, names_to = "npv_index", values_to = "distance") |>
