@@ -66,7 +66,6 @@ run_trisk_on_portfolio <- function(assets_data,
       portfolio_matched_companies <- portfolio_data |>
         dplyr::filter(!is.na(.data$company_id)) |>
         dplyr::distinct(.data$company_id, .data$country_iso2)
-        
     }
   } else {
     portfolio_matched_companies <- portfolio_data |>

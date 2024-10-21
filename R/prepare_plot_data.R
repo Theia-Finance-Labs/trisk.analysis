@@ -44,10 +44,15 @@ aggregate_facts_portfolio <- function(analysis_data, group_cols) {
 #' @param group_cols group_cols
 #'
 aggregate_facts <- function(analysis_data, group_cols) {
-  analysis_data <- analysis_data |>
-    aggregate_facts_trisk(group_cols=group_cols) |>
+  trisk_facts <- analysis_data |>
+    aggregate_facts_trisk(group_cols=group_cols) 
+  portfolio_facts <- analysis_data |>
     aggregate_facts_portfolio(group_cols=group_cols) 
-  return(analysis_data)
+  
+  analysis_data_agg <- trisk_facts |>
+    dplyr::inner_join(portfolio_facts)
+
+  return(analysis_data_agg)
 }
 
 #' Aggregate numerical trajectories columns
