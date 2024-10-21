@@ -31,28 +31,47 @@ run_trisk_on_portfolio <- function(assets_data,
                                    ...) {
   # clean coltypes
 
-  assets_data <- assets_data %>%
+  assets_data <- assets_data |>
     dplyr::mutate(
       asset_id = as.character(.data$asset_id),
       company_id = as.character(.data$company_id)
     )
-  financial_data <- financial_data %>%
+  financial_data <- financial_data |>
     dplyr::mutate(
       company_id = as.character(.data$company_id)
     )
 
-  if (!("company_id" %in% colnames(portfolio_data))) {
+  if (! any(is.na(portfolio_data$company_id))) {
+    if (!any(is.na(portfolio_data$company_name))){
     cat("-- Fuzzy matching assets to portfolio")
-    portfolio_data <- portfolio_data %>%
-      check_portfolio_and_match_company_id(assets_data = assets_data, threshold=threshold, method=method)
+    portfolio_data <- portfolio_data |>
+      check_portfolio(assets_data = assets_data) |>
+      fuzzy_match_company_ids(
+        assets_data = assets_data, 
+        threshold=threshold, 
+        method=method
+        )
 
+    portfolio_matched_companies <- portfolio_data |>
+        dplyr::filter(!is.na(.data$company_id)) |>
+        dplyr::distinct(.data$company_id, .data$country_iso2)
+        }
+      else{
+    countries_to_use <- portfolio_data |>
+      dplyr::distinct(.data$country_iso2)
+    portfolio_matched_companies <- assets_data |> 
+      dplyr::inner_join(countries_to_use, by = c("country_iso2")) |> 
+      dplyr::distinct(.data$company_id, .data$country_iso2)
+      }
+
+  } else {
+      portfolio_matched_companies  <- portfolio_data |>
+        dplyr::filter(!is.na(.data$company_id)) |>
+        dplyr::distinct(.data$company_id, .data$country_iso2)
   }
   
-  portfolio_matched_companies <- portfolio_data %>%
-      dplyr::filter(!is.na(.data$company_id)) %>%
-      dplyr::distinct(.data$company_id, .data$country_iso2)
-      
-  assets_data_filtered <- assets_data %>%
+
+  assets_data_filtered <- assets_data |>
     dplyr::inner_join(portfolio_matched_companies, by = c("company_id", "country_iso2"))
 
   cat("-- Start Trisk")
@@ -66,17 +85,17 @@ run_trisk_on_portfolio <- function(assets_data,
     ...
   )
 
-  npv_results <- st_results$npv_results %>%
+  npv_results <- st_results$npv_results |>
     dplyr::mutate(
       asset_id = as.character(.data$asset_id),
       company_id = as.character(.data$company_id)
     )
-  pd_results <- st_results$pd_results %>%
+  pd_results <- st_results$pd_results |>
     dplyr::mutate(
       company_id = as.character(.data$company_id)
     )
 
-  analysis_data <- portfolio_data %>%
+  analysis_data <- portfolio_data |>
     join_trisk_outputs_to_portfolio(npv_results = npv_results, pd_results = pd_results)
 
   return(analysis_data)
@@ -93,17 +112,15 @@ run_trisk_on_portfolio <- function(assets_data,
 #'
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
-check_portfolio_and_match_company_id <- function(portfolio_data, assets_data) {
+check_portfolio <- function(portfolio_data, assets_data) {
   # List of required columns
-  required_portfolio_columns <- c("company_name", "country_iso2", "exposure_value_usd", "term", "loss_given_default")
+  required_portfolio_columns <- c("country_iso2", "exposure_value_usd", "term", "loss_given_default")
 
   # Check if all required columns are present
   if (!all(required_portfolio_columns %in% colnames(portfolio_data))) {
     missing_columns <- setdiff(required_portfolio_columns, colnames(portfolio_data))
     stop(paste("Error: Missing columns in portfolio_data:", paste(missing_columns, collapse = ", ")))
   }
-  portfolio_data <- portfolio_data |>
-    fuzzy_match_company_ids(assets_data = assets_data)
 
   return(portfolio_data)
 }
