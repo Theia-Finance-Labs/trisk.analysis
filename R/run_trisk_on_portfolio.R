@@ -27,7 +27,7 @@ run_trisk_on_portfolio <- function(assets_data,
                                    baseline_scenario,
                                    target_scenario,
                                    threshold = 0.5,
-                                    method="lcs",
+                                   method = "lcs",
                                    ...) {
   # clean coltypes
 
@@ -41,35 +41,39 @@ run_trisk_on_portfolio <- function(assets_data,
       company_id = as.character(.data$company_id)
     )
 
-  if (! any(is.na(portfolio_data$company_id))) {
-    if (!any(is.na(portfolio_data$company_name))){
-    cat("-- Fuzzy matching assets to portfolio")
-    portfolio_data <- portfolio_data |>
-      check_portfolio(assets_data = assets_data) |>
-      fuzzy_match_company_ids(
-        assets_data = assets_data, 
-        threshold=threshold, 
-        method=method
+
+  check_portfolio(portfolio_data )
+          
+  if (any(is.na(portfolio_data$company_id))) {
+    if (any(is.na(portfolio_data$company_name))) {
+
+      countries_to_use <- portfolio_data |>
+        dplyr::distinct(.data$country_iso2)
+      portfolio_matched_companies <- assets_data |>
+        dplyr::inner_join(countries_to_use, by = c("country_iso2")) |>
+        dplyr::distinct(.data$company_id, .data$country_iso2)
+
+    } else {
+      cat("-- Fuzzy matching assets to portfolio")
+      portfolio_data <- portfolio_data  |>
+        fuzzy_match_company_ids(
+          assets_data = assets_data,
+          threshold = threshold,
+          method = method
         )
 
-    portfolio_matched_companies <- portfolio_data |>
+      portfolio_matched_companies <- portfolio_data |>
         dplyr::filter(!is.na(.data$company_id)) |>
         dplyr::distinct(.data$company_id, .data$country_iso2)
-        }
-      else{
-    countries_to_use <- portfolio_data |>
-      dplyr::distinct(.data$country_iso2)
-    portfolio_matched_companies <- assets_data |> 
-      dplyr::inner_join(countries_to_use, by = c("country_iso2")) |> 
-      dplyr::distinct(.data$company_id, .data$country_iso2)
-      }
-
+        
+    }
   } else {
-      portfolio_matched_companies  <- portfolio_data |>
-        dplyr::filter(!is.na(.data$company_id)) |>
-        dplyr::distinct(.data$company_id, .data$country_iso2)
+    portfolio_matched_companies <- portfolio_data |>
+      dplyr::filter(!is.na(.data$company_id)) |>
+      dplyr::distinct(.data$company_id, .data$country_iso2)
   }
-  
+
+
 
   assets_data_filtered <- assets_data |>
     dplyr::inner_join(portfolio_matched_companies, by = c("company_id", "country_iso2"))
@@ -112,9 +116,9 @@ run_trisk_on_portfolio <- function(assets_data,
 #'
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
-check_portfolio <- function(portfolio_data, assets_data) {
+check_portfolio <- function(portfolio_data) {
   # List of required columns
-  required_portfolio_columns <- c("country_iso2", "exposure_value_usd", "term", "loss_given_default")
+  required_portfolio_columns <- c("company_id", "company_name","country_iso2", "exposure_value_usd", "term", "loss_given_default")
 
   # Check if all required columns are present
   if (!all(required_portfolio_columns %in% colnames(portfolio_data))) {
@@ -139,7 +143,7 @@ check_portfolio <- function(portfolio_data, assets_data) {
 #' @return A data frame of portfolio data with fuzzy-matched company IDs.
 #' @export
 #'
-fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5, method="lcs") {
+fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5, method = "lcs") {
   companies_with_ids <- assets_data |>
     dplyr::distinct(.data$company_id, .data$company_name)
 
@@ -187,13 +191,61 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
 #' @export
 #'
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
-  # Merge with npv results
-  portfolio_with_npv <- portfolio_data |>
-    dplyr::left_join(npv_results |> dplyr::select(-.data$company_name), by = c("company_id", "sector", "technology"))
 
-  # Merge portfolio to pd results
-  full_joined_data <- portfolio_with_npv |>
-    dplyr::left_join(pd_results |> dplyr::select(-.data$company_name), by = c("run_id", "company_id", "sector", "term"))
+  analysis_data <- dplyr::inner_join(
+    npv_results |> dplyr::select(-.data$company_name),
+    pd_results |> dplyr::select(-.data$company_name),
+    by = c("run_id", "company_id", "sector")
+  )
+
+
+# Check if any company_name is NA
+if (any(is.na(portfolio_data$company_name))) {
+  
+  # Aggregate facts for country only
+  analysis_data <- analysis_data |> 
+    aggregate_facts_trisk(group_cols = c("country_iso2", "sector", "technology", "term"))
+  
+  # Define the join keys
+  join_keys <- c("country_iso2", "sector", "technology", "term")
+  
+  # Merge the portfolio data
+  full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
+} else {
+  # Define the join keys including run_id and company_id
+  join_keys <- c("run_id", "company_id", "country_iso2", "sector", "technology", "term")
+  
+  # Merge the portfolio data
+  full_joined_data <- merge_portfolio(portfolio_data, analysis_data, join_keys)
+}
+
 
   return(full_joined_data)
+}
+
+
+# Helper function to merge portfolio data based on the presence of term
+merge_portfolio <- function(portfolio, analysis, join_keys) {
+  portfolio_with_term <- portfolio |> dplyr::filter(!is.na(term))
+  portfolio_without_term <- portfolio |> dplyr::filter(is.na(term))
+  
+  # Merge portfolio_with_term including the term column
+  merged_with_term <- portfolio_with_term |>
+    dplyr::left_join(analysis, by = join_keys)
+  
+  # Filter analysis where term is 1 and drop the term column for the merge
+  analysis_filtered <- analysis |>
+    dplyr::filter(term == 1) |>
+    dplyr::select(-term) |>
+    dplyr::mutate(
+      pd_baseline=NA_real_,
+      pd_shock=NA_real_
+    )
+  
+  # Merge portfolio_without_term without the term column
+  merged_without_term <- portfolio_without_term |>
+    dplyr::left_join(analysis_filtered, by = setdiff(join_keys, "term"))
+  
+  # Combine both merged datasets
+  dplyr::bind_rows(merged_with_term, merged_without_term)
 }

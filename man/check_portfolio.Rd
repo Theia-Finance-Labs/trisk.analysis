@@ -4,7 +4,7 @@
 \alias{check_portfolio}
 \title{Check Portfolio and Match Company IDs}
 \usage{
-check_portfolio(portfolio_data, assets_data)
+check_portfolio(portfolio_data)
 }
 \arguments{
 \item{portfolio_data}{Data frame containing portfolio information.}
