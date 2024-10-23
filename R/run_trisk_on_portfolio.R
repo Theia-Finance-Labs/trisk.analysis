@@ -112,7 +112,6 @@ run_trisk_on_portfolio <- function(assets_data,
 #' performs a fuzzy match to assign company IDs based on company names.
 #'
 #' @param portfolio_data Data frame containing portfolio information.
-#' @param assets_data Data frame containing asset information with company IDs.
 #'
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
@@ -226,8 +225,8 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
 
 # Helper function to merge portfolio data based on the presence of term
 merge_portfolio <- function(portfolio, analysis, join_keys) {
-  portfolio_with_term <- portfolio |> dplyr::filter(!is.na(term))
-  portfolio_without_term <- portfolio |> dplyr::filter(is.na(term))
+  portfolio_with_term <- portfolio |> dplyr::filter(!is.na(.data$term))
+  portfolio_without_term <- portfolio |> dplyr::filter(is.na(.data$term))
   
   # Merge portfolio_with_term including the term column
   merged_with_term <- portfolio_with_term |>
@@ -235,8 +234,8 @@ merge_portfolio <- function(portfolio, analysis, join_keys) {
   
   # Filter analysis where term is 1 and drop the term column for the merge
   analysis_filtered <- analysis |>
-    dplyr::filter(term == 1) |>
-    dplyr::select(-term) |>
+    dplyr::filter(.data$term == 1) |>
+    dplyr::select(-.data$term) |>
     dplyr::mutate(
       pd_baseline=NA_real_,
       pd_shock=NA_real_

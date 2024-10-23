@@ -8,8 +8,6 @@ check_portfolio(portfolio_data)
 }
 \arguments{
 \item{portfolio_data}{Data frame containing portfolio information.}
-
-\item{assets_data}{Data frame containing asset information with company IDs.}
 }
 \value{
 A data frame of portfolio data with matched company IDs.
