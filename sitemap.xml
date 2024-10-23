@@ -8,8 +8,10 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/aggregate_facts.html</loc></url>
+<url><loc>/reference/aggregate_facts_portfolio.html</loc></url>
+<url><loc>/reference/aggregate_facts_trisk.html</loc></url>
 <url><loc>/reference/aggregate_trajectories_facts.html</loc></url>
-<url><loc>/reference/check_portfolio_and_match_company_id.html</loc></url>
+<url><loc>/reference/check_portfolio.html</loc></url>
 <url><loc>/reference/compute_analysis_metrics.html</loc></url>
 <url><loc>/reference/download_trisk_inputs.html</loc></url>
 <url><loc>/reference/draw_crispy_npv_change_plot.html</loc></url>

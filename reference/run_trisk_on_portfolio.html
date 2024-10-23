@@ -58,6 +58,8 @@ for generating plots.</p>
 <span>  <span class="va">portfolio_data</span>,</span>
 <span>  <span class="va">baseline_scenario</span>,</span>
 <span>  <span class="va">target_scenario</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"lcs"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,6 +94,14 @@ for generating plots.</p>
 
 <dt id="arg-target-scenario">target_scenario<a class="anchor" aria-label="anchor" href="#arg-target-scenario"></a></dt>
 <dd><p>String specifying the name of the shock scenario.</p></dd>
+
+
+<dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
+<dd><p>max distance for validating a fuzzy match</p></dd>
+
+
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>String specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -107,6 +107,9 @@ available in the portfolio.</p>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 company_name
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
@@ -131,6 +134,9 @@ loss_given_default
 <tbody>
 <tr>
 <td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
 Company 1
 </td>
 <td style="text-align:left;">
@@ -153,6 +159,9 @@ DE
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+NA
+</td>
 <td style="text-align:left;">
 Comany 2
 </td>
@@ -177,6 +186,9 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
 Corony 3
 </td>
 <td style="text-align:left;">
@@ -199,6 +211,9 @@ DE
 </td>
 </tr>
 <tr>
+<td style="text-align:left;">
+NA
+</td>
 <td style="text-align:left;">
 Compan 4
 </td>
@@ -332,7 +347,7 @@ DE
 101
 </td>
 <td style="text-align:left;">
-e8ea217d-3587-479f-ade2-8db11e424670
+509d40ef-30de-4710-8696-47f7071c442c
 </td>
 <td style="text-align:left;">
 101
@@ -382,7 +397,7 @@ DE
 102
 </td>
 <td style="text-align:left;">
-e8ea217d-3587-479f-ade2-8db11e424670
+509d40ef-30de-4710-8696-47f7071c442c
 </td>
 <td style="text-align:left;">
 102
@@ -482,19 +497,19 @@ DE
 104
 </td>
 <td style="text-align:left;">
-e8ea217d-3587-479f-ade2-8db11e424670
+NA
 </td>
 <td style="text-align:left;">
-104
+NA
 </td>
 <td style="text-align:left;">
-Company 4
+NA
 </td>
 <td style="text-align:right;">
-497029538.6
+NA
 </td>
 <td style="text-align:right;">
-789241252.58
+NA
 </td>
 <td style="text-align:right;">
 NA
@@ -516,22 +531,30 @@ NA
 </h4>
 <p>Plot the average percentage of NPV change per technology</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_col()`).</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>Plot the resulting portfolio’s exposure change</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_tile()`).</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-9-1.png" width="700">
 ### Bonds&amp;Loans risk</p>
 <p>Plot the average PDs at baseline and shock</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(sector, term)`</span></span>
+<span><span class="co">#&gt; Warning: Removed 4 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_bar()`).</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p>Plot the resulting portfolio’s expected loss</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_expected_loss_plot.html">pipeline_crispy_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_expected_loss_plot.html">pipeline_crispy_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(sector)`</span></span></code></pre></div>
 <p><img src="apply-stress-test-on-portfolio_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 </div>
