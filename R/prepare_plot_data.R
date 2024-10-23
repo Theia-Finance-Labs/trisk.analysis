@@ -5,7 +5,7 @@
 #' @param analysis_data analysis_data
 #' @param group_cols group_cols
 #'
-aggregate_facts <- function(analysis_data, group_cols) {
+aggregate_facts_trisk <- function(analysis_data, group_cols) {
   analysis_data <- analysis_data |>
     dplyr::group_by_at(group_cols) |>
     dplyr::summarise(
@@ -13,6 +13,22 @@ aggregate_facts <- function(analysis_data, group_cols) {
       net_present_value_shock = sum(.data$net_present_value_shock, na.rm = T),
       pd_baseline = stats::median(.data$pd_baseline, na.rm = T),
       pd_shock = stats::median(.data$pd_shock, na.rm = T),
+      .groups = "drop"
+    )
+  return(analysis_data)
+}
+
+#' Title
+#'
+#' TODO FIND CLOSEST COMPANY IF group_cols=NULL
+#'
+#' @param analysis_data analysis_data
+#' @param group_cols group_cols
+#'
+aggregate_facts_portfolio <- function(analysis_data, group_cols) {
+  analysis_data <- analysis_data |>
+    dplyr::group_by_at(group_cols) |>
+    dplyr::summarise(
       exposure_value_usd = sum(.data$exposure_value_usd),
       loss_given_default = stats::median(.data$loss_given_default, na.rm = T),
       .groups = "drop"
@@ -20,8 +36,24 @@ aggregate_facts <- function(analysis_data, group_cols) {
   return(analysis_data)
 }
 
+#' Title
+#'
+#' TODO FIND CLOSEST COMPANY IF group_cols=NULL
+#'
+#' @param analysis_data analysis_data
+#' @param group_cols group_cols
+#'
+aggregate_facts <- function(analysis_data, group_cols) {
+  trisk_facts <- analysis_data |>
+    aggregate_facts_trisk(group_cols=group_cols) 
+  portfolio_facts <- analysis_data |>
+    aggregate_facts_portfolio(group_cols=group_cols) 
+  
+  analysis_data_agg <- trisk_facts |>
+    dplyr::inner_join(portfolio_facts)
 
-
+  return(analysis_data_agg)
+}
 
 #' Aggregate numerical trajectories columns
 #'
