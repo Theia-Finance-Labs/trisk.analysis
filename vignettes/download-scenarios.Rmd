@@ -1,8 +1,8 @@
 ---
-title: "input-data-summary"
+title: "download-scenarios"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{input-data-summary}
+  %\VignetteIndexEntry{download-scenarios}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(trisk.analysis)
-library(trisk.model)
 library(dplyr)
 ```
 
@@ -24,14 +23,25 @@ library(dplyr)
 # Download the data
 
 
-Set the download path
+
+
+Data will be downloaded from this endpoint:
+```{r}
+print(
+paste0(trisk.analysis:::TRISK_DATA_INPUT_ENDPOINT, "/", trisk.analysis:::TRISK_DATA_S3_PREFIX)
+)
+```
+
+
+Choose the folder where to download the data
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
 ```
 
-Download the data
+Download the data using the provided function
 ```{r}
 download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+print(download_success)
 ```
 
 # Descriptive statistics
@@ -58,38 +68,8 @@ if (download_success) {
 ```
 
 
-# Example Run
-
-
-Load downloaded data
 ```{r}
 if (download_success) {
-  assets <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
-  scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
-  financial_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
-  carbon_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
-}
-```
-
-
-Run Trisk on this data
-
-```{r}
-if (download_success) {
-  st_results <- run_trisk_model(
-    assets_data = assets,
-    scenarios_data = scenarios,
-    financial_data = financial_data,
-    carbon_data = carbon_data,
-    baseline_scenario = "NGFS2023GCAM_CP",
-    target_scenario = "NGFS2023GCAM_NZ2050",
-    scenario_geography = "Global"
-  )
-}
-```
-
-```{r}
-if (download_success) {
-  print(names(st_results))
+  available_parameters <- get_available_parameters(scenarios)
 }
 ```

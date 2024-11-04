@@ -198,7 +198,7 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   )
 
 
-  # Check if any company_name is NA
+  # Check if both company_name and country_name are NA
   if (any(is.na(portfolio_data$company_name)) & any(is.na(portfolio_data$company_id))) {
     
     # Aggregate facts for country only
