@@ -52,7 +52,7 @@ dir_tree(trisk_inputs_folder)
 
 # Descriptive statistics
 
-Load the 
+Load the downloaded scenario data
 ```{r}
 if (download_success) {
   scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
@@ -129,12 +129,12 @@ if (download_success) {
   financial_features_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
   ngfs_carbon_price_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
 }
-
 ```
 
 ```{r}
 baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
+scenario_geography <- "OecdAndEu" # CHANGE GEOGRAPHY
 ```
 
 ```{r}
@@ -146,7 +146,7 @@ if (download_success) {
     carbon_data = ngfs_carbon_price_data,
     baseline_scenario = baseline_scenario,
     target_scenario = target_scenario,
-    scenario_geography = "OecdAndEu" # CHANGE GEOGRAPHY
+    scenario_geography = scenario_geography
   )
 }
 ```
@@ -157,5 +157,39 @@ if (download_success) {
   knitr::kable(st_results$npv_results) %>%
     kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
     kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+
+# Run Trisk with carbon tax
+
+
+```{r}
+if (download_success) {
+  available_carbon_taxes <- ngfs_carbon_price_data %>%
+    distinct(model)
+  print(available_carbon_taxes)
+}
+```
+
+It is then possible to choose a carbon tax and a passthrough, to adjust its impact on NPV:
+```{r}
+carbon_price_model <- "GCAM 5.3+ NGFS"
+market_passthrough <- 0.3
+```
+
+
+```{r}
+if (download_success) {
+  st_results <- run_trisk_model(
+    assets_data = assets_data,
+    scenarios_data = scenarios_data,
+    financial_data = financial_features_data,
+    carbon_data = ngfs_carbon_price_data,
+    baseline_scenario = baseline_scenario,
+    target_scenario = target_scenario,
+    scenario_geography = scenario_geography,
+    carbon_price_model=carbon_price_model,
+    market_passthrough=market_passthrough
+  )
 }
 ```

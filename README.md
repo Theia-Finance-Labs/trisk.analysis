@@ -41,7 +41,7 @@ You can install this package directly from GitHub using the `pak` package in R.
 
 ### Input and output dataframes columns
 
-There are 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices), and 3 output datasets (npv_results, pd_results, company_trajectories). The [Inputs and Outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html) describes their columns structure with a simple Trisk run.
+There are 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices), and 3 output datasets (npv_results, pd_results, company_trajectories). The [Inputs and Outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html) describes their columns structure with a simple Trisk run, and the definitions of Trisk input parameters.
 
 ### Scenarios data
 
