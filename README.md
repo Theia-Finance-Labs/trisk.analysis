@@ -51,6 +51,8 @@ We provide consolidated scenarios data from publicly available sources. The [Dow
 
 ## Analyses
 
+An online version of those analyses is available on our apps portal https://apps.1in1000.com
+
 ### Portfolio analysis
 A wrapper function called `run_trisk_on_portfolio()` can be used to run Trisk on a subset of the input assets dataframe, based on companies that can be matched between the two. Along with PDs and NPVs computed in the model the function also returns the expected loss, computed using the loss given default provided in the input portfolio. Plots to visualize the results are included in the package.
 Example showcased in the [Portfolio Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/portfolio-analysis.html) vignette.
