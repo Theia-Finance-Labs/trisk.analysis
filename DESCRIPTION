@@ -1,7 +1,7 @@
 Type: Package
 Package: trisk.analysis
 Title: Trisk Utility Functions
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: c(  
     person(given = "Bertrand",
            family = "Gallice",
