@@ -2,7 +2,8 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  apply-stress-test-on-portfolio: apply-stress-test-on-portfolio.html
-  input-data-summary: input-data-summary.html
-  run-country-sensitivity-analysis: run-country-sensitivity-analysis.html
-last_built: 2024-10-23T06:35Z
+  download-scenarios: download-scenarios.html
+  inputs-and-outputs: inputs-and-outputs.html
+  portfolio-analysis: portfolio-analysis.html
+  sensitivity-analysis: sensitivity-analysis.html
+last_built: 2024-11-05T10:21Z
