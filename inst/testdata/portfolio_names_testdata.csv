@@ -2,4 +2,4 @@ company_id,company_name,sector,technology,country_iso2,exposure_value_usd,term,l
 NA,Company 1,Oil&Gas,Gas,DE,1839267,3,0.7
 NA,Comany 2,Coal,Coal,DE,6227364,1,0.7
 NA,Corony 3,Oil&Gas,Gas,DE,3728364,5,0.5
-NA,Compan 4,Power,RenewablesCap,DE,9263702,7,0.4
+NA,Compan 4,Power,RenewablesCap,DE,9263702,4,0.4

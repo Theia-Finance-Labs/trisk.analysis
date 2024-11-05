@@ -1,8 +1,8 @@
 ---
-title: "apply-stress-test-on-portfolio"
+title: "portfolio-analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{apply-stress-test-on-portfolio}
+  %\VignetteIndexEntry{portfolio-analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,13 +16,13 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(trisk.analysis)
-library(trisk.model)
 library(magrittr)
 ```
 
-# Obtain outputs 
+# Restrict the analysis to a portfolio
 
-## Load the test data
+## Generate outputs
+### Load the test data
 
 Load the internal datasets
 
@@ -33,33 +33,56 @@ financial_features_testdata <- read.csv(system.file("testdata", "financial_featu
 ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
 ```
 
-Define the scenarios to use
-
-```{r}
-baseline_scenario <- "NGFS2023GCAM_CP"
-target_scenario <- "NGFS2023GCAM_NZ2050"
-scenario_geography <- "Global"
-```
-
-## Generate outputs
-Run the model with the provided data, after filtering assets on those available in the portfolio.
 
 ### Prepare portfolio
+
+There are 3 possible portfolio input structures :
+
 ```{r}
-portfolio_testdata <- read.csv(system.file("testdata", "portfolio_testdata.csv", package = "trisk.analysis"))
+portfolio_countries_testdata <- read.csv(system.file("testdata", "portfolio_countries_testdata.csv", package = "trisk.analysis"))
+portfolio_ids_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
+portfolio_names_testdata <- read.csv(system.file("testdata", "portfolio_names_testdata.csv", package = "trisk.analysis"))
 ```
 
-Sample portfolio content (columns structure to reproduce):
-
-```{r}
-knitr::kable(portfolio_testdata) %>%
+Leaving the company_id and company_name columns empty, Trisk results will be aggregated per country and technology, and matched to the portfolio based on those columns.
+```{r echo=FALSE}
+knitr::kable(portfolio_countries_testdata) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
+  kableExtra::scroll_box(width = "200%", height = "400px")
 ```
+
+Filling in the company_name column, will generate 
+```{r echo=FALSE}
+knitr::kable(portfolio_names_testdata) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "200%", height = "400px")
+```
+
+
+```{r echo=FALSE}
+knitr::kable(portfolio_ids_testdata) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "200%", height = "400px")
+```
+
+Using the company ids is recommended to match the portfolio :
+```{r}
+portfolio_testdata <- portfolio_ids_testdata
+```
+
 
 ### Run trisk 
 
+Run the model with the provided data, after filtering assets on those available in the portfolio.
 
+Define the scenarios to use:
+```{r}
+baseline_scenario <- "NGFS2023GCAM_CP"
+target_scenario <- "NGFS2023GCAM_NZ2050"
+scenario_geography <- "OecdAndEu"
+```
+
+The function `run_trisk_on_portfolio()` handles the filtering on portfolio and then runs Trisk:
 ```{r}
 analysis_data <- run_trisk_on_portfolio(
   assets_data = assets_testdata,
@@ -75,7 +98,7 @@ analysis_data <- run_trisk_on_portfolio(
 
 Result dataframe : 
 
-```{r}
+```{r echo=FALSE}
 knitr::kable(analysis_data) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")

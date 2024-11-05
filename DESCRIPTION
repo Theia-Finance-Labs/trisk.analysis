@@ -1,17 +1,16 @@
 Type: Package
 Package: trisk.analysis
 Title: Trisk Utility Functions
-Version: 1.2.0
+Version: 1.2.2
 Authors@R: c(  
     person(given = "Bertrand",
            family = "Gallice",
            role = c("aut", "cre"),
            email = "bertrand@2degrees-investing.org"),           
-    person(given = "Theia Finance Labs",
+    person(given = "1in1000",
            role = c("cph", "fnd"),
            email = "1in1000@theiafinance.org"))
-Description: More about what it does (maybe more than one line) Use four
-    spaces when indenting paragraphs within the Description.
+Description: Wrapper and plots functions to analysis Trisk outputs.
 License: LGPL (>= 3)
 Imports: 
     dplyr,
@@ -25,7 +24,7 @@ Imports:
     stringdist,
     tidyr
 Remotes:
-    Theia-Finance-Labs/trisk.model
+    Theia-Finance-Labs/trisk.model@dev
 Encoding: UTF-8
 RoxygenNote: 7.3.1
 Suggests: 

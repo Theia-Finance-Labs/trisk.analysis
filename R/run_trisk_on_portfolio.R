@@ -41,6 +41,8 @@ run_trisk_on_portfolio <- function(assets_data,
       company_id = as.character(.data$company_id)
     )
 
+  portfolio_data <- portfolio_data |>
+      dplyr::mutate(company_id = as.character(.data$company_id))
 
   check_portfolio(portfolio_data )
           
@@ -70,10 +72,9 @@ run_trisk_on_portfolio <- function(assets_data,
   } else {
     portfolio_matched_companies <- portfolio_data |>
       dplyr::filter(!is.na(.data$company_id)) |>
-      dplyr::distinct(.data$company_id, .data$country_iso2)
+      dplyr::distinct(.data$company_id, .data$country_iso2) 
+      
   }
-
-
 
   assets_data_filtered <- assets_data |>
     dplyr::inner_join(portfolio_matched_companies, by = c("company_id", "country_iso2"))
@@ -198,7 +199,7 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   )
 
 
-  # Check if any company_name is NA
+  # Check if both company_name and country_name are NA
   if (any(is.na(portfolio_data$company_name)) & any(is.na(portfolio_data$company_id))) {
     
     # Aggregate facts for country only
