@@ -45,19 +45,22 @@ portfolio_names_testdata <- read.csv(system.file("testdata", "portfolio_names_te
 ```
 
 Leaving the company_id and company_name columns empty, Trisk results will be aggregated per country and technology, and matched to the portfolio based on those columns.
+
 ```{r echo=FALSE}
 knitr::kable(portfolio_countries_testdata) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
-Filling in the company_name column, will generate 
+Filling in the company_name column, will result in an attempt to fuzzy string matching between company names.
+
 ```{r echo=FALSE}
 knitr::kable(portfolio_names_testdata) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
+Filling in the company_id column, will result in an exact match between companies.
 
 ```{r echo=FALSE}
 knitr::kable(portfolio_ids_testdata) %>%
@@ -65,7 +68,8 @@ knitr::kable(portfolio_ids_testdata) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
-Using the company ids is recommended to match the portfolio :
+Using the company ids is recommended to match the portfolio. In our current asset data, a unique asset is defined by a unique combination of company_id, sector, technology, and country. Those other columns are used for the matching between the portfolio and the Trisk outputs.
+
 ```{r}
 portfolio_testdata <- portfolio_ids_testdata
 ```

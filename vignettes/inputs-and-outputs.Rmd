@@ -167,7 +167,9 @@ knitr::kable(head(scenarios_testdata, 50)) %>%
 ```
 
 
-# Trisk run and Output datasets  
+# Trisk run 
+
+### Parameters
 
 Trisk takes several parameters in input, allowing to adjust the model's assumptions.
 
@@ -203,6 +205,8 @@ shock_year <- 2030
 market_passthrough <- 0
 ```
 
+### Run 
+
 This function runs the Trisk model using the provided input and returns the outputs. 
 
 ```{r}
@@ -232,6 +236,7 @@ pd_results <- st_results$pd_results
 company_trajectories <- st_results$company_trajectories
 ```
 
+# Output datasets  
 
 ### NPV results
 
