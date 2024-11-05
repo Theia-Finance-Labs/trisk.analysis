@@ -1,3 +1,9 @@
+#' Get the possible parameters values for Trisk from the scenario data
+#'
+#' @param scenarios scenarios dataframe
+#'
+#' @return Available scenarios parameters
+#' @export
 get_available_parameters <- function(scenarios) {
   # Fetch all distinct scenarios
   scenarios_df <- scenarios %>% dplyr::distinct(

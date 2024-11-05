@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(trisk.analysis)
 library(dplyr)
+library(fs)
 ```
 
 
@@ -41,10 +42,23 @@ trisk_inputs_folder <- file.path(".", "trisk_inputs")
 Download the data using the provided function
 ```{r}
 download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder)
-print(download_success)
 ```
 
+The previous function downloads those 4 files : 
+```{r echo=FALSE}
+dir_tree(trisk_inputs_folder)
+```
+
+
 # Descriptive statistics
+
+Load the 
+```{r}
+if (download_success) {
+  scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+}
+```
+
 
 ## Sectors covered by scenarios 
 
@@ -59,7 +73,7 @@ if (download_success) {
 }
 ```
 
-```{r}
+```{r echo=FALSE}
 if (download_success) {
   knitr::kable(number_of_scenario_per_sector) %>%
     kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
@@ -70,6 +84,78 @@ if (download_success) {
 
 ```{r}
 if (download_success) {
+  sectors_covered_by_scenarios <- scenarios %>%
+    distinct(sector, scenario) %>%
+    arrange(sector, scenario)
+}
+```
+
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(sectors_covered_by_scenarios) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+
+
+## Available parameters
+
+```{r}
+if (download_success) {
   available_parameters <- get_available_parameters(scenarios)
+}
+```
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(available_parameters) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+
+# Run Trisk on a geography
+
+When choosing a geography different than "Global", the input assets dataframe is filtered on the geography's countries, and the scenarios is filtered to use the pathways defined in this geography. This means that only the assets located in the countries covered by this geography will be considered for analysis, on geography-specific pathways.
+
+```{r}
+if (download_success) {
+  assets_data <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
+  scenarios_data <-read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+  financial_features_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
+  ngfs_carbon_price_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
+}
+
+```
+
+```{r}
+baseline_scenario <- "NGFS2023GCAM_CP"
+target_scenario <- "NGFS2023GCAM_NZ2050"
+```
+
+```{r}
+if (download_success) {
+  st_results <- run_trisk_model(
+    assets_data = assets_data,
+    scenarios_data = scenarios_data,
+    financial_data = financial_features_data,
+    carbon_data = ngfs_carbon_price_data,
+    baseline_scenario = baseline_scenario,
+    target_scenario = target_scenario,
+    scenario_geography = "OecdAndEu" # CHANGE GEOGRAPHY
+  )
+}
+```
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(st_results$npv_results) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
 }
 ```

@@ -1,6 +1,17 @@
 #' @importFrom rlang %||% abort warn .data .env :=
 #' @importFrom magrittr %>%
+NULL
 
+#' Run TRISK Model
+#'
+#' @title run_trisk_model
+#' @name run_trisk_model
+#' @description Re-exported function from trisk.model package. Please see \code{trisk.model::run_trisk_model} for full documentation.
+#' @return See \code{trisk.model::run_trisk_model}
+#' @seealso \code{\link[trisk.model]{run_trisk_model}}
+#' @importFrom trisk.model run_trisk_model
+#' @export
+NULL
 
 TRISK_DATA_INPUT_ENDPOINT <- "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com"
 TRISK_DATA_S3_PREFIX <- "crispy-datamodels-bucket/trisk_V2_legacy/csv"
