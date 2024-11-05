@@ -13,8 +13,8 @@ The core Trisk model source code is available in another package, already includ
 - [trisk.analysis](#triskanalysis)
   - [Use the package](#use-the-package)
     - [Installation](#installation)
-    - [Data Input](#data-input)
-    - [Read Trisk outputs](#read-trisk-outputs)
+    - [Input and output dataframes columns](#input-and-output-dataframes-columns)
+    - [Scenarios data](#scenarios-data)
   - [Analyses](#analyses)
     - [Portfolio analysis](#portfolio-analysis)
     - [Sensitivity analysis](#sensitivity-analysis)
@@ -39,16 +39,15 @@ You can install this package directly from GitHub using the `pak` package in R.
     pak::pak("Theia-Finance-Labs/trisk.analysis")
     ```
 
-### Data Input
+### Input and output dataframes columns
 
-We provide consolidated scenarios data from publicly available sources. The [Download Input Data](https://theia-finance-labs.github.io/trisk.analysis/articles/download-input-data.html) vignette showcases how to access this data.
+There are 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices), and 3 output datasets (npv_results, pd_results, company_trajectories). The [Inputs and Outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html) describes their columns structure with a simple Trisk run.
 
-> **Note** Application of the code requires availability of custom data for assets and financial data. Those inputs need to be pre-processed independantly, following the structure of the mock datasets which are part of the download. 
+### Scenarios data
 
+We provide consolidated scenarios data from publicly available sources. The [Download Scenarios](https://theia-finance-labs.github.io/trisk.analysis/articles/download-scenarios.html) vignette showcases how to access this data and explore available scenarios.
 
-### Read Trisk outputs
-
-The [Read Trisk Outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/download-input-data.html) vignette showcases how to run Trisk on the downloaded data, and .
+> **Note** Application of the code requires availability of custom data for assets and financial data. Those inputs need to be pre-processed independantly, following the structure of the mock datasets presented in the vignettes. 
 
 ## Analyses
 
@@ -57,7 +56,7 @@ A wrapper function called `run_trisk_on_portfolio()` can be used to run Trisk on
 Example showcased in the [Portfolio Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/portfolio-analysis.html) vignette.
 
 ### Sensitivity analysis
-A wrapper function called `run_trisk_sa()` is provided if you'd like to generate a set of Trisk runs with different parameters configurations. The results obtained can be plotted using functions included in the package, or used differently in your analysis pipeline.
+A wrapper function called `run_trisk_sa()` is provided if you'd like to generate a set of Trisk runs with different parameters configurations. The results obtained can be plotted using functions included in the package, or integrated in your analysis pipeline.
 Example showcased in the [Sensitivity Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html) vignette.
 
 
