@@ -24,7 +24,6 @@ run_trisk_agg <- function(assets_data,
                           baseline_scenario,
                           target_scenario,
                           ...) {
-
   # Run the TRISK model
   results <- run_trisk_model(
     assets_data = assets_data,
@@ -35,41 +34,45 @@ run_trisk_agg <- function(assets_data,
     target_scenario = target_scenario,
     ...
   )
-  
+
   # Aggregate NPV results by removing `country_iso2` and summing relevant values, then recreate `net_present_value_difference` and `net_present_value_change`
-    npv_agg <- results$npv %>%
-        dplyr::select(-country_iso2) %>%
-        dplyr::group_by(run_id, company_id, asset_id, company_name, asset_name, sector, technology) %>%
-        dplyr::summarise(
-            net_present_value_baseline = sum(net_present_value_baseline, na.rm = TRUE),
-            net_present_value_shock = sum(net_present_value_shock, na.rm = TRUE),
-            .groups = 'drop'
-        ) %>%
-        dplyr::mutate(
-            net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
-            net_present_value_change = .data$net_present_value_difference / .data$net_present_value_baseline
-        )
+  npv_agg <- results$npv %>%
+    dplyr::select(-.data$country_iso2) %>%
+    dplyr::group_by(
+      .data$run_id, .data$company_id, .data$asset_id, .data$company_name,
+      .data$asset_name, .data$sector, .data$technology
+    ) %>%
+    dplyr::summarise(
+      net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
+      net_present_value_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
+      net_present_value_change = .data$net_present_value_difference / .data$net_present_value_baseline
+    )
 
   # Aggregate PD results by removing `country_iso2` and averaging where appropriate
-  pd_agg <- results$pd 
+  pd_agg <- results$pd
 
   # Aggregate company trajectories by removing `country_iso2`
   company_trajectories_agg <- results$company_trajectories %>%
-    dplyr::select(-country_iso2) %>%
+    dplyr::select(-.data$country_iso2) %>%
     dplyr::group_by(
-      run_id, asset_id, asset_name, company_id, company_name, year, sector, technology
+      .data$run_id, .data$asset_id, .data$asset_name, .data$company_id, .data$company_name,
+      .data$year, .data$sector, .data$technology
     ) %>%
     dplyr::summarise(
-      scenario_price_baseline=mean(scenario_price_baseline, na.rm = TRUE),
-      price_shock_scenario=mean(price_shock_scenario, na.rm = TRUE),
-      production_baseline_scenario=sum(production_baseline_scenario, na.rm = TRUE),
-      production_target_scenario=sum(production_target_scenario, na.rm = TRUE),
-      production_plan_company_technology=sum(production_plan_company_technology, na.rm = TRUE),
-      net_profits_baseline_scenario = sum(net_profits_baseline_scenario, na.rm = TRUE),
-      net_profits_shock_scenario = sum(net_profits_shock_scenario, na.rm = TRUE),
-      discounted_net_profits_baseline_scenario = sum(discounted_net_profits_baseline_scenario, na.rm = TRUE),
-      discounted_net_profits_shock_scenario = sum(discounted_net_profits_shock_scenario, na.rm = TRUE),
-      .groups = 'drop'
+      scenario_price_baseline = mean(.data$scenario_price_baseline, na.rm = TRUE),
+      price_shock_scenario = mean(.data$price_shock_scenario, na.rm = TRUE),
+      production_baseline_scenario = sum(.data$production_baseline_scenario, na.rm = TRUE),
+      production_target_scenario = sum(.data$production_target_scenario, na.rm = TRUE),
+      production_plan_company_technology = sum(.data$production_plan_company_technology, na.rm = TRUE),
+      net_profits_baseline_scenario = sum(.data$net_profits_baseline_scenario, na.rm = TRUE),
+      net_profits_shock_scenario = sum(.data$net_profits_shock_scenario, na.rm = TRUE),
+      discounted_net_profits_baseline_scenario = sum(.data$discounted_net_profits_baseline_scenario, na.rm = TRUE),
+      discounted_net_profits_shock_scenario = sum(.data$discounted_net_profits_shock_scenario, na.rm = TRUE),
+      .groups = "drop"
     )
 
   # Return the aggregated results
