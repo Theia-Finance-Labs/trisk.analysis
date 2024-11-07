@@ -31,7 +31,6 @@ get_available_parameters <- function(scenarios) {
       baseline_scenarios, target_scenarios,
       by = c("scenario_provider", "scenario_geography")
     )
-
   }
 
   return(possible_combinations)
