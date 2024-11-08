@@ -83,7 +83,7 @@ Define the scenarios to use:
 ```{r}
 baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
-scenario_geography <- "OecdAndEu"
+scenario_geography <- "Global"
 ```
 
 The function `run_trisk_on_portfolio()` handles the filtering on portfolio and then runs Trisk:
