@@ -122,9 +122,13 @@ country.</li>
 </h5>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">assets_testdata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    42 obs. of  12 variables:</span></span>
+<span><span class="co">#&gt; 'data.frame':    42 obs. of  16 variables:</span></span>
 <span><span class="co">#&gt;  $ company_id     : int  101 101 101 101 101 101 102 102 102 102 ...</span></span>
 <span><span class="co">#&gt;  $ company_name   : chr  "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
+<span><span class="co">#&gt;  $ plan_sec_prod  : num  5000 5423 6200 7400 7800 ...</span></span>
+<span><span class="co">#&gt;  $ country_name   : logi  NA NA NA NA NA NA ...</span></span>
+<span><span class="co">#&gt;  $ plant_age_years: logi  NA NA NA NA NA NA ...</span></span>
+<span><span class="co">#&gt;  $ workforce_size : logi  NA NA NA NA NA NA ...</span></span>
 <span><span class="co">#&gt;  $ asset_id       : int  101 101 101 101 101 101 102 102 102 102 ...</span></span>
 <span><span class="co">#&gt;  $ country_iso2   : chr  "DE" "DE" "DE" "DE" ...</span></span>
 <span><span class="co">#&gt;  $ asset_name     : chr  "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
@@ -132,8 +136,8 @@ country.</li>
 <span><span class="co">#&gt;  $ emission_factor: num  0.062 0.062 0.062 0.062 0.062 ...</span></span>
 <span><span class="co">#&gt;  $ technology     : chr  "Gas" "Gas" "Gas" "Gas" ...</span></span>
 <span><span class="co">#&gt;  $ sector         : chr  "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" ...</span></span>
-<span><span class="co">#&gt;  $ capacity       : num  8600 8600 8600 8600 8600 ...</span></span>
-<span><span class="co">#&gt;  $ capacity_factor: num  0.581 0.631 0.721 0.86 0.907 ...</span></span>
+<span><span class="co">#&gt;  $ capacity       : num  5000 5423 6200 7400 7800 ...</span></span>
+<span><span class="co">#&gt;  $ capacity_factor: int  1 1 1 1 1 1 1 1 1 1 ...</span></span>
 <span><span class="co">#&gt;  $ production_unit: chr  "GJ" "GJ" "GJ" "GJ" ...</span></span></code></pre></div>
 </div>
 <div class="section level5">
@@ -147,6 +151,18 @@ company_id
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 company_name
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+plan_sec_prod
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+plant_age_years
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+workforce_size
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 asset_id
@@ -188,6 +204,18 @@ production_unit
 Company 1
 </td>
 <td style="text-align:right;width: 150px; ">
+5000
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:right;width: 150px; ">
 101
 </td>
 <td style="text-align:left;width: 150px; ">
@@ -209,10 +237,10 @@ Gas
 Oil&amp;Gas
 </td>
 <td style="text-align:right;width: 150px; ">
-8600
+5000
 </td>
 <td style="text-align:right;width: 150px; ">
-0.5813953
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -224,6 +252,18 @@ GJ
 </td>
 <td style="text-align:left;width: 150px; ">
 Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+5423
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
 </td>
 <td style="text-align:right;width: 150px; ">
 101
@@ -247,10 +287,10 @@ Gas
 Oil&amp;Gas
 </td>
 <td style="text-align:right;width: 150px; ">
-8600
+5423
 </td>
 <td style="text-align:right;width: 150px; ">
-0.6305814
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -262,6 +302,18 @@ GJ
 </td>
 <td style="text-align:left;width: 150px; ">
 Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+6200
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
 </td>
 <td style="text-align:right;width: 150px; ">
 101
@@ -285,10 +337,10 @@ Gas
 Oil&amp;Gas
 </td>
 <td style="text-align:right;width: 150px; ">
-8600
+6200
 </td>
 <td style="text-align:right;width: 150px; ">
-0.7209302
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -300,6 +352,18 @@ GJ
 </td>
 <td style="text-align:left;width: 150px; ">
 Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+7400
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
 </td>
 <td style="text-align:right;width: 150px; ">
 101
@@ -323,10 +387,10 @@ Gas
 Oil&amp;Gas
 </td>
 <td style="text-align:right;width: 150px; ">
-8600
+7400
 </td>
 <td style="text-align:right;width: 150px; ">
-0.8604651
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -338,6 +402,18 @@ GJ
 </td>
 <td style="text-align:left;width: 150px; ">
 Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+7800
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
 </td>
 <td style="text-align:right;width: 150px; ">
 101
@@ -361,10 +437,10 @@ Gas
 Oil&amp;Gas
 </td>
 <td style="text-align:right;width: 150px; ">
-8600
+7800
 </td>
 <td style="text-align:right;width: 150px; ">
-0.9069767
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -376,6 +452,18 @@ GJ
 </td>
 <td style="text-align:left;width: 150px; ">
 Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
+</td>
+<td style="text-align:left;width: 150px; ">
+NA
 </td>
 <td style="text-align:right;width: 150px; ">
 101
@@ -402,7 +490,7 @@ Oil&amp;Gas
 8600
 </td>
 <td style="text-align:right;width: 150px; ">
-1.0000000
+1
 </td>
 <td style="text-align:left;width: 150px; ">
 GJ
@@ -826,20 +914,21 @@ renewable).</li>
 </h5>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">scenarios_testdata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    2844 obs. of  13 variables:</span></span>
-<span><span class="co">#&gt;  $ scenario          : chr  "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_type     : chr  "baseline" "baseline" "baseline" "baseline" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_geography: chr  "Global" "Global" "Global" "Global" ...</span></span>
-<span><span class="co">#&gt;  $ sector            : chr  "Coal" "Coal" "Coal" "Coal" ...</span></span>
-<span><span class="co">#&gt;  $ technology        : chr  "Coal" "Coal" "Coal" "Coal" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_year     : int  2022 2023 2024 2025 2026 2027 2028 2029 2030 2031 ...</span></span>
-<span><span class="co">#&gt;  $ price_unit        : chr  "$/tonnes" "$/tonnes" "$/tonnes" "$/tonnes" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_price    : num  57 57.4 57.7 58 58.4 ...</span></span>
-<span><span class="co">#&gt;  $ pathway_unit      : chr  "EJ/yr" "EJ/yr" "EJ/yr" "EJ/yr" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_pathway  : num  159 160 161 162 162 ...</span></span>
-<span><span class="co">#&gt;  $ technology_type   : chr  "carbontech" "carbontech" "carbontech" "carbontech" ...</span></span>
-<span><span class="co">#&gt;  $ country_iso2_list : chr  NA NA NA NA ...</span></span>
-<span><span class="co">#&gt;  $ scenario_provider : chr  "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" ...</span></span></code></pre></div>
+<span><span class="co">#&gt; 'data.frame':    1422 obs. of  14 variables:</span></span>
+<span><span class="co">#&gt;  $ scenario                : chr  "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_type           : chr  "baseline" "baseline" "baseline" "baseline" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_geography      : chr  "Global" "Global" "Global" "Global" ...</span></span>
+<span><span class="co">#&gt;  $ sector                  : chr  "Coal" "Coal" "Coal" "Coal" ...</span></span>
+<span><span class="co">#&gt;  $ technology              : chr  "Coal" "Coal" "Coal" "Coal" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_year           : int  2022 2023 2024 2025 2026 2027 2028 2029 2030 2031 ...</span></span>
+<span><span class="co">#&gt;  $ price_unit              : chr  "$/tonnes" "$/tonnes" "$/tonnes" "$/tonnes" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_price          : num  57 57.4 57.7 58 58.4 ...</span></span>
+<span><span class="co">#&gt;  $ pathway_unit            : chr  "EJ/yr" "EJ/yr" "EJ/yr" "EJ/yr" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_pathway        : num  159 160 161 162 162 ...</span></span>
+<span><span class="co">#&gt;  $ technology_type         : chr  "carbontech" "carbontech" "carbontech" "carbontech" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_capacity_factor: num  1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">#&gt;  $ country_iso2_list       : logi  NA NA NA NA NA NA ...</span></span>
+<span><span class="co">#&gt;  $ scenario_provider       : chr  "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" ...</span></span></code></pre></div>
 </div>
 <div class="section level5">
 <h5 id="sample-data-3">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-3"></a>
@@ -879,6 +968,9 @@ scenario_pathway
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 technology_type
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_capacity_factor
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 country_iso2_list
@@ -922,6 +1014,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -962,6 +1057,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1004,6 +1102,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1044,6 +1145,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1086,6 +1190,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1126,6 +1233,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1168,6 +1278,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1208,6 +1321,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1250,6 +1366,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1290,6 +1409,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1332,6 +1454,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1372,6 +1497,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1414,6 +1542,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1454,6 +1585,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1496,6 +1630,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1536,6 +1673,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1578,6 +1718,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1618,6 +1761,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1660,6 +1806,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1700,6 +1849,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1742,6 +1894,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1782,6 +1937,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1824,6 +1982,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1864,6 +2025,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1906,6 +2070,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -1946,6 +2113,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -1988,6 +2158,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2028,6 +2201,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2070,6 +2246,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2110,6 +2289,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2152,6 +2334,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2192,6 +2377,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2234,6 +2422,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2274,6 +2465,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2316,6 +2510,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2356,6 +2553,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2398,6 +2598,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2438,6 +2641,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2480,6 +2686,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2520,6 +2729,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2562,6 +2774,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2602,6 +2817,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2644,6 +2862,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2684,6 +2905,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2726,6 +2950,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2766,6 +2993,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2808,6 +3038,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2848,6 +3081,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -2890,6 +3126,9 @@ EJ/yr
 <td style="text-align:left;">
 carbontech
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 NA
 </td>
@@ -2930,6 +3169,9 @@ EJ/yr
 </td>
 <td style="text-align:left;">
 carbontech
+</td>
+<td style="text-align:right;">
+1
 </td>
 <td style="text-align:left;">
 NA
@@ -3077,7 +3319,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 101
@@ -3098,13 +3340,13 @@ Oil&amp;Gas
 Gas
 </td>
 <td style="text-align:right;">
-30572.828
+30572.83
 </td>
 <td style="text-align:right;">
-1.354928e+04
+13549.28
 </td>
 <td style="text-align:right;">
--17023.5431
+-17023.54
 </td>
 <td style="text-align:right;">
 -0.5568194
@@ -3112,7 +3354,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 102
@@ -3133,13 +3375,13 @@ Coal
 Coal
 </td>
 <td style="text-align:right;">
-8576088.653
+8576088.65
 </td>
 <td style="text-align:right;">
-4.317748e+06
+4317747.56
 </td>
 <td style="text-align:right;">
--4258341.0975
+-4258341.10
 </td>
 <td style="text-align:right;">
 -0.4965365
@@ -3147,7 +3389,7 @@ Coal
 </tr>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 103
@@ -3168,13 +3410,13 @@ Oil&amp;Gas
 Gas
 </td>
 <td style="text-align:right;">
-15796086.299
+15796086.30
 </td>
 <td style="text-align:right;">
-1.021716e+07
+10217155.94
 </td>
 <td style="text-align:right;">
--5578930.3542
+-5578930.35
 </td>
 <td style="text-align:right;">
 -0.3531843
@@ -3182,7 +3424,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 104
@@ -3203,21 +3445,21 @@ Power
 RenewablesCap
 </td>
 <td style="text-align:right;">
-27877.081
+78721447.95
 </td>
 <td style="text-align:right;">
-3.564616e+04
+102869213.28
 </td>
 <td style="text-align:right;">
-7769.0806
+24147765.33
 </td>
 <td style="text-align:right;">
-0.2786906
+0.3067495
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 105
@@ -3238,21 +3480,21 @@ Power
 CoalCap
 </td>
 <td style="text-align:right;">
-8141.657
+36395617.20
 </td>
 <td style="text-align:right;">
-2.677936e+03
+11874146.56
 </td>
 <td style="text-align:right;">
--5463.7210
+-24521470.64
 </td>
 <td style="text-align:right;">
--0.6710822
+-0.6737479
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-0113e577-1f64-4f0c-a1e1-bbe4ad618bde
+c76878c0-b1a2-468d-b604-f86b4741f442
 </td>
 <td style="text-align:right;">
 105
@@ -3273,16 +3515,16 @@ Power
 OilCap
 </td>
 <td style="text-align:right;">
-1267.680
+3519763.14
 </td>
 <td style="text-align:right;">
-5.925821e+02
+1416673.16
 </td>
 <td style="text-align:right;">
--675.0984
+-2103089.99
 </td>
 <td style="text-align:right;">
--0.5325462
+-0.5975090
 </td>
 </tr>
 </tbody>
@@ -3370,7 +3612,7 @@ the shock scenario.</li>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">npv_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [7 × 12] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                  : int [1:7] 101 102 103 104 105 105 105</span></span>
 <span><span class="co">#&gt;  $ asset_id                    : int [1:7] 101 102 103 104 105 105 105</span></span>
 <span><span class="co">#&gt;  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...</span></span>
@@ -3378,10 +3620,10 @@ the shock scenario.</li>
 <span><span class="co">#&gt;  $ sector                      : chr [1:7] "Oil&amp;Gas" "Coal" "Oil&amp;Gas" "Power" ...</span></span>
 <span><span class="co">#&gt;  $ technology                  : chr [1:7] "Gas" "Coal" "Gas" "RenewablesCap" ...</span></span>
 <span><span class="co">#&gt;  $ country_iso2                : chr [1:7] "DE" "DE" "DE" "DE" ...</span></span>
-<span><span class="co">#&gt;  $ net_present_value_baseline  : num [1:7] 30573 8576089 15796086 27877 8142 ...</span></span>
-<span><span class="co">#&gt;  $ net_present_value_shock     : num [1:7] 13549 4317748 10217156 35646 2678 ...</span></span>
-<span><span class="co">#&gt;  $ net_present_value_difference: num [1:7] -17024 -4258341 -5578930 7769 -5464 ...</span></span>
-<span><span class="co">#&gt;  $ net_present_value_change    : num [1:7] -0.557 -0.497 -0.353 0.279 -0.671 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ net_present_value_baseline  : num [1:7] 30573 8576089 15796086 78721448 36395617 ...</span></span>
+<span><span class="co">#&gt;  $ net_present_value_shock     : num [1:7] 1.35e+04 4.32e+06 1.02e+07 1.03e+08 1.19e+07 ...</span></span>
+<span><span class="co">#&gt;  $ net_present_value_difference: num [1:7] -17024 -4258341 -5578930 24147765 -24521471 ...</span></span>
+<span><span class="co">#&gt;  $ net_present_value_change    : num [1:7] -0.557 -0.497 -0.353 0.307 -0.674 ...</span></span></code></pre></div>
 </div>
 <div class="section level5">
 <h5 id="sample-data-4">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-4"></a>
@@ -3429,7 +3671,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3453,13 +3695,13 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-30572.828
+30572.83
 </td>
 <td style="text-align:right;">
-1.354928e+04
+13549.28
 </td>
 <td style="text-align:right;">
--17023.5431
+-17023.54
 </td>
 <td style="text-align:right;">
 -0.5568194
@@ -3467,7 +3709,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 102
@@ -3491,13 +3733,13 @@ Coal
 DE
 </td>
 <td style="text-align:right;">
-8576088.653
+8576088.65
 </td>
 <td style="text-align:right;">
-4.317748e+06
+4317747.56
 </td>
 <td style="text-align:right;">
--4258341.0975
+-4258341.10
 </td>
 <td style="text-align:right;">
 -0.4965365
@@ -3505,7 +3747,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 103
@@ -3529,13 +3771,13 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-15796086.299
+15796086.30
 </td>
 <td style="text-align:right;">
-1.021716e+07
+10217155.94
 </td>
 <td style="text-align:right;">
--5578930.3542
+-5578930.35
 </td>
 <td style="text-align:right;">
 -0.3531843
@@ -3543,7 +3785,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 104
@@ -3567,21 +3809,21 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-27877.081
+78721447.95
 </td>
 <td style="text-align:right;">
-3.564616e+04
+102869213.28
 </td>
 <td style="text-align:right;">
-7769.0806
+24147765.33
 </td>
 <td style="text-align:right;">
-0.2786906
+0.3067495
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 105
@@ -3605,21 +3847,21 @@ CoalCap
 DE
 </td>
 <td style="text-align:right;">
-8141.657
+36395617.20
 </td>
 <td style="text-align:right;">
-2.677936e+03
+11874146.56
 </td>
 <td style="text-align:right;">
--5463.7210
+-24521470.64
 </td>
 <td style="text-align:right;">
--0.6710822
+-0.6737479
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 105
@@ -3643,16 +3885,16 @@ OilCap
 DE
 </td>
 <td style="text-align:right;">
-1267.680
+3519763.14
 </td>
 <td style="text-align:right;">
-5.925821e+02
+1416673.16
 </td>
 <td style="text-align:right;">
--675.0984
+-2103089.99
 </td>
 <td style="text-align:right;">
--0.5325462
+-0.5975090
 </td>
 </tr>
 </tbody>
@@ -3695,7 +3937,7 @@ scenario.</li>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pd_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [25 × 7] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id      : chr [1:25] "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" ...</span></span>
+<span><span class="co">#&gt;  $ run_id      : chr [1:25] "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" ...</span></span>
 <span><span class="co">#&gt;  $ company_id  : int [1:25] 101 101 101 101 101 102 102 102 102 102 ...</span></span>
 <span><span class="co">#&gt;  $ company_name: chr [1:25] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ sector      : chr [1:25] "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" ...</span></span>
@@ -3734,7 +3976,7 @@ pd_shock
 <tbody>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3757,7 +3999,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3780,7 +4022,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3803,7 +4045,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3826,7 +4068,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -3849,7 +4091,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 102
@@ -3951,7 +4193,7 @@ profits under the shock scenario.</li>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">company_trajectories</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [210 × 23] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" "9b3795f4-615b-40e7-8c5c-06ea064ec512" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" "9c9399f5-844f-4b3f-aa6a-b73d153ddc5a" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                                : int [1:210] 101 101 101 101 101 101 101 101 101 101 ...</span></span>
 <span><span class="co">#&gt;  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                              : int [1:210] 101 101 101 101 101 101 101 101 101 101 ...</span></span>
@@ -4054,7 +4296,7 @@ discounted_net_profits_shock_scenario
 <tbody>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -4125,7 +4367,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -4196,7 +4438,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -4267,7 +4509,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -4338,7 +4580,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
@@ -4409,7 +4651,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9b3795f4-615b-40e7-8c5c-06ea064ec512
+9c9399f5-844f-4b3f-aa6a-b73d153ddc5a
 </td>
 <td style="text-align:right;">
 101
