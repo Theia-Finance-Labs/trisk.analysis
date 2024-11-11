@@ -1,8 +1,8 @@
 ---
-title: "sensitivity-analysis"
+title: "04-sensitivity-analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{sensitivity-analysis}
+  %\VignetteIndexEntry{04-sensitivity-analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

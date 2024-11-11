@@ -1,8 +1,8 @@
 ---
-title: "inputs-and-outputs"
+title: "01-inputs-and-outputs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{inputs-and-outputs}
+  %\VignetteIndexEntry{01-inputs-and-outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

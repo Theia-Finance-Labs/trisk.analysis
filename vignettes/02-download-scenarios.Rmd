@@ -1,8 +1,8 @@
 ---
-title: "download-scenarios"
+title: "02-download-scenarios"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{download-scenarios}
+  %\VignetteIndexEntry{02-download-scenarios}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

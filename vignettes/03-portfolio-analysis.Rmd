@@ -1,8 +1,8 @@
 ---
-title: "portfolio-analysis"
+title: "03-portfolio-analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{portfolio-analysis}
+  %\VignetteIndexEntry{03-portfolio-analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
