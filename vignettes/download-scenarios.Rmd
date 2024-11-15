@@ -1,0 +1,236 @@
+---
+title: "download-scenarios"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{download-scenarios}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(dplyr)
+library(fs)
+```
+
+
+# Download the data
+
+
+
+
+Data will be downloaded from this endpoint:
+```{r}
+print(
+paste0(trisk.analysis:::TRISK_DATA_INPUT_ENDPOINT, "/", trisk.analysis:::TRISK_DATA_S3_PREFIX)
+)
+```
+
+
+Choose the folder where to download the data
+```{r}
+trisk_inputs_folder <- file.path(".", "trisk_inputs")
+```
+
+Download the data using the provided function
+```{r}
+download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+```
+
+The previous function downloads those 4 files : 
+```{r echo=FALSE}
+dir_tree(trisk_inputs_folder)
+```
+
+
+# Descriptive statistics
+
+Load the downloaded scenario data
+```{r}
+if (download_success) {
+  scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+}
+```
+
+
+## Sectors covered by scenarios 
+
+
+```{r}
+if (download_success) {
+  scenarios <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+  number_of_scenario_per_sector <- scenarios %>%
+    distinct(scenario, sector, technology) %>%
+    group_by(sector, technology) %>%
+    summarise(n_scenarios = n())
+}
+```
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(number_of_scenario_per_sector) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+This table lists different sector and technology combinations and shows how many scenarios can be run for each one. The Coal and Oil & Gas sectors focus on raw material exploration, while the Power sector involves generating electricity through various technologies. Technologies ending in "Cap" refer to the power capacity for specific types of power plants (for example, "CoalCap" is for electricity from coal-fired plants).
+
+For the steel sector, the technologies are based on specific production processes:
+
+BOF: Basic Oxygen Furnace
+BF: Blast Furnace
+DRI: Direct Reduced Iron
+EAF: Electric Arc Furnace
+MM: Mini Mill
+OHF: Open Hearth Furnace
+
+The number of scenarios for each sector can vary a lot because of data limitations. For the Power sector, there are several scenario providers, like the International Energy Agency (IEA) and the Network for Greening the Financial System (NGFS), who offer multiple options. However, the steel sector has fewer sources with detailed technology breakdowns, so the model mainly relies on scenarios from the Mission Possible Partnership (MPP).
+```{r}
+if (download_success) {
+  sectors_covered_by_scenarios <- scenarios %>%
+    distinct(sector, scenario) %>%
+    arrange(sector, scenario)
+}
+```
+
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(sectors_covered_by_scenarios) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+This table shows the different scenarios available for each sector. It’s designed to highlight two main points: first, that we can't use every scenario for each sector due to data constraints, and second, that there can still be plenty of scenarios to choose from for a given sector analysis.
+
+The scenario names follow a specific structure, starting with the institution providing the scenario, then the data vintage, and finally the scenario name itself.
+
+For example, the "WEO2023_STEPS" scenario is provided by the World Energy Outlook from the International Energy Agency. The data for this scenario is from 2023, and "STEPS" stands for "Stated Policies Scenario," which represents a business-as-usual approach based on current policies.
+
+On the other hand, the "NGFS2023GCAM_NZ2050" scenario is given by the Network for Greening the Financial System (NGFS), with data also from 2023. For NGFS scenarios, we include the underlying model used to calculate the scenario—in this case, "GCAM." NGFS provides scenarios using three different models, allowing comparisons of scenarios with the same assumptions but different modeling approaches. "NZ2050" refers to the "Net Zero 2050" scenario, an ambitious scenario aiming to reach net zero emissions by 2050.
+
+As shown in the table, there are multiple scenarios integrated into the stress test. Overall, we cover scenarios from six providers: NGFS, WEO, Inevitable Policy Response (IPR), Oxford Institute of New Economic Thinking (Oxford), the Global Energy and Climate Outlook from the EU (GECO), and the Mission Possible Partnership (Steel). For each provider, we may have data from different years and sometimes multiple scenarios to choose from.
+
+How to choose within this portfolio of scenarios is further explained in the next table.
+
+## Available parameters
+
+```{r}
+if (download_success) {
+  available_parameters <- get_available_parameters(scenarios)
+}
+```
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(available_parameters) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+This table breaks down the different options for the scenarios we discussed earlier. The first column again shows the scenario provider and the vintage (year). The "scenario_geography" column captures the regional detail available within each scenario provider.
+
+Next, you’ll see "baseline_scenario" and "target_scenario." These two columns separate scenarios into baseline—status quo scenarios—and target scenarios—ambitious scenarios aiming to achieve specific goals. For example, the IEA STEPS scenario we discussed earlier is a baseline scenario, while the NetZero2050 scenario is a target scenario.
+
+The table also shows how scenarios can be combined in our stress test. It’s important to note that a general rule is to select a baseline and target scenario from the same provider.
+
+If you’re choosing a specific scenario for your analysis, here are some factors to consider:
+
+1. Data vintage: Some scenarios aren’t updated as frequently, while others provide more recent data that may be more relevant for your analysis.
+
+2. Geography options: Not all scenarios offer detailed regional choices. If you need more than just a global view, some scenarios (like the NGFSGCAM scenarios) provide better options for focusing the stress test on a specific region or country.
+
+3. Type of target scenario: There are various target scenarios available. Some providers only have one, while others offer multiple. For example, NGFS provides both B2DS (Below 2°C) and NZ2050 (Net Zero 2050) scenarios, which both aim to limit global warming, but with different levels of ambition.
+
+4. Different scenario narratives: Most of the scenarios are very straight forward and can be categorized into business as usual scenarios or target scenarios. However, some scenarios, especially from NGFS, have slightly different narratives. For instance, the NGFS "LD" (Low Demand) scenario also aims for net zero and limits global temperature rise, but it’s based not just on strict climate policies (like B2DS or NZ2050) but on assumptions of rapidly declining energy demand. These scenarios are useful for specific analyses, but it’s worth familiarizing yourself with the different narratives. For NGFS scenarios, you can read more about them on their website: https://www.ngfs.net/en
+
+
+# Run Trisk on a geography
+
+When choosing a geography different than "Global", the input assets dataframe is filtered on the geography's countries, and the scenarios is filtered to use the pathways defined in this geography. This means that only the assets located in the countries covered by this geography will be considered for analysis, on geography-specific pathways.
+
+```{r}
+if (download_success) {
+  assets_data <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
+  scenarios_data <-read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+  financial_features_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
+  ngfs_carbon_price_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
+}
+```
+
+```{r}
+baseline_scenario <- "NGFS2023GCAM_CP"
+target_scenario <- "NGFS2023GCAM_NZ2050"
+scenario_geography <- "OecdAndEu" # CHANGE GEOGRAPHY
+```
+
+```{r}
+if (download_success) {
+  st_results <- run_trisk_model(
+    assets_data = assets_data,
+    scenarios_data = scenarios_data,
+    financial_data = financial_features_data,
+    carbon_data = ngfs_carbon_price_data,
+    baseline_scenario = baseline_scenario,
+    target_scenario = target_scenario,
+    scenario_geography = scenario_geography
+  )
+}
+```
+
+
+```{r echo=FALSE}
+if (download_success) {
+  knitr::kable(st_results$npv_results) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+    kableExtra::scroll_box(width = "100%", height = "400px")
+}
+```
+
+# Run Trisk with carbon tax
+
+
+```{r}
+if (download_success) {
+  available_carbon_taxes <- ngfs_carbon_price_data %>%
+    distinct(model)
+  print(available_carbon_taxes)
+}
+```
+This table shows the different carbon tax options you can choose from. A carbon tax is an additional mechanism that can be applied to company profits, based on their CO2 emissions from production.
+
+We’ve implemented one carbon tax rate from the NGFS GCAM scenario, along with a few others that follow a more straightforward approach. For example, “flat_carbon_tax_50” is a tax of $50 per ton of CO2 that remains constant over time. “independent_increasing_carbon_tax_50” is a tax that starts at $50 per ton in 2025 and then increases exponentially.
+
+These carbon prices are designed to illustrate the amplification effect a carbon tax can have on outcomes. If you’d prefer different assumptions for the carbon tax trajectory, there’s always the option to include your own in the model.
+
+It is then possible to choose a carbon tax and a passthrough, to adjust its impact on NPV:
+```{r}
+carbon_price_model <- "GCAM 5.3+ NGFS"
+market_passthrough <- 0.3
+```
+
+
+```{r}
+if (download_success) {
+  st_results <- run_trisk_model(
+    assets_data = assets_data,
+    scenarios_data = scenarios_data,
+    financial_data = financial_features_data,
+    carbon_data = ngfs_carbon_price_data,
+    baseline_scenario = baseline_scenario,
+    target_scenario = target_scenario,
+    scenario_geography = scenario_geography,
+    carbon_price_model=carbon_price_model,
+    market_passthrough=market_passthrough
+  )
+}
+```

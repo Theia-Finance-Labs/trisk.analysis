@@ -1,0 +1,5 @@
+company_id,company_name,sector,technology,country_iso2,exposure_value_usd,term,loss_given_default
+NA,NA,Oil&Gas,Gas,DE,1839267,3,0.7
+NA,NA,Coal,Coal,DE,6227364,1,0.7
+NA,NA,Oil&Gas,Gas,DE,3728364,5,0.5
+NA,NA,Power,RenewablesCap,DE,9263702,4,0.4

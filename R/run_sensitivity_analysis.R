@@ -107,22 +107,22 @@ get_filtered_assets_data <- function(assets_data,
                                      company_name = NULL) {
   # Apply filters if they are provided
   if (!is.null(country_iso2)) {
-    assets_data <- assets_data %>%
+    assets_data <- assets_data |>
       dplyr::filter(country_iso2 %in% !!country_iso2)
   }
 
   if (!is.null(sector)) {
-    assets_data <- assets_data %>%
+    assets_data <- assets_data |>
       dplyr::filter(sector %in% !!sector)
   }
 
   if (!is.null(technology)) {
-    assets_data <- assets_data %>%
+    assets_data <- assets_data |>
       dplyr::filter(technology %in% !!technology)
   }
 
   if (!is.null(company_name)) {
-    assets_data <- assets_data %>%
+    assets_data <- assets_data |>
       dplyr::filter(company_name %in% !!company_name)
   }
 
