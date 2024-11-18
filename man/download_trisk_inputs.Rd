@@ -4,10 +4,14 @@
 \alias{download_trisk_inputs}
 \title{Download TRISK input data files from a specified endpoint}
 \usage{
-download_trisk_inputs(local_save_folder)
+download_trisk_inputs(local_save_folder, endpoint = NULL, s3_prefix = NULL)
 }
 \arguments{
-\item{local_save_folder}{Where to download outputs locally}
+\item{local_save_folder}{Where to download outputs locally.}
+
+\item{endpoint}{URL of the endpoint (optional; defaults to `TRISK_DATA_INPUT_ENDPOINT` from the package).}
+
+\item{s3_prefix}{Prefix for the files in the S3 bucket (optional; defaults to `TRISK_DATA_S3_PREFIX` from the package).}
 }
 \value{
 TRUE if all files are downloaded successfully, FALSE otherwise.
@@ -15,5 +19,5 @@ TRUE if all files are downloaded successfully, FALSE otherwise.
 \description{
 This function downloads TRISK input data files from a specified endpoint URL and saves them to a local folder.
 It ensures that the local folder exists before downloading the files. If the folder does not exist, it is created.
-Env variables containing endpoints are defined in imports.R
+Package-level variables for `endpoint` and `s3_prefix` are used if not provided as parameters.
 }
