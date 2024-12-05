@@ -7,10 +7,11 @@
 #' @param local_save_folder Where to download outputs locally.
 #' @param endpoint URL of the endpoint (optional; defaults to `TRISK_DATA_INPUT_ENDPOINT` from the package).
 #' @param s3_prefix Prefix for the files in the S3 bucket (optional; defaults to `TRISK_DATA_S3_PREFIX` from the package).
+#' @param skip_confirmation Set to true to allow CI/CD building of vignettes
 #'
 #' @return TRUE if all files are downloaded successfully, FALSE otherwise.
 #' @export
-download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix = NULL) {
+download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix = NULL, skip_confirmation=FALSE) {
   # Use package-level variables if parameters are NULL
   endpoint <- endpoint %||% tryCatch(TRISK_DATA_INPUT_ENDPOINT, error = function(e) NULL)
   s3_prefix <- s3_prefix %||% tryCatch(TRISK_DATA_S3_PREFIX, error = function(e) NULL)
@@ -22,14 +23,14 @@ download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix 
   if (is.null(s3_prefix)) {
     stop("S3 prefix is not provided and the package-level `TRISK_DATA_S3_PREFIX` is not defined.")
   }
-
-  # Ask user for confirmation
-  proceed <- readline(prompt = "This will download TRISK input data files. Do you want to proceed? (yes/no): ")
-  if (tolower(proceed) != "yes") {
-    message("Download cancelled by user.")
-    return(FALSE)
+ if (!skip_confirmation){
+    # Ask user for confirmation
+    proceed <- readline(prompt = "This will download TRISK input data files. Do you want to proceed? (yes/no): ")
+    if (tolower(proceed) != "yes") {
+      message("Download cancelled by user.")
+      return(FALSE)
+    }
   }
-
   # Ensure the local save folder exists, create it if it doesn't
   if (!dir.exists(local_save_folder)) {
     dir.create(local_save_folder, recursive = TRUE)

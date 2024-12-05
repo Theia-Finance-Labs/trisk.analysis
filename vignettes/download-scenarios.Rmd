@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-is_CRAN <- TRUE #!identical(Sys.getenv("NOT_CRAN"), "true")
+is_CRAN <- !identical(Sys.getenv("NOT_CRAN"), "true")
 ```
 
 ```{r setup}
@@ -41,7 +41,7 @@ Download the data using the provided function.
 
 ```{r}
 if (!is_CRAN){
-download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder, skip_confirmation=TRUE)
 }
 ```
 
