@@ -41,14 +41,16 @@ Download the data using the provided function.
 
 ```{r}
 if (!is_CRAN){
-download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder)
+download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder, skip_confirmation=TRUE)
 }
 ```
 
 The previous function downloads those 4 files :
 
 ```{r echo=FALSE}
+if (!is_CRAN){
 dir_tree(trisk_inputs_folder)
+}
 ```
 
 # Descriptive statistics

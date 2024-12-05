@@ -4,7 +4,12 @@
 \alias{download_trisk_inputs}
 \title{Download TRISK input data files from a specified endpoint}
 \usage{
-download_trisk_inputs(local_save_folder, endpoint = NULL, s3_prefix = NULL)
+download_trisk_inputs(
+  local_save_folder,
+  endpoint = NULL,
+  s3_prefix = NULL,
+  skip_confirmation = FALSE
+)
 }
 \arguments{
 \item{local_save_folder}{Where to download outputs locally.}
@@ -12,6 +17,8 @@ download_trisk_inputs(local_save_folder, endpoint = NULL, s3_prefix = NULL)
 \item{endpoint}{URL of the endpoint (optional; defaults to `TRISK_DATA_INPUT_ENDPOINT` from the package).}
 
 \item{s3_prefix}{Prefix for the files in the S3 bucket (optional; defaults to `TRISK_DATA_S3_PREFIX` from the package).}
+
+\item{skip_confirmation}{Set to true to allow CI/CD building of vignettes}
 }
 \value{
 TRUE if all files are downloaded successfully, FALSE otherwise.
