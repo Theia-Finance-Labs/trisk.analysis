@@ -8,8 +8,8 @@
 <title>download-scenarios • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="download-scenarios">
 </head>
 <body>
@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
     <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
     <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
     <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
   </ul>
 </li>
@@ -91,9 +92,11 @@
 <p>Choose the folder where to download the data</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span></code></pre></div>
-<p>Download the data using the provided function</p>
+<p>Download the data using the provided function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">download_success</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span>local_save_folder <span class="op">=</span> <span class="va">trisk_inputs_folder</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="va">download_success</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span>local_save_folder <span class="op">=</span> <span class="va">trisk_inputs_folder</span>, skip_confirmation<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span><span class="co">#&gt; Download completed.</span></span></code></pre></div>
 <p>The previous function downloads those 4 files :</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">./trisk_inputs</span></span></span>
@@ -107,14 +110,14 @@
 </h2>
 <p>Load the downloaded scenario data</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="sectors-covered-by-scenarios">Sectors covered by scenarios<a class="anchor" aria-label="anchor" href="#sectors-covered-by-scenarios"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">number_of_scenario_per_sector</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">scenario</span>, <span class="va">sector</span>, <span class="va">technology</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -368,7 +371,7 @@ However, the steel sector has fewer sources with detailed technology
 breakdowns, so the model mainly relies on scenarios from the Mission
 Possible Partnership (MPP).</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">sectors_covered_by_scenarios</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">sector</span>, <span class="va">scenario</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">sector</span>, <span class="va">scenario</span><span class="op">)</span></span>
@@ -1270,7 +1273,7 @@ in the next table.</p>
 <h3 id="available-parameters">Available parameters<a class="anchor" aria-label="anchor" href="#available-parameters"></a>
 </h3>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">available_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_available_parameters.html">get_available_parameters</a></span><span class="op">(</span><span class="va">scenarios</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
@@ -6592,7 +6595,7 @@ filtered to use the pathways defined in this geography. This means that
 only the assets located in the countries covered by this geography will
 be considered for analysis, on geography-specific pathways.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">assets_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"assets.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">scenarios_data</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">financial_features_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"financial_features.csv"</span><span class="op">)</span><span class="op">)</span></span>
@@ -6603,7 +6606,7 @@ be considered for analysis, on geography-specific pathways.</p>
 <span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
 <span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"OecdAndEu"</span> <span class="co"># CHANGE GEOGRAPHY</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">st_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
 <span>    assets_data <span class="op">=</span> <span class="va">assets_data</span>,</span>
 <span>    scenarios_data <span class="op">=</span> <span class="va">scenarios_data</span>,</span>
@@ -6617,7 +6620,8 @@ be considered for analysis, on geography-specific pathways.</p>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
@@ -6663,7 +6667,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 101
@@ -6687,21 +6691,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-28315.57
+153078.5
 </td>
 <td style="text-align:right;">
 12263.95
 </td>
 <td style="text-align:right;">
--16051.62
+-140814.5
 </td>
 <td style="text-align:right;">
--0.5668831
+-0.9198845
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 102
@@ -6725,21 +6729,21 @@ Coal
 DE
 </td>
 <td style="text-align:right;">
-7406232.57
+31749127.7
 </td>
 <td style="text-align:right;">
 3245885.30
 </td>
 <td style="text-align:right;">
--4160347.27
+-28503242.4
 </td>
 <td style="text-align:right;">
--0.5617360
+-0.8977646
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 103
@@ -6763,21 +6767,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-13982230.67
+79323201.2
 </td>
 <td style="text-align:right;">
 8407460.26
 </td>
 <td style="text-align:right;">
--5574770.41
+-70915740.9
 </td>
 <td style="text-align:right;">
--0.3987039
+-0.8940101
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 104
@@ -6801,21 +6805,21 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-73018069.82
+439380061.0
 </td>
 <td style="text-align:right;">
-91116975.00
+669416358.41
 </td>
 <td style="text-align:right;">
-18098905.18
+230036297.4
 </td>
 <td style="text-align:right;">
-0.2478689
+0.5235474
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 105
@@ -6839,21 +6843,21 @@ CoalCap
 DE
 </td>
 <td style="text-align:right;">
-32791968.24
+148375982.8
 </td>
 <td style="text-align:right;">
 10333022.61
 </td>
 <td style="text-align:right;">
--22458945.63
+-138042960.2
 </td>
 <td style="text-align:right;">
--0.6848917
+-0.9303592
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 105
@@ -6877,21 +6881,21 @@ OilCap
 DE
 </td>
 <td style="text-align:right;">
-2376037.41
+14224694.5
 </td>
 <td style="text-align:right;">
 978175.84
 </td>
 <td style="text-align:right;">
--1397861.57
+-13246518.7
 </td>
 <td style="text-align:right;">
--0.5883163
+-0.9312340
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ea84a4ec-ac4c-4ed7-b934-e82103327ff8
+06cae9fe-83b4-4149-83f1-6aa7de5651a5
 </td>
 <td style="text-align:right;">
 105
@@ -6915,16 +6919,16 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-17561708.49
+111416861.0
 </td>
 <td style="text-align:right;">
-28852643.01
+239512640.00
 </td>
 <td style="text-align:right;">
-11290934.52
+128095779.1
 </td>
 <td style="text-align:right;">
-0.6429292
+1.1496983
 </td>
 </tr>
 </tbody>
@@ -6935,7 +6939,7 @@ DE
 <h2 id="run-trisk-with-carbon-tax">Run Trisk with carbon tax<a class="anchor" aria-label="anchor" href="#run-trisk-with-carbon-tax"></a>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">available_carbon_taxes</span> <span class="op">&lt;-</span> <span class="va">ngfs_carbon_price_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">available_carbon_taxes</span><span class="op">)</span></span>
@@ -6965,7 +6969,7 @@ adjust its impact on NPV:</p>
 <code class="sourceCode R"><span><span class="va">carbon_price_model</span> <span class="op">&lt;-</span> <span class="st">"GCAM 5.3+ NGFS"</span></span>
 <span><span class="va">market_passthrough</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="va">download_success</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">st_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
 <span>    assets_data <span class="op">=</span> <span class="va">assets_data</span>,</span>
 <span>    scenarios_data <span class="op">=</span> <span class="va">scenarios_data</span>,</span>
@@ -6981,7 +6985,8 @@ adjust its impact on NPV:</p>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
 </div>

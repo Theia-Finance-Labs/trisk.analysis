@@ -8,8 +8,8 @@
 <title>sensitivity-analysis • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="sensitivity-analysis">
 </head>
 <body>
@@ -36,6 +36,7 @@
 <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
     <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
     <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
     <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
   </ul>
 </li>
@@ -114,14 +115,16 @@ analysis with Trisk:</p>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
 <span><span class="co">#&gt; [1] "Done 1 / 2 total runs"</span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
 <span><span class="co">#&gt; [1] "Done 2 / 2 total runs"</span></span>
@@ -173,7 +176,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -197,21 +200,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-30572.83
+172718.3
 </td>
 <td style="text-align:right;">
 13549.28
 </td>
 <td style="text-align:right;">
--17023.54
+-159169
 </td>
 <td style="text-align:right;">
--0.5568194
+-0.9215527
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 102
@@ -235,21 +238,21 @@ Coal
 DE
 </td>
 <td style="text-align:right;">
-8576088.65
+42299475.0
 </td>
 <td style="text-align:right;">
 4317747.56
 </td>
 <td style="text-align:right;">
--4258341.10
+-37981727
 </td>
 <td style="text-align:right;">
--0.4965365
+-0.8979243
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 103
@@ -273,21 +276,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-15796086.30
+95105145.4
 </td>
 <td style="text-align:right;">
-10217155.94
+24864754.17
 </td>
 <td style="text-align:right;">
--5578930.35
+-70240391
 </td>
 <td style="text-align:right;">
--0.3531843
+-0.7385551
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 104
@@ -311,21 +314,21 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-78721447.95
+497029538.6
 </td>
 <td style="text-align:right;">
-102869213.28
+773376716.81
 </td>
 <td style="text-align:right;">
-24147765.33
+276347178
 </td>
 <td style="text-align:right;">
-0.3067495
+0.5559975
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 105
@@ -349,21 +352,21 @@ CoalCap
 DE
 </td>
 <td style="text-align:right;">
-36395617.20
+176175702.5
 </td>
 <td style="text-align:right;">
 11874146.56
 </td>
 <td style="text-align:right;">
--24521470.64
+-164301556
 </td>
 <td style="text-align:right;">
--0.6737479
+-0.9326005
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 105
@@ -387,16 +390,16 @@ OilCap
 DE
 </td>
 <td style="text-align:right;">
-3519763.14
+21412749.3
 </td>
 <td style="text-align:right;">
 1416673.16
 </td>
 <td style="text-align:right;">
--2103089.99
+-19996076
 </td>
 <td style="text-align:right;">
--0.5975090
+-0.9338397
 </td>
 </tr>
 </tbody>
@@ -431,7 +434,7 @@ pd_shock
 <tbody>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -449,12 +452,12 @@ Oil&amp;Gas
 0.0000000
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0382660
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -472,12 +475,12 @@ Oil&amp;Gas
 0.0000000
 </td>
 <td style="text-align:right;">
-0.0000351
+0.1121338
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -495,12 +498,12 @@ Oil&amp;Gas
 0.0000011
 </td>
 <td style="text-align:right;">
-0.0006505
+0.1680445
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -518,12 +521,12 @@ Oil&amp;Gas
 0.0000237
 </td>
 <td style="text-align:right;">
-0.0029020
+0.2098967
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -541,12 +544,12 @@ Oil&amp;Gas
 0.0001502
 </td>
 <td style="text-align:right;">
-0.0072642
+0.2425541
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 102
@@ -564,7 +567,7 @@ Coal
 0.0000000
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0197957
 </td>
 </tr>
 </tbody>
@@ -647,7 +650,7 @@ discounted_net_profits_shock_scenario
 <tbody>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -718,7 +721,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -789,7 +792,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -860,7 +863,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -931,7 +934,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -1002,7 +1005,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 <td style="text-align:right;">
 101
@@ -1145,7 +1148,7 @@ no_carbon_tax
 0
 </td>
 <td style="text-align:left;">
-9c60f081-097f-44ec-ac12-27cbbfb60196
+88fe1356-cfe7-41eb-9c00-2b41aadd3341
 </td>
 </tr>
 <tr>
@@ -1180,7 +1183,7 @@ no_carbon_tax
 0
 </td>
 <td style="text-align:left;">
-5ebc1de4-bde6-4990-92ad-f2fac685310d
+928d454c-b599-42ce-a916-d265e5a8b501
 </td>
 </tr>
 </tbody>
@@ -1217,14 +1220,16 @@ analysis.</p>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
 <span><span class="co">#&gt; [1] "Done 1 / 2 total runs"</span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
 <span><span class="co">#&gt; [1] "Done 2 / 2 total runs"</span></span>
