@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-is_CRAN <- FALSE #!identical(Sys.getenv("NOT_CRAN"), "true")
+is_CRAN <- TRUE #!identical(Sys.getenv("NOT_CRAN"), "true")
 ```
 
 ```{r setup}
