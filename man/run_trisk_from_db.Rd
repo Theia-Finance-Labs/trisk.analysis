@@ -20,7 +20,7 @@ A list containing the results of the `run_trisk_agg` function:
 - `company_trajectories`: Aggregated company trajectories.
 }
 \description{
-This function connects to a PostgreSQL database, retrieves required datasets, 
+This function connects to a PostgreSQL database, retrieves required datasets,
 and runs the `run_trisk_agg` function to perform transition risk aggregation.
 }
 \details{
@@ -37,16 +37,6 @@ The function fetches the following datasets from the database:
 - `financial_data` (retrieved from the `financial_data` table)
 - `carbon_data` (retrieved from the `carbon_data` table)
 
-After retrieving the data, it passes them along with additional parameters 
+After retrieving the data, it passes them along with additional parameters
 to the `run_trisk_agg` function and returns the results.
-}
-\examples{
-# Run the function with example scenarios
-result <- fetch_and_run_trisk(
-  baseline_scenario = "BaselineScenarioName",
-  target_scenario = "TargetScenarioName",
-  additional_param1 = "value1",
-  additional_param2 = "value2"
-)
-
 }

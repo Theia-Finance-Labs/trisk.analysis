@@ -28,15 +28,6 @@
 #' - `pd_results`: Probability of Default results.
 #' - `company_trajectories`: Aggregated company trajectories.
 #'
-#' @examples
-#' # Run the function with example scenarios
-#' result <- fetch_and_run_trisk(
-#'   baseline_scenario = "BaselineScenarioName",
-#'   target_scenario = "TargetScenarioName",
-#'   additional_param1 = "value1",
-#'   additional_param2 = "value2"
-#' )
-#'
 #' @importFrom DBI dbConnect dbDisconnect dbGetQuery
 #' @importFrom RPostgres Postgres
 #' @export
