@@ -11,7 +11,7 @@
 #'
 #' @return TRUE if all files are downloaded successfully, FALSE otherwise.
 #' @export
-download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix = NULL, skip_confirmation=FALSE) {
+download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix = NULL, skip_confirmation = FALSE) {
   # Use package-level variables if parameters are NULL
   endpoint <- endpoint %||% tryCatch(TRISK_DATA_INPUT_ENDPOINT, error = function(e) NULL)
   s3_prefix <- s3_prefix %||% tryCatch(TRISK_DATA_S3_PREFIX, error = function(e) NULL)
@@ -23,7 +23,7 @@ download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix 
   if (is.null(s3_prefix)) {
     stop("S3 prefix is not provided and the package-level `TRISK_DATA_S3_PREFIX` is not defined.")
   }
- if (!skip_confirmation){
+  if (!skip_confirmation) {
     # Ask user for confirmation
     proceed <- readline(prompt = "This will download TRISK input data files. Do you want to proceed? (yes/no): ")
     if (tolower(proceed) != "yes") {

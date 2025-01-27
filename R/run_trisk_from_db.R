@@ -41,10 +41,9 @@
 #' @importFrom RPostgres Postgres
 #' @export
 run_trisk_from_db <- function(
-  baseline_scenario,
-  target_scenario,
-  ...
-) {
+    baseline_scenario,
+    target_scenario,
+    ...) {
   # Database connection parameters
   dbname <- "crispydb"
   host <- "localhost"
