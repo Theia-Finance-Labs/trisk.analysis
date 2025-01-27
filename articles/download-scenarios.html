@@ -86,7 +86,7 @@
 <p>Data will be downloaded from this endpoint:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com/crispy-datamodels-bucket/trisk_V2_legacy/csv"</span></span></code></pre></div>
 <p>Choose the folder where to download the data</p>
@@ -94,8 +94,8 @@
 <code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span></code></pre></div>
 <p>Download the data using the provided function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span><span class="op">{</span></span>
-<span><span class="va">download_success</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span>local_save_folder <span class="op">=</span> <span class="va">trisk_inputs_folder</span>, skip_confirmation<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">download_success</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span>local_save_folder <span class="op">=</span> <span class="va">trisk_inputs_folder</span>, skip_confirmation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Download completed.</span></span></code></pre></div>
 <p>The previous function downloads those 4 files :</p>
@@ -6597,7 +6597,7 @@ be considered for analysis, on geography-specific pathways.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">assets_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"assets.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">scenarios_data</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">scenarios_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">financial_features_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"financial_features.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ngfs_carbon_price_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"ngfs_carbon_price.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -6617,6 +6617,7 @@ be considered for analysis, on geography-specific pathways.</p>
 <span>    scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
@@ -6630,10 +6631,10 @@ be considered for analysis, on geography-specific pathways.</p>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 run_id
 </th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 company_id
 </th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 asset_id
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
@@ -6667,12 +6668,12 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 101
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 101
 </td>
 <td style="text-align:left;">
@@ -6691,26 +6692,26 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-153078.5
+173284.7
 </td>
 <td style="text-align:right;">
-12263.95
+32470.18
 </td>
 <td style="text-align:right;">
 -140814.5
 </td>
 <td style="text-align:right;">
--0.9198845
+-0.8126195
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 102
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 102
 </td>
 <td style="text-align:left;">
@@ -6729,26 +6730,26 @@ Coal
 DE
 </td>
 <td style="text-align:right;">
-31749127.7
+39031708.8
 </td>
 <td style="text-align:right;">
-3245885.30
+10528466.35
 </td>
 <td style="text-align:right;">
 -28503242.4
 </td>
 <td style="text-align:right;">
--0.8977646
+-0.7302586
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 103
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 103
 </td>
 <td style="text-align:left;">
@@ -6767,26 +6768,26 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-79323201.2
+91024319.1
 </td>
 <td style="text-align:right;">
-8407460.26
+20108578.23
 </td>
 <td style="text-align:right;">
 -70915740.9
 </td>
 <td style="text-align:right;">
--0.8940101
+-0.7790857
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 104
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 104
 </td>
 <td style="text-align:left;">
@@ -6805,26 +6806,26 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-439380061.0
+696018834.6
 </td>
 <td style="text-align:right;">
-669416358.41
+958284515.90
 </td>
 <td style="text-align:right;">
-230036297.4
+262265681.3
 </td>
 <td style="text-align:right;">
-0.5235474
+0.3768083
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
 <td style="text-align:left;">
@@ -6843,26 +6844,26 @@ CoalCap
 DE
 </td>
 <td style="text-align:right;">
-148375982.8
+169687298.1
 </td>
 <td style="text-align:right;">
-10333022.61
+31644337.90
 </td>
 <td style="text-align:right;">
 -138042960.2
 </td>
 <td style="text-align:right;">
--0.9303592
+-0.8135138
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
 <td style="text-align:left;">
@@ -6881,26 +6882,26 @@ OilCap
 DE
 </td>
 <td style="text-align:right;">
-14224694.5
+16281826.3
 </td>
 <td style="text-align:right;">
-978175.84
+3035307.61
 </td>
 <td style="text-align:right;">
 -13246518.7
 </td>
 <td style="text-align:right;">
--0.9312340
+-0.8135770
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-d819b852-9522-4950-931f-caaead7ecb95
+96e3234d-87b5-44a4-8248-ca2235b221a8
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
-<td style="text-align:right;">
+<td style="text-align:left;">
 105
 </td>
 <td style="text-align:left;">
@@ -6919,16 +6920,16 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-111416861.0
+97197362.7
 </td>
 <td style="text-align:right;">
-239512640.00
+166505110.58
 </td>
 <td style="text-align:right;">
-128095779.1
+69307747.8
 </td>
 <td style="text-align:right;">
-1.1496983
+0.7130620
 </td>
 </tr>
 </tbody>
@@ -6978,10 +6979,11 @@ adjust its impact on NPV:</p>
 <span>    baseline_scenario <span class="op">=</span> <span class="va">baseline_scenario</span>,</span>
 <span>    target_scenario <span class="op">=</span> <span class="va">target_scenario</span>,</span>
 <span>    scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span>,</span>
-<span>    carbon_price_model<span class="op">=</span><span class="va">carbon_price_model</span>,</span>
-<span>    market_passthrough<span class="op">=</span><span class="va">market_passthrough</span></span>
+<span>    carbon_price_model <span class="op">=</span> <span class="va">carbon_price_model</span>,</span>
+<span>    market_passthrough <span class="op">=</span> <span class="va">market_passthrough</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
 <span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
