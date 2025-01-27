@@ -27,7 +27,7 @@ Data will be downloaded from this endpoint:
 
 ```{r}
 print(
-paste0(trisk.analysis:::TRISK_DATA_INPUT_ENDPOINT, "/", trisk.analysis:::TRISK_DATA_S3_PREFIX)
+  paste0(trisk.analysis:::TRISK_DATA_INPUT_ENDPOINT, "/", trisk.analysis:::TRISK_DATA_S3_PREFIX)
 )
 ```
 
@@ -40,16 +40,16 @@ trisk_inputs_folder <- file.path(".", "trisk_inputs")
 Download the data using the provided function. 
 
 ```{r}
-if (!is_CRAN){
-download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder, skip_confirmation=TRUE)
+if (!is_CRAN) {
+  download_success <- download_trisk_inputs(local_save_folder = trisk_inputs_folder, skip_confirmation = TRUE)
 }
 ```
 
 The previous function downloads those 4 files :
 
 ```{r echo=FALSE}
-if (!is_CRAN){
-dir_tree(trisk_inputs_folder)
+if (!is_CRAN) {
+  dir_tree(trisk_inputs_folder)
 }
 ```
 
@@ -158,7 +158,7 @@ When choosing a geography different than "Global", the input assets dataframe is
 ```{r}
 if (!is_CRAN) {
   assets_data <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
-  scenarios_data <-read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
+  scenarios_data <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
   financial_features_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
   ngfs_carbon_price_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
 }
@@ -225,8 +225,8 @@ if (!is_CRAN) {
     baseline_scenario = baseline_scenario,
     target_scenario = target_scenario,
     scenario_geography = scenario_geography,
-    carbon_price_model=carbon_price_model,
-    market_passthrough=market_passthrough
+    carbon_price_model = carbon_price_model,
+    market_passthrough = market_passthrough
   )
 }
 ```
