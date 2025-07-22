@@ -88,7 +88,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com/crispy-datamodels-bucket/trisk_V2_legacy/csv"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"</span></span></code></pre></div>
 <p>Choose the folder where to download the data</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span></code></pre></div>
@@ -100,9 +100,6 @@
 <span><span class="co">#&gt; Download completed.</span></span></code></pre></div>
 <p>The previous function downloads those 4 files :</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">./trisk_inputs</span></span></span>
-<span><span class="co">#&gt; ├── assets.csv</span></span>
-<span><span class="co">#&gt; ├── financial_features.csv</span></span>
-<span><span class="co">#&gt; ├── ngfs_carbon_price.csv</span></span>
 <span><span class="co">#&gt; └── scenarios.csv</span></span></code></pre>
 </div>
 <div class="section level2">
@@ -186,13 +183,24 @@ ICE
 </tr>
 <tr>
 <td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:right;">
+21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Coal
 </td>
 <td style="text-align:left;">
 Coal
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -203,7 +211,7 @@ Oil&amp;Gas
 Gas
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -214,7 +222,7 @@ Oil&amp;Gas
 Oil
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -225,7 +233,7 @@ Power
 CoalCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -236,7 +244,7 @@ Power
 GasCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -247,7 +255,7 @@ Power
 HydroCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -258,7 +266,7 @@ Power
 NuclearCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -269,7 +277,7 @@ Power
 OilCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -280,7 +288,7 @@ Power
 RenewablesCap
 </td>
 <td style="text-align:right;">
-32
+53
 </td>
 </tr>
 <tr>
@@ -288,7 +296,7 @@ RenewablesCap
 Steel
 </td>
 <td style="text-align:left;">
-BOF-BF
+BF-BOF
 </td>
 <td style="text-align:right;">
 2
@@ -299,7 +307,7 @@ BOF-BF
 Steel
 </td>
 <td style="text-align:left;">
-BOF-DRI
+BF-EAF
 </td>
 <td style="text-align:right;">
 2
@@ -310,7 +318,7 @@ BOF-DRI
 Steel
 </td>
 <td style="text-align:left;">
-EAF-BF
+BF-OHF
 </td>
 <td style="text-align:right;">
 2
@@ -321,7 +329,7 @@ EAF-BF
 Steel
 </td>
 <td style="text-align:left;">
-EAF-DRI
+BOF
 </td>
 <td style="text-align:right;">
 2
@@ -332,7 +340,7 @@ EAF-DRI
 Steel
 </td>
 <td style="text-align:left;">
-EAF-MM
+DRI-BOF
 </td>
 <td style="text-align:right;">
 2
@@ -343,7 +351,18 @@ EAF-MM
 Steel
 </td>
 <td style="text-align:left;">
-EAF-OHF
+DRI-EAF
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Steel
+</td>
+<td style="text-align:left;">
+EAF
 </td>
 <td style="text-align:right;">
 2
@@ -453,6 +472,174 @@ IPR2023Automotive_baseline
 </tr>
 <tr>
 <td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cement
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Coal
 </td>
 <td style="text-align:left;">
@@ -633,6 +820,174 @@ Coal
 </td>
 <td style="text-align:left;">
 NGFS2023REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
 </td>
 </tr>
 <tr>
@@ -896,6 +1251,174 @@ NGFS2023REMIND_NZ2050
 Oil&amp;Gas
 </td>
 <td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
 Oxford2021_base
 </td>
 </tr>
@@ -1145,6 +1668,174 @@ Power
 </td>
 <td style="text-align:left;">
 NGFS2023REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
 </td>
 </tr>
 <tr>
@@ -6543,6 +7234,4542 @@ WEO2023_STEPS
 WEO2023_NZE_2050
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_FW
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+Indonesia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+SoutheastAsia
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024GCAM
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_FW
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024MESSAGE
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_FW
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Asia
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+India
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+LatinAmerica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+MiddleEastAndAfrica
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+OecdAndEu
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+ReformingEconomies
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_LD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2024REMIND
+</td>
+<td style="text-align:left;">
+UnitedStates
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NDC
+</td>
+<td style="text-align:left;">
+NGFS2024REMIND_NZ2050
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -6596,15 +11823,17 @@ only the assets located in the countries covered by this geography will
 be considered for analysis, on geography-specific pathways.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">assets_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"assets.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">assets_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">scenarios_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"scenarios.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">financial_features_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"financial_features.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">ngfs_carbon_price_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">trisk_inputs_folder</span>, <span class="st">"ngfs_carbon_price.csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
+<span>  <span class="va">financial_features_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">ngfs_carbon_price_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">assets_data</span> <span class="op">&lt;-</span> <span class="va">assets_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">scenarios_data</span><span class="op">$</span><span class="va">scenario_year</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_CP"</span></span>
-<span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
-<span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"OecdAndEu"</span> <span class="co"># CHANGE GEOGRAPHY</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2024GCAM_CP"</span></span>
+<span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2024GCAM_NZ2050"</span></span>
+<span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"Global"</span> <span class="co"># CHANGE GEOGRAPHY</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">st_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
@@ -6668,7 +11897,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 101
@@ -6692,21 +11921,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-173284.7
+189924.8
 </td>
 <td style="text-align:right;">
-32470.18
+3.372603e+04
 </td>
 <td style="text-align:right;">
--140814.5
+-156198.8
 </td>
 <td style="text-align:right;">
--0.8126195
+-0.8224243
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 102
@@ -6730,21 +11959,21 @@ Coal
 DE
 </td>
 <td style="text-align:right;">
-39031708.8
+47545991.5
 </td>
 <td style="text-align:right;">
-10528466.35
+1.123867e+07
 </td>
 <td style="text-align:right;">
--28503242.4
+-36307319.5
 </td>
 <td style="text-align:right;">
--0.7302586
+-0.7636252
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 103
@@ -6768,21 +11997,21 @@ Gas
 DE
 </td>
 <td style="text-align:right;">
-91024319.1
+101031820.2
 </td>
 <td style="text-align:right;">
-20108578.23
+2.486374e+07
 </td>
 <td style="text-align:right;">
--70915740.9
+-76168083.6
 </td>
 <td style="text-align:right;">
--0.7790857
+-0.7539019
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 104
@@ -6806,21 +12035,21 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-696018834.6
+1011783193.3
 </td>
 <td style="text-align:right;">
-958284515.90
+1.381077e+09
 </td>
 <td style="text-align:right;">
-262265681.3
+369293854.6
 </td>
 <td style="text-align:right;">
-0.3768083
+0.3649931
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 105
@@ -6844,21 +12073,21 @@ CoalCap
 DE
 </td>
 <td style="text-align:right;">
-169687298.1
+207533923.8
 </td>
 <td style="text-align:right;">
-31644337.90
+3.783306e+07
 </td>
 <td style="text-align:right;">
--138042960.2
+-169700860.1
 </td>
 <td style="text-align:right;">
--0.8135138
+-0.8177018
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 105
@@ -6882,21 +12111,21 @@ OilCap
 DE
 </td>
 <td style="text-align:right;">
-16281826.3
+31687722.2
 </td>
 <td style="text-align:right;">
-3035307.61
+4.240437e+06
 </td>
 <td style="text-align:right;">
--13246518.7
+-27447285.1
 </td>
 <td style="text-align:right;">
--0.8135770
+-0.8661804
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-96e3234d-87b5-44a4-8248-ca2235b221a8
+65319d09-f5bb-4024-bddd-85034b6c8b49
 </td>
 <td style="text-align:left;">
 105
@@ -6920,16 +12149,16 @@ RenewablesCap
 DE
 </td>
 <td style="text-align:right;">
-97197362.7
+177935666.5
 </td>
 <td style="text-align:right;">
-166505110.58
+4.193246e+08
 </td>
 <td style="text-align:right;">
-69307747.8
+241388980.8
 </td>
 <td style="text-align:right;">
-0.7130620
+1.3566082
 </td>
 </tr>
 </tbody>
@@ -7003,7 +12232,7 @@ adjust its impact on NPV:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
