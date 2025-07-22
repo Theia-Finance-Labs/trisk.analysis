@@ -157,13 +157,6 @@ When choosing a geography different than "Global", the input assets dataframe is
 
 ```{r}
 if (!is_CRAN) {
-<<<<<<< HEAD
-  assets_data <- read.csv(file.path(trisk_inputs_folder, "assets.csv"))
-  scenarios_data <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
-  financial_features_data <- read.csv(file.path(trisk_inputs_folder, "financial_features.csv"))
-  ngfs_carbon_price_data <- read.csv(file.path(trisk_inputs_folder, "ngfs_carbon_price.csv"))
-}
-=======
   assets_data <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
   scenarios_data <- read.csv(file.path(trisk_inputs_folder, "scenarios.csv"))
   financial_features_data <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
@@ -171,7 +164,6 @@ if (!is_CRAN) {
   
   assets_data <- assets_data %>% dplyr::filter(.data$production_year >= min(scenarios_data$scenario_year))
   }
->>>>>>> 27ac46d (fixes)
 ```
 
 ```{r}
