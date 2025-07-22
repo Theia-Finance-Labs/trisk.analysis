@@ -165,9 +165,9 @@ if (!is_CRAN) {
 ```
 
 ```{r}
-baseline_scenario <- "NGFS2023GCAM_CP"
-target_scenario <- "NGFS2023GCAM_NZ2050"
-scenario_geography <- "OecdAndEu" # CHANGE GEOGRAPHY
+baseline_scenario <- "NGFS2024GCAM_CP"
+target_scenario <- "NGFS2024GCAM_NZ2050"
+scenario_geography <- "Global" # CHANGE GEOGRAPHY
 ```
 
 ```{r}

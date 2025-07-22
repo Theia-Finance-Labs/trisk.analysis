@@ -13,8 +13,10 @@ NULL
 #' @export
 NULL
 
-TRISK_DATA_INPUT_ENDPOINT <- "https://crispy-datamodels-bucket.fra1.cdn.digitaloceanspaces.com"
-TRISK_DATA_S3_PREFIX <- "crispy-datamodels-bucket/trisk_V2_legacy/csv"
+TRISK_DATA_INPUT_ENDPOINT <- "https://storage.googleapis.com"
+TRISK_DATA_S3_PREFIX <- "crispy-public-data/trisk_inputs"
+
+
 
 TRISK_HEX_RED <- "#F53D3F"
 TRISK_HEX_GREEN <- "#5D9324"

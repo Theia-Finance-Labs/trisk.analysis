@@ -38,10 +38,10 @@ download_trisk_inputs <- function(local_save_folder, endpoint = NULL, s3_prefix 
 
   # List of files to download
   files <- c(
-    "assets.csv",
-    "financial_features.csv",
-    "scenarios.csv",
-    "ngfs_carbon_price.csv"
+    #"assets.csv",
+    #"financial_features.csv",
+    "scenarios.csv"
+    #"ngfs_carbon_price.csv"
   )
 
   # Try-catch block to handle errors
