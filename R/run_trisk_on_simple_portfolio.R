@@ -272,7 +272,11 @@ aggregate_trisk_outputs_simple <- function(npv_results, pd_results) {
 #' @export
 join_simple_portfolio_to_trisk <- function(portfolio_data, trisk_agg) {
   portfolio_data |>
-    dplyr::left_join(trisk_agg, by = c("company_id", "term"))
+    dplyr::left_join(
+      trisk_agg,
+      by = c("company_id", "term"),
+      relationship = "many-to-many"
+    )
 }
 
 
@@ -323,5 +327,16 @@ aggregate_simple_portfolio_results <- function(portfolio_results_tech_detail) {
       expected_loss_shock = if (all(is.na(.data$expected_loss_shock))) NA_real_ else sum(.data$expected_loss_shock, na.rm = TRUE),
       expected_loss_difference = if (all(is.na(.data$expected_loss_difference))) NA_real_ else sum(.data$expected_loss_difference, na.rm = TRUE),
       .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      exposure_change_percent = dplyr::if_else(
+        is.na(.data$exposure_value_usd) | .data$exposure_value_usd == 0,
+        NA_real_,
+        .data$exposure_loss_shock_usd / .data$exposure_value_usd
+      )
+    ) |>
+    dplyr::relocate(
+      "exposure_change_percent",
+      .after = "exposure_loss_shock_usd"
     )
 }
