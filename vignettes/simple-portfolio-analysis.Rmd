@@ -57,7 +57,7 @@ baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
 
-analysis_data_simple <- run_trisk_on_simple_portfolio(
+simple_results <- run_trisk_on_simple_portfolio(
   assets_data = assets_testdata,
   scenarios_data = scenarios_testdata,
   financial_data = financial_features_testdata,
@@ -67,12 +67,15 @@ analysis_data_simple <- run_trisk_on_simple_portfolio(
   target_scenario = target_scenario,
   scenario_geography = scenario_geography
 )
+
+portfolio_results_tech_detail <- simple_results$portfolio_results_tech_detail
+portfolio_results <- simple_results$portfolio_results
 ```
 
 ## NPV-based exposure allocation
 
 `run_trisk_on_simple_portfolio()` adds `exposure_value_usd_share`, computed from
-baseline NPV shares at asset level:
+baseline NPV shares at company/sector/technology level:
 
 1. compute baseline NPV share per run;
 2. allocate exposure with that share;
@@ -80,30 +83,30 @@ baseline NPV shares at asset level:
 4. re-scale so exposure totals match the original portfolio exposure.
 
 ```{r}
-analysis_data_simple |>
+portfolio_results_tech_detail |>
   dplyr::select(
-    company_id, term, asset_id, sector, technology,
-    exposure_value_usd, exposure_value_usd_share,
+    company_id, term, sector, technology,
+    exposure_value_usd_share,
     net_present_value_baseline
   ) |>
-  dplyr::head(10)
+  utils::head(10)
 ```
 
 Because `exposure_value_usd_share` is computed after dropping `run_id`, it is
-constant across runs for a given `(company_id, term, asset_id, sector, technology, country_iso2)`.
+constant across runs for a given `(company_id, term, sector, technology)`.
 
 ```{r}
-exposure_share_check <- analysis_data_simple |>
+exposure_share_check <- portfolio_results_tech_detail |>
   dplyr::distinct(
-    company_id, term, asset_id, sector, technology, country_iso2,
+    company_id, term, sector, technology,
     exposure_value_usd_share
   ) |>
   dplyr::group_by(company_id, term) |>
   dplyr::summarise(allocated_exposure = sum(exposure_value_usd_share, na.rm = TRUE), .groups = "drop") |>
   dplyr::left_join(
-    analysis_data_simple |>
+    portfolio_results |>
       dplyr::group_by(company_id, term) |>
-      dplyr::summarise(original_exposure = mean(exposure_value_usd, na.rm = TRUE), .groups = "drop"),
+      dplyr::summarise(original_exposure = sum(exposure_value_usd, na.rm = TRUE), .groups = "drop"),
     by = c("company_id", "term")
   ) |>
   dplyr::mutate(gap = allocated_exposure - original_exposure)

@@ -86,12 +86,12 @@ run_trisk_on_simple_portfolio <- function(assets_data,
   joined_data <- add_exposure_share_from_npv(joined_data)
   joined_data <- compute_simple_portfolio_metrics(joined_data)
 
+  # Portfolio output: aggregate back to input-row shape.
+  portfolio_results <- aggregate_simple_portfolio_results(joined_data)
+
   # Detail output: keep share-level columns and drop original exposure column.
   portfolio_results_tech_detail <- joined_data |>
     dplyr::select(-"exposure_value_usd")
-
-  # Portfolio output: aggregate back to input-row shape.
-  portfolio_results <- aggregate_simple_portfolio_results(portfolio_results_tech_detail)
 
   # Remove internal index from returned objects.
   portfolio_results_tech_detail <- portfolio_results_tech_detail |>
@@ -307,12 +307,13 @@ compute_simple_portfolio_metrics <- function(analysis_data) {
 
 #' Aggregate simple portfolio tech details back to input-row shape
 #'
-#' @param portfolio_results_tech_detail Detailed output from \code{run_trisk_on_simple_portfolio()}.
+#' @param portfolio_results_detailed Detailed output from \code{run_trisk_on_simple_portfolio()}
+#'   before dropping \code{exposure_value_usd}.
 #'
 #' @return Portfolio output with one row per input portfolio row.
 #' @export
-aggregate_simple_portfolio_results <- function(portfolio_results_tech_detail) {
-  portfolio_results_tech_detail |>
+aggregate_simple_portfolio_results <- function(portfolio_results_detailed) {
+  portfolio_results_detailed |>
     dplyr::group_by(
       .data$.portfolio_index,
       .data$company_id,
@@ -321,7 +322,7 @@ aggregate_simple_portfolio_results <- function(portfolio_results_tech_detail) {
       .data$loss_given_default
     ) |>
     dplyr::summarise(
-      exposure_value_usd = if (all(is.na(.data$exposure_value_usd_share))) NA_real_ else sum(.data$exposure_value_usd_share, na.rm = TRUE),
+      exposure_value_usd = dplyr::first(.data$exposure_value_usd),
       exposure_loss_shock_usd = if (all(is.na(.data$exposure_share_loss_usd))) NA_real_ else sum(.data$exposure_share_loss_usd, na.rm = TRUE),
       expected_loss_baseline = if (all(is.na(.data$expected_loss_baseline))) NA_real_ else sum(.data$expected_loss_baseline, na.rm = TRUE),
       expected_loss_shock = if (all(is.na(.data$expected_loss_shock))) NA_real_ else sum(.data$expected_loss_shock, na.rm = TRUE),
