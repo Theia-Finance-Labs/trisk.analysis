@@ -1,0 +1,114 @@
+---
+title: "simple-portfolio-analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simple-portfolio-analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(dplyr)
+```
+
+# Run TRISK on a simple portfolio
+
+This vignette shows how to use `run_trisk_on_simple_portfolio()` with a minimal
+portfolio schema:
+
+- `company_id`
+- `company_name`
+- `exposure_value_usd`
+- `term`
+- `loss_given_default`
+
+Compared to `run_trisk_on_portfolio()`, no `country_iso2` column is required.
+
+## Load model inputs
+
+```{r}
+assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
+scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
+financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
+ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
+```
+
+## Load simple portfolio input
+
+```{r}
+simple_portfolio <- read.csv(
+  system.file("testdata", "simple_portfolio.csv", package = "trisk.analysis", mustWork = TRUE)
+)
+simple_portfolio
+```
+
+## Run the model
+
+```{r}
+baseline_scenario <- "NGFS2023GCAM_CP"
+target_scenario <- "NGFS2023GCAM_NZ2050"
+scenario_geography <- "Global"
+
+analysis_data_simple <- run_trisk_on_simple_portfolio(
+  assets_data = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data = ngfs_carbon_price_testdata,
+  portfolio_data = simple_portfolio,
+  baseline_scenario = baseline_scenario,
+  target_scenario = target_scenario,
+  scenario_geography = scenario_geography
+)
+```
+
+## NPV-based exposure allocation
+
+`run_trisk_on_simple_portfolio()` adds `exposure_value_usd_share`, computed from
+baseline NPV shares at asset level:
+
+1. compute baseline NPV share per run;
+2. allocate exposure with that share;
+3. average after dropping `run_id`;
+4. re-scale so exposure totals match the original portfolio exposure.
+
+```{r}
+analysis_data_simple |>
+  dplyr::select(
+    company_id, term, asset_id, sector, technology,
+    exposure_value_usd, exposure_value_usd_share,
+    net_present_value_baseline
+  ) |>
+  dplyr::head(10)
+```
+
+Because `exposure_value_usd_share` is computed after dropping `run_id`, it is
+constant across runs for a given `(company_id, term, asset_id, sector, technology, country_iso2)`.
+
+```{r}
+exposure_share_check <- analysis_data_simple |>
+  dplyr::distinct(
+    company_id, term, asset_id, sector, technology, country_iso2,
+    exposure_value_usd_share
+  ) |>
+  dplyr::group_by(company_id, term) |>
+  dplyr::summarise(allocated_exposure = sum(exposure_value_usd_share, na.rm = TRUE), .groups = "drop") |>
+  dplyr::left_join(
+    analysis_data_simple |>
+      dplyr::group_by(company_id, term) |>
+      dplyr::summarise(original_exposure = mean(exposure_value_usd, na.rm = TRUE), .groups = "drop"),
+    by = c("company_id", "term")
+  ) |>
+  dplyr::mutate(gap = allocated_exposure - original_exposure)
+
+exposure_share_check
+```
+
+In the last table, `gap` should be close to zero (floating-point tolerance).
