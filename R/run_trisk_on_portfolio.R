@@ -56,7 +56,7 @@ run_trisk_on_portfolio <- function(assets_data,
     } else {
       cat("-- Fuzzy matching assets to portfolio")
       portfolio_data <- portfolio_data |>
-        dplyr::select(-c(.data$company_id)) |>
+        dplyr::select(-"company_id") |>
         fuzzy_match_company_ids(
           assets_data = assets_data,
           threshold = threshold,
@@ -169,7 +169,7 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
     dplyr::mutate(portfolio_index = dplyr::row_number()) |>
     dplyr::left_join(matched_companies, by = "portfolio_index") |>
     dplyr::left_join(companies_with_ids |> dplyr::mutate(npv_index = paste0("V", dplyr::row_number())), by = "npv_index") |>
-    dplyr::select(-.data$portfolio_index, -.data$npv_index, -.data$distance, -.data$company_name.y) |>
+    dplyr::select(-"portfolio_index", -"npv_index", -"distance", -"company_name.y") |>
     dplyr::rename(company_name = .data$company_name.x)
 
   return(portfolio_data_with_ids)
@@ -189,9 +189,10 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
 #'
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
   analysis_data <- dplyr::inner_join(
-    npv_results |> dplyr::select(-.data$company_name),
-    pd_results |> dplyr::select(-.data$company_name),
-    by = c("run_id", "company_id", "sector")
+    npv_results |> dplyr::select(-"company_name"),
+    pd_results |> dplyr::select(-"company_name"),
+    by = c("run_id", "company_id", "sector"),
+    relationship = "many-to-many"
   )
 
 
@@ -231,7 +232,7 @@ merge_portfolio <- function(portfolio, analysis, join_keys) {
   # Filter analysis where term is 1 and drop the term column for the merge
   analysis_filtered <- analysis |>
     dplyr::filter(.data$term == 1) |>
-    dplyr::select(-.data$term) |>
+    dplyr::select(-"term") |>
     dplyr::mutate(
       pd_baseline = NA_real_,
       pd_shock = NA_real_
