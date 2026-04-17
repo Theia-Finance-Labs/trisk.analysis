@@ -15,43 +15,103 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(trisk.analysis)
-library(magrittr)
+suppressPackageStartupMessages({
+  suppressWarnings(library(trisk.analysis))
+  suppressWarnings(library(magrittr))
+  suppressWarnings(library(dplyr))
+  suppressWarnings(library(tidyr))
+  suppressWarnings(library(ggplot2))
+  suppressWarnings(library(scales))
+})
 ```
 
-
 ```{r}
-assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
-scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
-financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
-ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
+project_dir_candidates <- c(getwd(), normalizePath(file.path(getwd(), ".."), mustWork = FALSE))
+project_dir <- project_dir_candidates[file.exists(file.path(project_dir_candidates, "DESCRIPTION"))][1]
+
+repo_or_pkg_file <- function(filename) {
+  repo_path <- file.path(project_dir, "inst", "testdata", filename)
+  if (file.exists(repo_path)) {
+    return(repo_path)
+  }
+
+  pkg_path <- system.file("testdata", filename, package = "trisk.analysis", mustWork = FALSE)
+  if (nzchar(pkg_path) && file.exists(pkg_path)) {
+    return(pkg_path)
+  }
+
+  stop("Could not locate input file: ", filename)
+}
+
+assets_testdata <- read.csv(repo_or_pkg_file("assets_data_khanbank_ifc.csv"))
+assets_testdata$company_name <- as.character(assets_testdata$company_name)
+assets_testdata$asset_name <- as.character(assets_testdata$asset_name)
+
+scenarios_testdata <- read.csv(repo_or_pkg_file("scenarios_mongolia_client.csv"))
+financial_features_testdata <- read.csv(repo_or_pkg_file("financial_features_khanbank_ifc.csv"))[
+  c("company_id", "pd", "net_profit_margin", "debt_equity_ratio", "volatility")
+]
+ngfs_carbon_price_testdata <- read.csv(repo_or_pkg_file("ngfs_carbon_price_mongolia_client.csv"))
+
+output_dir <- file.path(project_dir, "client_outputs", "khanbank-sensitivity-analysis")
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
 # Sensitivity Analysis
 
-## Vary parameters over entire dataset
+This vignette runs a Khanbank-focused sensitivity grid on the collapsed Mongolia client asset dataset.
 
-Sensitivity analysis allows us to explore how changes in parameters affect the results. In this example, we show how to vary the shock year in multiple TRISK runs when defining run parameters for sensitivity analysis. 
+## Run matrix
+
+The requested setup is:
+
+- Asia geography only
+- NGFS 2024 `GCAM`, `MESSAGE`, and `REMIND`
+- baseline `CP` and target `DT`
+- shock years `2026`, `2030`, and `2035`
+- discount rates `10%` and `15%`
+- growth rate `3%`
+- risk-free rates `4%` and `5%`
+
+Because `shock_year` is scalar per TRISK run, the three shock years are represented as separate entries in the sensitivity grid rather than passed as one vector to a single run.
 
 ```{r}
-run_params <- list(
-  list(
-    scenario_geography = "Global",
-    baseline_scenario = "NGFS2023GCAM_CP",
-    target_scenario = "NGFS2023GCAM_NZ2050",
-    shock_year = 2030 # SHOCK YEAR 1
-  ),
-  list(
-    scenario_geography = "Global",
-    baseline_scenario = "NGFS2023GCAM_CP",
-    target_scenario = "NGFS2023GCAM_NZ2050",
-    shock_year = 2025 # SHOCK YEAR 2
+run_grid <- tidyr::expand_grid(
+  model_family = c("GCAM", "MESSAGE", "REMIND"),
+  shock_year = c(2026, 2030, 2035),
+  discount_rate = c(0.10, 0.15),
+  risk_free_rate = c(0.04, 0.05)
+) %>%
+  mutate(
+    scenario_geography = "Asia",
+    baseline_scenario = paste0("NGFS2024", .data$model_family, "_CP"),
+    target_scenario = paste0("NGFS2024", .data$model_family, "_DT"),
+    growth_rate = 0.03,
+    carbon_price_model = "no_carbon_tax",
+    div_netprofit_prop_coef = 1,
+    market_passthrough = 0
+  ) %>%
+  relocate(
+    model_family,
+    baseline_scenario,
+    target_scenario,
+    scenario_geography
   )
-)
+
+run_params <- run_grid %>%
+  select(
+    -model_family
+  ) %>%
+  split(seq_len(nrow(.))) %>%
+  lapply(as.list)
+
+knitr::kable(run_grid) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
+## Run sensitivity analysis
 
-The function `run_trisk_sa()` is used to run a sensitivity analysis with Trisk:
 ```{r}
 sensitivity_analysis_results <- run_trisk_sa(
   assets_data = assets_testdata,
@@ -62,60 +122,174 @@ sensitivity_analysis_results <- run_trisk_sa(
 )
 ```
 
-Contrary to a simple run of trisk with the "run_trisk_model" function, here it is possible to navigate through multiple Trisk runs in the same dataframe, using the run_id column as an index.
-
-Consolidated NPV results
-
-```{r echo=FALSE}
-knitr::kable(head(sensitivity_analysis_results$npv)) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
-```
-
-Consolidated PD results
-
-```{r echo=FALSE}
-knitr::kable(head(sensitivity_analysis_results$pd)) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
-```
-
-Consolidated company trajectories
-
-```{r echo=FALSE}
-knitr::kable(head(sensitivity_analysis_results$trajectories)) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
-```
-
-Consolidated params dataframe
-
-```{r echo=FALSE}
-knitr::kable(head(sensitivity_analysis_results$params)) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
-```
-
-### Plot results
-
-Plot the sum of production trajectories, scaled in percentage of the first year value. The run_id identifies each run and can be found in the parameters dataframe.
+## Summarise results by run
 
 ```{r}
-plot_multi_trajectories(sensitivity_analysis_results$trajectories)
-```
+npv_summary <- sensitivity_analysis_results$npv %>%
+  group_by(.data$run_id) %>%
+  summarise(
+    total_npv_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
+    total_npv_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+    total_npv_difference = sum(.data$net_present_value_difference, na.rm = TRUE),
+    total_npv_change = .data$total_npv_difference / .data$total_npv_baseline,
+    .groups = "drop"
+  )
 
-## Vary parameters over a single or a group of countries
+pd_summary <- sensitivity_analysis_results$pd %>%
+  filter(.data$term == 5) %>%
+  group_by(.data$run_id) %>%
+  summarise(
+    median_pd_baseline_term5 = median(.data$pd_baseline, na.rm = TRUE),
+    median_pd_shock_term5 = median(.data$pd_shock, na.rm = TRUE),
+    median_pd_difference_term5 = median(.data$pd_shock - .data$pd_baseline, na.rm = TRUE),
+    .groups = "drop"
+  )
 
-You can also perform sensitivity analysis on a filtered subset of assets. This example filters the dataset by country, and then runs the analysis.
+run_summary <- sensitivity_analysis_results$params %>%
+  left_join(npv_summary, by = "run_id") %>%
+  left_join(pd_summary, by = "run_id") %>%
+  mutate(
+    model_family = sub("^NGFS2024([A-Z]+)_CP$", "\\1", .data$baseline_scenario),
+    discount_rate_label = paste0("Discount ", percent(.data$discount_rate, accuracy = 1)),
+    risk_free_rate_label = paste0("Risk-free ", percent(.data$risk_free_rate, accuracy = 1)),
+    run_label = paste(.data$model_family, "shock", .data$shock_year)
+  ) %>%
+  arrange(.data$model_family, .data$discount_rate, .data$risk_free_rate, .data$shock_year)
 
-```{r}
-# Run sensitivity analysis across multiple TRISK runs
-sensitivity_analysis_results <- run_trisk_sa(
-  assets_data = assets_testdata,
-  scenarios_data = scenarios_testdata,
-  financial_data = financial_features_testdata,
-  carbon_data = ngfs_carbon_price_testdata,
-  run_params = run_params,
-  country_iso2 = c("DE") # FILTER ASSETS ON COUNTRIES
+utils::write.csv(
+  run_summary,
+  file.path(output_dir, "run_summary.csv"),
+  row.names = FALSE
 )
+utils::write.csv(
+  sensitivity_analysis_results$params,
+  file.path(output_dir, "run_params_used.csv"),
+  row.names = FALSE
+)
+
+knitr::kable(run_summary) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "200%", height = "400px")
+```
+
+## Visualisations
+
+### Total NPV change by model family and shock year
+
+```{r fig.width=12, fig.height=7}
+npv_sensitivity_plot <- ggplot(
+  run_summary,
+  aes(
+    x = factor(.data$shock_year),
+    y = .data$total_npv_change,
+    color = .data$model_family,
+    group = .data$model_family
+  )
+) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.4) +
+  facet_wrap(~discount_rate_label) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  ) +
+  labs(
+    title = "Khanbank Sensitivity: Total NPV Change",
+    subtitle = "Asia geography, NGFS 2024 CP baseline vs DT shock",
+    x = "Shock year",
+    y = "Total portfolio NPV change",
+    color = "Model family"
+  )
+
+npv_sensitivity_plot
+
+ggplot2::ggsave(
+  filename = file.path(output_dir, "npv_sensitivity_plot.png"),
+  plot = npv_sensitivity_plot,
+  width = 12,
+  height = 7,
+  dpi = 300
+)
+```
+
+### Term-5 median PD shock by model family and shock year
+
+```{r fig.width=13, fig.height=8}
+pd_sensitivity_plot <- ggplot(
+  run_summary,
+  aes(
+    x = factor(.data$shock_year),
+    y = .data$median_pd_shock_term5,
+    color = .data$model_family,
+    group = .data$model_family
+  )
+) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.4) +
+  facet_grid(
+    rows = vars(risk_free_rate_label),
+    cols = vars(discount_rate_label)
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
+  scale_color_brewer(palette = "Dark2") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  ) +
+  labs(
+    title = "Khanbank Sensitivity: Term-5 Median PD Shock",
+    subtitle = "Asia geography, NGFS 2024 CP baseline vs DT shock",
+    x = "Shock year",
+    y = "Median term-5 PD under shock",
+    color = "Model family"
+  )
+
+pd_sensitivity_plot
+
+ggplot2::ggsave(
+  filename = file.path(output_dir, "pd_sensitivity_plot.png"),
+  plot = pd_sensitivity_plot,
+  width = 13,
+  height = 8,
+  dpi = 300
+)
+```
+
+### Central-assumption production trajectory comparison
+
+This plot focuses on the lower-end financing assumption (`discount_rate = 10%`, `risk_free_rate = 4%`) to keep the trajectory comparison readable.
+
+```{r fig.width=12, fig.height=10}
+central_runs <- run_summary %>%
+  filter(.data$discount_rate == 0.10, .data$risk_free_rate == 0.04) %>%
+  select(.data$run_id, .data$model_family, .data$shock_year, .data$run_label)
+
+central_trajectories <- sensitivity_analysis_results$trajectories %>%
+  inner_join(central_runs, by = "run_id")
+
+central_trajectory_plot <- plot_multi_trajectories(
+  trajectories_data = central_trajectories,
+  facet_var = "technology",
+  linecolor = "run_label"
+)
+
+central_trajectory_plot
+
+ggplot2::ggsave(
+  filename = file.path(output_dir, "central_trajectory_plot.png"),
+  plot = central_trajectory_plot,
+  width = 12,
+  height = 10,
+  dpi = 300
+)
+```
+
+## Saved files
+
+```{r}
+list.files(output_dir)
 ```
