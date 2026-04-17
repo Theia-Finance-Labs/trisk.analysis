@@ -1,0 +1,9 @@
+company_id,company_name,sector,technology,country_iso2,exposure_value_usd,term,loss_given_default
+NA,Compny 1,Power,CoalCap,MN,9500000,5,0.6
+NA,Comany 2,Power,RenewablesCap,MN,4100000,2,0.4
+NA,Compny 3,Coal,Coal,MN,11800000,4,0.65
+NA,Compony 4,Power,RenewablesCap,MN,5200000,3,0.4
+NA,Compny 5,Coal,Coal,MN,9800000,5,0.65
+NA,Company Six,Power,CoalCap,MN,7300000,4,0.6
+NA,Company Sevn,Coal,Coal,MN,5600000,2,0.6
+NA,Compny 8,Coal,Coal,MN,4500000,3,0.6
