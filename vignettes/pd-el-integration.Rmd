@@ -122,11 +122,12 @@ pipeline_crispy_pd_integration_bars(result_zs)
 
 ## 10. EL integration
 
-`compute_analysis_metrics` adds `expected_loss_baseline` and `expected_loss_shock`
-(EAD * PD) which `integrate_el` requires.
+`integrate_el()` expects `expected_loss_baseline` and `expected_loss_shock`
+columns, which `run_trisk_on_portfolio()` does not produce on its own. Call
+`compute_analysis_metrics()` first to derive them as EAD * PD.
 
 ```{r}
-analysis_data_el <- trisk.analysis:::compute_analysis_metrics(analysis_data)
+analysis_data_el <- compute_analysis_metrics(analysis_data)
 result_el <- integrate_el(analysis_data_el, method = "relative")
 ```
 

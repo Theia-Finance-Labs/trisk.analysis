@@ -83,9 +83,16 @@ aggregate_trajectories_facts <- function(multi_trajectories, group_cols) {
 
 #' Compute Analysis Metrics
 #'
-#' @description Function computing financial metrics to use for analysis
-#' @param analysis_data analysis_data
+#' Adds derived financial metrics to a raw `run_trisk_on_portfolio()` output:
+#' `net_present_value_difference`, `crispy_perc_value_change`, `crispy_value_loss`,
+#' `exposure_at_default`, `pd_difference`, `expected_loss_baseline`,
+#' `expected_loss_shock`, `expected_loss_difference`. Call this before passing
+#' data to [integrate_el()], which requires the EL columns.
 #'
+#' @param analysis_data Data frame produced by [run_trisk_on_portfolio()].
+#'
+#' @return The input data frame with the derived metric columns appended.
+#' @export
 compute_analysis_metrics <- function(analysis_data) {
   analysis_data <- analysis_data |>
     dplyr::mutate(
