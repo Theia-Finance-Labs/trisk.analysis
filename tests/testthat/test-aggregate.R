@@ -37,3 +37,15 @@ test_that("aggregate_pd_integration errors if required columns missing", {
   expect_error(aggregate_pd_integration(df),  # raw df has no internal_pd
                "required columns")
 })
+
+test_that("aggregate_el_integration sums correctly with bps", {
+  df <- make_test_analysis_data()
+  integrated <- integrate_el(df, method = "absolute")
+  agg <- aggregate_el_integration(integrated$portfolio)
+
+  expect_equal(agg$total_exposure_usd, 600)
+  expect_equal(agg$total_el_internal, 0 + 1.6 + 1.2)
+  expect_equal(agg$total_el_adjusted, 2.0 + 4.8 + 1.8)
+  # bps = abs(8.6) / 600 * 10000 = 143.33...
+  expect_equal(agg$el_adjusted_bps, abs(8.6) / 600 * 10000)
+})

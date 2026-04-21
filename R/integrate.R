@@ -193,3 +193,129 @@ apply_pd_method <- function(internal, baseline, shock, method,
     }
   )
 }
+
+#' Integrate TRISK EL shift into an internal EL estimate
+#'
+#' Applies one of two methods to translate the TRISK baseline-to-shock EL change
+#' into the bank's own internal EL scale. Mirrors the Shiny EL integration logic.
+#'
+#' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
+#'   columns `expected_loss_baseline`, `expected_loss_shock`.
+#' @param internal_el Numeric vector of length `nrow(analysis_data)`, or a data
+#'   frame with `company_id` + `internal_el` columns, or NULL (default) which
+#'   uses `expected_loss_baseline`.
+#' @param method One of "absolute", "relative". Default "absolute".
+#'
+#' @return List with `$portfolio`, `$portfolio_long`, `$aggregate`.
+#' @export
+integrate_el <- function(analysis_data,
+                         internal_el = NULL,
+                         method = c("absolute", "relative")) {
+  method <- match.arg(method)
+
+  required_cols <- c("expected_loss_baseline", "expected_loss_shock")
+  missing_cols <- setdiff(required_cols, colnames(analysis_data))
+  if (length(missing_cols) > 0) {
+    stop("integrate_el(): missing required columns: ",
+         paste(missing_cols, collapse = ", "))
+  }
+
+  internal_vec <- resolve_internal_series(analysis_data, internal_el,
+                                          "expected_loss_baseline")
+
+  el_baseline <- analysis_data$expected_loss_baseline
+  el_shock <- analysis_data$expected_loss_shock
+  el_change <- el_shock - el_baseline
+  el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, 0)
+
+  adjusted <- apply_el_method(internal_vec, el_baseline, el_shock, method)
+
+  portfolio <- analysis_data |>
+    dplyr::mutate(
+      internal_el        = internal_vec,
+      el_change          = el_change,
+      el_change_pct      = el_change_pct,
+      trisk_adjusted_el  = adjusted,
+      el_adjustment      = adjusted - internal_vec
+    )
+
+  portfolio_long <- portfolio |>
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(c("internal_el", "expected_loss_baseline",
+                             "expected_loss_shock", "trisk_adjusted_el")),
+      names_to = "el_type_raw",
+      values_to = "el_value"
+    ) |>
+    dplyr::mutate(
+      el_type = factor(
+        dplyr::recode(.data$el_type_raw,
+          internal_el            = "internal",
+          expected_loss_baseline = "baseline",
+          expected_loss_shock    = "shock",
+          trisk_adjusted_el      = "trisk_adjusted"
+        ),
+        levels = c("internal", "baseline", "shock", "trisk_adjusted")
+      )
+    ) |>
+    dplyr::select(-"el_type_raw")
+
+  list(
+    portfolio = portfolio,
+    portfolio_long = portfolio_long,
+    aggregate = aggregate_el_integration(portfolio)
+  )
+}
+
+apply_el_method <- function(internal, baseline, shock, method) {
+  switch(method,
+    absolute = internal + (shock - baseline),
+    relative = {
+      change_pct <- ifelse(baseline != 0, (shock - baseline) / baseline, 0)
+      internal * (1 + change_pct)
+    }
+  )
+}
+
+#' Aggregate EL integration results to portfolio level
+#'
+#' @param portfolio_df The `$portfolio` element from [integrate_el()].
+#' @param group_cols Character vector or NULL. NULL = portfolio total.
+#' @return A one-row tibble (per group) with total ELs + `el_adjusted_bps`.
+#' @export
+aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
+  required <- c("internal_el", "expected_loss_baseline", "expected_loss_shock",
+                "trisk_adjusted_el", "exposure_value_usd")
+  missing_cols <- setdiff(required, colnames(portfolio_df))
+  if (length(missing_cols) > 0) {
+    stop("aggregate_el_integration(): missing required columns: ",
+         paste(missing_cols, collapse = ", "))
+  }
+
+  grouped <- if (is.null(group_cols)) {
+    portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
+  } else {
+    portfolio_df |> dplyr::group_by_at(group_cols)
+  }
+
+  agg <- grouped |>
+    dplyr::summarise(
+      total_exposure_usd = sum(.data$exposure_value_usd, na.rm = TRUE),
+      total_el_internal  = sum(.data$internal_el, na.rm = TRUE),
+      total_el_baseline  = sum(.data$expected_loss_baseline, na.rm = TRUE),
+      total_el_shock     = sum(.data$expected_loss_shock, na.rm = TRUE),
+      total_el_adjusted  = sum(.data$trisk_adjusted_el, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      total_el_adjustment = .data$total_el_adjusted - .data$total_el_internal,
+      el_adjusted_bps     = ifelse(.data$total_exposure_usd > 0,
+                                   abs(.data$total_el_adjusted) / .data$total_exposure_usd * 10000,
+                                   NA_real_)
+    )
+
+  if (is.null(group_cols)) {
+    agg <- agg |> dplyr::select(-dplyr::any_of(".dummy"))
+  }
+
+  tibble::as_tibble(agg)
+}
