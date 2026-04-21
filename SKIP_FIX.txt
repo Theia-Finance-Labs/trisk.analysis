@@ -1,0 +1,28 @@
+CI failure is stale and no longer applies to this branch.
+
+Failure summary (from log):
+  R CMD check warning — docs/code argument mismatch in `aggregate_simple_portfolio_results`:
+    Position 1 — Code: portfolio_results_detailed  Docs: portfolio_results_tech_detail
+
+Root cause:
+  The mismatch existed in commit 307e52a ("fix", 2026-02-12) which was the commit
+  under test in CI run #21967471542. At that commit:
+    - R/run_trisk_on_simple_portfolio.R line 315: function arg `portfolio_results_detailed`
+    - man/aggregate_simple_portfolio_results.Rd line 7:  `portfolio_results_tech_detail`
+
+Why no fix is needed on this branch:
+  The current branch `auto-fix/ci-2026-04-20-1630` is based on `ca0e45d` (tip of main
+  as of 2026-04-20). In commits after 307e52a, the entire simple-portfolio feature was
+  removed from main:
+    - R/run_trisk_on_simple_portfolio.R   — deleted
+    - man/aggregate_simple_portfolio_results.Rd and related Rd files — deleted
+  Verified on current tree: neither file exists (`ls R/run_trisk_on_simple_portfolio.R
+  man/aggregate_simple_portfolio_results.Rd` returns "No such file or directory").
+
+  I also programmatically extracted `\usage{}` blocks and `\item{}` arg names from every
+  Rd file currently in man/ and compared them against the R source — all current Rd
+  files match their functions. There is no doc/code mismatch to repair.
+
+Recommendation:
+  Re-run CI on the current main HEAD. The failing run (#21967471542) is against a commit
+  that is no longer reachable from main as a buildable tip.
