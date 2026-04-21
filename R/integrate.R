@@ -142,7 +142,7 @@ aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
   tibble::as_tibble(agg)
 }
 
-# Internal — resolve the internal PD/EL series from vector, df, or NULL input.
+# Internal - resolve the internal PD/EL series from vector, df, or NULL input.
 resolve_internal_series <- function(analysis_data, user_values, default_col) {
   n <- nrow(analysis_data)
   default_vec <- analysis_data[[default_col]]
@@ -175,7 +175,7 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
   stop("resolve_internal_series(): user_values must be NULL, numeric vector, or data frame.")
 }
 
-# Internal — pure vector math for the three PD methods. Shiny-parity.
+# Internal - pure vector math for the three PD methods. Shiny-parity.
 apply_pd_method <- function(internal, baseline, shock, method,
                             zscore_floor, zscore_cap) {
   switch(method,

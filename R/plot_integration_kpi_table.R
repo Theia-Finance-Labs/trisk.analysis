@@ -53,7 +53,7 @@ pipeline_crispy_el_kpi_table <- function(el_aggregate) {
     kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 }
 
-# Internal formatting helpers — declared here because they only serve the KPI tables.
+# Internal formatting helpers - declared here because they only serve the KPI tables.
 format_big_number <- function(x) {
   if (is.null(x) || is.na(x)) return("-")
   if (abs(x) >= 1e9) return(sprintf("%.2fB", x / 1e9))
@@ -124,7 +124,7 @@ pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
       Direction = dplyr::case_when(
         .data$`EL Adjustment` < -0.01 ~ "↑",    # up arrow: loss worse
         .data$`EL Adjustment` >  0.01 ~ "↓",    # down arrow: loss better
-        TRUE ~ "—"                               # em dash: neutral
+        TRUE ~ "-"                                # neutral
       )
     )
 
