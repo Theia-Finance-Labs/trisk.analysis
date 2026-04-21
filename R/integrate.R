@@ -71,7 +71,7 @@ integrate_pd <- function(analysis_data,
       values_to = "pd_value"
     ) |>
     dplyr::mutate(
-      pd_type = factor(
+      pd_type = ordered(
         dplyr::recode(.data$pd_type_raw,
           internal_pd       = "internal",
           pd_baseline       = "baseline",

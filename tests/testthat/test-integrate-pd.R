@@ -130,5 +130,6 @@ test_that("integrate_pd portfolio_long has correct shape and pd_type factor", {
   expect_equal(nrow(result$portfolio_long), 12)
   expect_setequal(levels(result$portfolio_long$pd_type),
                   c("internal", "baseline", "shock", "trisk_adjusted"))
+  expect_true(is.ordered(result$portfolio_long$pd_type))
   expect_true("pd_value" %in% colnames(result$portfolio_long))
 })
