@@ -86,8 +86,60 @@ integrate_pd <- function(analysis_data,
   list(
     portfolio = portfolio,
     portfolio_long = portfolio_long,
-    aggregate = NULL          # wired up in later task
+    aggregate = aggregate_pd_integration(portfolio)
   )
+}
+
+#' Aggregate PD integration results to EAD-weighted portfolio level
+#'
+#' @param portfolio_df The `$portfolio` element from [integrate_pd()], containing
+#'   `internal_pd`, `pd_baseline`, `pd_shock`, `trisk_adjusted_pd`,
+#'   `exposure_value_usd`.
+#' @param group_cols Character vector of columns to group by. NULL (default) produces
+#'   a single-row portfolio total. Pass e.g. "sector" for a sector rollup.
+#'
+#' @return A one-row tibble (per group) with EAD-weighted PD metrics.
+#' @export
+aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
+  required <- c("internal_pd", "pd_baseline", "pd_shock",
+                "trisk_adjusted_pd", "exposure_value_usd")
+  missing_cols <- setdiff(required, colnames(portfolio_df))
+  if (length(missing_cols) > 0) {
+    stop("aggregate_pd_integration(): missing required columns: ",
+         paste(missing_cols, collapse = ", "))
+  }
+
+  grouped <- if (is.null(group_cols)) {
+    portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
+  } else {
+    portfolio_df |> dplyr::group_by_at(group_cols)
+  }
+
+  agg <- grouped |>
+    dplyr::summarise(
+      total_exposure_usd   = sum(.data$exposure_value_usd, na.rm = TRUE),
+      weighted_pd_internal = sum(.data$internal_pd       * .data$exposure_value_usd, na.rm = TRUE),
+      weighted_pd_baseline = sum(.data$pd_baseline       * .data$exposure_value_usd, na.rm = TRUE),
+      weighted_pd_shock    = sum(.data$pd_shock          * .data$exposure_value_usd, na.rm = TRUE),
+      weighted_pd_adjusted = sum(.data$trisk_adjusted_pd * .data$exposure_value_usd, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      weighted_pd_internal   = .data$weighted_pd_internal / .data$total_exposure_usd,
+      weighted_pd_baseline   = .data$weighted_pd_baseline / .data$total_exposure_usd,
+      weighted_pd_shock      = .data$weighted_pd_shock    / .data$total_exposure_usd,
+      weighted_pd_adjusted   = .data$weighted_pd_adjusted / .data$total_exposure_usd,
+      weighted_pd_adjustment     = .data$weighted_pd_adjusted - .data$weighted_pd_internal,
+      weighted_pd_adjustment_pct = ifelse(.data$weighted_pd_internal != 0,
+                                          .data$weighted_pd_adjustment / .data$weighted_pd_internal,
+                                          NA_real_)
+    )
+
+  if (is.null(group_cols)) {
+    agg <- agg |> dplyr::select(-dplyr::any_of(".dummy"))
+  }
+
+  tibble::as_tibble(agg)
 }
 
 # Internal — resolve the internal PD/EL series from vector, df, or NULL input.
