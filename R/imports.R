@@ -21,6 +21,9 @@ TRISK_DATA_S3_PREFIX <- "crispy-public-data/trisk_inputs"
 TRISK_HEX_RED <- "#F53D3F"
 TRISK_HEX_GREEN <- "#5D9324"
 TRISK_HEX_GREY <- "#BAB6B5"
+TRISK_HEX_ADJUSTED <- "#AA2A2B"  # Dark-red blend of TRISK_HEX_RED; for "adjusted PD/EL" role
+STATUS_GREEN <- "#3D8B5E"        # Muted green from trisk.r.docker/global.R; for positive/better-off fills
+
 TRISK_PLOT_THEME_FUNC <- function(
     base_size = 12, base_family = "Helvetica", base_line_size = base_size / 22,
     base_rect_size = base_size / 22) {
