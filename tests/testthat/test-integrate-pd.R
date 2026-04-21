@@ -120,3 +120,15 @@ test_that("integrate_pd errors when resolved internal_pd is all NA", {
                             method = "absolute"),
                "all resolved internal PD values are NA")
 })
+
+test_that("integrate_pd portfolio_long has correct shape and pd_type factor", {
+  df <- make_test_analysis_data()
+  result <- integrate_pd(df, method = "absolute")
+
+  expect_s3_class(result$portfolio_long, "data.frame")
+  # Four pd_types (internal, baseline, shock, trisk_adjusted) x 3 rows = 12
+  expect_equal(nrow(result$portfolio_long), 12)
+  expect_setequal(levels(result$portfolio_long$pd_type),
+                  c("internal", "baseline", "shock", "trisk_adjusted"))
+  expect_true("pd_value" %in% colnames(result$portfolio_long))
+})

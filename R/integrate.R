@@ -64,9 +64,28 @@ integrate_pd <- function(analysis_data,
       pd_adjustment      = adjusted - internal_vec
     )
 
+  portfolio_long <- portfolio |>
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(c("internal_pd", "pd_baseline", "pd_shock", "trisk_adjusted_pd")),
+      names_to = "pd_type_raw",
+      values_to = "pd_value"
+    ) |>
+    dplyr::mutate(
+      pd_type = factor(
+        dplyr::recode(.data$pd_type_raw,
+          internal_pd       = "internal",
+          pd_baseline       = "baseline",
+          pd_shock          = "shock",
+          trisk_adjusted_pd = "trisk_adjusted"
+        ),
+        levels = c("internal", "baseline", "shock", "trisk_adjusted")
+      )
+    ) |>
+    dplyr::select(-"pd_type_raw")
+
   list(
     portfolio = portfolio,
-    portfolio_long = NULL,    # wired up in later task
+    portfolio_long = portfolio_long,
     aggregate = NULL          # wired up in later task
   )
 }
