@@ -64,3 +64,59 @@ test_that("integrate_pd zscore clips pd_baseline = 0 to zscore_floor", {
   # pd_baseline = 0 clips to 1e-4 -> qnorm stays finite
   expect_true(is.finite(result$portfolio$trisk_adjusted_pd[1]))
 })
+
+test_that("integrate_pd accepts numeric vector internal_pd", {
+  df <- make_test_analysis_data()
+  result <- integrate_pd(df, internal_pd = c(0.05, 0.05, 0.05), method = "absolute")
+  expect_equal(result$portfolio$internal_pd, c(0.05, 0.05, 0.05))
+})
+
+test_that("integrate_pd accepts data frame internal_pd matched by company_id", {
+  df <- make_test_analysis_data()
+  pd_df <- tibble::tibble(company_id = c("B", "A"),
+                          internal_pd = c(0.10, 0.20))
+  result <- integrate_pd(df, internal_pd = pd_df, method = "absolute")
+
+  # A matches 0.20, B matches 0.10, C unmatched -> fallback to pd_baseline (0.01)
+  expect_equal(result$portfolio$internal_pd, c(0.20, 0.10, 0.01))
+})
+
+test_that("integrate_pd errors on length-mismatched vector", {
+  df <- make_test_analysis_data()
+  expect_error(
+    integrate_pd(df, internal_pd = c(0.05, 0.05), method = "absolute"),
+    "does not match nrow"
+  )
+})
+
+test_that("integrate_pd errors on invalid method string", {
+  df <- make_test_analysis_data()
+  expect_error(integrate_pd(df, method = "zzz"))
+})
+
+test_that("integrate_pd errors when required columns missing", {
+  df <- make_test_analysis_data()
+  df$pd_baseline <- NULL
+  expect_error(integrate_pd(df, method = "absolute"), "missing required columns")
+})
+
+test_that("integrate_pd errors on dataframe internal_pd without company_id", {
+  df <- make_test_analysis_data()
+  bad_df <- tibble::tibble(foo = c("A", "B", "C"), internal_pd = c(0.01, 0.02, 0.03))
+  expect_error(integrate_pd(df, internal_pd = bad_df, method = "absolute"),
+               "company_id")
+})
+
+test_that("integrate_pd errors when zscore_floor >= zscore_cap", {
+  df <- make_test_analysis_data()
+  expect_error(integrate_pd(df, method = "zscore",
+                            zscore_floor = 0.5, zscore_cap = 0.4),
+               "strictly less than")
+})
+
+test_that("integrate_pd errors when resolved internal_pd is all NA", {
+  df <- make_test_analysis_data()
+  expect_error(integrate_pd(df, internal_pd = c(NA_real_, NA_real_, NA_real_),
+                            method = "absolute"),
+               "all resolved internal PD values are NA")
+})
