@@ -108,7 +108,7 @@ pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
   }
 
   summary <- portfolio_df |>
-    dplyr::group_by_at(group_col) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) |>
     dplyr::summarise(
       Count            = dplyr::n(),
       Exposure         = sum(.data$exposure_value_usd, na.rm = TRUE),

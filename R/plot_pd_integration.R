@@ -17,7 +17,7 @@ pipeline_crispy_pd_integration_bars <- function(integration_result,
 
 prepare_for_pd_integration_plot <- function(integration_result, facet_var) {
   integration_result$portfolio_long |>
-    dplyr::group_by_at(c(facet_var, "term", "pd_type")) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(facet_var, "term", "pd_type")))) |>
     dplyr::summarise(pd_value = stats::median(.data$pd_value, na.rm = TRUE),
                      .groups = "drop")
 }

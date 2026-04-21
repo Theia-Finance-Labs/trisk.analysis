@@ -29,7 +29,7 @@ pipeline_crispy_pd_method_comparison <- function(analysis_data,
   plot_df <- dplyr::bind_rows(per_method)
 
   segment_df <- plot_df |>
-    dplyr::group_by_at(facet_var) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(facet_var))) |>
     dplyr::summarise(
       internal = dplyr::first(.data$weighted_pd_internal),
       adjusted_max = max(.data$weighted_pd_adjusted, na.rm = TRUE),

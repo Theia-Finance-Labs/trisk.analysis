@@ -16,7 +16,7 @@ pipeline_crispy_el_adjustment_bars <- function(integration_result,
 
 prepare_for_el_adjustment_plot <- function(integration_result, facet_var) {
   integration_result$portfolio |>
-    dplyr::group_by_at(facet_var) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(facet_var))) |>
     dplyr::summarise(el_adjustment = sum(.data$el_adjustment, na.rm = TRUE),
                      .groups = "drop") |>
     dplyr::mutate(sign = ifelse(.data$el_adjustment < 0, "worse", "better"))

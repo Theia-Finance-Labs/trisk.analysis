@@ -72,11 +72,11 @@ integrate_pd <- function(analysis_data,
     ) |>
     dplyr::mutate(
       pd_type = ordered(
-        dplyr::recode(.data$pd_type_raw,
-          internal_pd       = "internal",
-          pd_baseline       = "baseline",
-          pd_shock          = "shock",
-          trisk_adjusted_pd = "trisk_adjusted"
+        dplyr::case_match(.data$pd_type_raw,
+          "internal_pd"       ~ "internal",
+          "pd_baseline"       ~ "baseline",
+          "pd_shock"          ~ "shock",
+          "trisk_adjusted_pd" ~ "trisk_adjusted"
         ),
         levels = c("internal", "baseline", "shock", "trisk_adjusted")
       )
@@ -112,7 +112,7 @@ aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
   grouped <- if (is.null(group_cols)) {
     portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
   } else {
-    portfolio_df |> dplyr::group_by_at(group_cols)
+    portfolio_df |> dplyr::group_by(dplyr::across(dplyr::all_of(group_cols)))
   }
 
   agg <- grouped |>
@@ -130,9 +130,11 @@ aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
       weighted_pd_shock      = .data$weighted_pd_shock    / .data$total_exposure_usd,
       weighted_pd_adjusted   = .data$weighted_pd_adjusted / .data$total_exposure_usd,
       weighted_pd_adjustment     = .data$weighted_pd_adjusted - .data$weighted_pd_internal,
-      weighted_pd_adjustment_pct = ifelse(.data$weighted_pd_internal != 0,
-                                          .data$weighted_pd_adjustment / .data$weighted_pd_internal,
-                                          NA_real_)
+      weighted_pd_adjustment_pct = dplyr::if_else(
+        !is.na(.data$weighted_pd_internal) & .data$weighted_pd_internal != 0,
+        .data$weighted_pd_adjustment / .data$weighted_pd_internal,
+        NA_real_
+      )
     )
 
   if (is.null(group_cols)) {
@@ -248,11 +250,11 @@ integrate_el <- function(analysis_data,
     ) |>
     dplyr::mutate(
       el_type = factor(
-        dplyr::recode(.data$el_type_raw,
-          internal_el            = "internal",
-          expected_loss_baseline = "baseline",
-          expected_loss_shock    = "shock",
-          trisk_adjusted_el      = "trisk_adjusted"
+        dplyr::case_match(.data$el_type_raw,
+          "internal_el"            ~ "internal",
+          "expected_loss_baseline" ~ "baseline",
+          "expected_loss_shock"    ~ "shock",
+          "trisk_adjusted_el"      ~ "trisk_adjusted"
         ),
         levels = c("internal", "baseline", "shock", "trisk_adjusted")
       )
@@ -294,7 +296,7 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
   grouped <- if (is.null(group_cols)) {
     portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
   } else {
-    portfolio_df |> dplyr::group_by_at(group_cols)
+    portfolio_df |> dplyr::group_by(dplyr::across(dplyr::all_of(group_cols)))
   }
 
   agg <- grouped |>
@@ -308,9 +310,11 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
     ) |>
     dplyr::mutate(
       total_el_adjustment = .data$total_el_adjusted - .data$total_el_internal,
-      el_adjusted_bps     = ifelse(.data$total_exposure_usd > 0,
-                                   abs(.data$total_el_adjusted) / .data$total_exposure_usd * 10000,
-                                   NA_real_)
+      el_adjusted_bps     = dplyr::if_else(
+        !is.na(.data$total_exposure_usd) & .data$total_exposure_usd > 0,
+        abs(.data$total_el_adjusted) / .data$total_exposure_usd * 10000,
+        NA_real_
+      )
     )
 
   if (is.null(group_cols)) {
