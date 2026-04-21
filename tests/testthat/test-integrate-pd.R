@@ -17,3 +17,27 @@ test_that("integrate_pd absolute method computes additive shift", {
   expect_equal(result$portfolio$pd_adjustment,
                result$portfolio$trisk_adjusted_pd - result$portfolio$internal_pd)
 })
+
+test_that("integrate_pd relative method scales internal PD by percent change", {
+  df <- make_test_analysis_data()
+  result <- integrate_pd(df, method = "relative")
+
+  # Relative: adjusted = internal * (1 + pd_change_pct)
+  # Row A: baseline=0, pd_change_pct=0, adjusted=internal=0
+  # Row B: internal=0.02, change_pct=(0.06-0.02)/0.02=2.0, adjusted=0.02*3=0.06
+  # Row C: internal=0.01, change_pct=0.5, adjusted=0.015
+  expect_equal(result$portfolio$trisk_adjusted_pd, c(0.00, 0.06, 0.015))
+})
+
+test_that("integrate_pd relative method preserves internal when pd_baseline is 0", {
+  # Documented Shiny-parity quirk: shock signal lost on zero-baseline rows
+  df <- make_test_analysis_data()
+  internal <- c(0.03, 0.03, 0.03)
+  result <- integrate_pd(df, internal_pd = internal, method = "relative")
+
+  # Row A baseline=0 => change_pct=0 => adjusted = internal = 0.03
+  expect_equal(result$portfolio$trisk_adjusted_pd[1], 0.03)
+  # Rows B, C still get the scaling
+  expect_equal(result$portfolio$trisk_adjusted_pd[2], 0.03 * (1 + 2.0))
+  expect_equal(result$portfolio$trisk_adjusted_pd[3], 0.03 * (1 + 0.5))
+})
