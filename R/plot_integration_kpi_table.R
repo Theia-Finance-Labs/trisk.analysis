@@ -122,9 +122,9 @@ pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
                             abs(.data$`Adjusted EL`) / .data$Exposure * 10000,
                             NA_real_),
       Direction = dplyr::case_when(
-        .data$`EL Adjustment` < -0.01 ~ "↑",    # up arrow: loss worse
-        .data$`EL Adjustment` >  0.01 ~ "↓",    # down arrow: loss better
-        TRUE ~ "-"                                # neutral
+        .data$`EL Adjustment` < -0.01 ~ "\u2191",    # up arrow: loss worse
+        .data$`EL Adjustment` >  0.01 ~ "\u2193",    # down arrow: loss better
+        TRUE ~ "-"                                     # neutral
       )
     )
 

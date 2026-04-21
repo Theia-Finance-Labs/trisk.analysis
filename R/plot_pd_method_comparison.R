@@ -68,7 +68,7 @@ pipeline_crispy_pd_method_comparison <- function(analysis_data,
       x = "EAD-weighted PD",
       y = "",
       color = "Method", shape = "Method",
-      title = "PD Method Comparison (Internal → Adjusted)",
+      title = "PD Method Comparison (Internal \u2192 Adjusted)",
       subtitle = "Black tick = Internal PD; colored shapes = method-specific Adjusted PD"
     )
 }
