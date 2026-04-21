@@ -25,3 +25,10 @@ test_that("pipeline_crispy_el_kpi_table returns a knitr_kable", {
   tbl <- pipeline_crispy_el_kpi_table(integrated$aggregate)
   expect_s3_class(tbl, "knitr_kable")
 })
+
+test_that("pipeline_crispy_el_sector_breakdown_table returns a knitr_kable", {
+  df <- make_test_analysis_data()
+  integrated <- integrate_el(df, method = "absolute")
+  tbl <- pipeline_crispy_el_sector_breakdown_table(integrated$portfolio)
+  expect_s3_class(tbl, "knitr_kable")
+})

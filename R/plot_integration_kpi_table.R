@@ -89,3 +89,60 @@ sign_color <- function(x, positive_is = c("red", "green")) {
     if (positive_is == "red") STATUS_GREEN else TRISK_HEX_RED
   }
 }
+
+#' EL Sector Breakdown Table
+#'
+#' Sector-level EL breakdown with direction arrows, exposure, internal vs
+#' adjusted EL, delta, and EL/EAD in bps. Ports the Shiny collapsible breakdown
+#' at `mod_integration.R:707-786` into a printable table.
+#'
+#' @param portfolio_df The `$portfolio` from [integrate_el()].
+#' @param group_col Character column to group by. Default "sector".
+#' @return A `knitr_kable` object.
+#' @export
+pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
+                                                      group_col = "sector") {
+  if (!group_col %in% colnames(portfolio_df)) {
+    stop("pipeline_crispy_el_sector_breakdown_table(): column '", group_col,
+         "' not in portfolio_df")
+  }
+
+  summary <- portfolio_df |>
+    dplyr::group_by_at(group_col) |>
+    dplyr::summarise(
+      Count            = dplyr::n(),
+      Exposure         = sum(.data$exposure_value_usd, na.rm = TRUE),
+      `Internal EL`    = sum(.data$internal_el, na.rm = TRUE),
+      `Adjusted EL`    = sum(.data$trisk_adjusted_el, na.rm = TRUE),
+      `EL Adjustment`  = sum(.data$el_adjustment, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      `EL_EAD_bps` = ifelse(.data$Exposure > 0,
+                            abs(.data$`Adjusted EL`) / .data$Exposure * 10000,
+                            NA_real_),
+      Direction = dplyr::case_when(
+        .data$`EL Adjustment` < -0.01 ~ "↑",    # up arrow: loss worse
+        .data$`EL Adjustment` >  0.01 ~ "↓",    # down arrow: loss better
+        TRUE ~ "—"                               # em dash: neutral
+      )
+    )
+
+  display <- summary |>
+    dplyr::transmute(
+      !!rlang::sym(group_col) := .data[[group_col]],
+      .data$Direction,
+      Count = format(.data$Count),
+      Exposure      = sapply(.data$Exposure,      format_big_number),
+      `Internal EL` = sapply(.data$`Internal EL`, format_big_number),
+      `Adjusted EL` = sapply(.data$`Adjusted EL`, format_big_number),
+      `EL Adjustment` = sapply(.data$`EL Adjustment`, format_big_number),
+      `EL/EAD (bps)`  = sapply(.data$EL_EAD_bps, format_bps)
+    )
+
+  display |>
+    knitr::kable("html", escape = FALSE, align = "r") |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("striped", "hover", "condensed")
+    )
+}
