@@ -32,3 +32,9 @@ test_that("pipeline_crispy_el_sector_breakdown_table returns a knitr_kable", {
   tbl <- pipeline_crispy_el_sector_breakdown_table(integrated$portfolio)
   expect_s3_class(tbl, "knitr_kable")
 })
+
+test_that("pipeline_crispy_pd_method_comparison returns a ggplot", {
+  df <- make_test_analysis_data()
+  p <- pipeline_crispy_pd_method_comparison(df)
+  expect_s3_class(p, "ggplot")
+})
