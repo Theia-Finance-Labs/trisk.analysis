@@ -41,3 +41,26 @@ test_that("integrate_pd relative method preserves internal when pd_baseline is 0
   expect_equal(result$portfolio$trisk_adjusted_pd[2], 0.03 * (1 + 2.0))
   expect_equal(result$portfolio$trisk_adjusted_pd[3], 0.03 * (1 + 0.5))
 })
+
+test_that("integrate_pd zscore method uses Vasicek combination", {
+  df <- make_test_analysis_data()
+  internal <- c(0.01, 0.02, 0.01)
+  result <- integrate_pd(df, internal_pd = internal, method = "zscore")
+
+  # Manual computation for row B: baseline=0.02, shock=0.06, internal=0.02
+  # z_int=qnorm(0.02), z_base=qnorm(0.02), z_shock=qnorm(0.06)
+  # adjusted = pnorm(z_int + z_shock - z_base) = pnorm(z_shock) = 0.06
+  expect_equal(result$portfolio$trisk_adjusted_pd[2], 0.06, tolerance = 1e-9)
+
+  # All rows must be in [0, 1]
+  expect_true(all(result$portfolio$trisk_adjusted_pd >= 0))
+  expect_true(all(result$portfolio$trisk_adjusted_pd <= 1))
+})
+
+test_that("integrate_pd zscore clips pd_baseline = 0 to zscore_floor", {
+  df <- make_test_analysis_data()
+  result <- integrate_pd(df, method = "zscore", zscore_floor = 1e-4)
+
+  # pd_baseline = 0 clips to 1e-4 -> qnorm stays finite
+  expect_true(is.finite(result$portfolio$trisk_adjusted_pd[1]))
+})
