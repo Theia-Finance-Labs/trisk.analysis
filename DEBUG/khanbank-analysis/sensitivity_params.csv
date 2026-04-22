@@ -1,0 +1,3 @@
+baseline_scenario,target_scenario,scenario_geography,carbon_price_model,risk_free_rate,discount_rate,growth_rate,div_netprofit_prop_coef,shock_year,market_passthrough,run_id
+NGFS2023GCAM_CP,NGFS2023GCAM_NZ2050,Global,no_carbon_tax,0.02,0.07,0.03,1,2030,0,3177e093-31de-4518-92de-1532aee9425b
+NGFS2023GCAM_CP,NGFS2023GCAM_NZ2050,Global,no_carbon_tax,0.02,0.07,0.03,1,2025,0,36a6304c-4f4c-45ea-b3a3-455f13ad750d

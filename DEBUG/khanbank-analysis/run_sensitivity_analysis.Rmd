@@ -1,0 +1,146 @@
+---
+title: "Khan Bank Sensitivity Analysis"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    self_contained: true
+date: "2026-04-22"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", warning = FALSE, message = FALSE)
+```
+
+```{r setup}
+devtools::load_all(".")
+library(ggplot2); library(dplyr); library(readr)
+```
+
+Mirrors `vignettes/sensitivity-analysis.Rmd` applied to Khan Bank's assets
+and financials. Varies `shock_year` between 2025 and 2030; all other
+parameters held fixed. Scenarios and carbon price are bundled NGFS data
+(non-client).
+
+# 1. Load inputs
+
+```{r}
+INPUT_DIR   <- "/Users/jakub/Downloads/04.17 debug khanbank"
+OUTPUT_DIR  <- "."
+TM_TESTDATA <- system.file("testdata", package = "trisk.model")
+
+assets_data    <- read_csv(file.path(INPUT_DIR, "assets_data_final_ifc.csv"),
+                           show_col_types = FALSE)
+financial_data <- read_csv(file.path(INPUT_DIR, "financial_features_final_ifc.csv"),
+                           show_col_types = FALSE) |>
+  select(company_id, pd, net_profit_margin, debt_equity_ratio, volatility) |>
+  filter(!is.na(company_id))
+scenarios_data <- read_csv(file.path(TM_TESTDATA, "scenarios_testdata.csv"),
+                           show_col_types = FALSE)
+carbon_data    <- read_csv(file.path(TM_TESTDATA, "ngfs_carbon_price_testdata.csv"),
+                           show_col_types = FALSE)
+
+cat(
+  "Khan Bank assets:       ", nrow(assets_data), "rows,",
+    length(unique(assets_data$company_id)), "companies\n",
+  "Khan Bank financials:   ", nrow(financial_data), "rows\n",
+  "Bundled scenarios:      ", length(unique(scenarios_data$scenario)), "unique\n",
+  "Bundled carbon prices:  ", nrow(carbon_data), "rows\n",
+  sep = ""
+)
+```
+
+# 2. Run parameters
+
+Two TRISK runs, differing only in `shock_year`.
+
+```{r}
+run_params <- list(
+  list(
+    scenario_geography = "Global",
+    baseline_scenario  = "NGFS2023GCAM_CP",
+    target_scenario    = "NGFS2023GCAM_NZ2050",
+    shock_year         = 2030
+  ),
+  list(
+    scenario_geography = "Global",
+    baseline_scenario  = "NGFS2023GCAM_CP",
+    target_scenario    = "NGFS2023GCAM_NZ2050",
+    shock_year         = 2025
+  )
+)
+```
+
+# 3. Run the sensitivity analysis
+
+```{r}
+sa <- run_trisk_sa(
+  assets_data    = assets_data,
+  scenarios_data = scenarios_data,
+  financial_data = financial_data,
+  carbon_data    = carbon_data,
+  run_params     = run_params
+)
+```
+
+# 4. Consolidated per-run outputs
+
+## 4a. NPV
+
+```{r}
+knitr::kable(head(sa$npv, 20), caption = "NPV per run (first 20 rows)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) |>
+  kableExtra::scroll_box(width = "100%", height = "400px")
+write_csv(sa$npv, file.path(OUTPUT_DIR, "sensitivity_npv.csv"))
+```
+
+## 4b. PD
+
+```{r}
+knitr::kable(head(sa$pd, 20), caption = "PD per run (first 20 rows)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) |>
+  kableExtra::scroll_box(width = "100%", height = "400px")
+write_csv(sa$pd, file.path(OUTPUT_DIR, "sensitivity_pd.csv"))
+```
+
+## 4c. Parameters
+
+```{r}
+knitr::kable(sa$params, caption = "Run parameters") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+write_csv(sa$params, file.path(OUTPUT_DIR, "sensitivity_params.csv"))
+```
+
+```{r, include = FALSE}
+write_csv(sa$trajectories, file.path(OUTPUT_DIR, "sensitivity_trajectories.csv"))
+```
+
+# 5. Multi-trajectory plot
+
+```{r fig.width = 10, fig.height = 6}
+p <- plot_multi_trajectories(sa$trajectories)
+p
+ggsave(file.path(OUTPUT_DIR, "sensitivity_trajectories.png"), p,
+       width = 10, height = 6, dpi = 120)
+```
+
+Three panels (Coal / CoalCap / RenewablesCap) compare production paths
+indexed to year-1. The 2025-shock run departs earlier; both converge by 2050.
+
+# 6. Sector x term rollup of PDs
+
+```{r}
+pd_by_run <- sa$pd |>
+  left_join(sa$params |> select(run_id, shock_year), by = "run_id") |>
+  group_by(shock_year, sector, term) |>
+  summarise(mean_pd_baseline = mean(pd_baseline, na.rm = TRUE),
+            mean_pd_shock    = mean(pd_shock,    na.rm = TRUE),
+            .groups = "drop") |>
+  arrange(sector, term, shock_year)
+
+knitr::kable(pd_by_run, caption = "Mean PD by sector x term x shock_year") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) |>
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+write_csv(pd_by_run, file.path(OUTPUT_DIR, "sensitivity_pd_by_run.csv"))
+```

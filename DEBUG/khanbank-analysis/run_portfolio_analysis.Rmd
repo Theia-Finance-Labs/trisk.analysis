@@ -1,0 +1,111 @@
+---
+title: "Khan Bank Portfolio Analysis"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    self_contained: true
+date: "2026-04-22"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", warning = FALSE, message = FALSE)
+```
+
+```{r setup}
+devtools::load_all(".")
+library(ggplot2); library(dplyr); library(readr)
+```
+
+Mirrors `vignettes/portfolio-analysis.Rmd` applied to Khan Bank inputs.
+Produces the four standard portfolio plots (NPV change, exposure change, PD
+term, expected loss) plus a summary table.
+
+# 1. Load Khan Bank analysis data
+
+The cached `analysis_data.rds` is the output of an earlier
+`run_trisk_on_portfolio()` call; we reuse it here to avoid re-running the
+full model.
+
+```{r}
+INPUT_DIR  <- "/Users/jakub/Downloads/04.17 debug khanbank"
+OUTPUT_DIR <- "."
+
+ad <- readRDS(file.path(INPUT_DIR, "analysis_data.rds")) |>
+  mutate(company_id = as.character(company_id)) |>
+  filter(!is.na(pd_baseline) & !is.na(pd_shock))
+
+cat("rows:", nrow(ad), " sectors:", paste(unique(ad$sector), collapse = ", "), "\n")
+```
+
+# 2. Equities risk
+
+## 2a. Average NPV change percentage per technology
+
+```{r fig.width = 9, fig.height = 5}
+p1 <- pipeline_crispy_npv_change_plot(ad)
+p1
+ggsave(file.path(OUTPUT_DIR, "portfolio_npv_change.png"), p1,
+       width = 9, height = 5, dpi = 120)
+```
+
+Coal and CoalCap techs lose ~100% NPV under the NZ2050 shock; RenewablesCap
+gains modestly.
+
+## 2b. Portfolio exposure change
+
+```{r fig.width = 9, fig.height = 5}
+p2 <- pipeline_crispy_exposure_change_plot(ad)
+p2
+ggsave(file.path(OUTPUT_DIR, "portfolio_exposure_change.png"), p2,
+       width = 9, height = 5, dpi = 120)
+```
+
+# 3. Bonds & Loans risk
+
+## 3a. Average PDs at baseline and shock
+
+```{r fig.width = 9, fig.height = 5}
+p3 <- pipeline_crispy_pd_term_plot(ad)
+p3
+ggsave(file.path(OUTPUT_DIR, "portfolio_pd_term.png"), p3,
+       width = 9, height = 5, dpi = 120)
+```
+
+Coal shock PDs reach 16% at terms 1 and 4. Power baseline/shock PDs sit at
+fractions of a percent, reflecting the low-vol / high-V0/L mechanism
+diagnosed in `run_diagnostic.Rmd`.
+
+## 3b. Expected loss by sector
+
+```{r fig.width = 9, fig.height = 5}
+p4 <- pipeline_crispy_expected_loss_plot(ad)
+p4
+ggsave(file.path(OUTPUT_DIR, "portfolio_expected_loss.png"), p4,
+       width = 9, height = 5, dpi = 120)
+```
+
+Only Coal's shock EL exceeds baseline by a visible amount (thin red loss
+bar at the top of the shock column).
+
+# 4. Portfolio summary table
+
+Per firm x term, with NPV, PD, and EL columns used by the plots above.
+
+```{r}
+summary_tbl <- compute_analysis_metrics(ad) |>
+  select(company_id, company_name, sector, technology, term,
+         exposure_value_usd, loss_given_default,
+         net_present_value_baseline, net_present_value_shock,
+         net_present_value_difference,
+         pd_baseline, pd_shock,
+         expected_loss_baseline, expected_loss_shock,
+         expected_loss_difference) |>
+  arrange(company_id, term)
+
+knitr::kable(summary_tbl, caption = "Khan Bank portfolio summary") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) |>
+  kableExtra::scroll_box(width = "100%", height = "400px")
+
+write_csv(summary_tbl, file.path(OUTPUT_DIR, "portfolio_summary.csv"))
+```
