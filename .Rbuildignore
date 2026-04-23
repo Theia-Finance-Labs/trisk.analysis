@@ -11,3 +11,4 @@
 ^workspace/*
 ^DEBUG$
 ^specs$
+^khanbank$

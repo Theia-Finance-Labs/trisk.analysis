@@ -3,6 +3,7 @@ workspace/*
 data-raw/data
 .DS_STORE
 .DS_Store
+khanbank/
 
 # History files
 .Rhistory
