@@ -9,7 +9,9 @@
 #' @param internal_pd Either (a) a numeric vector of length `nrow(analysis_data)`,
 #'   (b) a data frame with `company_id` and `internal_pd` columns, or (c) NULL
 #'   (default) in which case `pd_baseline` is used.
-#' @param method One of "absolute", "relative", "zscore". Default "absolute".
+#' @param method One of "zscore", "absolute", "relative". Default "zscore"
+#'   (Basel IRB-aligned; zero-safe via clipping; recommended for sparse
+#'   portfolios where baseline PDs can underflow from Merton inputs).
 #' @param zscore_floor Lower clip bound for PDs before `qnorm()` in the zscore
 #'   method. Default 1e-4.
 #' @param zscore_cap Upper clip bound. Default 1 - 1e-4.
@@ -24,7 +26,7 @@
 #' @export
 integrate_pd <- function(analysis_data,
                          internal_pd = NULL,
-                         method = c("absolute", "relative", "zscore"),
+                         method = c("zscore", "absolute", "relative"),
                          zscore_floor = 1e-4,
                          zscore_cap = 1 - 1e-4) {
   method <- match.arg(method)
@@ -198,24 +200,44 @@ apply_pd_method <- function(internal, baseline, shock, method,
 
 #' Integrate TRISK EL shift into an internal EL estimate
 #'
-#' Applies one of two methods to translate the TRISK baseline-to-shock EL change
-#' into the bank's own internal EL scale. Mirrors the Shiny EL integration logic.
+#' Applies one of three methods to translate the TRISK baseline-to-shock EL
+#' change into the bank's own internal EL scale. "absolute" and "relative"
+#' mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
+#' Vasicek recombination by transforming EL to an effective PD
+#' (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
+#' space, and converting back. The zscore method preserves the package's
+#' negative-EL convention (loss as negative number) and requires
+#' `exposure_value_usd` and `loss_given_default` columns in `analysis_data`.
 #'
 #' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
-#'   columns `expected_loss_baseline`, `expected_loss_shock`.
+#'   columns `expected_loss_baseline`, `expected_loss_shock` (and for zscore,
+#'   `exposure_value_usd`, `loss_given_default`).
 #' @param internal_el Numeric vector of length `nrow(analysis_data)`, or a data
 #'   frame with `company_id` + `internal_el` columns, or NULL (default) which
 #'   uses `expected_loss_baseline`.
-#' @param method One of "absolute", "relative". Default "absolute".
+#' @param method One of "zscore", "absolute", "relative". Default "zscore".
+#' @param zscore_floor Lower clip bound for effective PDs before `qnorm()`.
+#'   Default 1e-4.
+#' @param zscore_cap Upper clip bound. Default 1 - 1e-4.
 #'
 #' @return List with `$portfolio`, `$portfolio_long`, `$aggregate`.
 #' @export
 integrate_el <- function(analysis_data,
                          internal_el = NULL,
-                         method = c("absolute", "relative")) {
+                         method = c("zscore", "absolute", "relative"),
+                         zscore_floor = 1e-4,
+                         zscore_cap = 1 - 1e-4) {
   method <- match.arg(method)
 
+  if (zscore_floor >= zscore_cap) {
+    stop("integrate_el(): zscore_floor must be strictly less than zscore_cap (got ",
+         zscore_floor, " vs ", zscore_cap, ")")
+  }
+
   required_cols <- c("expected_loss_baseline", "expected_loss_shock")
+  if (method == "zscore") {
+    required_cols <- c(required_cols, "exposure_value_usd", "loss_given_default")
+  }
   missing_cols <- setdiff(required_cols, colnames(analysis_data))
   if (length(missing_cols) > 0) {
     stop("integrate_el(): missing required columns: ",
@@ -230,7 +252,14 @@ integrate_el <- function(analysis_data,
   el_change <- el_shock - el_baseline
   el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, 0)
 
-  adjusted <- apply_el_method(internal_vec, el_baseline, el_shock, method)
+  ead <- if (method == "zscore") {
+    analysis_data$exposure_value_usd * analysis_data$loss_given_default
+  } else NULL
+
+  adjusted <- apply_el_method(internal_vec, el_baseline, el_shock, method,
+                              ead          = ead,
+                              zscore_floor = zscore_floor,
+                              zscore_cap   = zscore_cap)
 
   portfolio <- analysis_data |>
     dplyr::mutate(
@@ -268,12 +297,33 @@ integrate_el <- function(analysis_data,
   )
 }
 
-apply_el_method <- function(internal, baseline, shock, method) {
+apply_el_method <- function(internal, baseline, shock, method,
+                            ead = NULL,
+                            zscore_floor = 1e-4,
+                            zscore_cap = 1 - 1e-4) {
   switch(method,
     absolute = internal + (shock - baseline),
     relative = {
       change_pct <- ifelse(baseline != 0, (shock - baseline) / baseline, 0)
       internal * (1 + change_pct)
+    },
+    zscore = {
+      # Basel IRB style recombination, applied to EL via the
+      # effective-PD transform: EL = EAD * LGD * PD  -->  PD_eff = |EL| / EAD,
+      # where `ead` is exposure_value_usd * loss_given_default. After z-score
+      # recombination in normal-quantile space, convert back via -EAD * PD_adj
+      # (preserving the package's negative-EL convention).
+      clip <- function(x) pmin(pmax(x, zscore_floor), zscore_cap)
+      safe_div <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
+      pd_internal <- clip(safe_div(internal))
+      pd_baseline <- clip(safe_div(baseline))
+      pd_shock    <- clip(safe_div(shock))
+      adjusted_pd <- stats::pnorm(
+        stats::qnorm(pd_internal) +
+        stats::qnorm(pd_shock) -
+        stats::qnorm(pd_baseline)
+      )
+      -ead * adjusted_pd
     }
   )
 }

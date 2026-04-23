@@ -25,5 +25,32 @@ test_that("integrate_el relative method scales by percent change", {
 
 test_that("integrate_el errors on unknown method", {
   df <- make_test_analysis_data()
-  expect_error(integrate_el(df, method = "zscore"))
+  expect_error(integrate_el(df, method = "unknown_method"))
+})
+
+test_that("integrate_el zscore method works via effective-PD transform", {
+  df <- make_test_analysis_data()
+  internal <- c(-0.5, -2.0, -1.0)
+  result <- integrate_el(df, internal_el = internal, method = "zscore")
+  expect_type(result, "list")
+  expect_equal(nrow(result$portfolio), nrow(df))
+  expect_true(all(is.finite(result$portfolio$trisk_adjusted_el)))
+  expect_true(all(result$portfolio$trisk_adjusted_el <= 0))
+})
+
+test_that("integrate_el zscore errors when exposure_value_usd is missing", {
+  df <- make_test_analysis_data()
+  df$exposure_value_usd <- NULL
+  expect_error(integrate_el(df, method = "zscore"), "exposure_value_usd")
+})
+
+test_that("integrate_el errors when zscore_floor >= zscore_cap", {
+  df <- make_test_analysis_data()
+  expect_error(integrate_el(df, method = "zscore",
+                            zscore_floor = 0.5, zscore_cap = 0.4),
+               "strictly less than")
+})
+
+test_that("integrate_el default method is zscore", {
+  expect_equal(formals(integrate_el)$method[[2]], "zscore")
 })

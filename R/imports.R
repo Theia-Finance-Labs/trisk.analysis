@@ -18,12 +18,29 @@ TRISK_DATA_S3_PREFIX <- "crispy-public-data/trisk_inputs"
 
 
 
+#' @export
 TRISK_HEX_RED <- "#F53D3F"
+#' @export
 TRISK_HEX_GREEN <- "#5D9324"
+#' @export
 TRISK_HEX_GREY <- "#BAB6B5"
+#' @export
 TRISK_HEX_ADJUSTED <- "#AA2A2B"  # Dark-red blend of TRISK_HEX_RED; for "adjusted PD/EL" role
+#' @export
 STATUS_GREEN <- "#3D8B5E"        # Muted green from trisk.r.docker/global.R; for positive/better-off fills
 
+#' TRISK plot theme
+#'
+#' Standard ggplot2 theme used across trisk.analysis plots. Exported so
+#' users can apply it to custom plots (e.g. vignette chunks) for visual
+#' consistency with the built-in `pipeline_crispy_*` functions.
+#'
+#' @param base_size Base font size. Default 12.
+#' @param base_family Base font family. Default "Helvetica".
+#' @param base_line_size Line thickness. Default `base_size / 22`.
+#' @param base_rect_size Rectangle border thickness. Default `base_size / 22`.
+#' @return A ggplot2 theme object.
+#' @export
 TRISK_PLOT_THEME_FUNC <- function(
     base_size = 12, base_family = "Helvetica", base_line_size = base_size / 22,
     base_rect_size = base_size / 22) {
