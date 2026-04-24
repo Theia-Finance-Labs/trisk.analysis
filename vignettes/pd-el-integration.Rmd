@@ -24,16 +24,35 @@ library(magrittr)
 ## 1. Setup
 
 Load the bundled testdata shipped with `trisk.model` and `trisk.analysis`.
+The portfolio file is `portfolio_ids_internal_pd_testdata.csv`, which
+augments the classic `portfolio_ids_testdata.csv` with an `internal_pd`
+column per exposure. That column is **mandatory** — integration is
+meaningless without the bank's own PD to integrate TRISK's shift into, so
+the setup fails loudly if it's missing.
 
 ```{r}
 assets_testdata    <- read.csv(system.file("testdata", "assets_testdata.csv",    package = "trisk.model"))
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 fin_testdata       <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 carbon_testdata    <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
-portfolio_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
+portfolio_ids_internal_pd <- read.csv(system.file("testdata", "portfolio_ids_internal_pd_testdata.csv",
+                                                  package = "trisk.analysis"))
+
+stopifnot(
+  "Portfolio file must include an `internal_pd` column per exposure." =
+    "internal_pd" %in% colnames(portfolio_ids_internal_pd),
+  "`internal_pd` values must be numeric in [0, 1]." =
+    is.numeric(portfolio_ids_internal_pd$internal_pd) &&
+      all(portfolio_ids_internal_pd$internal_pd >= 0 &
+          portfolio_ids_internal_pd$internal_pd <= 1, na.rm = TRUE)
+)
 ```
 
 ## 2. Run TRISK on the portfolio
+
+The `internal_pd` column is carried alongside — TRISK only needs the standard
+portfolio schema, and we keep the internal PDs as a separate lookup table to
+feed into `integrate_pd()` later.
 
 ```{r}
 analysis_data <- run_trisk_on_portfolio(
@@ -41,10 +60,13 @@ analysis_data <- run_trisk_on_portfolio(
   scenarios_data    = scenarios_testdata,
   financial_data    = fin_testdata,
   carbon_data       = carbon_testdata,
-  portfolio_data    = portfolio_testdata,
+  portfolio_data    = portfolio_ids_internal_pd,
   baseline_scenario = "NGFS2023GCAM_CP",
   target_scenario   = "NGFS2023GCAM_NZ2050"
 )
+
+# The internal_pd lookup used throughout the rest of the vignette:
+internal_pd_lookup <- portfolio_ids_internal_pd[, c("company_id", "internal_pd")]
 ```
 
 ```{r echo=FALSE}
@@ -55,17 +77,57 @@ knitr::kable(head(analysis_data[, c("company_id", "sector", "technology", "term"
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
-## 3. Why integration matters
+## 3. Bank-risk context (before integration)
+
+Before layering the integration methods on top, look at the raw bank-risk
+picture that TRISK produces. The four standard portfolio plots answer "what
+did the shock do?" at the equity (NPV, exposure) and credit (PD term, EL)
+levels, using the same `analysis_data`.
+
+```{r fig.width=7, fig.height=4}
+pipeline_crispy_pd_term_plot(analysis_data)
+```
+
+Expected loss by sector (baseline vs shock), all sectors on a single row:
+
+```{r fig.width=8, fig.height=4}
+ad_el_preview <- compute_analysis_metrics(analysis_data)
+el_by_sector <- ad_el_preview %>%
+  dplyr::group_by(sector) %>%
+  dplyr::summarise(
+    baseline = sum(.data$expected_loss_baseline, na.rm = TRUE),
+    shock    = sum(.data$expected_loss_shock,    na.rm = TRUE),
+    .groups  = "drop"
+  ) %>%
+  tidyr::pivot_longer(
+    cols = c("baseline", "shock"), names_to = "scenario", values_to = "el"
+  )
+
+ggplot2::ggplot(el_by_sector,
+                ggplot2::aes(x = sector, y = .data$el, fill = .data$scenario)) +
+  ggplot2::geom_col(position = ggplot2::position_dodge(width = 0.8),
+                    width = 0.7) +
+  ggplot2::scale_y_continuous(labels = scales::label_number(scale = 1e-6, suffix = "M")) +
+  ggplot2::scale_fill_manual(values = c(baseline = "#5D9324", shock = "#F53D3F")) +
+  TRISK_PLOT_THEME_FUNC() +
+  ggplot2::labs(x = "Sector", y = "Expected loss (USD, millions)",
+                fill = "Scenario",
+                title = "Expected loss by sector: baseline vs shock")
+```
+
+## 4. Why integration matters
 
 TRISK recomputes PD from a Merton structural credit model. That PD level is not
 directly comparable to the internal PD your institution already uses; only the
 change from baseline to shock carries meaning. Three integration methods
 translate the TRISK shift into your internal PD scale.
 
-## 4. Method 1 - Absolute
+## 5. Method 1 - Absolute
 
 ```{r}
-result_abs <- integrate_pd(analysis_data, method = "absolute")
+result_abs <- integrate_pd(analysis_data,
+                           internal_pd = internal_pd_lookup,
+                           method      = "absolute")
 ```
 
 ```{r echo=FALSE}
@@ -76,30 +138,34 @@ knitr::kable(head(result_abs$portfolio[, c("company_id", "sector", "internal_pd"
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
-## 5. Method 2 - Relative
+## 6. Method 2 - Relative
 
 > **Note:** when `pd_baseline = 0` the relative method returns the internal PD
 > unchanged; the shock signal is lost on zero-baseline rows. Use `absolute` or
 > `zscore` if this matters.
 
 ```{r}
-result_rel <- integrate_pd(analysis_data, method = "relative")
+result_rel <- integrate_pd(analysis_data,
+                           internal_pd = internal_pd_lookup,
+                           method      = "relative")
 ```
 
-## 6. Method 3 - Z-score (Basel IRB)
+## 7. Method 3 - Z-score (Basel IRB)
 
 The z-score method combines PDs in the normal-quantile space, preserving the
 non-linear relationship at distribution tails. Recommended for Basel IRB-aligned
 institutions.
 
 ```{r}
-result_zs <- integrate_pd(analysis_data, method = "zscore")
+result_zs <- integrate_pd(analysis_data,
+                          internal_pd = internal_pd_lookup,
+                          method      = "zscore")
 ```
 
-## 7. Supplying your own internal PDs
+## 8. Overriding internal PDs on the fly
 
-Pass a vector (length = `nrow(analysis_data)`) or a data frame with
-`company_id` and `internal_pd`. Unmatched rows fall back to `pd_baseline`.
+If you want to stress-test with a hypothetical flat internal PD (for example,
+as a sanity check), build a vector or alternate lookup and pass it instead:
 
 ```{r}
 flat_internal <- rep(0.03, nrow(analysis_data))
@@ -108,34 +174,144 @@ result_custom <- integrate_pd(analysis_data,
                               method      = "zscore")
 ```
 
-## 8. Method comparison
+## 9. Method comparison
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_method_comparison(analysis_data)
+pipeline_crispy_pd_method_comparison(analysis_data,
+                                     internal_pd = internal_pd_lookup)
 ```
 
-## 9. Integration charts
+### Advanced: firm-level and pseudo-log scale
+
+On sparse portfolios where many firms have baseline PDs near zero (Merton
+underflow) and a few have visible signal, the default sector-aggregate linear
+view can bunch everything against zero. Two arguments open up the per-firm
+picture:
+
+- `granularity = "firm"` — one row per firm instead of an EAD-weighted
+  sector aggregate. Reveals within-sector method divergence.
+- `scale = "pseudo_log"` — x-axis uses `scales::pseudo_log_trans(sigma = 1e-5)`.
+  Zero-safe and spreads values across many orders of magnitude.
+
+```{r fig.width=8, fig.height=5}
+pipeline_crispy_pd_method_comparison(
+  analysis_data,
+  internal_pd = internal_pd_lookup,
+  granularity = "firm",
+  scale       = "pseudo_log"
+)
+```
+
+## 10. Integration charts
 
 ```{r fig.width=7, fig.height=4}
 pipeline_crispy_pd_integration_bars(result_zs)
 ```
 
-## 10. EL integration
+The same `granularity` + `scale` arguments work on the bar plot:
+
+```{r fig.width=8, fig.height=6}
+pipeline_crispy_pd_integration_bars(
+  result_zs,
+  granularity = "firm",
+  scale       = "pseudo_log"
+)
+```
+
+## 11. EL integration
 
 `integrate_el()` expects `expected_loss_baseline` and `expected_loss_shock`
 columns, which `run_trisk_on_portfolio()` does not produce on its own. Call
 `compute_analysis_metrics()` first to derive them as EAD * PD.
 
+For the bank's internal EL, we derive it the same way: `EAD * LGD * internal_pd`.
+
 ```{r}
 analysis_data_el <- compute_analysis_metrics(analysis_data)
-result_el <- integrate_el(analysis_data_el, method = "relative")
+internal_el_lookup <- merge(
+  analysis_data_el[, c("company_id", "exposure_value_usd", "loss_given_default")],
+  internal_pd_lookup,
+  by = "company_id"
+)
+internal_el_lookup$internal_el <-
+  -internal_el_lookup$exposure_value_usd *
+   internal_el_lookup$loss_given_default *
+   internal_el_lookup$internal_pd
+
+result_el <- integrate_el(analysis_data_el,
+                          internal_el = internal_el_lookup[, c("company_id", "internal_el")])
+# default method is "zscore" (Basel IRB-aligned, zero-safe via clipping)
 ```
 
 ```{r fig.width=7, fig.height=4}
 pipeline_crispy_el_adjustment_bars(result_el)
 ```
 
-## 11. Portfolio-level KPIs
+### Internal EL vs TRISK-Adjusted EL
+
+Side-by-side comparison so the integration effect is visible per group. EL is
+negative by package convention (loss as negative number); `abs()` is applied
+for display so the bars read as magnitudes of expected loss.
+
+**Per sector** — all sectors on one row:
+
+```{r fig.width=8, fig.height=4}
+el_compare_sector <- result_el$portfolio %>%
+  dplyr::group_by(sector) %>%
+  dplyr::summarise(
+    `Internal EL`        = sum(.data$internal_el, na.rm = TRUE),
+    `TRISK-Adjusted EL`  = sum(.data$trisk_adjusted_el, na.rm = TRUE),
+    .groups              = "drop"
+  ) %>%
+  tidyr::pivot_longer(
+    cols = c("Internal EL", "TRISK-Adjusted EL"),
+    names_to = "el_type", values_to = "el"
+  ) %>%
+  dplyr::mutate(el_abs = abs(.data$el))
+
+ggplot2::ggplot(el_compare_sector,
+                ggplot2::aes(x = sector, y = .data$el_abs, fill = .data$el_type)) +
+  ggplot2::geom_col(position = ggplot2::position_dodge(width = 0.8),
+                    width = 0.7) +
+  ggplot2::scale_y_continuous(labels = scales::label_number(scale = 1e-6, suffix = "M")) +
+  ggplot2::scale_fill_manual(values = c(`Internal EL` = "#BAB6B5",
+                                        `TRISK-Adjusted EL` = "#AA2A2B")) +
+  TRISK_PLOT_THEME_FUNC() +
+  ggplot2::labs(x = "Sector", y = "|Expected loss| (USD, millions)",
+                fill = "",
+                title = "Internal EL vs TRISK-Adjusted EL by sector")
+```
+
+**Per exposure** — one group of two bars per firm/technology:
+
+```{r fig.width=11, fig.height=5}
+el_compare_firm <- result_el$portfolio %>%
+  dplyr::mutate(firm = paste(.data$company_id, .data$technology, sep = "/")) %>%
+  dplyr::select("firm", "sector",
+                `Internal EL` = "internal_el",
+                `TRISK-Adjusted EL` = "trisk_adjusted_el") %>%
+  tidyr::pivot_longer(
+    cols = c("Internal EL", "TRISK-Adjusted EL"),
+    names_to = "el_type", values_to = "el"
+  ) %>%
+  dplyr::mutate(el_abs = abs(.data$el))
+
+ggplot2::ggplot(el_compare_firm,
+                ggplot2::aes(x = .data$firm, y = .data$el_abs, fill = .data$el_type)) +
+  ggplot2::geom_col(position = ggplot2::position_dodge(width = 0.8),
+                    width = 0.7) +
+  ggplot2::scale_y_continuous(labels = scales::label_number(scale = 1e-6, suffix = "M")) +
+  ggplot2::scale_fill_manual(values = c(`Internal EL` = "#BAB6B5",
+                                        `TRISK-Adjusted EL` = "#AA2A2B")) +
+  ggplot2::facet_grid(. ~ sector, scales = "free_x", space = "free_x") +
+  TRISK_PLOT_THEME_FUNC() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+  ggplot2::labs(x = "Firm / technology", y = "|Expected loss| (USD, millions)",
+                fill = "",
+                title = "Internal EL vs TRISK-Adjusted EL by exposure")
+```
+
+## 12. Portfolio-level KPIs
 
 ```{r}
 pipeline_crispy_pd_kpi_table(result_zs$aggregate)
@@ -145,7 +321,7 @@ pipeline_crispy_pd_kpi_table(result_zs$aggregate)
 pipeline_crispy_el_kpi_table(result_el$aggregate)
 ```
 
-## 12. Sector breakdown
+## 13. Sector breakdown
 
 ```{r}
 pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
