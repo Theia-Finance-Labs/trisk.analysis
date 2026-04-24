@@ -2,37 +2,39 @@ Type: Package
 Package: trisk.analysis
 Title: Trisk Utility Functions
 Version: 1.2.3
-Authors@R: c(  
+Authors@R: c(
     person(given = "Bertrand",
            family = "Gallice",
            role = c("aut", "cre"),
-           email = "bertrand@2degrees-investing.org"),           
+           email = "bertrand@2degrees-investing.org"),
     person(given = "1in1000",
            role = c("cph", "fnd"),
            email = "1in1000@theiafinance.org"))
 Description: Wrapper and plots functions to analysis Trisk outputs.
 License: LGPL (>= 3)
-Imports: 
+Imports:
+    DBI,
     dplyr,
+    ggplot2,
+    kableExtra,
     magrittr,
     rlang,
-    tibble,
-    uuid,
-    trisk.model,
-    ggplot2,
+    RPostgres,
     scales,
     stringdist,
+    tibble,
     tidyr,
-    DBI,
-    RPostgres
+    trisk.model,
+    uuid
 Remotes:
     Theia-Finance-Labs/trisk.model
 Encoding: UTF-8
 RoxygenNote: 7.3.3
-Suggests: 
-    knitr,
-    rmarkdown,
+Suggests:
     fs,
-    kableExtra,
-    readr
+    knitr,
+    readr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3

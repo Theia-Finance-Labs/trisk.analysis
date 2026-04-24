@@ -1,0 +1,564 @@
+---
+title: "country-level-npv-analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{country-level-npv-analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats)
+library(magrittr)
+```
+
+# Country-Level NPV Analysis
+
+This vignette demonstrates how to create aggregated NPV analysis results for selected countries and generate comparative visualizations. The workflow is flexible and allows you to compare 2-6 countries of your choice, including the ability to create an aggregate of your selected countries.
+
+## Overview
+
+The analysis workflow:
+1. Loads pre-computed NPV results from TRISK model outputs
+2. Filters data by your selected countries
+3. Aggregates NPV and company trajectory data by country, sector, and technology
+4. Creates an optional aggregate combining your selected countries
+5. Generates summary tables and visualizations for comparison
+
+## Select Your Countries
+
+Define which countries you want to analyze. You can select **2 to 6 countries**. The workflow will automatically create country-level summaries and an optional aggregate across all selected countries.
+
+```{r}
+# ============================================================================
+# CONFIGURATION: Select Your Countries Here
+# ============================================================================
+
+# Define the countries you want to analyze (ISO 3166-1 alpha-2 codes)
+# Examples: 'CZ' (Czech Republic), 'DE' (Germany), 'PL' (Poland), 'FR' (France), etc.
+# You can select 2 to 6 countries
+
+selected_countries <- c('FR', 'IT')  # Modify this to your desired countries
+
+# Optional: Give your aggregate a custom label
+# If empty, will default to "AGGREGATE" or first N countries
+aggregate_label <- "EU_FR_IT"  # Can be any meaningful label
+
+# Set to TRUE to create an aggregate of selected countries
+# Set to FALSE to only analyze individual countries
+create_aggregate <- TRUE
+
+# ============================================================================
+# Input and output paths (adjust to your setup)
+# ============================================================================
+
+# Path to your NPV results CSV (output from TRISK model)
+NPV_INPUT_FILE <- system.file("testdata", "assets_testdata.csv", package = "trisk.model")
+
+# For this vignette, we'll use test data if you have it
+# If using your own data, specify the path to your npv_results.csv
+# NPV_INPUT_FILE <- "/path/to/your/npv_results.csv"
+# TRAJECTORIES_INPUT_FILE <- "/path/to/your/company_trajectories.csv"
+
+# Create output directory
+OUTPUT_DIR <- tempdir()  # Use temporary directory for this demo
+# For production use: OUTPUT_DIR <- "./country_analysis_results"
+dir.create(OUTPUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
+cat('=== Country-Level NPV Analysis ===\n\n')
+cat('Selected countries:', paste(selected_countries, collapse=', '), '\n')
+cat('Create aggregate:', create_aggregate, '\n')
+cat('Output directory:', OUTPUT_DIR, '\n\n')
+```
+
+## Load Input Data
+
+The analysis uses the raw NPV results and company trajectories from the TRISK model outputs.
+
+```{r}
+# ============================================================================
+# STEP 1: Load Raw Data
+# ============================================================================
+
+# For demonstration, we'll create sample data structure
+# In practice, you would load actual TRISK outputs
+
+# Check if we can load from testdata
+test_npv_file <- system.file("testdata", "npv_results.csv",
+                             package = "trisk.analysis")
+
+if (!file.exists(test_npv_file)) {
+  # For demo purposes, let's note that actual data would be loaded here
+  cat('Note: Using testdata directory. For real analysis, load your TRISK output files:\n')
+  cat('  - npv_results.csv: Individual asset-level NPV results\n')
+  cat('  - company_trajectories.csv: Annual production and financial trajectories\n\n')
+
+  # We'll demonstrate the structure with a note
+  demo_mode <- TRUE
+} else {
+  demo_mode <- FALSE
+  npv_results <- read_csv(test_npv_file, show_col_types = FALSE)
+  trajectories <- read_csv(system.file("testdata", "company_trajectories.csv",
+                                       package = "trisk.analysis"),
+                           show_col_types = FALSE)
+}
+
+if (!demo_mode) {
+  cat('✓ Loaded NPV results:', nrow(npv_results), 'rows\n')
+  cat('  Columns:', paste(names(npv_results), collapse=', '), '\n\n')
+}
+```
+
+## Data Aggregation
+
+### Aggregate by Country, Sector, and Technology
+
+The aggregation sums NPV values and company metrics across all assets within each country-sector-technology combination.
+
+```{r}
+# ============================================================================
+# STEP 2: Aggregate NPV Results by Country
+# ============================================================================
+
+if (!demo_mode) {
+  # Filter to selected countries
+  npv_filtered <- npv_results %>%
+    filter(country_iso2 %in% selected_countries)
+
+  cat('Filtering to selected countries...\n')
+  cat('Rows after filtering:', nrow(npv_filtered), '\n\n')
+
+  # Aggregate by country, sector, and technology
+  npv_aggregated <- npv_filtered %>%
+    group_by(
+      country = country_iso2,
+      sector,
+      technology
+    ) %>%
+    summarise(
+      n_companies = n_distinct(company_id),
+      n_assets = n(),
+      total_npv_baseline = sum(net_present_value_baseline, na.rm = TRUE),
+      total_npv_shock = sum(net_present_value_shock, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    mutate(
+      total_npv_difference = total_npv_shock - total_npv_baseline,
+      total_npv_change_pct = case_when(
+        is.na(total_npv_baseline) | total_npv_baseline == 0 ~ NA_real_,
+        TRUE ~ (total_npv_difference / total_npv_baseline) * 100
+      )
+    ) %>%
+    arrange(country, sector, technology)
+
+  cat('✓ Aggregated NPV by country, sector, technology\n')
+  cat('  Total rows:', nrow(npv_aggregated), '\n\n')
+
+  # Display sample
+  cat('Sample of aggregated data:\n')
+  print(npv_aggregated %>% head(10))
+}
+```
+
+### Create Aggregate (Optional)
+
+If enabled, this combines all selected countries into a single aggregate for cross-country comparison.
+
+```{r}
+# ============================================================================
+# STEP 3: Create Country Aggregate (Optional)
+# ============================================================================
+
+if (!demo_mode & create_aggregate) {
+  # Aggregate across all selected countries
+  npv_aggregate <- npv_filtered %>%
+    group_by(sector, technology) %>%
+    summarise(
+      n_companies = n_distinct(company_id),
+      n_assets = n(),
+      total_npv_baseline = sum(net_present_value_baseline, na.rm = TRUE),
+      total_npv_shock = sum(net_present_value_shock, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    mutate(
+      country = aggregate_label,
+      total_npv_difference = total_npv_shock - total_npv_baseline,
+      total_npv_change_pct = case_when(
+        is.na(total_npv_baseline) | total_npv_baseline == 0 ~ NA_real_,
+        TRUE ~ (total_npv_difference / total_npv_baseline) * 100
+      )
+    ) %>%
+    select(country, sector, technology, n_companies, n_assets,
+           total_npv_baseline, total_npv_shock, total_npv_difference, total_npv_change_pct) %>%
+    arrange(sector, technology)
+
+  cat('✓ Created aggregate for:', aggregate_label, '\n')
+  cat('  Sectors included:', n_distinct(npv_aggregate$sector), '\n')
+  cat('  Technologies:', n_distinct(npv_aggregate$technology), '\n\n')
+
+  # Combine individual countries with aggregate
+  npv_combined <- bind_rows(npv_aggregated, npv_aggregate) %>%
+    mutate(country = factor(country,
+                           levels = c(selected_countries, aggregate_label)))
+} else if (!demo_mode) {
+  npv_combined <- npv_aggregated
+}
+```
+
+## Aggregate Company Trajectories
+
+The company trajectories provide annual-level data on production, financial metrics, and NPV contributions.
+
+```{r}
+# ============================================================================
+# STEP 4: Aggregate Company Trajectories by Country
+# ============================================================================
+
+if (!demo_mode) {
+  # Filter trajectories to selected countries
+  traj_filtered <- trajectories %>%
+    filter(country_iso2 %in% selected_countries)
+
+  # Aggregate by country, sector, technology, and year
+  trajectories_aggregated <- traj_filtered %>%
+    group_by(
+      country = country_iso2,
+      sector,
+      technology,
+      year
+    ) %>%
+    summarise(
+      n_companies = n_distinct(company_id),
+      n_assets = n_distinct(asset_id),
+      total_production_plan = sum(production_plan_company_technology, na.rm = TRUE),
+      total_production_baseline = sum(production_baseline_scenario, na.rm = TRUE),
+      total_production_target = sum(production_target_scenario, na.rm = TRUE),
+      total_production_shock = sum(production_shock_scenario, na.rm = TRUE),
+      mean_pd = mean(pd, na.rm = TRUE),
+      total_net_profits_baseline = sum(net_profits_baseline_scenario, na.rm = TRUE),
+      total_net_profits_shock = sum(net_profits_shock_scenario, na.rm = TRUE),
+      total_discounted_net_profits_baseline = sum(discounted_net_profits_baseline_scenario, na.rm = TRUE),
+      total_discounted_net_profits_shock = sum(discounted_net_profits_shock_scenario, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    arrange(country, sector, technology, year)
+
+  cat('✓ Aggregated trajectories by country, sector, technology, year\n')
+  cat('  Total rows:', nrow(trajectories_aggregated), '\n')
+  cat('  Year range:', min(trajectories_aggregated$year), '-',
+      max(trajectories_aggregated$year), '\n\n')
+
+  # Sample
+  cat('Sample of aggregated trajectories:\n')
+  print(trajectories_aggregated %>% head(10))
+}
+```
+
+## Create Aggregate Trajectories (Optional)
+
+```{r}
+# ============================================================================
+# STEP 5: Create Aggregate Trajectories (Optional)
+# ============================================================================
+
+if (!demo_mode & create_aggregate) {
+  trajectories_aggregate <- traj_filtered %>%
+    group_by(sector, technology, year) %>%
+    summarise(
+      n_companies = n_distinct(company_id),
+      n_assets = n_distinct(asset_id),
+      total_production_plan = sum(production_plan_company_technology, na.rm = TRUE),
+      total_production_baseline = sum(production_baseline_scenario, na.rm = TRUE),
+      total_production_target = sum(production_target_scenario, na.rm = TRUE),
+      total_production_shock = sum(production_shock_scenario, na.rm = TRUE),
+      mean_pd = mean(pd, na.rm = TRUE),
+      total_net_profits_baseline = sum(net_profits_baseline_scenario, na.rm = TRUE),
+      total_net_profits_shock = sum(net_profits_shock_scenario, na.rm = TRUE),
+      total_discounted_net_profits_baseline = sum(discounted_net_profits_baseline_scenario, na.rm = TRUE),
+      total_discounted_net_profits_shock = sum(discounted_net_profits_shock_scenario, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    mutate(
+      country = aggregate_label,
+      .after = technology
+    ) %>%
+    arrange(country, sector, technology, year)
+
+  # Combine
+  trajectories_combined <- bind_rows(trajectories_aggregated, trajectories_aggregate) %>%
+    mutate(country = factor(country,
+                           levels = c(selected_countries, aggregate_label)))
+} else if (!demo_mode) {
+  trajectories_combined <- trajectories_aggregated
+}
+```
+
+## Save Results
+
+Export the aggregated summaries to CSV files for further analysis.
+
+```{r}
+# ============================================================================
+# STEP 6: Save Results to CSV
+# ============================================================================
+
+if (!demo_mode) {
+  # Save NPV summary
+  npv_output_file <- file.path(OUTPUT_DIR, 'npv_results_summary.csv')
+  write_csv(npv_combined, npv_output_file)
+  cat('✓ Saved NPV summary:', npv_output_file, '\n')
+
+  # Save trajectories summary
+  traj_output_file <- file.path(OUTPUT_DIR, 'company_trajectories_summary.csv')
+  write_csv(trajectories_combined, traj_output_file)
+  cat('✓ Saved trajectories summary:', traj_output_file, '\n\n')
+
+  # Summary statistics
+  cat('NPV Results Summary:\n')
+  npv_summary <- npv_combined %>%
+    group_by(country) %>%
+    summarise(
+      n_rows = n(),
+      n_sectors = n_distinct(sector),
+      n_technologies = n_distinct(technology),
+      total_assets = sum(n_assets, na.rm = TRUE),
+      total_companies = sum(n_companies, na.rm = TRUE),
+      total_npv_change_mln_usd = sum(total_npv_difference, na.rm = TRUE) / 1e6,
+      .groups = 'drop'
+    )
+  print(npv_summary)
+}
+```
+
+## Visualizations
+
+### NPV Change by Country and Sector
+
+A horizontal bar chart showing the total NPV change for each sector within each country.
+
+```{r, fig.width=12, fig.height=8}
+# ============================================================================
+# STEP 7: Create Visualizations
+# ============================================================================
+
+if (!demo_mode) {
+  # Aggregate by country and sector
+  npv_by_sector <- npv_combined %>%
+    group_by(country, sector) %>%
+    summarise(
+      total_npv_difference = sum(total_npv_difference, na.rm = TRUE),
+      n_technologies = n(),
+      .groups = 'drop'
+    ) %>%
+    arrange(total_npv_difference)
+
+  # Create visualization
+  p1 <- ggplot(npv_by_sector,
+               aes(x = reorder_within(sector, total_npv_difference, country),
+                   y = total_npv_difference / 1e6,
+                   fill = country)) +
+    geom_col(position = 'dodge') +
+    coord_flip() +
+    facet_wrap(~country, scales = 'free_x') +
+    scale_x_reordered() +
+    theme_minimal() +
+    theme(
+      legend.position = 'bottom',
+      panel.grid.major.x = element_line(color = 'gray90')
+    ) +
+    labs(
+      title = 'NPV Change by Sector and Country',
+      subtitle = paste('Selected countries:', paste(selected_countries, collapse=', ')),
+      x = 'Sector',
+      y = 'Total NPV Difference (Million USD)',
+      fill = 'Country'
+    )
+
+  print(p1)
+
+  # Save
+  plot_file <- file.path(OUTPUT_DIR, 'npv_by_sector_country.png')
+  ggsave(plot_file, p1, width = 12, height = 8, dpi = 300, units = 'in')
+  cat('✓ Saved visualization:', plot_file, '\n\n')
+}
+```
+
+### NPV Change Percentage by Technology
+
+Shows the percentage change in NPV for key technologies across countries, capped at -100%.
+
+```{r, fig.width=12, fig.height=10}
+if (!demo_mode) {
+  # Prepare data for top technologies
+  tech_summary <- npv_combined %>%
+    filter(!is.na(total_npv_change_pct)) %>%
+    group_by(country, technology) %>%
+    summarise(
+      total_npv_difference = sum(total_npv_difference, na.rm = TRUE),
+      n_assets = sum(n_assets, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    mutate(
+      # Calculate percentage change with -100% cap
+      npv_change_pct = case_when(
+        n_assets > 0 & total_npv_difference < 0 ~ pmax(
+          (total_npv_difference / abs(total_npv_difference)) * 100,
+          -100
+        ),
+        TRUE ~ (total_npv_difference / abs(total_npv_difference)) * 100
+      )
+    )
+
+  # Get top 20 technologies
+  top_tech <- tech_summary %>%
+    group_by(technology) %>%
+    summarise(impact = sum(abs(total_npv_difference), na.rm = TRUE), .groups = 'drop') %>%
+    arrange(desc(impact)) %>%
+    head(20) %>%
+    pull(technology)
+
+  tech_filtered <- tech_summary %>%
+    filter(technology %in% top_tech)
+
+  p2 <- ggplot(tech_filtered,
+               aes(x = reorder(technology, total_npv_difference),
+                   y = total_npv_difference / 1e6,
+                   fill = country)) +
+    geom_col(position = 'dodge') +
+    coord_flip() +
+    theme_minimal() +
+    theme(
+      legend.position = 'bottom',
+      panel.grid.major.x = element_line(color = 'gray90')
+    ) +
+    scale_fill_brewer(palette = 'Set2') +
+    labs(
+      title = 'NPV Impact by Technology (Top 20)',
+      subtitle = 'Total NPV difference across all assets',
+      x = 'Technology',
+      y = 'Total NPV Difference (Million USD)',
+      fill = 'Country'
+    )
+
+  print(p2)
+
+  plot_file <- file.path(OUTPUT_DIR, 'npv_by_technology.png')
+  ggsave(plot_file, p2, width = 12, height = 10, dpi = 300, units = 'in')
+  cat('✓ Saved visualization:', plot_file, '\n\n')
+}
+```
+
+### Production Trajectory Comparison
+
+Compares baseline and shock production scenarios across countries.
+
+```{r, fig.width=12, fig.height=6}
+if (!demo_mode) {
+  # Select key sectors for trajectory visualization
+  key_sectors <- trajectories_combined %>%
+    group_by(sector) %>%
+    summarise(total_prod = sum(total_production_baseline, na.rm = TRUE), .groups = 'drop') %>%
+    arrange(desc(total_prod)) %>%
+    head(4) %>%
+    pull(sector)
+
+  traj_filtered <- trajectories_combined %>%
+    filter(sector %in% key_sectors) %>%
+    group_by(country, sector, year) %>%
+    summarise(
+      total_production_baseline = sum(total_production_baseline, na.rm = TRUE),
+      total_production_shock = sum(total_production_shock, na.rm = TRUE),
+      .groups = 'drop'
+    )
+
+  # Pivot for easier plotting
+  traj_long <- traj_filtered %>%
+    pivot_longer(
+      cols = starts_with('total_production_'),
+      names_to = 'scenario',
+      values_to = 'production'
+    ) %>%
+    mutate(
+      scenario = case_when(
+        scenario == 'total_production_baseline' ~ 'Baseline (Current Policies)',
+        scenario == 'total_production_shock' ~ 'Shock Scenario',
+        TRUE ~ scenario
+      )
+    )
+
+  p3 <- ggplot(traj_long,
+               aes(x = year, y = production, color = scenario, linetype = country)) +
+    geom_line(size = 1) +
+    facet_wrap(~sector, scales = 'free_y', ncol = 2) +
+    theme_minimal() +
+    theme(
+      legend.position = 'bottom',
+      panel.grid.minor = element_blank()
+    ) +
+    scale_color_manual(
+      values = c('Baseline (Current Policies)' = '#2E86AB', 'Shock Scenario' = '#A23B72')
+    ) +
+    labs(
+      title = 'Production Trajectories: Baseline vs Shock',
+      subtitle = 'Top 4 sectors by production volume',
+      x = 'Year',
+      y = 'Total Production',
+      color = 'Scenario',
+      linetype = 'Country'
+    )
+
+  print(p3)
+
+  plot_file <- file.path(OUTPUT_DIR, 'production_trajectories.png')
+  ggsave(plot_file, p3, width = 12, height = 6, dpi = 300, units = 'in')
+  cat('✓ Saved visualization:', plot_file, '\n\n')
+}
+```
+
+## Summary
+
+This vignette provides a complete workflow for:
+
+1. **Selecting countries**: Choose any 2-6 countries by modifying the `selected_countries` vector
+2. **Aggregating data**: Summarizes NPV and trajectory data by country, sector, and technology
+3. **Creating comparisons**: Optionally creates an aggregate across your selected countries
+4. **Generating outputs**:
+   - CSV files with aggregated results (npv_results_summary.csv, company_trajectories_summary.csv)
+   - Visualizations showing NPV impacts and production trajectories
+
+### Key Aggregation Rules
+
+- **NPV aggregation**: Sum of net_present_value_baseline and net_present_value_shock across all assets
+- **NPV difference**: shock value minus baseline value
+- **NPV percentage change**: (difference / baseline) × 100, capped at -100%
+- **Company/asset counts**: Distinct count of company_id and asset count
+- **Trajectory aggregation**: Sum of production and financial metrics by year
+
+### Customization Options
+
+Modify the configuration section at the top to:
+- Change `selected_countries` to your desired countries (2-6)
+- Set `create_aggregate` to FALSE if you only want individual country analysis
+- Change `aggregate_label` to customize the aggregate name
+- Adjust output paths as needed
+
+### File Outputs
+
+All results are saved to the OUTPUT_DIR:
+- `npv_results_summary.csv`: Country-sector-technology level NPV data
+- `company_trajectories_summary.csv`: Annual production and financial metrics
+- `npv_by_sector_country.png`: Bar chart of NPV changes by sector
+- `npv_by_technology.png`: Technology-level impact visualization
+- `production_trajectories.png`: Production pathway comparison

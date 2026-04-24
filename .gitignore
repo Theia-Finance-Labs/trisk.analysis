@@ -2,6 +2,13 @@
 workspace/*
 data-raw/data
 .DS_STORE
+.DS_Store
+khanbank/
+dist/
+
+# Client-specific artifacts (Khan Bank)
+vignettes/*_khan_bank.Rmd
+inst/testdata/*_khan_bank_testdata.csv
 
 # History files
 .Rhistory
