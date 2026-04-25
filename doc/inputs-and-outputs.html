@@ -1,0 +1,5042 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>inputs-and-outputs</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">inputs-and-outputs</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trisk.analysis)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span></code></pre></div>
+<div id="input-datasets" class="section level1">
+<h1>Input datasets</h1>
+<p>Load the internal datasets</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>assets_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;assets_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>scenarios_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;scenarios_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>financial_features_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;financial_features_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>ngfs_carbon_price_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;ngfs_carbon_price_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span></code></pre></div>
+<div id="assets-test-data" class="section level3">
+<h3>Assets Test Data</h3>
+<p>This dataset contains data about company assets, including
+production, technology, and geographical details.</p>
+<div id="data-description" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>assets_testdata</code> dataset includes the following
+columns:</p>
+<ul>
+<li><code>company_id</code>: Unique identifier for the company.</li>
+<li><code>company_name</code>: Name of the company.</li>
+<li><code>asset_id</code>: Unique identifier for the asset.</li>
+<li><code>country_iso2</code>: ISO 3166-1 alpha-2 code for the
+country.</li>
+<li><code>asset_name</code>: Name of the asset.</li>
+<li><code>production_year</code>: Year of production data.</li>
+<li><code>emission_factor</code>: Emissions from production.</li>
+<li><code>technology</code>: Type of technology used.</li>
+<li><code>sector</code>: Production sector.</li>
+<li><code>capacity</code>: Asset capacity.</li>
+<li><code>capacity_factor</code>: Asset utilization percentage.</li>
+<li><code>production_unit</code>: Unit for production.</li>
+</ul>
+</div>
+<div id="data-structure" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">str</span>(assets_testdata)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    42 obs. of  12 variables:</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;  $ company_id     : int  101 101 101 101 101 101 102 102 102 102 ...</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  $ company_name   : chr  &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; ...</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;  $ asset_id       : int  101 101 101 101 101 101 102 102 102 102 ...</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;  $ country_iso2   : chr  &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; ...</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  $ asset_name     : chr  &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; ...</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;  $ production_year: int  2022 2023 2024 2025 2026 2027 2022 2023 2024 2025 ...</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  $ emission_factor: num  0.062 0.062 0.062 0.062 0.062 ...</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;  $ technology     : chr  &quot;Gas&quot; &quot;Gas&quot; &quot;Gas&quot; &quot;Gas&quot; ...</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  $ sector         : chr  &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; ...</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  $ capacity       : num  8600 8600 8600 8600 8600 ...</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  $ capacity_factor: num  0.581 0.631 0.721 0.86 0.907 ...</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  $ production_unit: chr  &quot;GJ&quot; &quot;GJ&quot; &quot;GJ&quot; &quot;GJ&quot; ...</span></span></code></pre></div>
+</div>
+<div id="sample-data" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+emission_factor
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+capacity
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+capacity_factor
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+production_unit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2022
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+0.5813953
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2023
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+0.6305814
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2024
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+0.7209302
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2025
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+0.8604651
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2026
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+0.9069767
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+101
+</td>
+<td style="text-align:left;width: 150px; ">
+DE
+</td>
+<td style="text-align:left;width: 150px; ">
+Company 1
+</td>
+<td style="text-align:right;width: 150px; ">
+2027
+</td>
+<td style="text-align:right;width: 150px; ">
+0.0620259
+</td>
+<td style="text-align:left;width: 150px; ">
+Gas
+</td>
+<td style="text-align:left;width: 150px; ">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;width: 150px; ">
+8600
+</td>
+<td style="text-align:right;width: 150px; ">
+1.0000000
+</td>
+<td style="text-align:left;width: 150px; ">
+GJ
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="financial-features-test-data" class="section level3">
+<h3>Financial Features Test Data</h3>
+<p>This dataset contains financial metrics necessary for calculating
+stress test outputs.</p>
+<div id="data-description-1" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>financial_features_testdata</code> dataset includes the
+following columns:</p>
+<ul>
+<li><code>company_id</code>: Unique identifier for the company.</li>
+<li><code>pd</code>: Probability of default for the company.</li>
+<li><code>net_profit_margin</code>: Net profit margin for the
+company.</li>
+<li><code>debt_equity_ratio</code>: Debt to equity ratio.</li>
+<li><code>volatility</code>: Volatility of the company’s asset
+values.</li>
+</ul>
+</div>
+<div id="data-structure-1" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">str</span>(financial_features_testdata)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    5 obs. of  5 variables:</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;  $ company_id       : int  101 103 105 104 102</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;  $ pd               : num  0.00562 0.00398 0.00246 0.00298 0.00365</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;  $ net_profit_margin: num  0.0764 0.0717 0.0539 0.0539 0.1058</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  $ debt_equity_ratio: num  0.13 0.128 0.119 0.11 0.104</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  $ volatility       : num  0.259 0.251 0.236 0.251 0.317</span></span></code></pre></div>
+</div>
+<div id="sample-data-1" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profit_margin
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+debt_equity_ratio
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+volatility
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.2593230
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+103
+</td>
+<td style="text-align:right;">
+0.0039782
+</td>
+<td style="text-align:right;">
+0.0716949
+</td>
+<td style="text-align:right;">
+0.1277164
+</td>
+<td style="text-align:right;">
+0.2513500
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.0024568
+</td>
+<td style="text-align:right;">
+0.0539341
+</td>
+<td style="text-align:right;">
+0.1194000
+</td>
+<td style="text-align:right;">
+0.2360043
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+104
+</td>
+<td style="text-align:right;">
+0.0029792
+</td>
+<td style="text-align:right;">
+0.0539341
+</td>
+<td style="text-align:right;">
+0.1097633
+</td>
+<td style="text-align:right;">
+0.2513500
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+102
+</td>
+<td style="text-align:right;">
+0.0036483
+</td>
+<td style="text-align:right;">
+0.1057878
+</td>
+<td style="text-align:right;">
+0.1044025
+</td>
+<td style="text-align:right;">
+0.3167116
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="ngfs-carbon-price-test-data" class="section level3">
+<h3>NGFS Carbon Price Test Data</h3>
+<p>This dataset provides carbon pricing data used in the stress test
+scenarios.</p>
+<div id="data-description-2" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>ngfs_carbon_price_testdata</code> dataset includes the
+following columns:</p>
+<ul>
+<li><code>year</code>: Year of the carbon price.</li>
+<li><code>model</code>: Model used to generate the carbon price.</li>
+<li><code>scenario</code>: Scenario name.</li>
+<li><code>scenario_geography</code>: Geographic region for the
+scenario.</li>
+<li><code>variable</code>: The variable measured (e.g., carbon
+price).</li>
+<li><code>unit</code>: Unit of the variable.</li>
+<li><code>carbon_tax</code>: The amount of carbon tax applied in the
+scenario.</li>
+</ul>
+</div>
+<div id="data-structure-2" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">str</span>(ngfs_carbon_price_testdata)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    1376 obs. of  7 variables:</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;  $ model             : chr  &quot;GCAM 5.3+ NGFS&quot; &quot;GCAM 5.3+ NGFS&quot; &quot;GCAM 5.3+ NGFS&quot; &quot;GCAM 5.3+ NGFS&quot; ...</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;  $ scenario          : chr  &quot;B2DS&quot; &quot;B2DS&quot; &quot;B2DS&quot; &quot;B2DS&quot; ...</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;  $ scenario_geography: chr  &quot;Global&quot; &quot;Global&quot; &quot;Global&quot; &quot;Global&quot; ...</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;  $ variable          : chr  &quot;Price|Carbon&quot; &quot;Price|Carbon&quot; &quot;Price|Carbon&quot; &quot;Price|Carbon&quot; ...</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;  $ unit              : chr  &quot;US$2010/t CO2&quot; &quot;US$2010/t CO2&quot; &quot;US$2010/t CO2&quot; &quot;US$2010/t CO2&quot; ...</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;  $ carbon_tax        : num  0 0 0 0 0 0 0 0 0 0 ...</span></span></code></pre></div>
+</div>
+<div id="sample-data-2" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+year
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+model
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_geography
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+variable
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+unit
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+carbon_tax
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="scenarios-test-data" class="section level3">
+<h3>Scenarios Test Data</h3>
+<p>This dataset contains scenario-specific data including price paths,
+capacity factors, and other relevant information.</p>
+<div id="data-description-3" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>scenarios_testdata</code> dataset includes the following
+columns:</p>
+<ul>
+<li><code>scenario_geography</code>: Region relevant to the
+scenario.</li>
+<li><code>scenario</code>: Scenario name.</li>
+<li><code>scenario_pathway</code>: Specific pathway for the
+scenario.</li>
+<li><code>scenario_type</code>: Type of scenario (e.g., baseline,
+shock).</li>
+<li><code>sector</code>: Sector of production.</li>
+<li><code>technology</code>: Type of technology.</li>
+<li><code>scenario_year</code>: Year of the scenario data.</li>
+<li><code>scenario_price</code>: Price in the scenario.</li>
+<li><code>price_unit</code>: Unit for the price.</li>
+<li><code>pathway_unit</code>: Unit of the pathway.</li>
+<li><code>technology_type</code>: Type of technology involved (carbon or
+renewable).</li>
+</ul>
+</div>
+<div id="data-structure-3" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">str</span>(scenarios_testdata)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; &#39;data.frame&#39;:    1422 obs. of  14 variables:</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;  $ scenario                : chr  &quot;NGFS2023GCAM_CP&quot; &quot;NGFS2023GCAM_CP&quot; &quot;NGFS2023GCAM_CP&quot; &quot;NGFS2023GCAM_CP&quot; ...</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;  $ scenario_type           : chr  &quot;baseline&quot; &quot;baseline&quot; &quot;baseline&quot; &quot;baseline&quot; ...</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;  $ scenario_geography      : chr  &quot;Global&quot; &quot;Global&quot; &quot;Global&quot; &quot;Global&quot; ...</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;  $ sector                  : chr  &quot;Coal&quot; &quot;Coal&quot; &quot;Coal&quot; &quot;Coal&quot; ...</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;  $ technology              : chr  &quot;Coal&quot; &quot;Coal&quot; &quot;Coal&quot; &quot;Coal&quot; ...</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;  $ scenario_year           : int  2022 2023 2024 2025 2026 2027 2028 2029 2030 2031 ...</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;  $ price_unit              : chr  &quot;$/tonnes&quot; &quot;$/tonnes&quot; &quot;$/tonnes&quot; &quot;$/tonnes&quot; ...</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;  $ scenario_price          : num  57 57.4 57.7 58 58.4 ...</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;  $ pathway_unit            : chr  &quot;EJ/yr&quot; &quot;EJ/yr&quot; &quot;EJ/yr&quot; &quot;EJ/yr&quot; ...</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;  $ scenario_pathway        : num  159 160 161 162 162 ...</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;  $ technology_type         : chr  &quot;carbontech&quot; &quot;carbontech&quot; &quot;carbontech&quot; &quot;carbontech&quot; ...</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;  $ scenario_capacity_factor: num  1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt;  $ country_iso2_list       : logi  NA NA NA NA NA NA ...</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;  $ scenario_provider       : chr  &quot;NGFS2023GCAM&quot; &quot;NGFS2023GCAM&quot; &quot;NGFS2023GCAM&quot; &quot;NGFS2023GCAM&quot; ...</span></span></code></pre></div>
+</div>
+<div id="sample-data-3" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_type
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_geography
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_year
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+price_unit
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_price
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+pathway_unit
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_pathway
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology_type
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_capacity_factor
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2_list
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_provider
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2022
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+57.03917
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+159.4468
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2023
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+57.35451
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+160.4324
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2024
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+57.66985
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+161.4180
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+57.98520
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.4035
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2026
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+58.41776
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.4545
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2027
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+58.85032
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.5055
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2028
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+59.28289
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.5565
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2029
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+59.71545
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.6075
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2030
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+60.14802
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.6585
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2031
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+60.53991
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+163.5647
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2032
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+60.93181
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+164.4709
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2033
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+61.32370
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+165.3771
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2034
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+61.71560
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+166.2833
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2035
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.10749
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.1895
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2036
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.28684
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.6793
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2037
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.46619
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+168.1691
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2038
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.64553
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+168.6589
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2039
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.82488
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.1487
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2040
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.00422
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6385
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2041
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.11835
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6492
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2042
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.23248
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6599
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2043
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.34661
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6706
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2044
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.46074
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6813
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2045
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.57487
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.6920
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2046
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.60577
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.3689
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2047
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.63667
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+169.0457
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2048
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.66757
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+168.7226
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2049
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.69847
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+168.3994
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2050
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.72937
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+168.0763
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2051
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.73330
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.9941
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.73723
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.9119
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2053
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.74115
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.8298
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2054
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.74508
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.7476
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2055
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.74900
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.6655
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2056
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.66008
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.3440
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2057
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.57115
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+167.0226
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2058
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.48223
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+166.7011
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2059
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.39331
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+166.3796
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2060
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.30438
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+166.0582
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2061
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.18854
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+165.4385
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2062
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+63.07270
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+164.8189
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2063
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.95686
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+164.1992
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2064
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.84101
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+163.5796
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2065
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.72517
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+162.9599
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2066
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.58408
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+161.8002
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2067
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.44300
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+160.6404
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2068
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.30191
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+159.4807
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2069
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.16082
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+158.3210
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2070
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+62.01973
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+157.1612
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+baseline
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+2071
+</td>
+<td style="text-align:left;">
+$/tonnes
+</td>
+<td style="text-align:right;">
+61.87448
+</td>
+<td style="text-align:left;">
+EJ/yr
+</td>
+<td style="text-align:right;">
+156.1628
+</td>
+<td style="text-align:left;">
+carbontech
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="trisk-run" class="section level1">
+<h1>Trisk run</h1>
+<div id="parameters" class="section level3">
+<h3>Parameters</h3>
+<p>Trisk takes several parameters in input, allowing to adjust the
+model’s assumptions.</p>
+<ul>
+<li><code>baseline_scenario</code>: String specifying the name of the
+baseline scenario.</li>
+<li><code>target_scenario</code>: String specifying the name of the
+shock scenario.</li>
+<li><code>scenario_geography</code>: Character vector indicating which
+geographical region(s) to calculate results for.</li>
+<li><code>carbon_price_model</code>: Character vector specifying which
+NGFS model to use for carbon prices.</li>
+<li><code>risk_free_rate</code>: Numeric value for the risk-free
+interest rate.</li>
+<li><code>discount_rate</code>: Numeric value for the discount rate of
+dividends per year in the DCF.</li>
+<li><code>growth_rate</code>: Numeric value for the terminal growth rate
+of profits beyond the final year in the DCF.</li>
+<li><code>div_netprofit_prop_coef</code>: Numeric coefficient
+determining how strongly future dividends propagate to company
+value.</li>
+<li><code>shock_year</code>: Numeric value specifying the year when the
+shock is applied.</li>
+<li><code>market_passthrough</code>: Numeric value representing the
+firm’s ability to pass carbon tax onto the consumer.</li>
+</ul>
+<p>Those parameters have an impact on trajectories</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>baseline_scenario <span class="ot">&lt;-</span> <span class="st">&quot;NGFS2023GCAM_CP&quot;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>target_scenario <span class="ot">&lt;-</span> <span class="st">&quot;NGFS2023GCAM_NZ2050&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>scenario_geography <span class="ot">&lt;-</span> <span class="st">&quot;Global&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>shock_year <span class="ot">&lt;-</span> <span class="dv">2030</span></span></code></pre></div>
+<p>Those parameters will have an impact on internal NPV and PD
+computations:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>carbon_price_model <span class="ot">&lt;-</span> <span class="st">&quot;no_carbon_tax&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>risk_free_rate <span class="ot">&lt;-</span> <span class="fl">0.02</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>discount_rate <span class="ot">&lt;-</span> <span class="fl">0.07</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>growth_rate <span class="ot">&lt;-</span> <span class="fl">0.03</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>div_netprofit_prop_coef <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>shock_year <span class="ot">&lt;-</span> <span class="dv">2030</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>market_passthrough <span class="ot">&lt;-</span> <span class="dv">0</span></span></code></pre></div>
+</div>
+<div id="run-and-return-aggregated-result" class="section level3">
+<h3>Run and return aggregated result</h3>
+<p>The function <code>run_trisk_agg()</code> runs the Trisk model using
+the provided input and returns the outputs, with NPVs aggregated per
+company over technology.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>st_results_agg <span class="ot">&lt;-</span> <span class="fu">run_trisk_agg</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">assets_data =</span> assets_testdata,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">scenarios_data =</span> scenarios_testdata,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">financial_data =</span> financial_features_testdata,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">carbon_data =</span> ngfs_carbon_price_testdata,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">baseline_scenario =</span> baseline_scenario,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="at">target_scenario =</span> target_scenario,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="at">scenario_geography =</span> scenario_geography,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>  <span class="at">shock_year =</span> shock_year,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">carbon_price_model =</span> carbon_price_model,</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="at">risk_free_rate =</span> risk_free_rate,</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">discount_rate =</span> discount_rate,</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">growth_rate =</span> growth_rate,</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="at">div_netprofit_prop_coef =</span> div_netprofit_prop_coef,</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="at">market_passthrough =</span> market_passthrough</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
+<p>Get result dataframes from function output</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>npv_results_agg <span class="ot">&lt;-</span> st_results_agg<span class="sc">$</span>npv_results</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>pd_results_agg <span class="ot">&lt;-</span> st_results_agg<span class="sc">$</span>pd_results</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>company_trajectories_agg <span class="ot">&lt;-</span> st_results_agg<span class="sc">$</span>company_trajectories</span></code></pre></div>
+NPV result sample (no country_iso2 column):
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_shock
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_difference
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_change
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+172718.3
+</td>
+<td style="text-align:right;">
+1.354928e+04
+</td>
+<td style="text-align:right;">
+-159169
+</td>
+<td style="text-align:right;">
+-0.9215527
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+42299475.0
+</td>
+<td style="text-align:right;">
+4.317748e+06
+</td>
+<td style="text-align:right;">
+-37981727
+</td>
+<td style="text-align:right;">
+-0.8979243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+95105145.4
+</td>
+<td style="text-align:right;">
+2.486475e+07
+</td>
+<td style="text-align:right;">
+-70240391
+</td>
+<td style="text-align:right;">
+-0.7385551
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+RenewablesCap
+</td>
+<td style="text-align:right;">
+1016926683.7
+</td>
+<td style="text-align:right;">
+1.366640e+09
+</td>
+<td style="text-align:right;">
+349713309
+</td>
+<td style="text-align:right;">
+0.3438924
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+CoalCap
+</td>
+<td style="text-align:right;">
+176175702.5
+</td>
+<td style="text-align:right;">
+1.187415e+07
+</td>
+<td style="text-align:right;">
+-164301556
+</td>
+<td style="text-align:right;">
+-0.9326005
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16f1cce4-f0bf-4195-bbc2-5002ff4db58a
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+OilCap
+</td>
+<td style="text-align:right;">
+21412749.3
+</td>
+<td style="text-align:right;">
+1.416673e+06
+</td>
+<td style="text-align:right;">
+-19996076
+</td>
+<td style="text-align:right;">
+-0.9338397
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="run-and-return-results-with-country-granularity" class="section level3">
+<h3>Run and return results with country granularity</h3>
+<p>The function <code>run_trisk_model()</code> runs the Trisk model
+using the provided input and returns the outputs, with NPVs
+disaggregated per country.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>st_results <span class="ot">&lt;-</span> <span class="fu">run_trisk_model</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="at">assets_data =</span> assets_testdata,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">scenarios_data =</span> scenarios_testdata,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">financial_data =</span> financial_features_testdata,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">carbon_data =</span> ngfs_carbon_price_testdata,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">baseline_scenario =</span> baseline_scenario,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">target_scenario =</span> target_scenario,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">scenario_geography =</span> scenario_geography,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="at">shock_year =</span> shock_year,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="at">carbon_price_model =</span> carbon_price_model,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  <span class="at">risk_free_rate =</span> risk_free_rate,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  <span class="at">discount_rate =</span> discount_rate,</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">growth_rate =</span> growth_rate,</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="at">div_netprofit_prop_coef =</span> div_netprofit_prop_coef,</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="at">market_passthrough =</span> market_passthrough</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>)</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
+<p>Get result dataframes from function output</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>npv_results <span class="ot">&lt;-</span> st_results<span class="sc">$</span>npv_results</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>pd_results <span class="ot">&lt;-</span> st_results<span class="sc">$</span>pd_results</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>company_trajectories <span class="ot">&lt;-</span> st_results<span class="sc">$</span>company_trajectories</span></code></pre></div>
+</div>
+</div>
+<div id="output-datasets" class="section level1">
+<h1>Output datasets</h1>
+<div id="npv-results" class="section level3">
+<h3>NPV results</h3>
+<div id="data-description-4" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>npv_results</code> dataset includes the following
+columns:</p>
+<ul>
+<li><code>run_id</code>: Unique identifier for the simulation run.</li>
+<li><code>company_id</code>: Unique identifier for the company.</li>
+<li><code>asset_id</code>: Unique identifier for the asset.</li>
+<li><code>company_name</code>: Name of the company.</li>
+<li><code>asset_name</code>: Name of the asset.</li>
+<li><code>country_iso2</code>: ISO 3166-1 alpha-2 code for the
+country.</li>
+<li><code>sector</code>: Sector in which the company operates (e.g.,
+Oil&amp;Gas, Coal, Power).</li>
+<li><code>technology</code>: Type of technology used by the company
+(e.g., Gas, CoalCap, RenewablesCap).</li>
+<li><code>net_present_value_baseline</code>: Net present value (NPV)
+under the baseline scenario.</li>
+<li><code>net_present_value_shock</code>: Net present value (NPV) under
+the shock scenario.</li>
+</ul>
+</div>
+<div id="data-structure-4" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">str</span>(npv_results)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; tibble [7 × 12] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;  $ run_id                      : chr [1:7] &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; ...</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;  $ company_id                  : chr [1:7] &quot;101&quot; &quot;102&quot; &quot;103&quot; &quot;104&quot; ...</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;  $ asset_id                    : chr [1:7] &quot;101&quot; &quot;102&quot; &quot;103&quot; &quot;104&quot; ...</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;  $ company_name                : chr [1:7] &quot;Company 1&quot; &quot;Company 2&quot; &quot;Company 3&quot; &quot;Company 4&quot; ...</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;  $ asset_name                  : chr [1:7] &quot;Company 1&quot; &quot;Company 2&quot; &quot;Company 3&quot; &quot;Company 4&quot; ...</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;  $ sector                      : chr [1:7] &quot;Oil&amp;Gas&quot; &quot;Coal&quot; &quot;Oil&amp;Gas&quot; &quot;Power&quot; ...</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;  $ technology                  : chr [1:7] &quot;Gas&quot; &quot;Coal&quot; &quot;Gas&quot; &quot;RenewablesCap&quot; ...</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;  $ country_iso2                : chr [1:7] &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; ...</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;  $ net_present_value_baseline  : num [1:7] 1.73e+05 4.23e+07 9.51e+07 1.02e+09 1.76e+08 ...</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;  $ net_present_value_shock     : num [1:7] 1.35e+04 4.32e+06 2.49e+07 1.37e+09 1.19e+07 ...</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;  $ net_present_value_difference: num [1:7] -1.59e+05 -3.80e+07 -7.02e+07 3.50e+08 -1.64e+08 ...</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;  $ net_present_value_change    : num [1:7] -0.922 -0.898 -0.739 0.344 -0.933 ...</span></span></code></pre></div>
+</div>
+<div id="sample-data-4" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_shock
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_difference
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_change
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+172718.3
+</td>
+<td style="text-align:right;">
+1.354928e+04
+</td>
+<td style="text-align:right;">
+-159169
+</td>
+<td style="text-align:right;">
+-0.9215527
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+42299475.0
+</td>
+<td style="text-align:right;">
+4.317748e+06
+</td>
+<td style="text-align:right;">
+-37981727
+</td>
+<td style="text-align:right;">
+-0.8979243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+95105145.4
+</td>
+<td style="text-align:right;">
+2.486475e+07
+</td>
+<td style="text-align:right;">
+-70240391
+</td>
+<td style="text-align:right;">
+-0.7385551
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+RenewablesCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+1016926683.7
+</td>
+<td style="text-align:right;">
+1.366640e+09
+</td>
+<td style="text-align:right;">
+349713309
+</td>
+<td style="text-align:right;">
+0.3438924
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+CoalCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+176175702.5
+</td>
+<td style="text-align:right;">
+1.187415e+07
+</td>
+<td style="text-align:right;">
+-164301556
+</td>
+<td style="text-align:right;">
+-0.9326005
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+OilCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+21412749.3
+</td>
+<td style="text-align:right;">
+1.416673e+06
+</td>
+<td style="text-align:right;">
+-19996076
+</td>
+<td style="text-align:right;">
+-0.9338397
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="pd-results" class="section level3">
+<h3>PD results</h3>
+<div id="data-description-5" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>pd_results</code> dataset includes the following
+columns:</p>
+<ul>
+<li><code>run_id</code>: Unique identifier for the simulation run.</li>
+<li><code>company_id</code>: Unique identifier for the company.</li>
+<li><code>company_name</code>: Name of the company.</li>
+<li><code>sector</code>: Sector in which the company operates (e.g.,
+Oil&amp;Gas, Coal).</li>
+<li><code>term</code>: Time period for the probability of default (PD)
+calculation.</li>
+<li><code>pd_baseline</code>: Probability of default (PD) under the
+baseline scenario.</li>
+<li><code>pd_shock</code>: Probability of default (PD) under the shock
+scenario.</li>
+</ul>
+</div>
+<div id="data-structure-5" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">str</span>(pd_results)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; tibble [25 × 7] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;  $ run_id      : chr [1:25] &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; ...</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;  $ company_id  : chr [1:25] &quot;101&quot; &quot;101&quot; &quot;101&quot; &quot;101&quot; ...</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;  $ company_name: chr [1:25] &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; ...</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;  $ sector      : chr [1:25] &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; ...</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt;  $ term        : int [1:25] 1 2 3 4 5 1 2 3 4 5 ...</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt;  $ pd_baseline : num [1:25] 0.00 2.82e-09 1.14e-06 2.37e-05 1.50e-04 ...</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt;  $ pd_shock    : num [1:25] 0.000591 0.012029 0.035005 0.061436 0.087477 ...</span></span></code></pre></div>
+</div>
+<div id="sample-data-5" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+term
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_shock
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0005908
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0120293
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.0000011
+</td>
+<td style="text-align:right;">
+0.0350054
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.0000237
+</td>
+<td style="text-align:right;">
+0.0614358
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.0001502
+</td>
+<td style="text-align:right;">
+0.0874772
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0001410
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="company-trajectories-results" class="section level3">
+<h3>Company trajectories results</h3>
+<div id="data-description-6" class="section level4">
+<h4>Data Description</h4>
+<p>The <code>company_trajectories</code> dataset includes the following
+columns:</p>
+<ul>
+<li><code>run_id</code>: Unique identifier for the simulation run.</li>
+<li><code>asset_id</code>: Unique identifier for the asset.</li>
+<li><code>asset_name</code>: Name of the asset.</li>
+<li><code>company_id</code>: Unique identifier for the company.</li>
+<li><code>company_name</code>: Name of the company.</li>
+<li><code>year</code>: Year of the scenario data.</li>
+<li><code>sector</code>: Sector in which the company operates (e.g.,
+Oil&amp;Gas, Coal).</li>
+<li><code>technology</code>: Type of technology used by the
+company.</li>
+<li><code>production_plan_company_technology</code>: Production plan for
+the company’s technology.</li>
+<li><code>production_baseline_scenario</code>: Production output under
+the baseline scenario.</li>
+<li><code>production_target_scenario</code>: Production output under the
+target scenario.</li>
+<li><code>production_shock_scenario</code>: Production output under the
+shock scenario.</li>
+<li><code>pd</code>: Probability of default for the company.</li>
+<li><code>net_profit_margin</code>: Net profit margin for the
+company.</li>
+<li><code>debt_equity_ratio</code>: Debt to equity ratio for the
+company.</li>
+<li><code>volatility</code>: Volatility of the company’s asset
+values.</li>
+<li><code>scenario_price_baseline</code>: Price under the baseline
+scenario.</li>
+<li><code>price_shock_scenario</code>: Price under the shock
+scenario.</li>
+<li><code>net_profits_baseline_scenario</code>: Net profits under the
+baseline scenario.</li>
+<li><code>net_profits_shock_scenario</code>: Net profits under the shock
+scenario.</li>
+<li><code>discounted_net_profits_baseline_scenario</code>: Discounted
+net profits under the baseline scenario.</li>
+<li><code>discounted_net_profits_shock_scenario</code>: Discounted net
+profits under the shock scenario.</li>
+</ul>
+</div>
+<div id="data-structure-6" class="section level4">
+<h4>Data Structure</h4>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">str</span>(company_trajectories)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; tibble [210 × 23] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt;  $ run_id                                  : chr [1:210] &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; &quot;f7d43c51-6b83-4956-aa14-952e16d68e91&quot; ...</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt;  $ asset_id                                : chr [1:210] &quot;101&quot; &quot;101&quot; &quot;101&quot; &quot;101&quot; ...</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;  $ asset_name                              : chr [1:210] &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; ...</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt;  $ company_id                              : chr [1:210] &quot;101&quot; &quot;101&quot; &quot;101&quot; &quot;101&quot; ...</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt;  $ company_name                            : chr [1:210] &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; &quot;Company 1&quot; ...</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;  $ country_iso2                            : chr [1:210] &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; &quot;DE&quot; ...</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt;  $ sector                                  : chr [1:210] &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; &quot;Oil&amp;Gas&quot; ...</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;  $ technology                              : chr [1:210] &quot;Gas&quot; &quot;Gas&quot; &quot;Gas&quot; &quot;Gas&quot; ...</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt;  $ year                                    : num [1:210] 2022 2023 2024 2025 2026 ...</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt;  $ production_plan_company_technology      : num [1:210] 5000 5423 6200 7400 7800 ...</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt;  $ production_baseline_scenario            : num [1:210] 5000 5423 6200 7400 7800 ...</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt;  $ production_target_scenario              : num [1:210] 5000 5001 5003 5004 4863 ...</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;  $ production_shock_scenario               : num [1:210] 5000 5423 6200 7400 7800 ...</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;  $ pd                                      : num [1:210] 0.00562 0.00562 0.00562 0.00562 0.00562 ...</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt;  $ net_profit_margin                       : num [1:210] 0.0764 0.0764 0.0764 0.0764 0.0764 ...</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt;  $ debt_equity_ratio                       : num [1:210] 0.13 0.13 0.13 0.13 0.13 ...</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt;  $ volatility                              : num [1:210] 0.259 0.259 0.259 0.259 0.259 ...</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt;  $ scenario_price_baseline                 : num [1:210] 5.87 5.9 5.93 5.96 5.95 ...</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt;  $ price_shock_scenario                    : num [1:210] 5.87 5.9 5.93 5.96 5.95 ...</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a><span class="co">#&gt;  $ net_profits_baseline_scenario           : num [1:210] 2240 2442 2807 3368 3541 ...</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a><span class="co">#&gt;  $ net_profits_shock_scenario              : num [1:210] 2240 2442 2807 3368 3541 ...</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a><span class="co">#&gt;  $ discounted_net_profits_baseline_scenario: num [1:210] 2240 2283 2452 2750 2701 ...</span></span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a><span class="co">#&gt;  $ discounted_net_profits_shock_scenario   : num [1:210] 2240 2283 2452 2750 2701 ...</span></span></code></pre></div>
+</div>
+<div id="sample-data-6" class="section level4">
+<h4>Sample Data</h4>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_plan_company_technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_target_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profit_margin
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+debt_equity_ratio
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+volatility
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_price_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+price_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profits_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profits_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+discounted_net_profits_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+discounted_net_profits_shock_scenario
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2022
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+5000.000
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.867116
+</td>
+<td style="text-align:right;">
+5.867116
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2023
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+5001.354
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.898569
+</td>
+<td style="text-align:right;">
+5.898569
+</td>
+<td style="text-align:right;">
+2442.414
+</td>
+<td style="text-align:right;">
+2442.414
+</td>
+<td style="text-align:right;">
+2282.630
+</td>
+<td style="text-align:right;">
+2282.630
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2024
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+5002.708
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.930022
+</td>
+<td style="text-align:right;">
+5.930022
+</td>
+<td style="text-align:right;">
+2807.250
+</td>
+<td style="text-align:right;">
+2807.250
+</td>
+<td style="text-align:right;">
+2451.961
+</td>
+<td style="text-align:right;">
+2451.961
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+5004.062
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.961475
+</td>
+<td style="text-align:right;">
+5.961475
+</td>
+<td style="text-align:right;">
+3368.360
+</td>
+<td style="text-align:right;">
+3368.360
+</td>
+<td style="text-align:right;">
+2749.585
+</td>
+<td style="text-align:right;">
+2749.585
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2026
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+4862.620
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.945170
+</td>
+<td style="text-align:right;">
+5.945170
+</td>
+<td style="text-align:right;">
+3540.723
+</td>
+<td style="text-align:right;">
+3540.723
+</td>
+<td style="text-align:right;">
+2701.201
+</td>
+<td style="text-align:right;">
+2701.201
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f7d43c51-6b83-4956-aa14-952e16d68e91
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2027
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+4721.178
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.928866
+</td>
+<td style="text-align:right;">
+5.928866
+</td>
+<td style="text-align:right;">
+3893.168
+</td>
+<td style="text-align:right;">
+3893.168
+</td>
+<td style="text-align:right;">
+2775.775
+</td>
+<td style="text-align:right;">
+2775.775
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+---
+title: "pd-el-integration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pd-el-integration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(magrittr)
+```
+
+# PD and EL Integration
+
+## 1. Setup
+
+Load the bundled testdata shipped with `trisk.model` and `trisk.analysis`.
+
+```{r}
+assets_testdata    <- read.csv(system.file("testdata", "assets_testdata.csv",    package = "trisk.model"))
+scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
+fin_testdata       <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
+carbon_testdata    <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
+portfolio_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
+```
+
+## 2. Run TRISK on the portfolio
+
+```{r}
+analysis_data <- run_trisk_on_portfolio(
+  assets_data       = assets_testdata,
+  scenarios_data    = scenarios_testdata,
+  financial_data    = fin_testdata,
+  carbon_data       = carbon_testdata,
+  portfolio_data    = portfolio_testdata,
+  baseline_scenario = "NGFS2023GCAM_CP",
+  target_scenario   = "NGFS2023GCAM_NZ2050"
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(head(analysis_data[, c("company_id", "sector", "technology", "term",
+                                    "pd_baseline", "pd_shock",
+                                    "net_present_value_baseline", "net_present_value_shock")])) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+
+## 3. Why integration matters
+
+TRISK recomputes PD from a Merton structural credit model. That PD level is not
+directly comparable to the internal PD your institution already uses; only the
+change from baseline to shock carries meaning. Three integration methods
+translate the TRISK shift into your internal PD scale.
+
+## 4. Method 1 - Absolute
+
+```{r}
+result_abs <- integrate_pd(analysis_data, method = "absolute")
+```
+
+```{r echo=FALSE}
+knitr::kable(head(result_abs$portfolio[, c("company_id", "sector", "internal_pd",
+                                           "pd_baseline", "pd_shock",
+                                           "trisk_adjusted_pd", "pd_adjustment")])) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+
+## 5. Method 2 - Relative
+
+> **Note:** when `pd_baseline = 0` the relative method returns the internal PD
+> unchanged; the shock signal is lost on zero-baseline rows. Use `absolute` or
+> `zscore` if this matters.
+
+```{r}
+result_rel <- integrate_pd(analysis_data, method = "relative")
+```
+
+## 6. Method 3 - Z-score (Basel IRB)
+
+The z-score method combines PDs in the normal-quantile space, preserving the
+non-linear relationship at distribution tails. Recommended for Basel IRB-aligned
+institutions.
+
+```{r}
+result_zs <- integrate_pd(analysis_data, method = "zscore")
+```
+
+## 7. Supplying your own internal PDs
+
+Pass a vector (length = `nrow(analysis_data)`) or a data frame with
+`company_id` and `internal_pd`. Unmatched rows fall back to `pd_baseline`.
+
+```{r}
+flat_internal <- rep(0.03, nrow(analysis_data))
+result_custom <- integrate_pd(analysis_data,
+                              internal_pd = flat_internal,
+                              method      = "zscore")
+```
+
+## 8. Method comparison
+
+```{r fig.width=7, fig.height=4}
+pipeline_crispy_pd_method_comparison(analysis_data)
+```
+
+## 9. Integration charts
+
+```{r fig.width=7, fig.height=4}
+pipeline_crispy_pd_integration_bars(result_zs)
+```
+
+## 10. EL integration
+
+`compute_analysis_metrics` adds `expected_loss_baseline` and `expected_loss_shock`
+(EAD * PD) which `integrate_el` requires.
+
+```{r}
+analysis_data_el <- trisk.analysis:::compute_analysis_metrics(analysis_data)
+result_el <- integrate_el(analysis_data_el, method = "relative")
+```
+
+```{r fig.width=7, fig.height=4}
+pipeline_crispy_el_adjustment_bars(result_el)
+```
+
+## 11. Portfolio-level KPIs
+
+```{r}
+pipeline_crispy_pd_kpi_table(result_zs$aggregate)
+```
+
+```{r}
+pipeline_crispy_el_kpi_table(result_el$aggregate)
+```
+
+## 12. Sector breakdown
+
+```{r}
+pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
+```

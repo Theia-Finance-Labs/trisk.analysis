@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>country-level-npv-analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">country-level-npv-analysis</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trisk.analysis)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;ggplot2&#39; was built under R version 4.3.3</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;magrittr&#39; was built under R version 4.3.3</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;magrittr&#39;</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:tidyr&#39;:</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt;     extract</span></span></code></pre></div>
+<div id="country-level-npv-analysis" class="section level1">
+<h1>Country-Level NPV Analysis</h1>
+<p>This vignette demonstrates how to create aggregated NPV analysis
+results for selected countries and generate comparative visualizations.
+The workflow is flexible and allows you to compare 2-6 countries of your
+choice, including the ability to create an aggregate of your selected
+countries.</p>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>The analysis workflow: 1. Loads pre-computed NPV results from TRISK
+model outputs 2. Filters data by your selected countries 3. Aggregates
+NPV and company trajectory data by country, sector, and technology 4.
+Creates an optional aggregate combining your selected countries 5.
+Generates summary tables and visualizations for comparison</p>
+</div>
+<div id="select-your-countries" class="section level2">
+<h2>Select Your Countries</h2>
+<p>Define which countries you want to analyze. You can select <strong>2
+to 6 countries</strong>. The workflow will automatically create
+country-level summaries and an optional aggregate across all selected
+countries.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># CONFIGURATION: Select Your Countries Here</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Define the countries you want to analyze (ISO 3166-1 alpha-2 codes)</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># Examples: &#39;CZ&#39; (Czech Republic), &#39;DE&#39; (Germany), &#39;PL&#39; (Poland), &#39;FR&#39; (France), etc.</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># You can select 2 to 6 countries</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>selected_countries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;FR&#39;</span>, <span class="st">&#39;IT&#39;</span>)  <span class="co"># Modify this to your desired countries</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># Optional: Give your aggregate a custom label</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># If empty, will default to &quot;AGGREGATE&quot; or first N countries</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>aggregate_label <span class="ot">&lt;-</span> <span class="st">&quot;EU_FR_IT&quot;</span>  <span class="co"># Can be any meaningful label</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># Set to TRUE to create an aggregate of selected countries</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># Set to FALSE to only analyze individual countries</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>create_aggregate <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># Input and output paths (adjust to your setup)</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co"># Path to your NPV results CSV (output from TRISK model)</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>NPV_INPUT_FILE <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;assets_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co"># For this vignette, we&#39;ll use test data if you have it</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co"># If using your own data, specify the path to your npv_results.csv</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co"># NPV_INPUT_FILE &lt;- &quot;/path/to/your/npv_results.csv&quot;</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co"># TRAJECTORIES_INPUT_FILE &lt;- &quot;/path/to/your/company_trajectories.csv&quot;</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co"># Create output directory</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>OUTPUT_DIR <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()  <span class="co"># Use temporary directory for this demo</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co"># For production use: OUTPUT_DIR &lt;- &quot;./country_analysis_results&quot;</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="fu">dir.create</span>(OUTPUT_DIR, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&#39;=== Country-Level NPV Analysis ===</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; === Country-Level NPV Analysis ===</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&#39;Selected countries:&#39;</span>, <span class="fu">paste</span>(selected_countries, <span class="at">collapse=</span><span class="st">&#39;, &#39;</span>), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt; Selected countries: FR, IT</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&#39;Create aggregate:&#39;</span>, create_aggregate, <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt; Create aggregate: TRUE</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&#39;Output directory:&#39;</span>, OUTPUT_DIR, <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt; Output directory: /var/folders/cn/kx_72f0d409bj6x9gtdzq_hh0000gn/T//RtmpxY9lnC</span></span></code></pre></div>
+</div>
+<div id="load-input-data" class="section level2">
+<h2>Load Input Data</h2>
+<p>The analysis uses the raw NPV results and company trajectories from
+the TRISK model outputs.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># STEP 1: Load Raw Data</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># For demonstration, we&#39;ll create sample data structure</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># In practice, you would load actual TRISK outputs</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># Check if we can load from testdata</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>test_npv_file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;npv_results.csv&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>                             <span class="at">package =</span> <span class="st">&quot;trisk.analysis&quot;</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(test_npv_file)) {</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="co"># For demo purposes, let&#39;s note that actual data would be loaded here</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;Note: Using testdata directory. For real analysis, load your TRISK output files:</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  - npv_results.csv: Individual asset-level NPV results</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  - company_trajectories.csv: Annual production and financial trajectories</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="co"># We&#39;ll demonstrate the structure with a note</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  demo_mode <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  demo_mode <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  npv_results <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(test_npv_file, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  trajectories <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;company_trajectories.csv&quot;</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>                                       <span class="at">package =</span> <span class="st">&quot;trisk.analysis&quot;</span>),</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>                           <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>}</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; Note: Using testdata directory. For real analysis, load your TRISK output files:</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt;   - npv_results.csv: Individual asset-level NPV results</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt;   - company_trajectories.csv: Annual production and financial trajectories</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Loaded NPV results:&#39;</span>, <span class="fu">nrow</span>(npv_results), <span class="st">&#39;rows</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Columns:&#39;</span>, <span class="fu">paste</span>(<span class="fu">names</span>(npv_results), <span class="at">collapse=</span><span class="st">&#39;, &#39;</span>), <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="data-aggregation" class="section level2">
+<h2>Data Aggregation</h2>
+<div id="aggregate-by-country-sector-and-technology" class="section level3">
+<h3>Aggregate by Country, Sector, and Technology</h3>
+<p>The aggregation sums NPV values and company metrics across all assets
+within each country-sector-technology combination.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># STEP 2: Aggregate NPV Results by Country</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="co"># Filter to selected countries</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  npv_filtered <span class="ot">&lt;-</span> npv_results <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="fu">filter</span>(country_iso2 <span class="sc">%in%</span> selected_countries)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;Filtering to selected countries...</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;Rows after filtering:&#39;</span>, <span class="fu">nrow</span>(npv_filtered), <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="co"># Aggregate by country, sector, and technology</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  npv_aggregated <span class="ot">&lt;-</span> npv_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    <span class="fu">group_by</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>      <span class="at">country =</span> country_iso2,</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>      sector,</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>      technology</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>      <span class="at">n_companies =</span> <span class="fu">n_distinct</span>(company_id),</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>      <span class="at">n_assets =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>      <span class="at">total_npv_baseline =</span> <span class="fu">sum</span>(net_present_value_baseline, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>      <span class="at">total_npv_shock =</span> <span class="fu">sum</span>(net_present_value_shock, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>      <span class="at">total_npv_difference =</span> total_npv_shock <span class="sc">-</span> total_npv_baseline,</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>      <span class="at">total_npv_change_pct =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>        <span class="fu">is.na</span>(total_npv_baseline) <span class="sc">|</span> total_npv_baseline <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> (total_npv_difference <span class="sc">/</span> total_npv_baseline) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>      )</span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>    <span class="fu">arrange</span>(country, sector, technology)</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Aggregated NPV by country, sector, technology</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Total rows:&#39;</span>, <span class="fu">nrow</span>(npv_aggregated), <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>  <span class="co"># Display sample</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;Sample of aggregated data:</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a>  <span class="fu">print</span>(npv_aggregated <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">10</span>))</span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="create-aggregate-optional" class="section level3">
+<h3>Create Aggregate (Optional)</h3>
+<p>If enabled, this combines all selected countries into a single
+aggregate for cross-country comparison.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># STEP 3: Create Country Aggregate (Optional)</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode <span class="sc">&amp;</span> create_aggregate) {</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="co"># Aggregate across all selected countries</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  npv_aggregate <span class="ot">&lt;-</span> npv_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="fu">group_by</span>(sector, technology) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>      <span class="at">n_companies =</span> <span class="fu">n_distinct</span>(company_id),</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>      <span class="at">n_assets =</span> <span class="fu">n</span>(),</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>      <span class="at">total_npv_baseline =</span> <span class="fu">sum</span>(net_present_value_baseline, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>      <span class="at">total_npv_shock =</span> <span class="fu">sum</span>(net_present_value_shock, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>      <span class="at">country =</span> aggregate_label,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>      <span class="at">total_npv_difference =</span> total_npv_shock <span class="sc">-</span> total_npv_baseline,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>      <span class="at">total_npv_change_pct =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>        <span class="fu">is.na</span>(total_npv_baseline) <span class="sc">|</span> total_npv_baseline <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> (total_npv_difference <span class="sc">/</span> total_npv_baseline) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>      )</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>    <span class="fu">select</span>(country, sector, technology, n_companies, n_assets,</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>           total_npv_baseline, total_npv_shock, total_npv_difference, total_npv_change_pct) <span class="sc">%&gt;%</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    <span class="fu">arrange</span>(sector, technology)</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Created aggregate for:&#39;</span>, aggregate_label, <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Sectors included:&#39;</span>, <span class="fu">n_distinct</span>(npv_aggregate<span class="sc">$</span>sector), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Technologies:&#39;</span>, <span class="fu">n_distinct</span>(npv_aggregate<span class="sc">$</span>technology), <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>  <span class="co"># Combine individual countries with aggregate</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>  npv_combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(npv_aggregated, npv_aggregate) <span class="sc">%&gt;%</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">factor</span>(country,</span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>                           <span class="at">levels =</span> <span class="fu">c</span>(selected_countries, aggregate_label)))</span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>  npv_combined <span class="ot">&lt;-</span> npv_aggregated</span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+<div id="aggregate-company-trajectories" class="section level2">
+<h2>Aggregate Company Trajectories</h2>
+<p>The company trajectories provide annual-level data on production,
+financial metrics, and NPV contributions.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co"># STEP 4: Aggregate Company Trajectories by Country</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="co"># Filter trajectories to selected countries</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  traj_filtered <span class="ot">&lt;-</span> trajectories <span class="sc">%&gt;%</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="fu">filter</span>(country_iso2 <span class="sc">%in%</span> selected_countries)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="co"># Aggregate by country, sector, technology, and year</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  trajectories_aggregated <span class="ot">&lt;-</span> traj_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="fu">group_by</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>      <span class="at">country =</span> country_iso2,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>      sector,</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>      technology,</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>      year</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>      <span class="at">n_companies =</span> <span class="fu">n_distinct</span>(company_id),</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>      <span class="at">n_assets =</span> <span class="fu">n_distinct</span>(asset_id),</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>      <span class="at">total_production_plan =</span> <span class="fu">sum</span>(production_plan_company_technology, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>      <span class="at">total_production_baseline =</span> <span class="fu">sum</span>(production_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>      <span class="at">total_production_target =</span> <span class="fu">sum</span>(production_target_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>      <span class="at">total_production_shock =</span> <span class="fu">sum</span>(production_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>      <span class="at">mean_pd =</span> <span class="fu">mean</span>(pd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>      <span class="at">total_net_profits_baseline =</span> <span class="fu">sum</span>(net_profits_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>      <span class="at">total_net_profits_shock =</span> <span class="fu">sum</span>(net_profits_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>      <span class="at">total_discounted_net_profits_baseline =</span> <span class="fu">sum</span>(discounted_net_profits_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>      <span class="at">total_discounted_net_profits_shock =</span> <span class="fu">sum</span>(discounted_net_profits_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>    <span class="fu">arrange</span>(country, sector, technology, year)</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Aggregated trajectories by country, sector, technology, year</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Total rows:&#39;</span>, <span class="fu">nrow</span>(trajectories_aggregated), <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;  Year range:&#39;</span>, <span class="fu">min</span>(trajectories_aggregated<span class="sc">$</span>year), <span class="st">&#39;-&#39;</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>      <span class="fu">max</span>(trajectories_aggregated<span class="sc">$</span>year), <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  <span class="co"># Sample</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;Sample of aggregated trajectories:</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>  <span class="fu">print</span>(trajectories_aggregated <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">10</span>))</span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="create-aggregate-trajectories-optional" class="section level2">
+<h2>Create Aggregate Trajectories (Optional)</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># STEP 5: Create Aggregate Trajectories (Optional)</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode <span class="sc">&amp;</span> create_aggregate) {</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  trajectories_aggregate <span class="ot">&lt;-</span> traj_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="fu">group_by</span>(sector, technology, year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>      <span class="at">n_companies =</span> <span class="fu">n_distinct</span>(company_id),</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>      <span class="at">n_assets =</span> <span class="fu">n_distinct</span>(asset_id),</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>      <span class="at">total_production_plan =</span> <span class="fu">sum</span>(production_plan_company_technology, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>      <span class="at">total_production_baseline =</span> <span class="fu">sum</span>(production_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>      <span class="at">total_production_target =</span> <span class="fu">sum</span>(production_target_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>      <span class="at">total_production_shock =</span> <span class="fu">sum</span>(production_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>      <span class="at">mean_pd =</span> <span class="fu">mean</span>(pd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>      <span class="at">total_net_profits_baseline =</span> <span class="fu">sum</span>(net_profits_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>      <span class="at">total_net_profits_shock =</span> <span class="fu">sum</span>(net_profits_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>      <span class="at">total_discounted_net_profits_baseline =</span> <span class="fu">sum</span>(discounted_net_profits_baseline_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>      <span class="at">total_discounted_net_profits_shock =</span> <span class="fu">sum</span>(discounted_net_profits_shock_scenario, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>      <span class="at">country =</span> aggregate_label,</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>      <span class="at">.after =</span> technology</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>    <span class="fu">arrange</span>(country, sector, technology, year)</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  <span class="co"># Combine</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  trajectories_combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(trajectories_aggregated, trajectories_aggregate) <span class="sc">%&gt;%</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">factor</span>(country,</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>                           <span class="at">levels =</span> <span class="fu">c</span>(selected_countries, aggregate_label)))</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>  trajectories_combined <span class="ot">&lt;-</span> trajectories_aggregated</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="save-results" class="section level2">
+<h2>Save Results</h2>
+<p>Export the aggregated summaries to CSV files for further
+analysis.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># STEP 6: Save Results to CSV</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="co"># Save NPV summary</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  npv_output_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(OUTPUT_DIR, <span class="st">&#39;npv_results_summary.csv&#39;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="fu">write_csv</span>(npv_combined, npv_output_file)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Saved NPV summary:&#39;</span>, npv_output_file, <span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="co"># Save trajectories summary</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  traj_output_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(OUTPUT_DIR, <span class="st">&#39;company_trajectories_summary.csv&#39;</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="fu">write_csv</span>(trajectories_combined, traj_output_file)</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Saved trajectories summary:&#39;</span>, traj_output_file, <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  <span class="co"># Summary statistics</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;NPV Results Summary:</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  npv_summary <span class="ot">&lt;-</span> npv_combined <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>      <span class="at">n_rows =</span> <span class="fu">n</span>(),</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>      <span class="at">n_sectors =</span> <span class="fu">n_distinct</span>(sector),</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>      <span class="at">n_technologies =</span> <span class="fu">n_distinct</span>(technology),</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>      <span class="at">total_assets =</span> <span class="fu">sum</span>(n_assets, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>      <span class="at">total_companies =</span> <span class="fu">sum</span>(n_companies, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>      <span class="at">total_npv_change_mln_usd =</span> <span class="fu">sum</span>(total_npv_difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>    )</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>  <span class="fu">print</span>(npv_summary)</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="visualizations" class="section level2">
+<h2>Visualizations</h2>
+<div id="npv-change-by-country-and-sector" class="section level3">
+<h3>NPV Change by Country and Sector</h3>
+<p>A horizontal bar chart showing the total NPV change for each sector
+within each country.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># STEP 7: Create Visualizations</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># ============================================================================</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="co"># Aggregate by country and sector</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  npv_by_sector <span class="ot">&lt;-</span> npv_combined <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="fu">group_by</span>(country, sector) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>      <span class="at">total_npv_difference =</span> <span class="fu">sum</span>(total_npv_difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>      <span class="at">n_technologies =</span> <span class="fu">n</span>(),</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>    <span class="fu">arrange</span>(total_npv_difference)</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="co"># Create visualization</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(npv_by_sector,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder_within</span>(sector, total_npv_difference, country),</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>                   <span class="at">y =</span> total_npv_difference <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>                   <span class="at">fill =</span> country)) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&#39;dodge&#39;</span>) <span class="sc">+</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>country, <span class="at">scales =</span> <span class="st">&#39;free_x&#39;</span>) <span class="sc">+</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>    <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&#39;bottom&#39;</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>      <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&#39;gray90&#39;</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">&#39;NPV Change by Sector and Country&#39;</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&#39;Selected countries:&#39;</span>, <span class="fu">paste</span>(selected_countries, <span class="at">collapse=</span><span class="st">&#39;, &#39;</span>)),</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">&#39;Sector&#39;</span>,</span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">&#39;Total NPV Difference (Million USD)&#39;</span>,</span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">&#39;Country&#39;</span></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>    )</span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a>  <span class="fu">print</span>(p1)</span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a>  <span class="co"># Save</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a>  plot_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(OUTPUT_DIR, <span class="st">&#39;npv_by_sector_country.png&#39;</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a>  <span class="fu">ggsave</span>(plot_file, p1, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">8</span>, <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">units =</span> <span class="st">&#39;in&#39;</span>)</span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Saved visualization:&#39;</span>, plot_file, <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="npv-change-percentage-by-technology" class="section level3">
+<h3>NPV Change Percentage by Technology</h3>
+<p>Shows the percentage change in NPV for key technologies across
+countries, capped at -100%.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="co"># Prepare data for top technologies</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  tech_summary <span class="ot">&lt;-</span> npv_combined <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(total_npv_change_pct)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="fu">group_by</span>(country, technology) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>      <span class="at">total_npv_difference =</span> <span class="fu">sum</span>(total_npv_difference, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>      <span class="at">n_assets =</span> <span class="fu">sum</span>(n_assets, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>      <span class="co"># Calculate percentage change with -100% cap</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>      <span class="at">npv_change_pct =</span> <span class="fu">case_when</span>(</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>        n_assets <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> total_npv_difference <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fu">pmax</span>(</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>          (total_npv_difference <span class="sc">/</span> <span class="fu">abs</span>(total_npv_difference)) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>          <span class="sc">-</span><span class="dv">100</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>        ),</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> (total_npv_difference <span class="sc">/</span> <span class="fu">abs</span>(total_npv_difference)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>      )</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>    )</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>  <span class="co"># Get top 20 technologies</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  top_tech <span class="ot">&lt;-</span> tech_summary <span class="sc">%&gt;%</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>    <span class="fu">group_by</span>(technology) <span class="sc">%&gt;%</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">impact =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(total_npv_difference), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(impact)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>    <span class="fu">pull</span>(technology)</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>  tech_filtered <span class="ot">&lt;-</span> tech_summary <span class="sc">%&gt;%</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>    <span class="fu">filter</span>(technology <span class="sc">%in%</span> top_tech)</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(tech_filtered,</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(technology, total_npv_difference),</span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>                   <span class="at">y =</span> total_npv_difference <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>                   <span class="at">fill =</span> country)) <span class="sc">+</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&#39;dodge&#39;</span>) <span class="sc">+</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&#39;bottom&#39;</span>,</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>      <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">&#39;gray90&#39;</span>)</span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>    <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">&#39;Set2&#39;</span>) <span class="sc">+</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">&#39;NPV Impact by Technology (Top 20)&#39;</span>,</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="st">&#39;Total NPV difference across all assets&#39;</span>,</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">&#39;Technology&#39;</span>,</span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">&#39;Total NPV Difference (Million USD)&#39;</span>,</span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">&#39;Country&#39;</span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a>    )</span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>  <span class="fu">print</span>(p2)</span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>  plot_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(OUTPUT_DIR, <span class="st">&#39;npv_by_technology.png&#39;</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a>  <span class="fu">ggsave</span>(plot_file, p2, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">10</span>, <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">units =</span> <span class="st">&#39;in&#39;</span>)</span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Saved visualization:&#39;</span>, plot_file, <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="production-trajectory-comparison" class="section level3">
+<h3>Production Trajectory Comparison</h3>
+<p>Compares baseline and shock production scenarios across
+countries.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>demo_mode) {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="co"># Select key sectors for trajectory visualization</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  key_sectors <span class="ot">&lt;-</span> trajectories_combined <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="fu">group_by</span>(sector) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">total_prod =</span> <span class="fu">sum</span>(total_production_baseline, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(total_prod)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="fu">pull</span>(sector)</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  traj_filtered <span class="ot">&lt;-</span> trajectories_combined <span class="sc">%&gt;%</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    <span class="fu">filter</span>(sector <span class="sc">%in%</span> key_sectors) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="fu">group_by</span>(country, sector, year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>      <span class="at">total_production_baseline =</span> <span class="fu">sum</span>(total_production_baseline, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>      <span class="at">total_production_shock =</span> <span class="fu">sum</span>(total_production_shock, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>    )</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  <span class="co"># Pivot for easier plotting</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>  traj_long <span class="ot">&lt;-</span> traj_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">&#39;total_production_&#39;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">&#39;scenario&#39;</span>,</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">&#39;production&#39;</span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>      <span class="at">scenario =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>        scenario <span class="sc">==</span> <span class="st">&#39;total_production_baseline&#39;</span> <span class="sc">~</span> <span class="st">&#39;Baseline (Current Policies)&#39;</span>,</span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>        scenario <span class="sc">==</span> <span class="st">&#39;total_production_shock&#39;</span> <span class="sc">~</span> <span class="st">&#39;Shock Scenario&#39;</span>,</span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> scenario</span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>      )</span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>    )</span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(traj_long,</span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> production, <span class="at">color =</span> scenario, <span class="at">linetype =</span> country)) <span class="sc">+</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>sector, <span class="at">scales =</span> <span class="st">&#39;free_y&#39;</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">&#39;bottom&#39;</span>,</span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a>      <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(</span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">&#39;Baseline (Current Policies)&#39;</span> <span class="ot">=</span> <span class="st">&#39;#2E86AB&#39;</span>, <span class="st">&#39;Shock Scenario&#39;</span> <span class="ot">=</span> <span class="st">&#39;#A23B72&#39;</span>)</span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">&#39;Production Trajectories: Baseline vs Shock&#39;</span>,</span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="st">&#39;Top 4 sectors by production volume&#39;</span>,</span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">&#39;Year&#39;</span>,</span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">&#39;Total Production&#39;</span>,</span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">&#39;Scenario&#39;</span>,</span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a>      <span class="at">linetype =</span> <span class="st">&#39;Country&#39;</span></span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a>    )</span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a></span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a>  <span class="fu">print</span>(p3)</span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a></span>
+<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a>  plot_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(OUTPUT_DIR, <span class="st">&#39;production_trajectories.png&#39;</span>)</span>
+<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a>  <span class="fu">ggsave</span>(plot_file, p3, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">units =</span> <span class="st">&#39;in&#39;</span>)</span>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&#39;✓ Saved visualization:&#39;</span>, plot_file, <span class="st">&#39;</span><span class="sc">\n\n</span><span class="st">&#39;</span>)</span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>This vignette provides a complete workflow for:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Selecting countries</strong>: Choose any 2-6 countries by
+modifying the <code>selected_countries</code> vector</li>
+<li><strong>Aggregating data</strong>: Summarizes NPV and trajectory
+data by country, sector, and technology</li>
+<li><strong>Creating comparisons</strong>: Optionally creates an
+aggregate across your selected countries</li>
+<li><strong>Generating outputs</strong>:
+<ul>
+<li>CSV files with aggregated results (npv_results_summary.csv,
+company_trajectories_summary.csv)</li>
+<li>Visualizations showing NPV impacts and production trajectories</li>
+</ul></li>
+</ol>
+<div id="key-aggregation-rules" class="section level3">
+<h3>Key Aggregation Rules</h3>
+<ul>
+<li><strong>NPV aggregation</strong>: Sum of net_present_value_baseline
+and net_present_value_shock across all assets</li>
+<li><strong>NPV difference</strong>: shock value minus baseline
+value</li>
+<li><strong>NPV percentage change</strong>: (difference / baseline) ×
+100, capped at -100%</li>
+<li><strong>Company/asset counts</strong>: Distinct count of company_id
+and asset count</li>
+<li><strong>Trajectory aggregation</strong>: Sum of production and
+financial metrics by year</li>
+</ul>
+</div>
+<div id="customization-options" class="section level3">
+<h3>Customization Options</h3>
+<p>Modify the configuration section at the top to: - Change
+<code>selected_countries</code> to your desired countries (2-6) - Set
+<code>create_aggregate</code> to FALSE if you only want individual
+country analysis - Change <code>aggregate_label</code> to customize the
+aggregate name - Adjust output paths as needed</p>
+</div>
+<div id="file-outputs" class="section level3">
+<h3>File Outputs</h3>
+<p>All results are saved to the OUTPUT_DIR: -
+<code>npv_results_summary.csv</code>: Country-sector-technology level
+NPV data - <code>company_trajectories_summary.csv</code>: Annual
+production and financial metrics -
+<code>npv_by_sector_country.png</code>: Bar chart of NPV changes by
+sector - <code>npv_by_technology.png</code>: Technology-level impact
+visualization - <code>production_trajectories.png</code>: Production
+pathway comparison</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
