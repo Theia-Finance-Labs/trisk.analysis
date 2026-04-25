@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>download-scenarios</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">download-scenarios</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trisk.analysis)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(fs)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;fs&#39; was built under R version 4.3.3</span></span></code></pre></div>
+<div id="download-the-data" class="section level1">
+<h1>Download the data</h1>
+<p>Data will be downloaded from this endpoint:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">paste0</span>(trisk.analysis<span class="sc">:::</span>TRISK_DATA_INPUT_ENDPOINT, <span class="st">&quot;/&quot;</span>, trisk.analysis<span class="sc">:::</span>TRISK_DATA_S3_PREFIX)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;https://storage.googleapis.com/crispy-public-data/trisk_inputs&quot;</span></span></code></pre></div>
+<p>Choose the folder where to download the data</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>trisk_inputs_folder <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;trisk_inputs&quot;</span>)</span></code></pre></div>
+<p>Download the data using the provided function.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  download_success <span class="ot">&lt;-</span> <span class="fu">download_trisk_inputs</span>(<span class="at">local_save_folder =</span> trisk_inputs_folder, <span class="at">skip_confirmation =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>The previous function downloads those 4 files :</p>
+</div>
+<div id="descriptive-statistics" class="section level1">
+<h1>Descriptive statistics</h1>
+<p>Load the downloaded scenario data</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  scenarios <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(trisk_inputs_folder, <span class="st">&quot;scenarios.csv&quot;</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>}</span></code></pre></div>
+<div id="sectors-covered-by-scenarios" class="section level2">
+<h2>Sectors covered by scenarios</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  scenarios <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(trisk_inputs_folder, <span class="st">&quot;scenarios.csv&quot;</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  number_of_scenario_per_sector <span class="ot">&lt;-</span> scenarios <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="fu">distinct</span>(scenario, sector, technology) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="fu">group_by</span>(sector, technology) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n_scenarios =</span> <span class="fu">n</span>())</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span></code></pre></div>
+<p>This table lists different sector and technology combinations and
+shows how many scenarios can be run for each one. The Coal and Oil &amp;
+Gas sectors focus on raw material exploration, while the Power sector
+involves generating electricity through various technologies.
+Technologies ending in “Cap” refer to the power capacity for specific
+types of power plants (for example, “CoalCap” is for electricity from
+coal-fired plants).</p>
+<p>For the steel sector, the technologies are based on specific
+production processes:</p>
+<p>BOF: Basic Oxygen Furnace BF: Blast Furnace DRI: Direct Reduced Iron
+EAF: Electric Arc Furnace MM: Mini Mill OHF: Open Hearth Furnace</p>
+<p>The number of scenarios for each sector can vary a lot because of
+data limitations. For the Power sector, there are several scenario
+providers, like the International Energy Agency (IEA) and the Network
+for Greening the Financial System (NGFS), who offer multiple options.
+However, the steel sector has fewer sources with detailed technology
+breakdowns, so the model mainly relies on scenarios from the Mission
+Possible Partnership (MPP).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  sectors_covered_by_scenarios <span class="ot">&lt;-</span> scenarios <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="fu">distinct</span>(sector, scenario) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="fu">arrange</span>(sector, scenario)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>This table shows the different scenarios available for each sector.
+It’s designed to highlight two main points: first, that we can’t use
+every scenario for each sector due to data constraints, and second, that
+there can still be plenty of scenarios to choose from for a given sector
+analysis.</p>
+<p>The scenario names follow a specific structure, starting with the
+institution providing the scenario, then the data vintage, and finally
+the scenario name itself.</p>
+<p>For example, the “WEO2023_STEPS” scenario is provided by the World
+Energy Outlook from the International Energy Agency. The data for this
+scenario is from 2023, and “STEPS” stands for “Stated Policies
+Scenario,” which represents a business-as-usual approach based on
+current policies.</p>
+<p>On the other hand, the “NGFS2023GCAM_NZ2050” scenario is given by the
+Network for Greening the Financial System (NGFS), with data also from
+2023. For NGFS scenarios, we include the underlying model used to
+calculate the scenario—in this case, “GCAM.” NGFS provides scenarios
+using three different models, allowing comparisons of scenarios with the
+same assumptions but different modeling approaches. “NZ2050” refers to
+the “Net Zero 2050” scenario, an ambitious scenario aiming to reach net
+zero emissions by 2050.</p>
+<p>As shown in the table, there are multiple scenarios integrated into
+the stress test. Overall, we cover scenarios from six providers: NGFS,
+WEO, Inevitable Policy Response (IPR), Oxford Institute of New Economic
+Thinking (Oxford), the Global Energy and Climate Outlook from the EU
+(GECO), and the Mission Possible Partnership (Steel). For each provider,
+we may have data from different years and sometimes multiple scenarios
+to choose from.</p>
+<p>How to choose within this portfolio of scenarios is further explained
+in the next table.</p>
+</div>
+<div id="available-parameters" class="section level2">
+<h2>Available parameters</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  available_parameters <span class="ot">&lt;-</span> <span class="fu">get_available_parameters</span>(scenarios)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>This table breaks down the different options for the scenarios we
+discussed earlier. The first column again shows the scenario provider
+and the vintage (year). The “scenario_geography” column captures the
+regional detail available within each scenario provider.</p>
+<p>Next, you’ll see “baseline_scenario” and “target_scenario.” These two
+columns separate scenarios into baseline—status quo scenarios—and target
+scenarios—ambitious scenarios aiming to achieve specific goals. For
+example, the IEA STEPS scenario we discussed earlier is a baseline
+scenario, while the NetZero2050 scenario is a target scenario.</p>
+<p>The table also shows how scenarios can be combined in our stress
+test. It’s important to note that a general rule is to select a baseline
+and target scenario from the same provider.</p>
+<p>If you’re choosing a specific scenario for your analysis, here are
+some factors to consider:</p>
+<ol style="list-style-type: decimal">
+<li><p>Data vintage: Some scenarios aren’t updated as frequently, while
+others provide more recent data that may be more relevant for your
+analysis.</p></li>
+<li><p>Geography options: Not all scenarios offer detailed regional
+choices. If you need more than just a global view, some scenarios (like
+the NGFSGCAM scenarios) provide better options for focusing the stress
+test on a specific region or country.</p></li>
+<li><p>Type of target scenario: There are various target scenarios
+available. Some providers only have one, while others offer multiple.
+For example, NGFS provides both B2DS (Below 2°C) and NZ2050 (Net Zero
+2050) scenarios, which both aim to limit global warming, but with
+different levels of ambition.</p></li>
+<li><p>Different scenario narratives: Most of the scenarios are very
+straight forward and can be categorized into business as usual scenarios
+or target scenarios. However, some scenarios, especially from NGFS, have
+slightly different narratives. For instance, the NGFS “LD” (Low Demand)
+scenario also aims for net zero and limits global temperature rise, but
+it’s based not just on strict climate policies (like B2DS or NZ2050) but
+on assumptions of rapidly declining energy demand. These scenarios are
+useful for specific analyses, but it’s worth familiarizing yourself with
+the different narratives. For NGFS scenarios, you can read more about
+them on their website: <a href="https://www.ngfs.net/en" class="uri">https://www.ngfs.net/en</a></p></li>
+</ol>
+</div>
+</div>
+<div id="run-trisk-on-a-geography" class="section level1">
+<h1>Run Trisk on a geography</h1>
+<p>When choosing a geography different than “Global”, the input assets
+dataframe is filtered on the geography’s countries, and the scenarios is
+filtered to use the pathways defined in this geography. This means that
+only the assets located in the countries covered by this geography will
+be considered for analysis, on geography-specific pathways.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  assets_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;assets_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  scenarios_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(trisk_inputs_folder, <span class="st">&quot;scenarios.csv&quot;</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  financial_features_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;financial_features_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  ngfs_carbon_price_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;ngfs_carbon_price_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  assets_data <span class="ot">&lt;-</span> assets_data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(.data<span class="sc">$</span>production_year <span class="sc">&gt;=</span> <span class="fu">min</span>(scenarios_data<span class="sc">$</span>scenario_year))</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  }</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>baseline_scenario <span class="ot">&lt;-</span> <span class="st">&quot;NGFS2024GCAM_CP&quot;</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>target_scenario <span class="ot">&lt;-</span> <span class="st">&quot;NGFS2024GCAM_NZ2050&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>scenario_geography <span class="ot">&lt;-</span> <span class="st">&quot;Global&quot;</span> <span class="co"># CHANGE GEOGRAPHY</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  st_results <span class="ot">&lt;-</span> <span class="fu">run_trisk_model</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">assets_data =</span> assets_data,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">scenarios_data =</span> scenarios_data,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">financial_data =</span> financial_features_data,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">carbon_data =</span> ngfs_carbon_price_data,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">baseline_scenario =</span> baseline_scenario,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="at">target_scenario =</span> target_scenario,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">scenario_geography =</span> scenario_geography</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  )</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="run-trisk-with-carbon-tax" class="section level1">
+<h1>Run Trisk with carbon tax</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  available_carbon_taxes <span class="ot">&lt;-</span> ngfs_carbon_price_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">distinct</span>(model)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">print</span>(available_carbon_taxes)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>This table shows the different carbon tax options you can choose
+from. A carbon tax is an additional mechanism that can be applied to
+company profits, based on their CO2 emissions from production.</p>
+<p>We’ve implemented one carbon tax rate from the NGFS GCAM scenario,
+along with a few others that follow a more straightforward approach. For
+example, “flat_carbon_tax_50” is a tax of $50 per ton of CO2 that
+remains constant over time. “independent_increasing_carbon_tax_50” is a
+tax that starts at $50 per ton in 2025 and then increases
+exponentially.</p>
+<p>These carbon prices are designed to illustrate the amplification
+effect a carbon tax can have on outcomes. If you’d prefer different
+assumptions for the carbon tax trajectory, there’s always the option to
+include your own in the model.</p>
+<p>It is then possible to choose a carbon tax and a passthrough, to
+adjust its impact on NPV:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>carbon_price_model <span class="ot">&lt;-</span> <span class="st">&quot;GCAM 5.3+ NGFS&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>market_passthrough <span class="ot">&lt;-</span> <span class="fl">0.3</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>is_CRAN) {</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  st_results <span class="ot">&lt;-</span> <span class="fu">run_trisk_model</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">assets_data =</span> assets_data,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="at">scenarios_data =</span> scenarios_data,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">financial_data =</span> financial_features_data,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">carbon_data =</span> ngfs_carbon_price_data,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">baseline_scenario =</span> baseline_scenario,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="at">target_scenario =</span> target_scenario,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">scenario_geography =</span> scenario_geography,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="at">carbon_price_model =</span> carbon_price_model,</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="at">market_passthrough =</span> market_passthrough</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  )</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

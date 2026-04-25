@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>sensitivity-analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">sensitivity-analysis</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(trisk.analysis)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>assets_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;assets_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>scenarios_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;scenarios_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>financial_features_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;financial_features_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>ngfs_carbon_price_testdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;ngfs_carbon_price_testdata.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;trisk.model&quot;</span>))</span></code></pre></div>
+<div id="sensitivity-analysis" class="section level1">
+<h1>Sensitivity Analysis</h1>
+<div id="vary-parameters-over-entire-dataset" class="section level2">
+<h2>Vary parameters over entire dataset</h2>
+<p>Sensitivity analysis allows us to explore how changes in parameters
+affect the results. In this example, we show how to vary the shock year
+in multiple TRISK runs when defining run parameters for sensitivity
+analysis.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>run_params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">scenario_geography =</span> <span class="st">&quot;Global&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">baseline_scenario =</span> <span class="st">&quot;NGFS2023GCAM_CP&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">target_scenario =</span> <span class="st">&quot;NGFS2023GCAM_NZ2050&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">shock_year =</span> <span class="dv">2030</span> <span class="co"># SHOCK YEAR 1</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  ),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">scenario_geography =</span> <span class="st">&quot;Global&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">baseline_scenario =</span> <span class="st">&quot;NGFS2023GCAM_CP&quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">target_scenario =</span> <span class="st">&quot;NGFS2023GCAM_NZ2050&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="at">shock_year =</span> <span class="dv">2025</span> <span class="co"># SHOCK YEAR 2</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  )</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>)</span></code></pre></div>
+<p>The function <code>run_trisk_sa()</code> is used to run a sensitivity
+analysis with Trisk:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>sensitivity_analysis_results <span class="ot">&lt;-</span> <span class="fu">run_trisk_sa</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">assets_data =</span> assets_testdata,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">scenarios_data =</span> scenarios_testdata,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">financial_data =</span> financial_features_testdata,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">carbon_data =</span> ngfs_carbon_price_testdata,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">run_params =</span> run_params</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Starting the execution of 2 total runs&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Done 1 / 2 total runs&quot;</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Done 2 / 2 total runs&quot;</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; [1] &quot;All runs completed.&quot;</span></span></code></pre></div>
+<p>Contrary to a simple run of trisk with the “run_trisk_model”
+function, here it is possible to navigate through multiple Trisk runs in
+the same dataframe, using the run_id column as an index.</p>
+<p>Consolidated NPV results</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_shock
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_difference
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_present_value_change
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+172718.3
+</td>
+<td style="text-align:right;">
+1.354928e+04
+</td>
+<td style="text-align:right;">
+-159169
+</td>
+<td style="text-align:right;">
+-0.9215527
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+42299475.0
+</td>
+<td style="text-align:right;">
+4.317748e+06
+</td>
+<td style="text-align:right;">
+-37981727
+</td>
+<td style="text-align:right;">
+-0.8979243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+103
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Company 3
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+95105145.4
+</td>
+<td style="text-align:right;">
+2.486475e+07
+</td>
+<td style="text-align:right;">
+-70240391
+</td>
+<td style="text-align:right;">
+-0.7385551
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Company 4
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+RenewablesCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+1016926683.7
+</td>
+<td style="text-align:right;">
+1.366640e+09
+</td>
+<td style="text-align:right;">
+349713309
+</td>
+<td style="text-align:right;">
+0.3438924
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+CoalCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+176175702.5
+</td>
+<td style="text-align:right;">
+1.187415e+07
+</td>
+<td style="text-align:right;">
+-164301556
+</td>
+<td style="text-align:right;">
+-0.9326005
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+105
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Company 5
+</td>
+<td style="text-align:left;">
+Power
+</td>
+<td style="text-align:left;">
+OilCap
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:right;">
+21412749.3
+</td>
+<td style="text-align:right;">
+1.416673e+06
+</td>
+<td style="text-align:right;">
+-19996076
+</td>
+<td style="text-align:right;">
+-0.9338397
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Consolidated PD results</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+term
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd_shock
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0005908
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0120293
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.0000011
+</td>
+<td style="text-align:right;">
+0.0350054
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.0000237
+</td>
+<td style="text-align:right;">
+0.0614358
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.0001502
+</td>
+<td style="text-align:right;">
+0.0874772
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+102
+</td>
+<td style="text-align:left;">
+Company 2
+</td>
+<td style="text-align:left;">
+Coal
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0001410
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Consolidated company trajectories</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+asset_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+company_name
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+country_iso2
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+sector
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_plan_company_technology
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_target_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+production_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profit_margin
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+debt_equity_ratio
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+volatility
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_price_baseline
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+price_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profits_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profits_shock_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+discounted_net_profits_baseline_scenario
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+discounted_net_profits_shock_scenario
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2022
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+5000.000
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.867116
+</td>
+<td style="text-align:right;">
+5.867116
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+<td style="text-align:right;">
+2239.895
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2023
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+5001.354
+</td>
+<td style="text-align:right;">
+5423
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.898569
+</td>
+<td style="text-align:right;">
+5.898569
+</td>
+<td style="text-align:right;">
+2442.414
+</td>
+<td style="text-align:right;">
+2442.414
+</td>
+<td style="text-align:right;">
+2282.630
+</td>
+<td style="text-align:right;">
+2282.630
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2024
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+5002.708
+</td>
+<td style="text-align:right;">
+6200
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.930022
+</td>
+<td style="text-align:right;">
+5.930022
+</td>
+<td style="text-align:right;">
+2807.250
+</td>
+<td style="text-align:right;">
+2807.250
+</td>
+<td style="text-align:right;">
+2451.961
+</td>
+<td style="text-align:right;">
+2451.961
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+5004.062
+</td>
+<td style="text-align:right;">
+7400
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.961475
+</td>
+<td style="text-align:right;">
+5.961475
+</td>
+<td style="text-align:right;">
+3368.360
+</td>
+<td style="text-align:right;">
+3368.360
+</td>
+<td style="text-align:right;">
+2749.585
+</td>
+<td style="text-align:right;">
+2749.585
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2026
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+4862.620
+</td>
+<td style="text-align:right;">
+7800
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.945170
+</td>
+<td style="text-align:right;">
+5.945170
+</td>
+<td style="text-align:right;">
+3540.723
+</td>
+<td style="text-align:right;">
+3540.723
+</td>
+<td style="text-align:right;">
+2701.201
+</td>
+<td style="text-align:right;">
+2701.201
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+Company 1
+</td>
+<td style="text-align:left;">
+DE
+</td>
+<td style="text-align:left;">
+Oil&amp;Gas
+</td>
+<td style="text-align:left;">
+Gas
+</td>
+<td style="text-align:right;">
+2027
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+4721.178
+</td>
+<td style="text-align:right;">
+8600
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.259323
+</td>
+<td style="text-align:right;">
+5.928866
+</td>
+<td style="text-align:right;">
+5.928866
+</td>
+<td style="text-align:right;">
+3893.168
+</td>
+<td style="text-align:right;">
+3893.168
+</td>
+<td style="text-align:right;">
+2775.775
+</td>
+<td style="text-align:right;">
+2775.775
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Consolidated params dataframe</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+baseline_scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+target_scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_geography
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+carbon_price_model
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+risk_free_rate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+discount_rate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+growth_rate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+div_netprofit_prop_coef
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+shock_year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+market_passthrough
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+run_id
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM_NZ2050
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+no_carbon_tax
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.03
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2030
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+44a05aa9-70e3-41e8-996f-bf985abaea80
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM_NZ2050
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+no_carbon_tax
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.03
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2025
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+3598c6af-82b1-45f9-826c-1773f3396827
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plot-results" class="section level3">
+<h3>Plot results</h3>
+<p>Plot the sum of production trajectories, scaled in percentage of the
+first year value. The run_id identifies each run and can be found in the
+parameters dataframe.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">plot_multi_trajectories</span>(sensitivity_analysis_results<span class="sc">$</span>trajectories)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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9ZId6YcIiIAINEqgbfDgwTZr1izDrRo0aJDdcMMNsY8nn3zShg4dat26dbMNNtggyrACxTR27Fi5YI2SVnkREIGFCBT23Xdf69q1a6x4//33rV+/fvF9u+22swMOOMA++OCDcL2wku655x5DYV144YW25557LrQzFrzxxhv2xBNPxDriR126dAnF1r1794rltVAERKDzEujqrtexY8aMsb333tv69OljTz31lO2yyy42ZcqUcMG23nrrUCI9evSIZTvttJM9+uijNnfuXCsUCrFNHh8K6LHHHrM333wzXrhvSy21lK288sr5YvouAiIgAtb12WefjSD0n//8Z3vppZdszTXXtG233dbOOecce+WVV2z69Om29NJL2+zZs22bbbaxq6++OuJBffv2jZgRgWtctSRYUyuttJKtttpqtsoqq9jzzz8fykcKKBHSpwiIQCJQQFlg9RBYxnJJweXlllvOnn76aRs1apRdfvnltsYaa4QiwbLh+x577BGKZq+99rJx48al/dm8efPMW9aKv/VFBERABKoRKNDcTqD5rbfesg8//NDuv//+KDt//vxwr3DFevbsaWuvvbZddtllsQ73i+XLLrtsLM/vHIW2xRZbxCJiSjNnzsyv1ncREAERKBIoEJ8hvoMCwgriE8ECcvfMdthhB7viiitCSREjQjHdd999Nnny5AheYyHlhZjPnXfemV+k7yIgAiJQkUDb2Wefbfvss4/94Q9/sAEDBhQLYb0cccQR1r9//3C3HnrooXDJHnnkERs9enQsO+644+y2224rbsMXrCKa83mttdZaJev0QwREQATyBArEb2guT03mQ4YMifU0wx999NHRDE9T/Kc//WmjKb1Xr1521VVXGa1h119/fVhG+R1SljgQUmkYR76svouACHRuAm3Ef3r37h0UkiLiBx0RCTTvt99+tuKKK0aAmqA0MR6UEJbP8ssvHy5ZHiFxpAULFhRf+XX6LgIiIAJ5AgU6Gw4bNiwUxkEHHWTPPfdcrEcB7b777jHei0AysSGa56+99troNU1vaFq7iBXlhThScr2whnDZJCIgAiJQiUCBGNAFF1wQCoZ+OykIveuuu4YLRh+ff/zjH7bRRhtFMzxuGEMzsICIGdF0nxea6R988MHiIvoF0Y9IIgIiIALlBLq4FZPhYtG6dfjhh4dbRQsXQivY7bffHh0UN9lkk+gPhFt2xhln2MiRI42pPGi2P/nkk4v7xep5++23i79RQFhFEhEQAREoJ1A4/vjjY6gErtfHPvaxkpYwOhwSbJ4wYUIElukJTesW7hk9pVEu5c3wLCM2JBEBERCB9gi0XXrppTHvzzXXXBNN7qkVLG1Ic/yBBx4Y03TsuOOOMfyCsWKUZ6qO8mb4tJ0+RUAERKA9Am0Ms8CqYUZE3C0C0nmhFzTjwQg6MyEZCuqBBx6IUe8Ep+khLREBERCBjhAonHnmmTHHD8Hn/fff39ZZZ52S/TC6nZYsWsQQ1m+11VZRFuWDdSQRAREQgY4Q6PLee+9lxHTo8VypterVV1+NMWIazd4RvNpGBESgFoEu3vlw4Vnna22hdSIgAiLQJAJKy9MkkNqNCIhA4wSkgBpnpi1EQASaREAKqEkgtRsREIHGCUgBNc5MW4iACDSJgBRQk0BqNyIgAo0TkAJqnJm2EAERaBIBKaAmgdRuREAEGicgBdQ4M20hAiLQJAJSQE0Cqd2IgAg0TkAKqHFm2kIERKBJBKSAmgRSuxEBEWicgBRQ48y0hQiIQJMISAE1CaR2IwIi0DgBKaDGmWkLERCBJhGQAmoSSO1GBESgcQJSQI0z0xYiIAJNIiAF1CSQ2o0IiEDjBKSAGmemLURABJpEQAqoSSC1GxEQgcYJSAE1zkxbiIAINImAFFCTQGo3IiACjROQAmqcmbYQARFoEoG2d9991+69997IjFppn5Wy9rz++us2Z86cSsW1TAREQATqJtD17rvvPvbhhx+2SZMm2QsvvGBbbrllbIyCGT9+vJ1++umxfNNNN43UzKxk2YYbbmgrrLBC3QdSQREQAREoJ9B28MEH2yGHHGKnnnqqTZs2zW688cYoc+6559rw4cPtoosustdee81mzJgRyx9//PGiIirfmX6LgAiIQCMECqeddpqtvvrq4VJh0dx00002cuRIe+yxx2LZxIkTI20zioflKKZu3bpVPcYHH3xgb7/9dnF9165dbZlllin+1hcREAERSAQKWD8ooOWXX94OPPDAUDysXG655ezpp5+2UaNG2RVXXGHbb7+93XPPPdazZ097//330/YLfb7yyit25513Fpd3797dNt54Y1txxRWLy/RFBERABCBQYgEtvfTS4W6xYv78+danTx+bMmWKDR482F566SWbOXOmFQoFw6q5/vrrbdiwYbb++utTvChYOwMHDozfH374oT355JMRQ5ICKiLSFxEQgf8SKLGADjjgAEMJIVhAzz77rI0ZMyYsoP79+4crhmKaOnWqYdmcddZZYd2MGzcutuEN9+uJJ54o/tYXERABEahGoEDwuV+/fhHv6dKlixHDQfIWEBbNgw8+aGuuuabNnTvXevfuHa/tttvOTjzxRMsrICygQYMGxT6wgGbNmhXf9SYCIiAC5QQKW221le2888726quv2jHHHBMuFoXyFtDkyZNt6NChNmDAgFh/88032+zZs8MNKw9IYwERsJaIgAiIQHsECtddd100v2P5tLW1Wep4mCygq666KpQRfYSwbrCAevToYbfccksopOeee67kGLKASnDohwiIQA0CbbRyff/737cf//jHhsuEG4ZgAb344os2evRoe+utt2zVVVcNhdO3b1+bN2+ejRgxIpZTLi/JAsIKkvuVJ6PvIiAC5QQKN9xwg02fPj1iP5UsIFq7aKJvxAJKrWBYVU899VT5MfVbBERABIJA2w477GBnn322TZgwoSEL6FOf+lRVC4hWMF5SPqplIiACtQgUiOUwGBU3a6mllirGgOhseMQRR9gzzzwTrV+4YykGtO666xqxozXWWMMqxYDWWmutOCYuHZ0ZJSIgAiJQiUBhv/32s0022SR6N3/jG9+I2A8Fd911VzvjjDNso402sueff9523HHHWNerVy+75pprbOzYseYDWYvl086JAdH5MAlKDRdOIgIiIALlBLq4C5ahILCA6FxIK9hll10W5eiIyLAKFE2SzTffPKwfLJtkAf31r39Nq2N7LJ8kBLWJLUlEQAREoJxAiQV00EEHxfCKVAgFg3JiNPx7771nuFa0gj3yyCNVLSAUDkM1JCIgAiLQHoECAehkAa299toxtCK/EWO/cKlo0WKoxtVXX20bbLCB3XbbbdEsz6h5iQiIgAh0hECJBfSd73ynxAJihwSjsXyYgAxXasiQIRED+v3vf29///vfO3JMbSMCIiACQaDEAtp///1tnXXWKUGDBUS8Z999943lrGf4BmWxmJjCQyICIiACHSHQxWM7GS4Wo93TSPj8jhgjRlB55ZVXzi/WdxEQARFYZAJdvNUrW+S9aAciIAIi0AECah/vADRtIgIi0BwCUkDN4ai9iIAIdICAFFAHoGkTERCB5hCQAmoO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R5OAHmFf5C+XiIAIiEAlAgXiOQSUccFIco/lguRdMJZ7QjTzpGPkETPPtx3WEZ977bVXiQLydLD2wAMPxD4qNeHHCr2JgAiIgBNoGzFiRLSC0eT+5ptvGjEfJO+CERvyDJd22WWXGeVRMrfccotNnjzZPCtmlE9vKCvPER0vz/KYFutTBERABBYiUKDV64477jDPXhmWTVIayQXDyvF82uaZFcMF87zZ5hkNQ2lRdtSoUSU7pfwWW2wRy+SClaDRDxEQgTICBToXErfx9MAR60luU3LBiP9g1fTo0aPoguGynXDCCaGwcMEOO+yw4m7pM0THRoQ4kUQEREAEqhFo23rrre28886zE088saILdsghh0SMqF4XDAWGG8dLCqgadi0XARGAQOHmm282+gK99dZbFV2wnj17LuSCeQJ6O+ecc6I5vtwFozxKDZELFhj0JgIiUIVAYcqUKRHfobl9n332iVgQZVFKRx99tG200Ub28ssvh5uWWsFoOfvmN79p8+fPj1awvAtGn59HH300DpfcuSrH1mIREIFOTqBAgPnzn/+8PfHEE/bcc89Fb2iY7LDDDtHydd9990XsZ911141WMDonnnHGGTFGjJH05a1guF0EqZMQO+rVq1f6qU8REAERKBLo4oomo+8PLhjWDgHpo446qljgjTfesAkTJkTzO3EdOiOisBB6PeOC5S2g4ob6IgIiIALtEGjDBTvllFPsyiuvtO7du9ugQYNKNqEV7MADD4xR8jvuuKMxYn6XXXaxa665Jqyg2267raS8foiACIhAvQTacMEYYDp79my7/fbbbdiwYSXbElSePn16jICnyX7IkCHR0xnLaObMmQu5YCUb64cIiIAI1CBQOPPMM40pNnDB9t9/f1tnnXVKiqNoHnnkkRgXxgrWb7XVVlGW+A/WkUQEREAEOkKgizeVZ/R6phUsTcWR3xHDLggs0wImEQEREIFmEujiTeVZM3eofYmACIhAvQSUFaNeUionAiLQdAJSQE1Hqh2KgAjUS0AKqF5SKicCItB0AlJATUeqHYqACNRLQAqoXlIqJwIi0HQCUkBNR6odioAI1EtACqheUionAiLQdAJSQE1Hqh2KgAjUS0AKqF5SKicCItB0AlJATUeqHYqACNRLQAqoXlIqJwIi0HQCUkBNR6odioAI1EtACqheUionAiLQdAJSQE1Hqh2KgAjUS0AKqF5SKicCItB0AlJATUeqHYqACNRLQAqoXlIqJwIi0HQCUkBNR6odioAI1EtACqheUionAiLQdAJSQE1Hqh2KgAjUS0AKqF5SKicCItB0AlJATUeqHYqACNRLQAqoXlIqJwIi0HQCbe+++67de++99uKLL1bceaW0Ya+//rrNmTOnYnktFAEREIF6CXS9++67j3344Ydt0qRJ9sILL9iWW24Z26Jgxo8fb6effnos33TTTY3c8AjLNtxwQ1thhRXit95EQAREoCME2g4++GA75JBD7NRTT7Vp06bZjTfeGPshX/zw4cPtoosustdee81mzJgRyx9//PGiIurIAbWNCIiACCQChdNOO81WX331cKmwaG666SYbOXKkPfbYY7Fs4sSJkTcexcNyFFO3bt3S9voUAREQgQ4TKGD9oICWX355O/DAA0PxsLflllvOnn76aRs1apRdccUVtv3229s999xjPXv2tPfff7/qAV9++eUolwp06dLFPv7xj1u/fv3SIn2KgAiIQBAosYCWXnrpcLdYM3/+fOvTp49NmTLFBg8ebC+99JLNnDnTCoWCde3a1a6//nobNmyYrb/++iUosY569+4dyz788EN77rnn7K233iopox8iIAIiAIESC+iAAw4wlBCCBfTss8/amDFjwgLq379/uGIopqlTp1r37t3trLPOso033tjGjRsX2/BGq1pqUavUglYsqC8iIAKdnkCB4DPuEa1euEsffPBBQMlbQAMHDrQHH3zQ1lxzTZs7d25YOFg52223nZ144oklCggFtuqqq8Y+UECzZ8/u9JAFQAREoDKBwlZbbWU777yzvfrqq3bMMceEi0XRvAU0efJkGzp0qA0YMCDW33zzzaFYcMPKA9LvvPNOuF2VD6elIiACIvC/BArXXXddNL9j+dDPJ7lNyQK66qqrQhnRR2iZZZYJC6hHjx52yy23hEIixpMXLKAUcCYGhBsnEQEREIFKBNp22GEHO/vss23ChAmGwsANQ7CAiOWMHj06gsi4VVhAffv2tXnz5tmnPvWpWE65vGABPfPMM/GS+5Uno+8iIALlBApYMgzFoKVqqaWWKlpANLUfccQRoUiI/aCMkgW07rrrGpbTGmussZC7RRnKI1hVKCOJCIiACFQiUNhvv/1sk002ib493/jGN8LyoeCuu+5qZ5xxhm20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" /><!-- --></p>
+</div>
+</div>
+<div id="vary-parameters-over-a-single-or-a-group-of-countries" class="section level2">
+<h2>Vary parameters over a single or a group of countries</h2>
+<p>You can also perform sensitivity analysis on a filtered subset of
+assets. This example filters the dataset by country, and then runs the
+analysis.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Run sensitivity analysis across multiple TRISK runs</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>sensitivity_analysis_results <span class="ot">&lt;-</span> <span class="fu">run_trisk_sa</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">assets_data =</span> assets_testdata,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">scenarios_data =</span> scenarios_testdata,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">financial_data =</span> financial_features_testdata,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">carbon_data =</span> ngfs_carbon_price_testdata,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">run_params =</span> run_params,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">country_iso2 =</span> <span class="fu">c</span>(<span class="st">&quot;DE&quot;</span>) <span class="co"># FILTER ASSETS ON COUNTRIES</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Starting the execution of 2 total runs&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Done 1 / 2 total runs&quot;</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Done 2 / 2 total runs&quot;</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="co">#&gt; [1] &quot;All runs completed.&quot;</span></span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
