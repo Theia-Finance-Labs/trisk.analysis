@@ -74,7 +74,7 @@ integrate_pd <- function(analysis_data,
     ) |>
     dplyr::mutate(
       pd_type = ordered(
-        dplyr::case_match(.data$pd_type_raw,
+        dplyr::recode_values(.data$pd_type_raw,
           "internal_pd"       ~ "internal",
           "pd_baseline"       ~ "baseline",
           "pd_shock"          ~ "shock",
@@ -279,7 +279,7 @@ integrate_el <- function(analysis_data,
     ) |>
     dplyr::mutate(
       el_type = factor(
-        dplyr::case_match(.data$el_type_raw,
+        dplyr::recode_values(.data$el_type_raw,
           "internal_el"            ~ "internal",
           "expected_loss_baseline" ~ "baseline",
           "expected_loss_shock"    ~ "shock",
