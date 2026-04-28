@@ -16,18 +16,39 @@ NULL
 TRISK_DATA_INPUT_ENDPOINT <- "https://storage.googleapis.com"
 TRISK_DATA_S3_PREFIX <- "crispy-public-data/trisk_inputs"
 
+#' TRISK plot palette constants
+#'
+#' Hex colour codes used by the built-in `pipeline_crispy_*` plot functions.
+#' Exported so users can match the palette in custom plots and vignette chunks.
+#'
+#' \itemize{
+#'   \item `TRISK_HEX_RED` — primary red, for shock / negative / worse-off fills.
+#'   \item `TRISK_HEX_GREEN` — primary green, for baseline / better-off fills.
+#'   \item `TRISK_HEX_GREY` — neutral grey, for reference / neutral series.
+#'   \item `TRISK_HEX_ADJUSTED` — dark-red blend, for adjusted PD/EL series.
+#'   \item `STATUS_GREEN` — muted green (from `trisk.r.docker`), for
+#'     positive / better-off status fills.
+#' }
+#'
+#' @format Character scalars (hex colour strings).
+#' @name trisk_palette
+NULL
 
-
+#' @rdname trisk_palette
 #' @export
 TRISK_HEX_RED <- "#F53D3F"
+#' @rdname trisk_palette
 #' @export
 TRISK_HEX_GREEN <- "#5D9324"
+#' @rdname trisk_palette
 #' @export
 TRISK_HEX_GREY <- "#BAB6B5"
+#' @rdname trisk_palette
 #' @export
-TRISK_HEX_ADJUSTED <- "#AA2A2B"  # Dark-red blend of TRISK_HEX_RED; for "adjusted PD/EL" role
+TRISK_HEX_ADJUSTED <- "#AA2A2B"
+#' @rdname trisk_palette
 #' @export
-STATUS_GREEN <- "#3D8B5E"        # Muted green from trisk.r.docker/global.R; for positive/better-off fills
+STATUS_GREEN <- "#3D8B5E"
 
 #' TRISK plot theme
 #'
