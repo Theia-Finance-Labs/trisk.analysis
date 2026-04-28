@@ -4,10 +4,11 @@
 \alias{aggregate_simple_portfolio_results}
 \title{Aggregate simple portfolio tech details back to input-row shape}
 \usage{
-aggregate_simple_portfolio_results(portfolio_results_tech_detail)
+aggregate_simple_portfolio_results(portfolio_results_detailed)
 }
 \arguments{
-\item{portfolio_results_tech_detail}{Detailed output from \code{run_trisk_on_simple_portfolio()}.}
+\item{portfolio_results_detailed}{Detailed output from \code{run_trisk_on_simple_portfolio()}
+before dropping \code{exposure_value_usd}.}
 }
 \value{
 Portfolio output with one row per input portfolio row.
