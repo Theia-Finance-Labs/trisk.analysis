@@ -74,11 +74,11 @@ integrate_pd <- function(analysis_data,
     ) |>
     dplyr::mutate(
       pd_type = ordered(
-        dplyr::case_match(.data$pd_type_raw,
-          "internal_pd"       ~ "internal",
-          "pd_baseline"       ~ "baseline",
-          "pd_shock"          ~ "shock",
-          "trisk_adjusted_pd" ~ "trisk_adjusted"
+        dplyr::case_when(
+          .data$pd_type_raw == "internal_pd"       ~ "internal",
+          .data$pd_type_raw == "pd_baseline"       ~ "baseline",
+          .data$pd_type_raw == "pd_shock"          ~ "shock",
+          .data$pd_type_raw == "trisk_adjusted_pd" ~ "trisk_adjusted"
         ),
         levels = c("internal", "baseline", "shock", "trisk_adjusted")
       )
@@ -279,11 +279,11 @@ integrate_el <- function(analysis_data,
     ) |>
     dplyr::mutate(
       el_type = factor(
-        dplyr::case_match(.data$el_type_raw,
-          "internal_el"            ~ "internal",
-          "expected_loss_baseline" ~ "baseline",
-          "expected_loss_shock"    ~ "shock",
-          "trisk_adjusted_el"      ~ "trisk_adjusted"
+        dplyr::case_when(
+          .data$el_type_raw == "internal_el"            ~ "internal",
+          .data$el_type_raw == "expected_loss_baseline" ~ "baseline",
+          .data$el_type_raw == "expected_loss_shock"    ~ "shock",
+          .data$el_type_raw == "trisk_adjusted_el"      ~ "trisk_adjusted"
         ),
         levels = c("internal", "baseline", "shock", "trisk_adjusted")
       )
