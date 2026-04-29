@@ -112,12 +112,12 @@ portfolio_results_tech_detail |>
 #> 5        103    5 Oil&Gas           Gas                  3728364
 #> 6        104    4   Power RenewablesCap                  9263702
 #>   net_present_value_baseline
-#> 1                   172718.3
-#> 2                   172718.3
-#> 3                   172718.3
-#> 4                 42299475.0
-#> 5                 95105145.4
-#> 6               1016926683.7
+#> 1                   51951.82
+#> 2                   51951.82
+#> 3                   51951.82
+#> 4                13648160.57
+#> 5                27724344.25
+#> 6               141635910.26
 ```
 
 Because `exposure_value_usd_share` is computed after dropping `run_id`,

@@ -1,0 +1,57 @@
+# PD integration bar plot (4-bar grouped)
+
+Draws four bars per facet group: Internal PD (navy), TRISK Baseline
+(mint), TRISK Shock (orange), TRISK-Adjusted PD (purple). The
+four-colour palette matches \`plot_multi_trajectories()\` for visual
+consistency across vignettes.
+
+## Usage
+
+``` r
+pipeline_crispy_pd_integration_bars(
+  integration_result,
+  facet_var = "sector",
+  granularity = c("sector", "firm"),
+  scale = c("pseudo_log", "linear")
+)
+```
+
+## Arguments
+
+- integration_result:
+
+  Output of \[integrate_pd()\] (a list with \`\$portfolio_long\`, which
+  must include \`exposure_value_usd\`).
+
+- facet_var:
+
+  Column used for facets. Default \`"sector"\`.
+
+- granularity:
+
+  One of \`"sector"\` (EAD-weighted mean per pd_type) or \`"firm"\` (one
+  bar group per firm/technology/term). Default \`"sector"\`.
+
+- scale:
+
+  One of \`"pseudo_log"\` (default) or \`"linear"\`.
+
+## Value
+
+A ggplot2 object.
+
+## Details
+
+At \`granularity = "sector"\` (default), the term dimension is collapsed
+and bars are EAD-weighted means of PD per sector x pd_type. Each sector
+gets a row of four bars (one per pd_type). At \`granularity = "firm"\`,
+one group of four bars per firm/technology row; sectors are the facet.
+When the input has multiple terms per firm, only the shortest term is
+kept (exact loan-level exposure PDs are not used downstream). Firm view
+reveals within-sector heterogeneity that sector aggregation hides.
+
+The \`scale\` argument controls y-axis transformation. \`"pseudo_log"\`
+(the default, via \[scales::pseudo_log_trans()\]) is zero-safe and
+spreads values that span many orders of magnitude, useful when baseline
+PDs underflow. Pass \`scale = "linear"\` for a plain percent axis if all
+values sit in a comparable range.

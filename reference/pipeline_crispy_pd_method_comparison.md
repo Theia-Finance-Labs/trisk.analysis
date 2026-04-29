@@ -1,0 +1,62 @@
+# PD Integration Method Comparison Plot
+
+Runs all three PD integration methods on the same input and overlays
+their adjusted PDs so the user can see method sensitivity at a glance.
+Inspired by the range-lollipop pattern in
+\`mod_results_scenarios.R:220-234\`.
+
+## Usage
+
+``` r
+pipeline_crispy_pd_method_comparison(
+  analysis_data,
+  internal_pd = NULL,
+  facet_var = "sector",
+  granularity = c("sector", "firm"),
+  scale = c("linear", "pseudo_log")
+)
+```
+
+## Arguments
+
+- analysis_data:
+
+  Raw output of \[run_trisk_on_portfolio()\].
+
+- internal_pd:
+
+  Optional; forwarded to \[integrate_pd()\].
+
+- facet_var:
+
+  Column used for sector-level aggregation (ignored when \`granularity =
+  "firm"\`). Default \`"sector"\`.
+
+- granularity:
+
+  One of \`"sector"\` (aggregate to facet_var groups, EAD-weighted) or
+  \`"firm"\` (one row per portfolio firm/technology/term). Default
+  \`"sector"\`.
+
+- scale:
+
+  One of \`"linear"\` or \`"pseudo_log"\`. Default \`"linear"\`.
+
+## Value
+
+A ggplot2 object.
+
+## Details
+
+At \`granularity = "sector"\` (default), each group shows the
+EAD-weighted internal PD as a tick and the weighted adjusted PD as a
+colored shape per method. At \`granularity = "firm"\`, each firm row
+shows its internal PD tick and three method-specific adjusted PDs.
+Firm-level is more informative when sectors aggregate away method
+divergence (e.g. sparse portfolios where most firms have baseline PDs
+near zero).
+
+The \`scale\` argument controls x-axis transformation. \`"pseudo_log"\`
+(via \[scales::pseudo_log_trans()\]) handles values spanning many orders
+of magnitude including zero, which is common when Merton inputs drive
+some firms' baseline PDs to double-precision underflow.

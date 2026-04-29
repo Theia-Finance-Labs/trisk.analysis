@@ -1,19 +1,24 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/country_level_npv_analysis.html</loc></url>
 <url><loc>/articles/download-scenarios.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/inputs-and-outputs.html</loc></url>
+<url><loc>/articles/pd-el-integration.html</loc></url>
 <url><loc>/articles/portfolio-analysis.html</loc></url>
 <url><loc>/articles/return-company-aggregated-results.html</loc></url>
 <url><loc>/articles/sensitivity-analysis.html</loc></url>
 <url><loc>/articles/simple-portfolio-analysis.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/reference/TRISK_PLOT_THEME_FUNC.html</loc></url>
 <url><loc>/reference/add_exposure_share_from_npv.html</loc></url>
+<url><loc>/reference/aggregate_el_integration.html</loc></url>
 <url><loc>/reference/aggregate_facts.html</loc></url>
 <url><loc>/reference/aggregate_facts_portfolio.html</loc></url>
 <url><loc>/reference/aggregate_facts_trisk.html</loc></url>
+<url><loc>/reference/aggregate_pd_integration.html</loc></url>
 <url><loc>/reference/aggregate_simple_portfolio.html</loc></url>
 <url><loc>/reference/aggregate_simple_portfolio_results.html</loc></url>
 <url><loc>/reference/aggregate_trajectories_facts.html</loc></url>
@@ -31,11 +36,19 @@
 <url><loc>/reference/get_available_parameters.html</loc></url>
 <url><loc>/reference/get_filtered_assets_data.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/integrate_el.html</loc></url>
+<url><loc>/reference/integrate_pd.html</loc></url>
 <url><loc>/reference/join_simple_portfolio_to_trisk.html</loc></url>
 <url><loc>/reference/join_trisk_outputs_to_portfolio.html</loc></url>
+<url><loc>/reference/pipeline_crispy_el_adjustment_bars.html</loc></url>
+<url><loc>/reference/pipeline_crispy_el_kpi_table.html</loc></url>
+<url><loc>/reference/pipeline_crispy_el_sector_breakdown_table.html</loc></url>
 <url><loc>/reference/pipeline_crispy_expected_loss_plot.html</loc></url>
 <url><loc>/reference/pipeline_crispy_exposure_change_plot.html</loc></url>
 <url><loc>/reference/pipeline_crispy_npv_change_plot.html</loc></url>
+<url><loc>/reference/pipeline_crispy_pd_integration_bars.html</loc></url>
+<url><loc>/reference/pipeline_crispy_pd_kpi_table.html</loc></url>
+<url><loc>/reference/pipeline_crispy_pd_method_comparison.html</loc></url>
 <url><loc>/reference/pipeline_crispy_pd_term_plot.html</loc></url>
 <url><loc>/reference/plot_multi_trajectories.html</loc></url>
 <url><loc>/reference/prepare_for_crispy_npv_change_plot.html</loc></url>
@@ -49,5 +62,6 @@
 <url><loc>/reference/run_trisk_on_portfolio.html</loc></url>
 <url><loc>/reference/run_trisk_on_simple_portfolio.html</loc></url>
 <url><loc>/reference/run_trisk_sa.html</loc></url>
+<url><loc>/reference/trisk_palette.html</loc></url>
 </urlset>
 

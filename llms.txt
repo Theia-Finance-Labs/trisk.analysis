@@ -113,11 +113,17 @@ funding call.
 
 ## All functions
 
+- [`TRISK_PLOT_THEME_FUNC()`](TRISK_PLOT_THEME_FUNC.md) : TRISK plot
+  theme
 - [`add_exposure_share_from_npv()`](add_exposure_share_from_npv.md) :
   Compute exposure shares from baseline NPV
+- [`aggregate_el_integration()`](aggregate_el_integration.md) :
+  Aggregate EL integration results to portfolio level
 - [`aggregate_facts()`](aggregate_facts.md) : Title
 - [`aggregate_facts_portfolio()`](aggregate_facts_portfolio.md) : Title
 - [`aggregate_facts_trisk()`](aggregate_facts_trisk.md) : Title
+- [`aggregate_pd_integration()`](aggregate_pd_integration.md) :
+  Aggregate PD integration results to EAD-weighted portfolio level
 - [`aggregate_simple_portfolio()`](aggregate_simple_portfolio.md) :
   Aggregate simple portfolio input rows
 - [`aggregate_simple_portfolio_results()`](aggregate_simple_portfolio_results.md)
@@ -150,16 +156,32 @@ funding call.
   possible parameters values for Trisk from the scenario data
 - [`get_filtered_assets_data()`](get_filtered_assets_data.md) : Filter
   assets based on provided criteria
+- [`integrate_el()`](integrate_el.md) : Integrate TRISK EL shift into an
+  internal EL estimate
+- [`integrate_pd()`](integrate_pd.md) : Integrate TRISK PD shift into an
+  internal PD estimate
 - [`join_simple_portfolio_to_trisk()`](join_simple_portfolio_to_trisk.md)
   : Join simple portfolio to aggregated TRISK outputs
 - [`join_trisk_outputs_to_portfolio()`](join_trisk_outputs_to_portfolio.md)
   : Join TRISK Outputs to Portfolio
+- [`pipeline_crispy_el_adjustment_bars()`](pipeline_crispy_el_adjustment_bars.md)
+  : EL Adjustment Bar Plot (horizontal, sign-filled)
+- [`pipeline_crispy_el_kpi_table()`](pipeline_crispy_el_kpi_table.md) :
+  EL Integration KPI Table
+- [`pipeline_crispy_el_sector_breakdown_table()`](pipeline_crispy_el_sector_breakdown_table.md)
+  : EL Sector Breakdown Table
 - [`pipeline_crispy_expected_loss_plot()`](pipeline_crispy_expected_loss_plot.md)
   : Financial Risk Visualization via Expected Loss and Exposure Plot
 - [`pipeline_crispy_exposure_change_plot()`](pipeline_crispy_exposure_change_plot.md)
   : Visualize Exposure and Value Loss Changes
 - [`pipeline_crispy_npv_change_plot()`](pipeline_crispy_npv_change_plot.md)
   : Visualize Sector-wise NPV Percentage Changes
+- [`pipeline_crispy_pd_integration_bars()`](pipeline_crispy_pd_integration_bars.md)
+  : PD integration bar plot (4-bar grouped)
+- [`pipeline_crispy_pd_kpi_table()`](pipeline_crispy_pd_kpi_table.md) :
+  PD Integration KPI Table
+- [`pipeline_crispy_pd_method_comparison()`](pipeline_crispy_pd_method_comparison.md)
+  : PD Integration Method Comparison Plot
 - [`pipeline_crispy_pd_term_plot()`](pipeline_crispy_pd_term_plot.md) :
   Visualize PD Values by Term and Business Unit
 - [`plot_multi_trajectories()`](plot_multi_trajectories.md) : Visualize
@@ -185,13 +207,20 @@ funding call.
   : Run TRISK Model on Simple Portfolio
 - [`run_trisk_sa()`](run_trisk_sa.md) : Run TRISK sensitivity analysis
   on multiple scenarios
+- [`TRISK_HEX_RED`](trisk_palette.md)
+  [`TRISK_HEX_GREEN`](trisk_palette.md)
+  [`TRISK_HEX_GREY`](trisk_palette.md)
+  [`TRISK_HEX_ADJUSTED`](trisk_palette.md)
+  [`STATUS_GREEN`](trisk_palette.md) : TRISK plot palette constants
 
 # Articles
 
 ### All vignettes
 
+- [country-level-npv-analysis](country_level_npv_analysis.md):
 - [download-scenarios](download-scenarios.md):
 - [inputs-and-outputs](inputs-and-outputs.md):
+- [pd-el-integration](pd-el-integration.md):
 - [portfolio-analysis](portfolio-analysis.md):
 - [return-company-aggregated-results](return-company-aggregated-results.md):
 - [sensitivity-analysis](sensitivity-analysis.md):

@@ -18,8 +18,10 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
     <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">pd-el-integration</a></li>
     <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
     <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
     <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
@@ -47,15 +49,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">aggregate_simple_portfolio_results</span><span class="op">(</span><span class="va">portfolio_results_tech_detail</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">aggregate_simple_portfolio_results</span><span class="op">(</span><span class="va">portfolio_results_detailed</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-portfolio-results-tech-detail">portfolio_results_tech_detail<a class="anchor" aria-label="anchor" href="#arg-portfolio-results-tech-detail"></a></dt>
-<dd><p>Detailed output from <code><a href="run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code>.</p></dd>
+<dl><dt id="arg-portfolio-results-detailed">portfolio_results_detailed<a class="anchor" aria-label="anchor" href="#arg-portfolio-results-detailed"></a></dt>
+<dd><p>Detailed output from <code><a href="run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code>
+before dropping <code>exposure_value_usd</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
