@@ -51,8 +51,14 @@ pipeline_crispy_pd_method_comparison <- function(analysis_data,
     facet_layer <- NULL
     subtitle <- "Black tick = Internal PD; colored shapes = method-specific Adjusted PD"
   } else {
+    # Firm view shows one row per firm/technology. Where the input has
+    # multiple terms per firm we keep only the shortest term (typically
+    # 1y), since exact loan-level exposure PDs are not used downstream.
     per_method <- lapply(methods, function(m) {
       integrate_pd(analysis_data, internal_pd = internal_pd, method = m)$portfolio |>
+        dplyr::group_by(.data$company_id, .data$technology) |>
+        dplyr::filter(.data$term == min(.data$term, na.rm = TRUE)) |>
+        dplyr::ungroup() |>
         dplyr::mutate(
           method = m,
           firm_label = paste(.data$company_id, .data$technology, sep = "/")

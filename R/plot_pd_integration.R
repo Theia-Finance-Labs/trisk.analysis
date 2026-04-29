@@ -7,8 +7,10 @@
 #' At `granularity = "sector"` (default), the term dimension is collapsed and
 #' bars are EAD-weighted means of PD per sector x pd_type. Each sector gets a
 #' row of four bars (one per pd_type). At `granularity = "firm"`, one group of
-#' four bars per firm/technology/term row; sectors are the facet. Firm view
-#' reveals within-sector heterogeneity that sector aggregation hides.
+#' four bars per firm/technology row; sectors are the facet. When the input
+#' has multiple terms per firm, only the shortest term is kept (exact
+#' loan-level exposure PDs are not used downstream). Firm view reveals
+#' within-sector heterogeneity that sector aggregation hides.
 #'
 #' The `scale` argument controls y-axis transformation. `"pseudo_log"` (the
 #' default, via [scales::pseudo_log_trans()]) is zero-safe and spreads values
@@ -49,9 +51,16 @@ prepare_for_pd_integration_plot <- function(integration_result, facet_var,
         .groups = "drop"
       )
   } else {
+    # Firm view: keep only the shortest term per firm. Exact loan-level
+    # exposure PDs are not used downstream, so a single representative
+    # term per firm is sufficient and avoids two near-duplicate rows
+    # per company in the plot.
     long |>
+      dplyr::group_by(.data$company_id, .data$technology) |>
+      dplyr::filter(.data$term == min(.data$term, na.rm = TRUE)) |>
+      dplyr::ungroup() |>
       dplyr::mutate(firm_label = paste(.data$company_id, .data$technology,
-                                       paste0("t=", .data$term), sep = "/")) |>
+                                       sep = "/")) |>
       dplyr::select(dplyr::any_of(c(facet_var)), "firm_label", "term",
                     "pd_type", "pd_value")
   }
@@ -98,7 +107,7 @@ draw_pd_integration_plot <- function(plot_data, facet_var,
       ggplot2::coord_flip() +
       ggplot2::facet_grid(stats::as.formula(paste(facet_var, "~ .")),
                           scales = "free_y", space = "free_y") +
-      ggplot2::labs(x = "firm / technology / term", y = "PD")
+      ggplot2::labs(x = "firm / technology", y = "PD")
   }
 
   p +
