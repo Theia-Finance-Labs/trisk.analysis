@@ -1,0 +1,56 @@
+company_id,company_name,asset_id,country_iso2,asset_name,production_year,emission_factor,technology,sector,capacity,capacity_factor,production_unit
+101,Company 1,101,MN,Company 1,2024,0.97,CoalCap,Power,300,0.5,MW
+101,Company 1,101,MN,Company 1,2025,0.97,CoalCap,Power,300,0.5,MW
+101,Company 1,101,MN,Company 1,2026,0.97,CoalCap,Power,300,0.5,MW
+101,Company 1,101,MN,Company 1,2027,0.97,CoalCap,Power,450,0.5,MW
+101,Company 1,101,MN,Company 1,2028,0.97,CoalCap,Power,600,0.5,MW
+101,Company 1,101,MN,Company 1,2029,0.97,CoalCap,Power,600,0.5,MW
+102,Company 2,102,MN,Company 2,2023,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2024,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2025,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2026,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2027,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2028,0,RenewablesCap,Power,30,0.9,MW
+102,Company 2,102,MN,Company 2,2029,0,RenewablesCap,Power,30,0.9,MW
+103,Company 3,103,MN,Company 3,2023,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2024,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2025,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2026,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2027,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2028,1.830537149,Coal,Coal,25170000,1,t coal
+103,Company 3,103,MN,Company 3,2029,1.830537149,Coal,Coal,25170000,1,t coal
+104,Company 4,104,MN,Company 4,2023,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2024,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2025,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2026,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2027,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2028,0,RenewablesCap,Power,50,1,MW
+104,Company 4,104,MN,Company 4,2029,0,RenewablesCap,Power,50,1,MW
+105,Company 5,105,MN,Company 5,2023,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2024,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2025,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2026,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2027,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2028,1.830537149,Coal,Coal,1000000,0.5,t coal
+105,Company 5,105,MN,Company 5,2029,1.830537149,Coal,Coal,1000000,0.5,t coal
+106,Company 6,106,MN,Company 6,2023,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2024,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2025,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2026,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2027,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2028,0.97,CoalCap,Power,83,0.6,MW
+106,Company 6,106,MN,Company 6,2029,0.97,CoalCap,Power,83,0.6,MW
+107,Company 7,107,MN,Company 7,2023,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2024,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2025,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2026,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2027,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2028,1.830537149,Coal,Coal,1500000,1,t coal
+107,Company 7,107,MN,Company 7,2029,1.830537149,Coal,Coal,1500000,1,t coal
+108,Company 8,108,MN,Company 8,2023,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2024,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2025,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2026,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2027,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2028,1.830537149,Coal,Coal,70000,1,t coal
+108,Company 8,108,MN,Company 8,2029,1.830537149,Coal,Coal,70000,1,t coal

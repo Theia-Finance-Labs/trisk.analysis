@@ -15,8 +15,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(trisk.analysis)
-library(magrittr)
+suppressPackageStartupMessages({
+  suppressWarnings(library(trisk.analysis))
+  suppressWarnings(library(magrittr))
+})
 ```
 
 # Restrict the analysis to a portfolio
@@ -24,66 +26,91 @@ library(magrittr)
 ## Generate outputs
 ### Load the test data
 
-Load the internal datasets
+Load the packaged Khanbank asset and financial inputs together with the local Asia scenario and carbon reference files.
 
 ```{r}
-assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
-scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
-financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
-ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
+project_dir_candidates <- c(getwd(), normalizePath(file.path(getwd(), ".."), mustWork = FALSE))
+project_dir <- project_dir_candidates[file.exists(file.path(project_dir_candidates, "DESCRIPTION"))][1]
+
+repo_or_pkg_file <- function(filename) {
+  repo_path <- file.path(project_dir, "inst", "testdata", filename)
+  if (file.exists(repo_path)) {
+    return(repo_path)
+  }
+
+  pkg_path <- system.file("testdata", filename, package = "trisk.analysis", mustWork = FALSE)
+  if (nzchar(pkg_path) && file.exists(pkg_path)) {
+    return(pkg_path)
+  }
+
+  stop("Could not locate input file: ", filename)
+}
+
+assets_testdata <- read.csv(repo_or_pkg_file("assets_data_khanbank_ifc.csv"))
+assets_testdata$company_name <- as.character(assets_testdata$company_name)
+assets_testdata$asset_name <- as.character(assets_testdata$asset_name)
+
+scenarios_testdata <- read.csv(repo_or_pkg_file("scenarios_mongolia_client.csv"))
+financial_features_testdata <- read.csv(repo_or_pkg_file("financial_features_khanbank_ifc.csv"))[
+  c("company_id", "pd", "net_profit_margin", "debt_equity_ratio", "volatility")
+]
+ngfs_carbon_price_testdata <- read.csv(repo_or_pkg_file("ngfs_carbon_price_mongolia_client.csv"))
+
+output_dir <- file.path(project_dir, "client_outputs", "khanbank-portfolio-analysis")
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
 
 ### Prepare portfolio
 
-There are 3 possible portfolio input structures :
+The Khanbank debug bundle includes two exact-match portfolio input structures:
 
 ```{r}
-portfolio_countries_testdata <- read.csv(system.file("testdata", "portfolio_countries_testdata.csv", package = "trisk.analysis"))
-portfolio_ids_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
-portfolio_names_testdata <- read.csv(system.file("testdata", "portfolio_names_testdata.csv", package = "trisk.analysis"))
+portfolio_detailed_testdata <- read.csv(repo_or_pkg_file("portfolio_khanbank_ifc.csv"))
+portfolio_detailed_testdata$company_name <- as.character(portfolio_detailed_testdata$company_name)
+
+portfolio_simple_testdata <- read.csv(repo_or_pkg_file("simple_portfolio_khanbank_ifc.csv"))
+portfolio_simple_testdata$company_name <- as.character(portfolio_simple_testdata$company_name)
 ```
 
-Leaving the company_id and company_name columns empty, Trisk results will be aggregated per country and technology, and matched to the portfolio based on those columns.
+The detailed portfolio keeps the exact `company_id`, `sector`, `technology`, and `country_iso2` fields alongside exposure information.
 
 ```{r echo=FALSE}
-knitr::kable(portfolio_countries_testdata) %>%
+knitr::kable(portfolio_detailed_testdata) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
-Filling in the company_name column, will result in an attempt to fuzzy string matching between company names.
+The simplified portfolio keeps exact `company_id` matching but omits the sector and technology breakdown.
 
 ```{r echo=FALSE}
-knitr::kable(portfolio_names_testdata) %>%
+knitr::kable(portfolio_simple_testdata) %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
   kableExtra::scroll_box(width = "200%", height = "400px")
 ```
 
-Filling in the company_id column, will result in an exact match between companies.
-
-```{r echo=FALSE}
-knitr::kable(portfolio_ids_testdata) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  kableExtra::scroll_box(width = "200%", height = "400px")
-```
-
-Using the company ids is recommended to match the portfolio. In our current asset data, a unique asset is defined by a unique combination of company_id, sector, technology, and country. Those other columns are used for the matching between the portfolio and the Trisk outputs.
+Using the detailed file is recommended here because the Khanbank asset set is already broken out by company, sector, technology, and country.
 
 ```{r}
-portfolio_testdata <- portfolio_ids_testdata
+portfolio_testdata <- portfolio_detailed_testdata
 ```
 
+The vignette uses the Khanbank portfolio bundle directly so the output reflects the same debug inputs as the assets and financial data.
 
 ### Run trisk 
 
 Run the model with the provided data, after filtering assets on those available in the portfolio.
 
-Define the scenarios to use:
+Define a central Khanbank Mongolia case to use:
 ```{r}
-baseline_scenario <- "NGFS2023GCAM_CP"
-target_scenario <- "NGFS2023GCAM_NZ2050"
-scenario_geography <- "Global"
+baseline_scenario <- "NGFS2024GCAM_CP"
+target_scenario <- "NGFS2024GCAM_DT"
+scenario_geography <- "Asia"
+risk_free_rate <- 0.04
+discount_rate <- 0.10
+growth_rate <- 0.03
+shock_year <- 2030
+carbon_price_model <- "no_carbon_tax"
 ```
 
 The function `run_trisk_on_portfolio()` handles the filtering on portfolio and then runs Trisk:
@@ -96,7 +123,18 @@ analysis_data <- run_trisk_on_portfolio(
   portfolio_data = portfolio_testdata,
   baseline_scenario = baseline_scenario,
   target_scenario = target_scenario,
-  scenario_geography = scenario_geography
+  scenario_geography = scenario_geography,
+  risk_free_rate = risk_free_rate,
+  discount_rate = discount_rate,
+  growth_rate = growth_rate,
+  shock_year = shock_year,
+  carbon_price_model = carbon_price_model
+)
+
+utils::write.csv(
+  analysis_data,
+  file.path(output_dir, "portfolio_analysis_data.csv"),
+  row.names = FALSE
 )
 ```
 
@@ -114,25 +152,63 @@ knitr::kable(analysis_data) %>%
 
 Plot the average percentage of NPV change per technology
 
-```{r}
-pipeline_crispy_npv_change_plot(analysis_data)
+```{r fig.width=10, fig.height=6}
+npv_change_plot <- pipeline_crispy_npv_change_plot(analysis_data)
+npv_change_plot
+ggplot2::ggsave(
+  filename = file.path(output_dir, "npv_change_plot.png"),
+  plot = npv_change_plot,
+  width = 10,
+  height = 6,
+  dpi = 300
+)
 ```
 
 Plot the resulting portfolio's exposure change 
 
-```{r}
-pipeline_crispy_exposure_change_plot(analysis_data)
+```{r fig.width=10, fig.height=6}
+exposure_change_plot <- pipeline_crispy_exposure_change_plot(analysis_data)
+exposure_change_plot
+ggplot2::ggsave(
+  filename = file.path(output_dir, "exposure_change_plot.png"),
+  plot = exposure_change_plot,
+  width = 10,
+  height = 6,
+  dpi = 300
+)
 ```
 ### Bonds&Loans risk
 
 Plot the average PDs at baseline and shock
 
-```{r}
-pipeline_crispy_pd_term_plot(analysis_data)
+```{r fig.width=10, fig.height=7}
+pd_term_plot <- pipeline_crispy_pd_term_plot(analysis_data)
+pd_term_plot
+ggplot2::ggsave(
+  filename = file.path(output_dir, "pd_term_plot.png"),
+  plot = pd_term_plot,
+  width = 10,
+  height = 7,
+  dpi = 300
+)
 ```
 
 Plot the resulting portfolio's expected loss
 
+```{r fig.width=10, fig.height=6}
+expected_loss_plot <- pipeline_crispy_expected_loss_plot(analysis_data)
+expected_loss_plot
+ggplot2::ggsave(
+  filename = file.path(output_dir, "expected_loss_plot.png"),
+  plot = expected_loss_plot,
+  width = 10,
+  height = 6,
+  dpi = 300
+)
+```
+
+Saved files:
+
 ```{r}
-pipeline_crispy_expected_loss_plot(analysis_data)
+list.files(output_dir)
 ```
