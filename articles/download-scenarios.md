@@ -1258,13 +1258,13 @@ if (!is_CRAN) {
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| 47bf8484-b7ca-4c89-a005-53308625536f | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 54478.73 | 14353.33 | -40125.39 | -0.7365332 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13920273.80 | 4444816.56 | -9475457.25 | -0.6806947 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 28186271.91 | 10507001.46 | -17679270.45 | -0.6272298 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 151033719\.23 | 223115098\.69 | 72081379.46 | 0.4772536 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 64162418.75 | 13996110.85 | -50166307.90 | -0.7818644 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 8595788.07 | 1811616.75 | -6784171.32 | -0.7892437 |
-| 47bf8484-b7ca-4c89-a005-53308625536f | 105 | 105 | Company 5 | Company 5 | Power | RenewablesCap | DE | 28709201.07 | 50579387.46 | 21870186.39 | 0.7617832 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 54478.73 | 14353.33 | -40125.39 | -0.7365332 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13920273.80 | 4444816.56 | -9475457.25 | -0.6806947 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 28186271.91 | 10507001.46 | -17679270.45 | -0.6272298 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 151033719\.23 | 223115098\.69 | 72081379.46 | 0.4772536 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 64162418.75 | 13996110.85 | -50166307.90 | -0.7818644 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 8595788.07 | 1811616.75 | -6784171.32 | -0.7892437 |
+| 0dba0f17-eb97-4a41-b107-96c9008686b5 | 105 | 105 | Company 5 | Company 5 | Power | RenewablesCap | DE | 28709201.07 | 50579387.46 | 21870186.39 | 0.7617832 |
 
 ## Run Trisk with carbon tax
 
