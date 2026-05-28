@@ -6,8 +6,9 @@ articles:
   download-scenarios: download-scenarios.html
   inputs-and-outputs: inputs-and-outputs.html
   pd-el-integration: pd-el-integration.html
+  pd-el-viz-walkthrough: pd-el-viz-walkthrough.html
   portfolio-analysis: portfolio-analysis.html
   return-company-aggregated-results: return-company-aggregated-results.html
   sensitivity-analysis: sensitivity-analysis.html
   simple-portfolio-analysis: simple-portfolio-analysis.html
-last_built: 2026-05-28T20:34Z
+last_built: 2026-05-28T20:51Z

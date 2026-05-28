@@ -6,6 +6,7 @@
 - [download-scenarios](download-scenarios.md):
 - [inputs-and-outputs](inputs-and-outputs.md):
 - [pd-el-integration](pd-el-integration.md):
+- [PD & EL plot walkthrough](pd-el-viz-walkthrough.md):
 - [portfolio-analysis](portfolio-analysis.md):
 - [return-company-aggregated-results](return-company-aggregated-results.md):
 - [sensitivity-analysis](sensitivity-analysis.md):
