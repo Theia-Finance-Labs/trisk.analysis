@@ -182,3 +182,36 @@ test_that("pipeline_crispy_pd_waterfall returns a ggplot", {
   p <- pipeline_crispy_pd_waterfall(integrated)
   expect_s3_class(p, "ggplot")
 })
+
+test_that("pipeline_crispy_pd_waterfall builds true cumulative segments", {
+  # Build a one-sector integration_result so we can assert the exact
+  # cumulative arithmetic: Internal bar 0->I, Adjustment bar I->A, Adjusted
+  # bar 0->A. Where A = I + Adjustment.
+  portfolio <- tibble::tibble(
+    company_id          = c("X", "Y"),
+    sector              = c("Sec1", "Sec1"),
+    exposure_value_usd  = c(100, 100),
+    internal_pd         = c(0.02, 0.02),
+    pd_baseline         = c(0.02, 0.02),
+    pd_shock            = c(0.04, 0.04),
+    trisk_adjusted_pd   = c(0.03, 0.03),
+    pd_adjustment       = c(0.01, 0.01)
+  )
+  integration_result <- list(portfolio = portfolio)
+
+  p <- pipeline_crispy_pd_waterfall(integration_result)
+  expect_s3_class(p, "ggplot")
+
+  built <- ggplot2::ggplot_build(p)
+  # The waterfall must use a geom that accepts ymin/ymax (geom_rect under the
+  # hood). Verify the rect data carries cumulative-segment y coordinates:
+  # Internal: ymin=0, ymax=internal_pd
+  # Adjustment: ymin=internal_pd, ymax=internal_pd + adjustment
+  # Adjusted: ymin=0, ymax=trisk_adjusted_pd
+  rect_data <- built$data[[1]]
+  expect_true(all(c("ymin", "ymax") %in% colnames(rect_data)))
+  # Sort by xmin to get stable Internal/Adjustment/Adjusted ordering.
+  rect_data <- rect_data[order(rect_data$xmin), ]
+  expect_equal(rect_data$ymin, c(0, 0.02, 0), tolerance = 1e-9)
+  expect_equal(rect_data$ymax, c(0.02, 0.03, 0.03), tolerance = 1e-9)
+})
