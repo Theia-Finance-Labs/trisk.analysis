@@ -164,7 +164,7 @@ pipeline_crispy_el_kpi_table(result_el$aggregate)
 
 | Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |
 |---:|---:|---:|---:|---:|
-| 21.06M | 318.1K | -527.8K | -845.8K | 250.6 bps |
+| 21.06M | 318.1K | 527.8K | 209.7K | 250.6 bps |
 
 > **When to use.** Same as P3a but for EL. If you only have room for one
 > headline number per side, the **bps delta** is the best candidate — it
@@ -183,11 +183,7 @@ top to bottom tells you which sectors carry the integration story.
 pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
 ```
 
-| sector | Direction | Count | Exposure | Internal EL | Adjusted EL | EL Adjustment | EL/EAD (bps) |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| Coal | ↓ | 1 | 6.23M | 174.4K | -174.4K | -348.7K | 280.0 bps |
-| Oil&Gas | ↓ | 2 | 5.57M | 88.1K | -297.8K | -386.0K | 534.9 bps |
-| Power | ↓ | 1 | 9.26M | 55.6K | -55.6K | -111.2K | 60.0 bps |
+[TABLE]
 
 > **When to use.** The reference table for any EL-focused discussion.
 > Shows levels and direction together — P2 only shows deltas, P3b
