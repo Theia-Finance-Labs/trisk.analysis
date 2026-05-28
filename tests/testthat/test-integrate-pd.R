@@ -167,6 +167,15 @@ test_that("resolve_internal_series warns when user dataframe misses company_ids"
   )
 })
 
+test_that("integrate_pd returns NA pd_change_pct when pd_baseline is zero", {
+  df <- make_test_analysis_data()  # Row A has pd_baseline = 0
+  result <- integrate_pd(df, method = "absolute")
+  expect_true(is.na(result$portfolio$pd_change_pct[1]),
+              info = "Zero baseline -> ratio undefined -> NA (matches aggregate convention).")
+  expect_false(is.na(result$portfolio$pd_change_pct[2]))
+  expect_false(is.na(result$portfolio$pd_change_pct[3]))
+})
+
 test_that("resolve_internal_series does not warn when all company_ids match", {
   df <- make_test_analysis_data()
   user_lookup <- data.frame(

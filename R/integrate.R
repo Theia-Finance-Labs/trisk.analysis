@@ -55,7 +55,7 @@ integrate_pd <- function(analysis_data,
   pd_baseline <- analysis_data$pd_baseline
   pd_shock <- analysis_data$pd_shock
   pd_change <- pd_shock - pd_baseline
-  pd_change_pct <- ifelse(pd_baseline != 0, pd_change / pd_baseline, 0)
+  pd_change_pct <- ifelse(pd_baseline != 0, pd_change / pd_baseline, NA_real_)
 
   adjusted <- apply_pd_method(internal_vec, pd_baseline, pd_shock,
                               method, zscore_floor, zscore_cap)
@@ -271,7 +271,7 @@ integrate_el <- function(analysis_data,
   el_baseline <- analysis_data$expected_loss_baseline
   el_shock <- analysis_data$expected_loss_shock
   el_change <- el_shock - el_baseline
-  el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, 0)
+  el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, NA_real_)
 
   # zscore needs an EAD denominator. Prefer an explicit exposure_at_default
   # column when the caller has supplied one (e.g. via compute_analysis_metrics

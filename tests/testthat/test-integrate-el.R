@@ -72,6 +72,15 @@ test_that("integrate_el default method is zscore", {
   expect_equal(formals(integrate_el)$method[[2]], "zscore")
 })
 
+test_that("integrate_el returns NA el_change_pct when expected_loss_baseline is zero", {
+  df <- make_test_analysis_data()  # Row A has expected_loss_baseline = 0
+  result <- integrate_el(df, method = "absolute")
+  expect_true(is.na(result$portfolio$el_change_pct[1]),
+              info = "Zero baseline -> ratio undefined -> NA (matches aggregate convention).")
+  expect_false(is.na(result$portfolio$el_change_pct[2]))
+  expect_false(is.na(result$portfolio$el_change_pct[3]))
+})
+
 test_that("integrate_el errors on zero-row analysis_data", {
   df <- make_test_analysis_data()[0, ]
   expect_error(integrate_el(df, method = "zscore"),
