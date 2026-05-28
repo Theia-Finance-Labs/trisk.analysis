@@ -1,8 +1,10 @@
 #' EL Adjustment Bar Plot (horizontal, sign-filled)
 #'
 #' ggplot port of `mod_integration.R:789-834`. Horizontal bars of EL adjustment
-#' (Adjusted minus Internal) by sector, with `TRISK_HEX_RED` for negative
-#' (risk worsens) and `STATUS_GREEN` for positive (risk improves).
+#' (Adjusted minus Internal) by sector. Sign convention (with EL stored as a
+#' positive magnitude): positive adjustment = more loss = `TRISK_HEX_RED`
+#' (worse), negative adjustment = less loss = `STATUS_GREEN` (better). The
+#' adjustment is signed; the EL levels themselves are not coloured here.
 #'
 #' @param integration_result Output of [integrate_el()].
 #' @param facet_var Column for aggregation. Default "sector".
@@ -19,7 +21,7 @@ prepare_for_el_adjustment_plot <- function(integration_result, facet_var) {
     dplyr::group_by(dplyr::across(dplyr::all_of(facet_var))) |>
     dplyr::summarise(el_adjustment = sum(.data$el_adjustment, na.rm = TRUE),
                      .groups = "drop") |>
-    dplyr::mutate(sign = ifelse(.data$el_adjustment < 0, "worse", "better"))
+    dplyr::mutate(sign = ifelse(.data$el_adjustment > 0, "worse", "better"))
 }
 
 draw_el_adjustment_plot <- function(plot_data, facet_var) {

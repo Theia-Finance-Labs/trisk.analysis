@@ -298,9 +298,9 @@ compute_simple_portfolio_metrics <- function(analysis_data) {
       exposure_share_loss_usd = .data$net_present_value_change * .data$exposure_value_usd_share,
       exposure_at_default = .data$exposure_value_usd_share * .data$loss_given_default,
       pd_difference = .data$pd_shock - .data$pd_baseline,
-      expected_loss_baseline = -.data$exposure_at_default * .data$pd_baseline,
-      expected_loss_shock = -.data$exposure_at_default * .data$pd_shock,
-      expected_loss_difference = -.data$exposure_at_default * .data$pd_difference
+      expected_loss_baseline = .data$exposure_at_default * .data$pd_baseline,
+      expected_loss_shock = .data$exposure_at_default * .data$pd_shock,
+      expected_loss_difference = .data$exposure_at_default * .data$pd_difference
     )
 }
 

@@ -43,7 +43,9 @@ pipeline_crispy_el_kpi_table <- function(el_aggregate) {
     `Adjusted EL (bps)`    = format_bps(el_aggregate$el_adjusted_bps)
   )
 
-  adjustment_color <- sign_color(el_aggregate$total_el_adjustment, positive_is = "green")
+  # EL levels (Internal/Adjusted) render in default black. Only the adjustment
+  # is signed-coloured: positive (more loss) red, negative (less loss) green.
+  adjustment_color <- sign_color(el_aggregate$total_el_adjustment, positive_is = "red")
   display$`EL Adjustment` <- kableExtra::cell_spec(
     display$`EL Adjustment`, color = adjustment_color, bold = TRUE
   )
@@ -79,7 +81,8 @@ format_bps <- function(x) {
 
 # Return the color string to apply to a signed adjustment value.
 # For PD: positive_is="red" means positive adjustments (PD got worse) render red.
-# For EL: positive_is="green" means positive EL adjustments (less loss) render green.
+# For EL: positive_is="red" means positive adjustments (more expected loss) render red.
+# EL is stored as a positive magnitude, so a positive adjustment means losses grew.
 sign_color <- function(x, positive_is = c("red", "green")) {
   positive_is <- match.arg(positive_is)
   if (is.null(x) || is.na(x) || abs(x) < 1e-12) return("#6c757d")  # grey neutral
@@ -122,8 +125,8 @@ pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
                             abs(.data$`Adjusted EL`) / .data$Exposure * 10000,
                             NA_real_),
       Direction = dplyr::case_when(
-        .data$`EL Adjustment` < -0.01 ~ "\u2191",    # up arrow: loss worse
-        .data$`EL Adjustment` >  0.01 ~ "\u2193",    # down arrow: loss better
+        .data$`EL Adjustment` >  0.01 ~ "\u2191",    # up arrow: loss worse
+        .data$`EL Adjustment` < -0.01 ~ "\u2193",    # down arrow: loss better
         TRUE ~ "-"                                     # neutral
       )
     )
