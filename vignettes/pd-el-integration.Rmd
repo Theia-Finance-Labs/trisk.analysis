@@ -202,7 +202,20 @@ pipeline_crispy_pd_method_comparison(
 )
 ```
 
-## 10. Integration charts
+## 10. Magnitude story: the PD waterfall
+
+The method comparison answers *which* integration method to pick. The
+waterfall answers a different question: *how much* does integration move
+PD, by sector? Three bars per sector — Internal, signed Adjustment,
+Adjusted — with the Adjustment fill flipped on sign (red worsens risk,
+green improves). Reading left-to-right gives the magnitude story at a
+glance.
+
+```{r fig.width=7, fig.height=4}
+pipeline_crispy_pd_waterfall(result_zs)
+```
+
+## 11. Integration charts
 
 ```{r fig.width=7, fig.height=4}
 pipeline_crispy_pd_integration_bars(result_zs)
@@ -218,7 +231,7 @@ pipeline_crispy_pd_integration_bars(
 )
 ```
 
-## 11. EL integration
+## 12. EL integration
 
 `integrate_el()` expects `expected_loss_baseline` and `expected_loss_shock`
 columns, which `run_trisk_on_portfolio()` does not produce on its own. Call
@@ -311,7 +324,7 @@ ggplot2::ggplot(el_compare_firm,
                 title = "Internal EL vs TRISK-Adjusted EL by exposure")
 ```
 
-## 12. Portfolio-level KPIs
+## 13. Portfolio-level KPIs
 
 ```{r}
 pipeline_crispy_pd_kpi_table(result_zs$aggregate)
@@ -321,7 +334,7 @@ pipeline_crispy_pd_kpi_table(result_zs$aggregate)
 pipeline_crispy_el_kpi_table(result_el$aggregate)
 ```
 
-## 13. Sector breakdown
+## 14. Sector breakdown
 
 ```{r}
 pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
