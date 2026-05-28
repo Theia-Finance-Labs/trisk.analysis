@@ -149,14 +149,20 @@ R_USE_TESTS=TRUE Rscript -e 'devtools::test(filter = "output_continuity")'
 
 If PASS: existing snapshots are robust to file extension. Skip to Task 1.5.
 
-If FAIL with snapshot mismatch on rows other than the new scenarios: investigate before regenerating — the new rows should be additive only, so existing scenario outputs must be byte-identical. If the test fails on rows that use `NGFS2023GCAM_CP` or `NGFS2023GCAM_NZ2050`, STOP — the append broke something upstream (likely an unintended row dedupe or column reordering by `dplyr::distinct()` reordering). Fix the data-raw script and re-run Task 1.3.
+If FAIL with snapshot mismatch on rows other than the new scenarios: STOP and diagnose. The new rows should be additive only, so existing scenario outputs must be byte-identical. Failures on `NGFS2023GCAM_CP` / `NGFS2023GCAM_NZ2050` rows usually mean the append broke something upstream (unintended row dedupe, column reordering by `dplyr::distinct()`, or a stale snapshot inherited from an earlier merge such as PR #58). Before regenerating: confirm the failure existed on `main` *before* your CSV change via a stash-and-rerun, so the regeneration is attributable to whatever already-merged change is the real cause.
 
-If FAIL because the snapshot files now contain rows for the new scenarios: regenerate snapshots.
+If the snapshot is stale (i.e., the failure also existed before this PR's CSV change), regenerate it.
+
+**Important:** the trisk.model continuity snapshot is a hand-rolled `.rds` at `tests/testthat/snapshots/stress_test_snapshot.rds`, **not** a testthat fixture under `_snaps/`. `testthat::snapshot_accept()` does NOT apply — it targets the `_snaps/` system. The correct regeneration command is:
 
 ```bash
-R_USE_TESTS=TRUE Rscript -e 'testthat::snapshot_accept()'
+rm tests/testthat/snapshots/stress_test_snapshot.rds
+R_USE_TESTS=TRUE Rscript -e 'devtools::test(filter = "output_continuity")'
 ```
-Then re-run the test to confirm pass.
+
+The test self-creates the `.rds` on missing. Re-run a second time to confirm it now passes against the freshly regenerated snapshot.
+
+When regeneration is required, commit it as a **separate** commit from the CSV data change, with a message naming the upstream commit that caused the staleness (e.g., "test: regenerate continuity snapshot after PR #58 term-grid fix").
 
 ### Task 1.5: Commit the data change
 
