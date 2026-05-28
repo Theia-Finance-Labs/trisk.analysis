@@ -99,3 +99,10 @@ test_that("pipeline_crispy_pd_integration_bars errors on invalid scale", {
   integrated <- integrate_pd(df, method = "absolute")
   expect_error(pipeline_crispy_pd_integration_bars(integrated, scale = "bogus"))
 })
+
+test_that("pipeline_crispy_pd_waterfall returns a ggplot", {
+  df <- make_test_analysis_data()
+  integrated <- integrate_pd(df, method = "absolute")
+  p <- pipeline_crispy_pd_waterfall(integrated)
+  expect_s3_class(p, "ggplot")
+})
