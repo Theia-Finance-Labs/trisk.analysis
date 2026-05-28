@@ -55,7 +55,7 @@ pipeline_crispy_pd_waterfall <- function(integration_result,
       ),
       guide = "none"
     ) +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
+    ggplot2::scale_y_continuous(labels = scales::percent_format()) +
     TRISK_PLOT_THEME_FUNC() +
     ggplot2::labs(x = "", y = "EAD-weighted PD",
                   title = "PD Waterfall: Internal -> Adjustment -> Adjusted")

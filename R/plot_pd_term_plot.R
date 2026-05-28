@@ -88,7 +88,7 @@ draw_pd_term_plot <- function(data_pd_term, facet_var) {
       space = "Lab"
     ) +
     TRISK_PLOT_THEME_FUNC() +
-    ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 100)) +
+    ggplot2::scale_y_continuous(labels = scales::percent_format()) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
     ggplot2::labs(x = "Term", y = "PD Value", fill = "PD Type", title = "PD Values by Term, Type, and Business Unit")
 

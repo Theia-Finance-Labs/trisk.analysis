@@ -95,12 +95,12 @@ pipeline_crispy_pd_method_comparison <- function(analysis_data,
 
   x_scale <- if (scale == "pseudo_log") {
     ggplot2::scale_x_continuous(
-      trans  = scales::pseudo_log_trans(sigma = 1e-5),
-      breaks = c(0, 1e-4, 1e-3, 0.01, 0.05, 0.15),
-      labels = scales::percent_format(accuracy = 0.01)
+      transform = scales::pseudo_log_trans(sigma = 1e-5),
+      breaks    = c(0, 1e-4, 1e-3, 0.01, 0.05, 0.15),
+      labels    = scales::percent_format(accuracy = 0.01)
     )
   } else {
-    ggplot2::scale_x_continuous(labels = scales::percent_format(scale = 100))
+    ggplot2::scale_x_continuous(labels = scales::percent_format())
   }
 
   ggplot2::ggplot() +
