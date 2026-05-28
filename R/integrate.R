@@ -31,6 +31,10 @@ integrate_pd <- function(analysis_data,
                          zscore_cap = 1 - 1e-4) {
   method <- match.arg(method)
 
+  if (nrow(analysis_data) == 0) {
+    stop("integrate_pd(): analysis_data has zero rows; nothing to integrate.")
+  }
+
   if (zscore_floor >= zscore_cap) {
     stop("integrate_pd(): zscore_floor must be strictly less than zscore_cap (got ",
          zscore_floor, " vs ", zscore_cap, ")")
@@ -229,6 +233,10 @@ integrate_el <- function(analysis_data,
                          zscore_cap = 1 - 1e-4) {
   method <- match.arg(method)
 
+  if (nrow(analysis_data) == 0) {
+    stop("integrate_el(): analysis_data has zero rows; nothing to integrate.")
+  }
+
   if (zscore_floor >= zscore_cap) {
     stop("integrate_el(): zscore_floor must be strictly less than zscore_cap (got ",
          zscore_floor, " vs ", zscore_cap, ")")
@@ -246,6 +254,9 @@ integrate_el <- function(analysis_data,
 
   internal_vec <- resolve_internal_series(analysis_data, internal_el,
                                           "expected_loss_baseline")
+  if (all(is.na(internal_vec))) {
+    stop("integrate_el(): all resolved internal EL values are NA.")
+  }
 
   el_baseline <- analysis_data$expected_loss_baseline
   el_shock <- analysis_data$expected_loss_shock

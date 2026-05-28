@@ -133,3 +133,19 @@ test_that("integrate_pd portfolio_long has correct shape and pd_type factor", {
   expect_true(is.ordered(result$portfolio_long$pd_type))
   expect_true("pd_value" %in% colnames(result$portfolio_long))
 })
+
+test_that("integrate_pd errors on zero-row analysis_data", {
+  df <- make_test_analysis_data()[0, ]
+  expect_error(integrate_pd(df, method = "zscore"),
+               "empty|zero rows|nrow")
+  expect_error(integrate_pd(df, method = "absolute"),
+               "empty|zero rows|nrow")
+})
+
+test_that("integrate_pd errors when all resolved internal PD values are NA", {
+  df <- make_test_analysis_data()
+  expect_error(
+    integrate_pd(df, internal_pd = rep(NA_real_, nrow(df)), method = "zscore"),
+    "all resolved internal"
+  )
+})

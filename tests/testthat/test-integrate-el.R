@@ -71,3 +71,19 @@ test_that("integrate_el errors when zscore_floor >= zscore_cap", {
 test_that("integrate_el default method is zscore", {
   expect_equal(formals(integrate_el)$method[[2]], "zscore")
 })
+
+test_that("integrate_el errors on zero-row analysis_data", {
+  df <- make_test_analysis_data()[0, ]
+  expect_error(integrate_el(df, method = "zscore"),
+               "empty|zero rows|nrow")
+  expect_error(integrate_el(df, method = "absolute"),
+               "empty|zero rows|nrow")
+})
+
+test_that("integrate_el errors when all resolved internal EL values are NA", {
+  df <- make_test_analysis_data()
+  expect_error(
+    integrate_el(df, internal_el = rep(NA_real_, nrow(df)), method = "zscore"),
+    "all resolved internal"
+  )
+})
