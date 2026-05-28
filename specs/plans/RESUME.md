@@ -1,134 +1,90 @@
 # Resume Context — PD & EL Integration Implementation
 
-**Paused:** 2026-04-21
-**Status:** Design + plan committed. Implementation not started.
-**Execution method:** Subagent-driven with Santa Method adversarial verification.
+**Status:** SHIPPED. All 20 plan tasks complete on `main`. N2 waterfall (originally conditional) built on 2026-05-28.
 
 ---
 
-## How to restart in a new session
+## Where things stand
 
-Paste this prompt into the new Claude session (adjust paths if not on Jakub's machine):
-
-> Resume implementation of the PD/EL integration in `trisk.analysis`. Context is in
-> `/Users/jakub/Documents/repos/trisk.analysis/specs/plans/RESUME.md`. Read that
-> first, then load the design spec and the 20-task plan. Use
-> `superpowers:subagent-driven-development` to execute tasks one at a time, and
-> wrap each task's verification in `everything-claude-code:santa-method`
-> (two-agent adversarial review — both must approve before moving on). Start
-> with Task 1.
-
----
-
-## Key documents (read in this order)
-
-1. **Design spec:** `specs/2026-04-21-pd-el-integration-design.md` — the "what and why"
-2. **Implementation plan:** `specs/plans/2026-04-21-pd-el-integration-plan.md` — 20 TDD tasks with exact code
-3. **This file** — state + decisions not captured elsewhere
-
----
-
-## Decisions locked during brainstorming (do not re-litigate)
-
-| Axis | Decision |
+| Branch | State |
 |---|---|
-| Scope for this implementation | S1 (integration functions + aggregates) + S2 (workflow vignette). S3 (viz walkthrough) and S4 (sensitivity rewrite) deferred. |
-| API shape | Single function per metric (`integrate_pd`, `integrate_el`) with `method` argument |
-| File structure | One file `R/integrate.R` for all integration logic + one `R/plot_*.R` per visualization |
-| Edge-case behavior | **Shiny parity** — port `mod_integration.R` logic line-for-line including known quirks (e.g., relative method silently returns `internal_pd` when `pd_baseline = 0`). Quirks are documented in roxygen, not fixed. |
-| Vignette data | **Bundled package testdata only.** Never use Khan Bank CSVs at `/Users/jakub/Downloads/04.17 debug khanbank/` in the vignette or in `inst/`. |
-| Palette additions | `TRISK_HEX_ADJUSTED = "#AA2A2B"` (new), `STATUS_GREEN = "#3D8B5E"` (ported from trisk.r.docker). Primary three `TRISK_HEX_*` constants unchanged. |
-| EL scope | Include EL integration alongside PD in this pass |
-| N1 vs N2 | Build N1 (method comparison plot) first. Task 17 is a gate: render N1 against testdata, ask Jakub, then decide whether to implement N2 (waterfall). |
+| `main` | Canonical. Holds squashed feature merge (`8a6e824`), PR #42 follow-up (`9e2ae2f`), N2 waterfall (`f542ea5`), and vignette §10 update (`d015356`). |
+| `output-development` | Stale 91-commit workspace that produced the squashed merge. Do not commit further work here. Only unique content is the gitignored `DEBUG/khanbank-analysis/` artifacts. |
+| `patch/pd-integration-bars-defaults` | Source of PR #42. Already merged. |
 
 ---
 
-## Santa Method application
+## What ships on main
 
-Wrap **each task's verification step** (the step that runs `devtools::test(...)` and checks for green) in the Santa loop:
+**Library functions** (`R/integrate.R`):
+- `integrate_pd(analysis_data, internal_pd, method)` — methods: `"absolute"`, `"relative"`, `"zscore"`
+- `integrate_el(analysis_data, internal_el, method)` — methods: `"absolute"`, `"relative"`
+- `aggregate_pd_integration(portfolio_df, group_cols)`
+- `aggregate_el_integration(portfolio_df, group_cols)`
+- `compute_analysis_metrics()` — exported helper (was internal)
 
-1. Task subagent completes the task (RED → GREEN → COMMIT).
-2. Santa review agent 1 (fresh context): reads the diff + the plan's task spec + the design spec. Approves or rejects with specific reasons.
-3. Santa review agent 2 (fresh context, independent of agent 1): same task. Approves or rejects.
-4. **Both must approve** before moving to the next task. If either rejects, the task subagent addresses the feedback and the Santa loop re-runs.
-5. At minimum, each reviewer should verify:
-   - Code matches the spec's API and coding-style checklist (§9 of spec)
-   - Tests actually cover what they claim (no hollow assertions)
-   - No unrelated changes / scope creep
-   - Commit message is accurate
+**Visualizations:**
+- P1 `pipeline_crispy_pd_integration_bars` — 4-bar grouped, with `granularity` and `scale` args (`R/plot_pd_integration.R`)
+- P2 `pipeline_crispy_el_adjustment_bars` — horizontal sign-bars (`R/plot_el_adjustment.R`)
+- P3a `pipeline_crispy_pd_kpi_table` / P3b `pipeline_crispy_el_kpi_table` — kableExtra summaries (`R/plot_integration_kpi_table.R`)
+- P4 `pipeline_crispy_el_sector_breakdown_table` — kableExtra sector rollup
+- N1 `pipeline_crispy_pd_method_comparison` — lollipop with `granularity` and `scale` args (`R/plot_pd_method_comparison.R`)
+- N2 `pipeline_crispy_pd_waterfall` — Internal → Adjustment → Adjusted (`R/plot_pd_waterfall.R`)
 
-On heavy review friction at any single task, escalate to Jakub before burning loops — don't let two reviewers bikeshed.
+**Vignette:** `vignettes/pd-el-integration.Rmd` (14 sections, bundled testdata only)
+
+**Extra features on main beyond the original plan:** `run_trisk_on_simple_portfolio` workflow + bundled `inst/testdata/simple_portfolio.csv` + `vignettes/simple-portfolio-analysis.Rmd`.
 
 ---
 
-## Repo state at pause
+## Verification baseline (2026-05-28)
 
-- **Branch:** `output-development`
-- **Recent commits:**
+- `devtools::test()` — **70/70 PASS**, 0 fail, 0 warn, 0 skip
+- `devtools::check()` — **0 errors, 0 warnings, 3 NOTEs**
+  - 3 NOTEs are pre-existing local-workspace cruft (`.claude`, `.ruff_cache`, `dist/` at top level, NTP timestamp). Not fixable from inside the package.
+
+---
+
+## Open follow-ups (out of scope for this work)
+
+- **S3 vignette:** PD/EL visualization walkthrough — separate spec + plan when this lands.
+- **S4 vignette:** Simplify / rewrite `sensitivity-analysis.Rmd` with bank-impact commentary — separate spec + plan.
+- **Upstream `trisk.model` bug:** `calc_pd_change_overall()` hardcodes `term = 1:5`; rows with `term = 6+` silently become NA. Separate `trisk.model` PR.
+- **dplyr 2.x migration:** `dplyr::group_by_at` is superseded; revisit if/when targeting dplyr 2.x.
+- **EL sign convention check:** `compute_analysis_metrics()` stores EL as negative; `integrate_el` treats it positively. Symmetric but worth confirming for client-facing output.
+
+---
+
+## Local environment notes
+
+- **Pandoc** is required for `devtools::check()` to rebuild vignettes. It is NOT on PATH but is bundled with RStudio:
   ```
-  b1e9dda docs: add PD and EL integration implementation plan
-  41df9f8 docs: add PD and EL integration design spec
-  ca0e45d new_vignette: NPV country analysis   ← pre-existing tip before my work
+  export RSTUDIO_PANDOC="/Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64"
   ```
-- **Caveat:** commit `41df9f8` (spec commit) also captured a pre-existing staged `SKIP_FIX.txt` that was in the index before this session started. Jakub may want to amend/split it. Not blocking.
-- **Working tree:** clean (after the two commits above).
-- **No R code has been written in the package yet.** Tasks 1-20 are untouched.
+  Set this before running `check()`, or `brew install pandoc` for a system-wide fix.
+- **roxygen2** on disk is 7.2.3 but DESCRIPTION pins 7.3.3. `check()` skips re-document with a soft warning. `install.packages("roxygen2")` to upgrade if desired.
 
 ---
 
-## Why this work exists (domain context — one paragraph)
+## Cross-repo references
 
-TRISK recomputes PD from a Merton structural model. Two problems: (a) it doesn't consume the bank's internal PD, so the TRISK level is incomparable — only the shift matters; (b) when volatility is low or the equity buffer is large, `pnorm(-d2)` underflows to zero in double precision, producing baseline PDs that look like 0 even for real credit risk. The trisk.r.docker Shiny desktop app solved this with three integration methods (absolute, relative, Basel IRB z-score) that map the TRISK shift onto the bank's own PD scale. This work ports that methodology into `trisk.analysis` as reusable library functions so it can be called from any R script or vignette.
+When porting more Shiny logic, the source modules to read line-for-line:
 
----
-
-## Zero-PD investigation findings (reference for the vignette's motivation paragraph)
-
-These came from the 2026-04-21 debug run on Khan Bank data — **do not include the data, only the finding pattern**. Diagnostic scripts and CSVs are at `/Users/jakub/Downloads/04.17 debug khanbank/` (out of repo).
-
-Three distinct mechanisms produced 0 PDs in that portfolio:
-
-1. **Numerical underflow** (firms 103, 104, 106, 107, 109): low σ + high V0/L + short term pushes Merton `d2` above ~8.3; `pnorm(-d2)` underflows to exact zero.
-2. **Portfolio term > model term** (firm 101): `calc_pd_change_overall()` in `trisk.model` hardcodes `term = 1:5`; portfolio rows with `term = 7` silently become NA in the join. This is an upstream `trisk.model` bug — logged but **not fixed in this work**.
-3. **Shock benefit** (firm 104 RenewablesCap, emission_factor = 0): carbon tax doesn't hit → shock equity > baseline equity → `d2_ls > d2_base` → both underflow to zero.
-
-The vignette's §3 ("Why integration matters") should capture the conceptual insight without naming firms or citing the Khan Bank data.
-
----
-
-## Trisk.r.docker cross-repo references (for reviewer context)
-
-When tasks port Shiny logic, the reviewers should open the source for line-for-line parity checks:
-
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:170-234` — PD method math (absolute, relative, zscore)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:170-234` — PD method math
 - `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:509-557` — EL method math
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:321-356` — PD KPI valueBox strip (P3a source)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:657-704` — EL KPI valueBox strip (P3b source)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:707-786` — Sector breakdown (P4 source)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:789-891` — EL adjustment bar chart (P2 source)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_results_summary.R:438-463` — PD by sector grouped bars (P1 inspiration)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:321-356` — PD KPI valueBox strip (P3a)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:657-704` — EL KPI valueBox strip (P3b)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:707-786` — Sector breakdown (P4)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:789-891` — EL adjustment bar (P2)
 - `~/Documents/repos/trisk.r.docker/app/modules/mod_results_scenarios.R:220-234` — Metric range lollipop (N1 inspiration)
 
 ---
 
-## Deferred work (out of scope for this pass)
+## Render artifacts
 
-- **S3:** PD/EL visualization walkthrough vignette (narrate end-to-end). Separate spec + plan when this lands.
-- **S4:** Simplify / rewrite `sensitivity-analysis.Rmd` with bank-impact commentary. Separate spec + plan.
-- **trisk.model upstream:** `calculate_pd_change_overall()` term > 5 silent-NA bug. Separate PR to trisk.model.
+Standalone PNGs of N1 and N2 against bundled testdata sit at:
 
----
+- `specs/plans/artifacts/n1_method_comparison.png`
+- `specs/plans/artifacts/n2_pd_waterfall.png`
 
-## First-task bootstrap checklist for the resuming agent
-
-Before starting Task 1:
-
-- [ ] Confirm working directory is `~/Documents/repos/trisk.analysis/`
-- [ ] Confirm branch is `output-development` and working tree is clean (`git status`)
-- [ ] Confirm `devtools` is installed: `Rscript -e 'packageVersion("devtools")'`
-- [ ] Confirm roxygen2 and testthat are installed
-- [ ] Read `specs/2026-04-21-pd-el-integration-design.md` in full
-- [ ] Read `specs/plans/2026-04-21-pd-el-integration-plan.md` in full
-- [ ] Open the Santa Method skill: `Skill: everything-claude-code:santa-method`
-- [ ] Open the subagent-driven-development skill: `Skill: superpowers:subagent-driven-development`
-- [ ] Begin Task 1: "Add color constants to imports.R"
+Both gitignored (`specs/` excluded via `.Rbuildignore` and treated as workspace).
