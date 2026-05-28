@@ -87,3 +87,37 @@ test_that("integrate_el errors when all resolved internal EL values are NA", {
     "all resolved internal"
   )
 })
+
+test_that("integrate_el zscore prefers exposure_at_default column over recomputing", {
+  # When a caller (e.g. run_trisk_on_simple_portfolio) supplies an
+  # exposure_at_default column derived from a scaled exposure
+  # (share * LGD instead of full * LGD), the zscore method must use that
+  # column as the canonical EAD denominator and multiplier.
+  #
+  # We exercise the non-degenerate path (internal != baseline) so the
+  # nonlinear qnorm transformation actually depends on the chosen
+  # denominator — otherwise the scaling cancels and the bug hides.
+
+  df <- make_test_analysis_data()
+  natural_ead <- df$exposure_value_usd * df$loss_given_default
+  df$exposure_at_default     <- 0.5 * natural_ead
+  df$expected_loss_baseline  <- df$exposure_at_default * df$pd_baseline
+  df$expected_loss_shock     <- df$exposure_at_default * df$pd_shock
+  internal_user <- 0.5 * df$expected_loss_baseline  # ≠ baseline → forces qnorm
+
+  result <- integrate_el(df, internal_el = internal_user, method = "zscore")
+
+  # Recompute the expected output using exposure_at_default as canonical EAD.
+  ead <- df$exposure_at_default
+  clip     <- function(x) pmin(pmax(x, 1e-4), 1 - 1e-4)
+  safe_div <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
+  pd_int <- clip(safe_div(internal_user))
+  pd_bas <- clip(safe_div(df$expected_loss_baseline))
+  pd_sho <- clip(safe_div(df$expected_loss_shock))
+  adjusted_pd <- stats::pnorm(stats::qnorm(pd_int) +
+                              stats::qnorm(pd_sho) -
+                              stats::qnorm(pd_bas))
+  expected_el <- ead * adjusted_pd
+
+  expect_equal(result$portfolio$trisk_adjusted_el, expected_el, tolerance = 1e-6)
+})

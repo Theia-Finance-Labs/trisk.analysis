@@ -273,8 +273,18 @@ integrate_el <- function(analysis_data,
   el_change <- el_shock - el_baseline
   el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, 0)
 
+  # zscore needs an EAD denominator. Prefer an explicit exposure_at_default
+  # column when the caller has supplied one (e.g. via compute_analysis_metrics
+  # or run_trisk_on_simple_portfolio, which scale EAD by NPV share). Falling
+  # back to exposure_value_usd * loss_given_default is correct only when the
+  # EL columns are on that same unscaled basis; otherwise the effective-PD
+  # round-trip recovers a scaled PD and the z-score result is wrong.
   ead <- if (method == "zscore") {
-    analysis_data$exposure_value_usd * analysis_data$loss_given_default
+    if ("exposure_at_default" %in% colnames(analysis_data)) {
+      analysis_data$exposure_at_default
+    } else {
+      analysis_data$exposure_value_usd * analysis_data$loss_given_default
+    }
   } else NULL
 
   adjusted <- apply_el_method(internal_vec, el_baseline, el_shock, method,
