@@ -48,19 +48,19 @@ plot_multi_trajectories <- function(
 prepare_for_trisk_line_plot <- function(trajectories_data, facet_var, linecolor) {
   # Filtering for production_shock_scenario only and removing the last year for each run_id group
   data_trisk_line_plot <- trajectories_data |>
-    dplyr::group_by_at(c(facet_var, linecolor, "year")) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(facet_var, linecolor, "year")))) |>
     dplyr::summarise(
       production = sum(.data$production_shock_scenario, na.rm = TRUE)
     ) |>
     dplyr::ungroup() |>
-    dplyr::group_by_at(c(facet_var, linecolor)) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(facet_var, linecolor)))) |>
     dplyr::mutate(
       base_year_production = dplyr::first(.data$production),
       production_pct = (.data$production / .data$base_year_production) * 100
     ) |>
     dplyr::ungroup() |>
     # Remove the last year of each run_id group
-    dplyr::group_by_at(c(linecolor)) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(linecolor)))) |>
     dplyr::filter(.data$year != max(.data$year)) |>
     dplyr::ungroup()
 

@@ -7,7 +7,7 @@
 #'
 aggregate_facts_trisk <- function(analysis_data, group_cols) {
   analysis_data <- analysis_data |>
-    dplyr::group_by_at(group_cols) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
     dplyr::summarise(
       net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = T),
       net_present_value_shock = sum(.data$net_present_value_shock, na.rm = T),
@@ -27,7 +27,7 @@ aggregate_facts_trisk <- function(analysis_data, group_cols) {
 #'
 aggregate_facts_portfolio <- function(analysis_data, group_cols) {
   analysis_data <- analysis_data |>
-    dplyr::group_by_at(group_cols) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
     dplyr::summarise(
       exposure_value_usd = sum(.data$exposure_value_usd),
       loss_given_default = stats::median(.data$loss_given_default, na.rm = T),
@@ -64,7 +64,7 @@ aggregate_facts <- function(analysis_data, group_cols) {
 #'
 aggregate_trajectories_facts <- function(multi_trajectories, group_cols) {
   multi_trajectories <- multi_trajectories |>
-    dplyr::group_by_at(group_cols) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
     dplyr::summarise(
       production_baseline_scenario = sum(.data$production_baseline_scenario, na.rm = TRUE),
       production_target_scenario = sum(.data$production_target_scenario, na.rm = TRUE),

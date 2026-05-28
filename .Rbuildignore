@@ -12,3 +12,6 @@
 ^DEBUG$
 ^specs$
 ^khanbank$
+^\.claude$
+^\.ruff_cache$
+^dist$

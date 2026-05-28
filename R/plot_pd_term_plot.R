@@ -51,7 +51,7 @@ prepare_for_pd_term_plot <- function(analysis_data, facet_var) {
     ) |>
     dplyr::filter(.data$pd_type != "difference") |>
     dplyr::select_at(c(facet_var, "term", "pd_type", "pd_value")) |>
-    dplyr::group_by_at(c(facet_var, "term", "pd_type")) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(facet_var, "term", "pd_type")))) |>
     dplyr::summarise(
       pd_value = stats::median(.data$pd_value)
     )
