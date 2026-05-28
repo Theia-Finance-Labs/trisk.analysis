@@ -1,6 +1,7 @@
 # pd-el-integration
 
 ``` r
+
 library(trisk.analysis)
 library(magrittr)
 ```
@@ -18,6 +19,7 @@ bank’s own PD to integrate TRISK’s shift into, so the setup fails loudly
 if it’s missing.
 
 ``` r
+
 assets_testdata    <- read.csv(system.file("testdata", "assets_testdata.csv",    package = "trisk.model"))
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 fin_testdata       <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
@@ -43,6 +45,7 @@ lookup table to feed into
 [`integrate_pd()`](../reference/integrate_pd.md) later.
 
 ``` r
+
 analysis_data <- run_trisk_on_portfolio(
   assets_data       = assets_testdata,
   scenarios_data    = scenarios_testdata,
@@ -66,12 +69,12 @@ analysis_data <- run_trisk_on_portfolio(
 internal_pd_lookup <- portfolio_ids_internal_pd[, c("company_id", "internal_pd")]
 ```
 
-| company_id | sector  | technology    | term | pd_baseline |  pd_shock | net_present_value_baseline | net_present_value_shock |
-|:-----------|:--------|:--------------|-----:|------------:|----------:|---------------------------:|------------------------:|
-| 101        | Oil&Gas | Gas           |    3 |    1.10e-06 | 0.0004647 |                   51951.82 |                13549.28 |
-| 102        | Coal    | Coal          |    1 |    0.00e+00 | 0.0000000 |                13648160.57 |              4317747.56 |
-| 103        | Oil&Gas | Gas           |    5 |    8.09e-05 | 0.0012524 |                27724344.25 |             12420187.12 |
-| 104        | Power   | RenewablesCap |    4 |    3.20e-06 | 0.0000003 |              141635910\.26 |           202554984\.40 |
+| company_id | sector | technology | term | pd_baseline | pd_shock | net_present_value_baseline | net_present_value_shock |
+|:---|:---|:---|---:|---:|---:|---:|---:|
+| 101 | Oil&Gas | Gas | 3 | 1.10e-06 | 0.0004647 | 51951.82 | 13549.28 |
+| 102 | Coal | Coal | 1 | 0.00e+00 | 0.0000000 | 13648160.57 | 4317747.56 |
+| 103 | Oil&Gas | Gas | 5 | 8.09e-05 | 0.0012524 | 27724344.25 | 12420187.12 |
+| 104 | Power | RenewablesCap | 4 | 3.20e-06 | 0.0000003 | 141635910\.26 | 202554984\.40 |
 
 ### 3. Bank-risk context (before integration)
 
@@ -81,6 +84,7 @@ answer “what did the shock do?” at the equity (NPV, exposure) and credit
 (PD term, EL) levels, using the same `analysis_data`.
 
 ``` r
+
 pipeline_crispy_pd_term_plot(analysis_data)
 #> Joining with `by = join_by(sector, term)`
 ```
@@ -91,6 +95,7 @@ Expected loss by sector (baseline vs shock), all sectors on a single
 row:
 
 ``` r
+
 ad_el_preview <- compute_analysis_metrics(analysis_data)
 el_by_sector <- ad_el_preview %>%
   dplyr::group_by(sector) %>%
@@ -128,17 +133,18 @@ scale.
 ### 5. Method 1 - Absolute
 
 ``` r
+
 result_abs <- integrate_pd(analysis_data,
                            internal_pd = internal_pd_lookup,
                            method      = "absolute")
 ```
 
-| company_id | sector  | internal_pd | pd_baseline |  pd_shock | trisk_adjusted_pd | pd_adjustment |
-|:-----------|:--------|------------:|------------:|----------:|------------------:|--------------:|
-| 101        | Oil&Gas |       0.025 |    1.10e-06 | 0.0004647 |         0.0254636 |     0.0004636 |
-| 102        | Coal    |       0.040 |    0.00e+00 | 0.0000000 |         0.0400000 |     0.0000000 |
-| 103        | Oil&Gas |       0.030 |    8.09e-05 | 0.0012524 |         0.0311716 |     0.0011716 |
-| 104        | Power   |       0.015 |    3.20e-06 | 0.0000003 |         0.0149970 |    -0.0000030 |
+| company_id | sector | internal_pd | pd_baseline | pd_shock | trisk_adjusted_pd | pd_adjustment |
+|:---|:---|---:|---:|---:|---:|---:|
+| 101 | Oil&Gas | 0.025 | 1.10e-06 | 0.0004647 | 0.0254636 | 0.0004636 |
+| 102 | Coal | 0.040 | 0.00e+00 | 0.0000000 | 0.0400000 | 0.0000000 |
+| 103 | Oil&Gas | 0.030 | 8.09e-05 | 0.0012524 | 0.0311716 | 0.0011716 |
+| 104 | Power | 0.015 | 3.20e-06 | 0.0000003 | 0.0149970 | -0.0000030 |
 
 ### 6. Method 2 - Relative
 
@@ -147,6 +153,7 @@ result_abs <- integrate_pd(analysis_data,
 > Use `absolute` or `zscore` if this matters.
 
 ``` r
+
 result_rel <- integrate_pd(analysis_data,
                            internal_pd = internal_pd_lookup,
                            method      = "relative")
@@ -159,6 +166,7 @@ the non-linear relationship at distribution tails. Recommended for Basel
 IRB-aligned institutions.
 
 ``` r
+
 result_zs <- integrate_pd(analysis_data,
                           internal_pd = internal_pd_lookup,
                           method      = "zscore")
@@ -171,6 +179,7 @@ example, as a sanity check), build a vector or alternate lookup and pass
 it instead:
 
 ``` r
+
 flat_internal <- rep(0.03, nrow(analysis_data))
 result_custom <- integrate_pd(analysis_data,
                               internal_pd = flat_internal,
@@ -180,6 +189,7 @@ result_custom <- integrate_pd(analysis_data,
 ### 9. Method comparison
 
 ``` r
+
 pipeline_crispy_pd_method_comparison(analysis_data,
                                      internal_pd = internal_pd_lookup)
 ```
@@ -200,6 +210,7 @@ arguments open up the per-firm picture:
   across many orders of magnitude.
 
 ``` r
+
 pipeline_crispy_pd_method_comparison(
   analysis_data,
   internal_pd = internal_pd_lookup,
@@ -210,17 +221,35 @@ pipeline_crispy_pd_method_comparison(
 
 ![](pd-el-integration_files/figure-html/unnamed-chunk-13-1.png)
 
-### 10. Integration charts
+### 10. Magnitude story: the PD waterfall
+
+The method comparison answers *which* integration method to pick. The
+waterfall answers a different question: *how much* does integration move
+PD, by sector? Three bars per sector — Internal, signed Adjustment,
+Adjusted — with the Adjustment fill flipped on sign (red worsens risk,
+green improves). Reading left-to-right gives the magnitude story at a
+glance.
 
 ``` r
-pipeline_crispy_pd_integration_bars(result_zs)
+
+pipeline_crispy_pd_waterfall(result_zs)
 ```
 
 ![](pd-el-integration_files/figure-html/unnamed-chunk-14-1.png)
 
+### 11. Integration charts
+
+``` r
+
+pipeline_crispy_pd_integration_bars(result_zs)
+```
+
+![](pd-el-integration_files/figure-html/unnamed-chunk-15-1.png)
+
 The same `granularity` + `scale` arguments work on the bar plot:
 
 ``` r
+
 pipeline_crispy_pd_integration_bars(
   result_zs,
   granularity = "firm",
@@ -228,9 +257,9 @@ pipeline_crispy_pd_integration_bars(
 )
 ```
 
-![](pd-el-integration_files/figure-html/unnamed-chunk-15-1.png)
+![](pd-el-integration_files/figure-html/unnamed-chunk-16-1.png)
 
-### 11. EL integration
+### 12. EL integration
 
 [`integrate_el()`](../reference/integrate_el.md) expects
 `expected_loss_baseline` and `expected_loss_shock` columns, which
@@ -243,6 +272,7 @@ For the bank’s internal EL, we derive it the same way:
 `EAD * LGD * internal_pd`.
 
 ``` r
+
 analysis_data_el <- compute_analysis_metrics(analysis_data)
 internal_el_lookup <- merge(
   analysis_data_el[, c("company_id", "exposure_value_usd", "loss_given_default")],
@@ -260,10 +290,11 @@ result_el <- integrate_el(analysis_data_el,
 ```
 
 ``` r
+
 pipeline_crispy_el_adjustment_bars(result_el)
 ```
 
-![](pd-el-integration_files/figure-html/unnamed-chunk-17-1.png)
+![](pd-el-integration_files/figure-html/unnamed-chunk-18-1.png)
 
 #### Internal EL vs TRISK-Adjusted EL
 
@@ -275,6 +306,7 @@ the bars read as magnitudes of expected loss.
 **Per sector** — all sectors on one row:
 
 ``` r
+
 el_compare_sector <- result_el$portfolio %>%
   dplyr::group_by(sector) %>%
   dplyr::summarise(
@@ -301,11 +333,12 @@ ggplot2::ggplot(el_compare_sector,
                 title = "Internal EL vs TRISK-Adjusted EL by sector")
 ```
 
-![](pd-el-integration_files/figure-html/unnamed-chunk-18-1.png)
+![](pd-el-integration_files/figure-html/unnamed-chunk-19-1.png)
 
 **Per exposure** — one group of two bars per firm/technology:
 
 ``` r
+
 el_compare_firm <- result_el$portfolio %>%
   dplyr::mutate(firm = paste(.data$company_id, .data$technology, sep = "/")) %>%
   dplyr::select("firm", "sector",
@@ -332,29 +365,32 @@ ggplot2::ggplot(el_compare_firm,
                 title = "Internal EL vs TRISK-Adjusted EL by exposure")
 ```
 
-![](pd-el-integration_files/figure-html/unnamed-chunk-19-1.png)
+![](pd-el-integration_files/figure-html/unnamed-chunk-20-1.png)
 
-### 12. Portfolio-level KPIs
+### 13. Portfolio-level KPIs
 
 ``` r
+
 pipeline_crispy_pd_kpi_table(result_zs$aggregate)
 ```
 
 | Total Exposure (USD) | Weighted Internal PD | Weighted Adjusted PD | Weighted PD Adjustment (pp) | Adjustment % |
-|---------------------:|---------------------:|---------------------:|----------------------------:|-------------:|
-|               21.06M |               2.592% |               4.461% |                   +1.868 pp |      72.077% |
+|---:|---:|---:|---:|---:|
+| 21.06M | 2.592% | 4.461% | +1.868 pp | 72.077% |
 
 ``` r
+
 pipeline_crispy_el_kpi_table(result_el$aggregate)
 ```
 
 | Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |
-|---------------------:|------------------:|------------------:|--------------:|------------------:|
-|               21.06M |           -318.1K |           -527.8K |       -209.7K |         250.6 bps |
+|---:|---:|---:|---:|---:|
+| 21.06M | -318.1K | -527.8K | -209.7K | 250.6 bps |
 
-### 13. Sector breakdown
+### 14. Sector breakdown
 
 ``` r
+
 pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
 ```
 

@@ -1,6 +1,7 @@
 # country-level-npv-analysis
 
 ``` r
+
 library(trisk.analysis)
 library(readr)
 library(dplyr)
@@ -45,6 +46,7 @@ countries**. The workflow will automatically create country-level
 summaries and an optional aggregate across all selected countries.
 
 ``` r
+
 # ============================================================================
 # CONFIGURATION: Select Your Countries Here
 # ============================================================================
@@ -87,7 +89,7 @@ cat('Selected countries:', paste(selected_countries, collapse=', '), '\n')
 cat('Create aggregate:', create_aggregate, '\n')
 #> Create aggregate: TRUE
 cat('Output directory:', OUTPUT_DIR, '\n\n')
-#> Output directory: /tmp/RtmpdZ2ZbT
+#> Output directory: /tmp/RtmpT75XbE
 ```
 
 ### Load Input Data
@@ -96,6 +98,7 @@ The analysis uses the raw NPV results and company trajectories from the
 TRISK model outputs.
 
 ``` r
+
 # ============================================================================
 # STEP 1: Load Raw Data
 # ============================================================================
@@ -140,6 +143,7 @@ The aggregation sums NPV values and company metrics across all assets
 within each country-sector-technology combination.
 
 ``` r
+
 # ============================================================================
 # STEP 2: Aggregate NPV Results by Country
 # ============================================================================
@@ -190,6 +194,7 @@ If enabled, this combines all selected countries into a single aggregate
 for cross-country comparison.
 
 ``` r
+
 # ============================================================================
 # STEP 3: Create Country Aggregate (Optional)
 # ============================================================================
@@ -236,6 +241,7 @@ The company trajectories provide annual-level data on production,
 financial metrics, and NPV contributions.
 
 ``` r
+
 # ============================================================================
 # STEP 4: Aggregate Company Trajectories by Country
 # ============================================================================
@@ -283,6 +289,7 @@ if (!demo_mode) {
 ### Create Aggregate Trajectories (Optional)
 
 ``` r
+
 # ============================================================================
 # STEP 5: Create Aggregate Trajectories (Optional)
 # ============================================================================
@@ -324,6 +331,7 @@ if (!demo_mode & create_aggregate) {
 Export the aggregated summaries to CSV files for further analysis.
 
 ``` r
+
 # ============================================================================
 # STEP 6: Save Results to CSV
 # ============================================================================
@@ -364,6 +372,7 @@ A horizontal bar chart showing the total NPV change for each sector
 within each country.
 
 ``` r
+
 # ============================================================================
 # STEP 7: Create Visualizations
 # ============================================================================
@@ -416,6 +425,7 @@ Shows the percentage change in NPV for key technologies across
 countries, capped at -100%.
 
 ``` r
+
 if (!demo_mode) {
   # Prepare data for top technologies
   tech_summary <- npv_combined %>%
@@ -481,6 +491,7 @@ if (!demo_mode) {
 Compares baseline and shock production scenarios across countries.
 
 ``` r
+
 if (!demo_mode) {
   # Select key sectors for trajectory visualization
   key_sectors <- trajectories_combined %>%

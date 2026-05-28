@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>pd-el-integration • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="pd-el-integration">
 </head>
@@ -519,23 +519,36 @@ spreads values across many orders of magnitude.</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="integration-charts">10. Integration charts<a class="anchor" aria-label="anchor" href="#integration-charts"></a>
+<h3 id="magnitude-story-the-pd-waterfall">10. Magnitude story: the PD waterfall<a class="anchor" aria-label="anchor" href="#magnitude-story-the-pd-waterfall"></a>
 </h3>
+<p>The method comparison answers <em>which</em> integration method to
+pick. The waterfall answers a different question: <em>how much</em> does
+integration move PD, by sector? Three bars per sector — Internal, signed
+Adjustment, Adjusted — with the Adjustment fill flipped on sign (red
+worsens risk, green improves). Reading left-to-right gives the magnitude
+story at a glance.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
 <p><img src="pd-el-integration_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="672"></p>
+</div>
+<div class="section level3">
+<h3 id="integration-charts">11. Integration charts<a class="anchor" aria-label="anchor" href="#integration-charts"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
 <p>The same <code>granularity</code> + <code>scale</code> arguments work
 on the bar plot:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span></span>
 <span>  <span class="va">result_zs</span>,</span>
 <span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
 <span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level3">
-<h3 id="el-integration">11. EL integration<a class="anchor" aria-label="anchor" href="#el-integration"></a>
+<h3 id="el-integration">12. EL integration<a class="anchor" aria-label="anchor" href="#el-integration"></a>
 </h3>
 <p><code><a href="../reference/integrate_el.html">integrate_el()</a></code> expects
 <code>expected_loss_baseline</code> and <code>expected_loss_shock</code>
@@ -544,7 +557,7 @@ its own. Call <code><a href="../reference/compute_analysis_metrics.html">compute
 them as EAD * PD.</p>
 <p>For the bank’s internal EL, we derive it the same way:
 <code>EAD * LGD * internal_pd</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_data_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
 <span>  <span class="va">analysis_data_el</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -559,9 +572,9 @@ them as EAD * PD.</p>
 <span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
 <span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co"># default method is "zscore" (Basel IRB-aligned, zero-safe via clipping)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_adjustment_bars.html">pipeline_crispy_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="672"></p>
 <div class="section level4">
 <h4 id="internal-el-vs-trisk-adjusted-el">Internal EL vs TRISK-Adjusted EL<a class="anchor" aria-label="anchor" href="#internal-el-vs-trisk-adjusted-el"></a>
 </h4>
@@ -570,7 +583,7 @@ group. EL is negative by package convention (loss as negative number);
 <code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs()</a></code> is applied for display so the bars read as magnitudes
 of expected loss.</p>
 <p><strong>Per sector</strong> — all sectors on one row:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_compare_sector</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -595,10 +608,10 @@ of expected loss.</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"|Expected loss| (USD, millions)"</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by sector"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="768"></p>
 <p><strong>Per exposure</strong> — one group of two bars per
 firm/technology:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_compare_firm</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>firm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">company_id</span>, <span class="va">.data</span><span class="op">$</span><span class="va">technology</span>, sep <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"firm"</span>, <span class="st">"sector"</span>,</span>
@@ -623,13 +636,13 @@ firm/technology:</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Firm / technology"</span>, y <span class="op">=</span> <span class="st">"|Expected loss| (USD, millions)"</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by exposure"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="1056"></p>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="1056"></p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="portfolio-level-kpis">12. Portfolio-level KPIs<a class="anchor" aria-label="anchor" href="#portfolio-level-kpis"></a>
+<h3 id="portfolio-level-kpis">13. Portfolio-level KPIs<a class="anchor" aria-label="anchor" href="#portfolio-level-kpis"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_kpi_table.html">pipeline_crispy_pd_kpi_table</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -668,7 +681,7 @@ pp</span>
 </td>
 </tr></tbody>
 </table>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_kpi_table.html">pipeline_crispy_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -708,9 +721,9 @@ Adjusted EL (bps)
 </table>
 </div>
 <div class="section level3">
-<h3 id="sector-breakdown">13. Sector breakdown<a class="anchor" aria-label="anchor" href="#sector-breakdown"></a>
+<h3 id="sector-breakdown">14. Sector breakdown<a class="anchor" aria-label="anchor" href="#sector-breakdown"></a>
 </h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_sector_breakdown_table.html">pipeline_crispy_el_sector_breakdown_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>

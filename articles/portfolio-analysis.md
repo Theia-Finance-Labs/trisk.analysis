@@ -1,6 +1,7 @@
 # portfolio-analysis
 
 ``` r
+
 library(trisk.analysis)
 library(magrittr)
 ```
@@ -14,6 +15,7 @@ library(magrittr)
 Load the internal datasets
 
 ``` r
+
 assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
@@ -25,6 +27,7 @@ ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_pric
 There are 3 possible portfolio input structures :
 
 ``` r
+
 portfolio_countries_testdata <- read.csv(system.file("testdata", "portfolio_countries_testdata.csv", package = "trisk.analysis"))
 portfolio_ids_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
 portfolio_names_testdata <- read.csv(system.file("testdata", "portfolio_names_testdata.csv", package = "trisk.analysis"))
@@ -34,32 +37,32 @@ Leaving the company_id and company_name columns empty, Trisk results
 will be aggregated per country and technology, and matched to the
 portfolio based on those columns.
 
-| company_id | company_name | sector  | technology    | country_iso2 | exposure_value_usd | term | loss_given_default |
-|:-----------|:-------------|:--------|:--------------|:-------------|-------------------:|-----:|-------------------:|
-| NA         | NA           | Oil&Gas | Gas           | DE           |            1839267 |    3 |                0.7 |
-| NA         | NA           | Coal    | Coal          | DE           |            6227364 |    1 |                0.7 |
-| NA         | NA           | Oil&Gas | Gas           | DE           |            3728364 |    5 |                0.5 |
-| NA         | NA           | Power   | RenewablesCap | DE           |            9263702 |    4 |                0.4 |
+| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
+|:---|:---|:---|:---|:---|---:|---:|---:|
+| NA | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
+| NA | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 |
+| NA | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
+| NA | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
 
 Filling in the company_name column, will result in an attempt to fuzzy
 string matching between company names.
 
-| company_id | company_name | sector  | technology    | country_iso2 | exposure_value_usd | term | loss_given_default |
-|:-----------|:-------------|:--------|:--------------|:-------------|-------------------:|-----:|-------------------:|
-| NA         | Company 1    | Oil&Gas | Gas           | DE           |            1839267 |    3 |                0.7 |
-| NA         | Comany 2     | Coal    | Coal          | DE           |            6227364 |    1 |                0.7 |
-| NA         | Corony 3     | Oil&Gas | Gas           | DE           |            3728364 |    5 |                0.5 |
-| NA         | Compan 4     | Power   | RenewablesCap | DE           |            9263702 |    4 |                0.4 |
+| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
+|:---|:---|:---|:---|:---|---:|---:|---:|
+| NA | Company 1 | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
+| NA | Comany 2 | Coal | Coal | DE | 6227364 | 1 | 0.7 |
+| NA | Corony 3 | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
+| NA | Compan 4 | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
 
 Filling in the company_id column, will result in an exact match between
 companies.
 
-| company_id | company_name | sector  | technology    | country_iso2 | exposure_value_usd | term | loss_given_default |
-|-----------:|:-------------|:--------|:--------------|:-------------|-------------------:|-----:|-------------------:|
-|        101 | NA           | Oil&Gas | Gas           | DE           |            1839267 |    3 |                0.7 |
-|        102 | NA           | Coal    | Coal          | DE           |            6227364 |    1 |                0.7 |
-|        103 | NA           | Oil&Gas | Gas           | DE           |            3728364 |    5 |                0.5 |
-|        104 | NA           | Power   | RenewablesCap | DE           |            9263702 |    4 |                0.4 |
+| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
+|---:|:---|:---|:---|:---|---:|---:|---:|
+| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
+| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 |
+| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
+| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
 
 Using the company ids is recommended to match the portfolio. In our
 current asset data, a unique asset is defined by a unique combination of
@@ -67,6 +70,7 @@ company_id, sector, technology, and country. Those other columns are
 used for the matching between the portfolio and the Trisk outputs.
 
 ``` r
+
 portfolio_testdata <- portfolio_ids_testdata
 ```
 
@@ -78,6 +82,7 @@ available in the portfolio.
 Define the scenarios to use:
 
 ``` r
+
 baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
@@ -88,6 +93,7 @@ The function
 handles the filtering on portfolio and then runs Trisk:
 
 ``` r
+
 analysis_data <- run_trisk_on_portfolio(
   assets_data = assets_testdata,
   scenarios_data = scenarios_testdata,
@@ -111,12 +117,12 @@ analysis_data <- run_trisk_on_portfolio(
 
 Result dataframe :
 
-| company_id | company_name | sector  | technology    | country_iso2 | exposure_value_usd | term | loss_given_default | run_id                               | asset_id | asset_name | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change | pd_baseline |  pd_shock |
-|:-----------|:-------------|:--------|:--------------|:-------------|-------------------:|-----:|-------------------:|:-------------------------------------|:---------|:-----------|---------------------------:|------------------------:|-----------------------------:|-------------------------:|------------:|----------:|
-| 101        | NA           | Oil&Gas | Gas           | DE           |            1839267 |    3 |                0.7 | 3ce93321-54aa-4da9-b0e3-674d296f1780 | 101      | Company 1  |                   51951.82 |                13549.28 |                    -38402.54 |               -0.7391952 |    1.10e-06 | 0.0004647 |
-| 102        | NA           | Coal    | Coal          | DE           |            6227364 |    1 |                0.7 | 3ce93321-54aa-4da9-b0e3-674d296f1780 | 102      | Company 2  |                13648160.57 |              4317747.56 |                  -9330413.02 |               -0.6836389 |    0.00e+00 | 0.0000000 |
-| 103        | NA           | Oil&Gas | Gas           | DE           |            3728364 |    5 |                0.5 | 3ce93321-54aa-4da9-b0e3-674d296f1780 | 103      | Company 3  |                27724344.25 |             12420187.12 |                 -15304157.13 |               -0.5520115 |    8.09e-05 | 0.0012524 |
-| 104        | NA           | Power   | RenewablesCap | DE           |            9263702 |    4 |                0.4 | 3ce93321-54aa-4da9-b0e3-674d296f1780 | 104      | Company 4  |              141635910\.26 |           202554984\.40 |                  60919074.14 |                0.4301104 |    3.20e-06 | 0.0000003 |
+| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default | run_id | asset_id | asset_name | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change | pd_baseline | pd_shock |
+|:---|:---|:---|:---|:---|---:|---:|---:|:---|:---|:---|---:|---:|---:|---:|---:|---:|
+| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 | d04f383c-ea0f-430d-85c5-babf13791f31 | 101 | Company 1 | 51951.82 | 13549.28 | -38402.54 | -0.7391952 | 1.10e-06 | 0.0004647 |
+| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 | d04f383c-ea0f-430d-85c5-babf13791f31 | 102 | Company 2 | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 | 0.00e+00 | 0.0000000 |
+| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 | d04f383c-ea0f-430d-85c5-babf13791f31 | 103 | Company 3 | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 | 8.09e-05 | 0.0012524 |
+| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 | d04f383c-ea0f-430d-85c5-babf13791f31 | 104 | Company 4 | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 | 3.20e-06 | 0.0000003 |
 
 ### Plot results
 
@@ -125,6 +131,7 @@ Result dataframe :
 Plot the average percentage of NPV change per technology
 
 ``` r
+
 pipeline_crispy_npv_change_plot(analysis_data)
 #> Joining with `by = join_by(sector, technology)`
 ```
@@ -134,6 +141,7 @@ pipeline_crispy_npv_change_plot(analysis_data)
 Plot the resulting portfolio’s exposure change
 
 ``` r
+
 pipeline_crispy_exposure_change_plot(analysis_data)
 #> Joining with `by = join_by(sector, technology)`
 ```
@@ -144,6 +152,7 @@ Bonds&Loans risk
 Plot the average PDs at baseline and shock
 
 ``` r
+
 pipeline_crispy_pd_term_plot(analysis_data)
 #> Joining with `by = join_by(sector, term)`
 ```
@@ -153,6 +162,7 @@ pipeline_crispy_pd_term_plot(analysis_data)
 Plot the resulting portfolio’s expected loss
 
 ``` r
+
 pipeline_crispy_expected_loss_plot(analysis_data)
 #> Joining with `by = join_by(sector)`
 ```

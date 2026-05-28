@@ -73,6 +73,8 @@
   : PD Integration Method Comparison Plot
 - [`pipeline_crispy_pd_term_plot()`](pipeline_crispy_pd_term_plot.md) :
   Visualize PD Values by Term and Business Unit
+- [`pipeline_crispy_pd_waterfall()`](pipeline_crispy_pd_waterfall.md) :
+  PD waterfall plot
 - [`plot_multi_trajectories()`](plot_multi_trajectories.md) : Visualize
   Trajectory Risks Over Time by Business Unit and Sector
 - [`prepare_for_crispy_npv_change_plot()`](prepare_for_crispy_npv_change_plot.md)

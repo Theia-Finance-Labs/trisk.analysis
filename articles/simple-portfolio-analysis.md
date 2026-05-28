@@ -1,6 +1,7 @@
 # simple-portfolio-analysis
 
 ``` r
+
 library(trisk.analysis)
 library(dplyr)
 #> 
@@ -32,6 +33,7 @@ Compared to
 ### Load model inputs
 
 ``` r
+
 assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
@@ -41,6 +43,7 @@ ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_pric
 ### Load simple portfolio input
 
 ``` r
+
 simple_portfolio <- read.csv(
   system.file("testdata", "simple_portfolio.csv", package = "trisk.analysis", mustWork = TRUE)
 )
@@ -57,6 +60,7 @@ simple_portfolio
 ### Run the model
 
 ``` r
+
 baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
@@ -97,6 +101,7 @@ company/sector/technology level:
 4.  re-scale so exposure totals match the original portfolio exposure.
 
 ``` r
+
 portfolio_results_tech_detail |>
   dplyr::select(
     company_id, term, sector, technology,
@@ -125,6 +130,7 @@ it is constant across runs for a given
 `(company_id, term, sector, technology)`.
 
 ``` r
+
 exposure_share_check <- portfolio_results_tech_detail |>
   dplyr::distinct(
     company_id, term, sector, technology,

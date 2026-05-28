@@ -34,12 +34,14 @@ package in R.
 1.  Install the `pak` package if you don’t have it:
 
     ``` r
+
     install.packages("pak")
     ```
 
 2.  Install the package from GitHub:
 
     ``` r
+
     pak::pak("Theia-Finance-Labs/trisk.analysis")
     ```
 

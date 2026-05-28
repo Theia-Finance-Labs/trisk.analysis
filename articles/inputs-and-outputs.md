@@ -1,6 +1,7 @@
 # inputs-and-outputs
 
 ``` r
+
 library(trisk.analysis)
 library(magrittr)
 ```
@@ -10,6 +11,7 @@ library(magrittr)
 Load the internal datasets
 
 ``` r
+
 assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
@@ -41,6 +43,7 @@ The `assets_testdata` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(assets_testdata)
 #> 'data.frame':    42 obs. of  12 variables:
 #>  $ company_id     : int  101 101 101 101 101 101 102 102 102 102 ...
@@ -59,14 +62,14 @@ str(assets_testdata)
 
 ##### Sample Data
 
-| company_id | company_name | asset_id | country_iso2 | asset_name | production_year | emission_factor | technology | sector  | capacity | capacity_factor | production_unit |
-|-----------:|:-------------|---------:|:-------------|:-----------|----------------:|----------------:|:-----------|:--------|---------:|----------------:|:----------------|
-|        101 | Company 1    |      101 | DE           | Company 1  |            2022 |       0.0620259 | Gas        | Oil&Gas |     8600 |       0.5813953 | GJ              |
-|        101 | Company 1    |      101 | DE           | Company 1  |            2023 |       0.0620259 | Gas        | Oil&Gas |     8600 |       0.6305814 | GJ              |
-|        101 | Company 1    |      101 | DE           | Company 1  |            2024 |       0.0620259 | Gas        | Oil&Gas |     8600 |       0.7209302 | GJ              |
-|        101 | Company 1    |      101 | DE           | Company 1  |            2025 |       0.0620259 | Gas        | Oil&Gas |     8600 |       0.8604651 | GJ              |
-|        101 | Company 1    |      101 | DE           | Company 1  |            2026 |       0.0620259 | Gas        | Oil&Gas |     8600 |       0.9069767 | GJ              |
-|        101 | Company 1    |      101 | DE           | Company 1  |            2027 |       0.0620259 | Gas        | Oil&Gas |     8600 |       1.0000000 | GJ              |
+| company_id | company_name | asset_id | country_iso2 | asset_name | production_year | emission_factor | technology | sector | capacity | capacity_factor | production_unit |
+|---:|:---|---:|:---|:---|---:|---:|:---|:---|---:|---:|:---|
+| 101 | Company 1 | 101 | DE | Company 1 | 2022 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.5813953 | GJ |
+| 101 | Company 1 | 101 | DE | Company 1 | 2023 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.6305814 | GJ |
+| 101 | Company 1 | 101 | DE | Company 1 | 2024 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.7209302 | GJ |
+| 101 | Company 1 | 101 | DE | Company 1 | 2025 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.8604651 | GJ |
+| 101 | Company 1 | 101 | DE | Company 1 | 2026 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.9069767 | GJ |
+| 101 | Company 1 | 101 | DE | Company 1 | 2027 | 0.0620259 | Gas | Oil&Gas | 8600 | 1.0000000 | GJ |
 
 ------------------------------------------------------------------------
 
@@ -89,6 +92,7 @@ columns:
 ##### Data Structure
 
 ``` r
+
 str(financial_features_testdata)
 #> 'data.frame':    5 obs. of  5 variables:
 #>  $ company_id       : int  101 103 105 104 102
@@ -130,6 +134,7 @@ The `ngfs_carbon_price_testdata` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(ngfs_carbon_price_testdata)
 #> 'data.frame':    1376 obs. of  7 variables:
 #>  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...
@@ -143,14 +148,14 @@ str(ngfs_carbon_price_testdata)
 
 ##### Sample Data
 
-| year | model          | scenario | scenario_geography | variable          | unit           | carbon_tax |
-|-----:|:---------------|:---------|:-------------------|:------------------|:---------------|-----------:|
-| 2015 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
-| 2016 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
-| 2017 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
-| 2018 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
-| 2019 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
-| 2020 | GCAM 5.3+ NGFS | B2DS     | Global             | Price&#124;Carbon | US\$2010/t CO2 |          0 |
+| year | model | scenario | scenario_geography | variable | unit | carbon_tax |
+|---:|:---|:---|:---|:---|:---|---:|
+| 2015 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2016 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2017 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2018 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2019 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2020 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
 
 ------------------------------------------------------------------------
 
@@ -178,6 +183,7 @@ The `scenarios_testdata` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(scenarios_testdata)
 #> 'data.frame':    1422 obs. of  14 variables:
 #>  $ scenario                : chr  "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" ...
@@ -198,58 +204,58 @@ str(scenarios_testdata)
 
 ##### Sample Data
 
-| scenario        | scenario_type | scenario_geography | sector | technology | scenario_year | price_unit | scenario_price | pathway_unit | scenario_pathway | technology_type | scenario_capacity_factor | country_iso2_list | scenario_provider |
-|:----------------|:--------------|:-------------------|:-------|:-----------|--------------:|:-----------|---------------:|:-------------|-----------------:|:----------------|-------------------------:|:------------------|:------------------|
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2022 | \$/tonnes  |       57.03917 | EJ/yr        |         159.4468 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2023 | \$/tonnes  |       57.35451 | EJ/yr        |         160.4324 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2024 | \$/tonnes  |       57.66985 | EJ/yr        |         161.4180 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2025 | \$/tonnes  |       57.98520 | EJ/yr        |         162.4035 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2026 | \$/tonnes  |       58.41776 | EJ/yr        |         162.4545 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2027 | \$/tonnes  |       58.85032 | EJ/yr        |         162.5055 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2028 | \$/tonnes  |       59.28289 | EJ/yr        |         162.5565 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2029 | \$/tonnes  |       59.71545 | EJ/yr        |         162.6075 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2030 | \$/tonnes  |       60.14802 | EJ/yr        |         162.6585 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2031 | \$/tonnes  |       60.53991 | EJ/yr        |         163.5647 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2032 | \$/tonnes  |       60.93181 | EJ/yr        |         164.4709 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2033 | \$/tonnes  |       61.32370 | EJ/yr        |         165.3771 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2034 | \$/tonnes  |       61.71560 | EJ/yr        |         166.2833 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2035 | \$/tonnes  |       62.10749 | EJ/yr        |         167.1895 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2036 | \$/tonnes  |       62.28684 | EJ/yr        |         167.6793 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2037 | \$/tonnes  |       62.46619 | EJ/yr        |         168.1691 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2038 | \$/tonnes  |       62.64553 | EJ/yr        |         168.6589 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2039 | \$/tonnes  |       62.82488 | EJ/yr        |         169.1487 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2040 | \$/tonnes  |       63.00422 | EJ/yr        |         169.6385 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2041 | \$/tonnes  |       63.11835 | EJ/yr        |         169.6492 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2042 | \$/tonnes  |       63.23248 | EJ/yr        |         169.6599 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2043 | \$/tonnes  |       63.34661 | EJ/yr        |         169.6706 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2044 | \$/tonnes  |       63.46074 | EJ/yr        |         169.6813 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2045 | \$/tonnes  |       63.57487 | EJ/yr        |         169.6920 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2046 | \$/tonnes  |       63.60577 | EJ/yr        |         169.3689 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2047 | \$/tonnes  |       63.63667 | EJ/yr        |         169.0457 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2048 | \$/tonnes  |       63.66757 | EJ/yr        |         168.7226 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2049 | \$/tonnes  |       63.69847 | EJ/yr        |         168.3994 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2050 | \$/tonnes  |       63.72937 | EJ/yr        |         168.0763 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2051 | \$/tonnes  |       63.73330 | EJ/yr        |         167.9941 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2052 | \$/tonnes  |       63.73723 | EJ/yr        |         167.9119 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2053 | \$/tonnes  |       63.74115 | EJ/yr        |         167.8298 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2054 | \$/tonnes  |       63.74508 | EJ/yr        |         167.7476 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2055 | \$/tonnes  |       63.74900 | EJ/yr        |         167.6655 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2056 | \$/tonnes  |       63.66008 | EJ/yr        |         167.3440 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2057 | \$/tonnes  |       63.57115 | EJ/yr        |         167.0226 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2058 | \$/tonnes  |       63.48223 | EJ/yr        |         166.7011 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2059 | \$/tonnes  |       63.39331 | EJ/yr        |         166.3796 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2060 | \$/tonnes  |       63.30438 | EJ/yr        |         166.0582 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2061 | \$/tonnes  |       63.18854 | EJ/yr        |         165.4385 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2062 | \$/tonnes  |       63.07270 | EJ/yr        |         164.8189 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2063 | \$/tonnes  |       62.95686 | EJ/yr        |         164.1992 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2064 | \$/tonnes  |       62.84101 | EJ/yr        |         163.5796 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2065 | \$/tonnes  |       62.72517 | EJ/yr        |         162.9599 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2066 | \$/tonnes  |       62.58408 | EJ/yr        |         161.8002 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2067 | \$/tonnes  |       62.44300 | EJ/yr        |         160.6404 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2068 | \$/tonnes  |       62.30191 | EJ/yr        |         159.4807 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2069 | \$/tonnes  |       62.16082 | EJ/yr        |         158.3210 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2070 | \$/tonnes  |       62.01973 | EJ/yr        |         157.1612 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
-| NGFS2023GCAM_CP | baseline      | Global             | Coal   | Coal       |          2071 | \$/tonnes  |       61.87448 | EJ/yr        |         156.1628 | carbontech      |                        1 | NA                | NGFS2023GCAM      |
+| scenario | scenario_type | scenario_geography | sector | technology | scenario_year | price_unit | scenario_price | pathway_unit | scenario_pathway | technology_type | scenario_capacity_factor | country_iso2_list | scenario_provider |
+|:---|:---|:---|:---|:---|---:|:---|---:|:---|---:|:---|---:|:---|:---|
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2022 | \$/tonnes | 57.03917 | EJ/yr | 159.4468 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2023 | \$/tonnes | 57.35451 | EJ/yr | 160.4324 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2024 | \$/tonnes | 57.66985 | EJ/yr | 161.4180 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2025 | \$/tonnes | 57.98520 | EJ/yr | 162.4035 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2026 | \$/tonnes | 58.41776 | EJ/yr | 162.4545 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2027 | \$/tonnes | 58.85032 | EJ/yr | 162.5055 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2028 | \$/tonnes | 59.28289 | EJ/yr | 162.5565 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2029 | \$/tonnes | 59.71545 | EJ/yr | 162.6075 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2030 | \$/tonnes | 60.14802 | EJ/yr | 162.6585 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2031 | \$/tonnes | 60.53991 | EJ/yr | 163.5647 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2032 | \$/tonnes | 60.93181 | EJ/yr | 164.4709 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2033 | \$/tonnes | 61.32370 | EJ/yr | 165.3771 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2034 | \$/tonnes | 61.71560 | EJ/yr | 166.2833 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2035 | \$/tonnes | 62.10749 | EJ/yr | 167.1895 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2036 | \$/tonnes | 62.28684 | EJ/yr | 167.6793 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2037 | \$/tonnes | 62.46619 | EJ/yr | 168.1691 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2038 | \$/tonnes | 62.64553 | EJ/yr | 168.6589 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2039 | \$/tonnes | 62.82488 | EJ/yr | 169.1487 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2040 | \$/tonnes | 63.00422 | EJ/yr | 169.6385 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2041 | \$/tonnes | 63.11835 | EJ/yr | 169.6492 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2042 | \$/tonnes | 63.23248 | EJ/yr | 169.6599 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2043 | \$/tonnes | 63.34661 | EJ/yr | 169.6706 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2044 | \$/tonnes | 63.46074 | EJ/yr | 169.6813 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2045 | \$/tonnes | 63.57487 | EJ/yr | 169.6920 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2046 | \$/tonnes | 63.60577 | EJ/yr | 169.3689 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2047 | \$/tonnes | 63.63667 | EJ/yr | 169.0457 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2048 | \$/tonnes | 63.66757 | EJ/yr | 168.7226 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2049 | \$/tonnes | 63.69847 | EJ/yr | 168.3994 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2050 | \$/tonnes | 63.72937 | EJ/yr | 168.0763 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2051 | \$/tonnes | 63.73330 | EJ/yr | 167.9941 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2052 | \$/tonnes | 63.73723 | EJ/yr | 167.9119 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2053 | \$/tonnes | 63.74115 | EJ/yr | 167.8298 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2054 | \$/tonnes | 63.74508 | EJ/yr | 167.7476 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2055 | \$/tonnes | 63.74900 | EJ/yr | 167.6655 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2056 | \$/tonnes | 63.66008 | EJ/yr | 167.3440 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2057 | \$/tonnes | 63.57115 | EJ/yr | 167.0226 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2058 | \$/tonnes | 63.48223 | EJ/yr | 166.7011 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2059 | \$/tonnes | 63.39331 | EJ/yr | 166.3796 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2060 | \$/tonnes | 63.30438 | EJ/yr | 166.0582 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2061 | \$/tonnes | 63.18854 | EJ/yr | 165.4385 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2062 | \$/tonnes | 63.07270 | EJ/yr | 164.8189 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2063 | \$/tonnes | 62.95686 | EJ/yr | 164.1992 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2064 | \$/tonnes | 62.84101 | EJ/yr | 163.5796 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2065 | \$/tonnes | 62.72517 | EJ/yr | 162.9599 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2066 | \$/tonnes | 62.58408 | EJ/yr | 161.8002 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2067 | \$/tonnes | 62.44300 | EJ/yr | 160.6404 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2068 | \$/tonnes | 62.30191 | EJ/yr | 159.4807 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2069 | \$/tonnes | 62.16082 | EJ/yr | 158.3210 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2070 | \$/tonnes | 62.01973 | EJ/yr | 157.1612 | carbontech | 1 | NA | NGFS2023GCAM |
+| NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2071 | \$/tonnes | 61.87448 | EJ/yr | 156.1628 | carbontech | 1 | NA | NGFS2023GCAM |
 
 ## Trisk run
 
@@ -280,6 +286,7 @@ assumptions.
 Those parameters have an impact on trajectories
 
 ``` r
+
 baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
@@ -290,6 +297,7 @@ Those parameters will have an impact on internal NPV and PD
 computations:
 
 ``` r
+
 carbon_price_model <- "no_carbon_tax"
 risk_free_rate <- 0.02
 discount_rate <- 0.07
@@ -306,6 +314,7 @@ Trisk model using the provided input and returns the outputs, with NPVs
 aggregated per company over technology.
 
 ``` r
+
 st_results_agg <- run_trisk_agg(
   assets_data = assets_testdata,
   scenarios_data = scenarios_testdata,
@@ -336,6 +345,7 @@ st_results_agg <- run_trisk_agg(
 Get result dataframes from function output
 
 ``` r
+
 npv_results_agg <- st_results_agg$npv_results
 pd_results_agg <- st_results_agg$pd_results
 company_trajectories_agg <- st_results_agg$company_trajectories
@@ -343,14 +353,14 @@ company_trajectories_agg <- st_results_agg$company_trajectories
 
 NPV result sample (no country_iso2 column):
 
-| run_id                               | company_id | asset_id | company_name | asset_name | sector  | technology    | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
-|:-------------------------------------|:-----------|:---------|:-------------|:-----------|:--------|:--------------|---------------------------:|------------------------:|-----------------------------:|-------------------------:|
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 101        | 101      | Company 1    | Company 1  | Oil&Gas | Gas           |                   51951.82 |                13549.28 |                    -38402.54 |               -0.7391952 |
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 102        | 102      | Company 2    | Company 2  | Coal    | Coal          |                13648160.57 |              4317747.56 |                  -9330413.02 |               -0.6836389 |
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 103        | 103      | Company 3    | Company 3  | Oil&Gas | Gas           |                27724344.25 |             12420187.12 |                 -15304157.13 |               -0.5520115 |
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 104        | 104      | Company 4    | Company 4  | Power   | RenewablesCap |              141635910\.26 |           202554984\.40 |                  60919074.14 |                0.4301104 |
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 105        | 105      | Company 5    | Company 5  | Power   | CoalCap       |                57418851.27 |             11874146.56 |                 -45544704.71 |               -0.7932013 |
-| f0e0a74c-3d80-41e2-97e1-338880205446 | 105        | 105      | Company 5    | Company 5  | Power   | OilCap        |                 6210907.85 |              1416673.16 |                  -4794234.69 |               -0.7719056 |
+| run_id | company_id | asset_id | company_name | asset_name | sector | technology | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
+|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| c4787fa0-85b6-48d3-951a-879a67dce2d2 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 #### Run and return results with country granularity
 
@@ -359,6 +369,7 @@ the Trisk model using the provided input and returns the outputs, with
 NPVs disaggregated per country.
 
 ``` r
+
 st_results <- run_trisk_model(
   assets_data = assets_testdata,
   scenarios_data = scenarios_testdata,
@@ -389,6 +400,7 @@ st_results <- run_trisk_model(
 Get result dataframes from function output
 
 ``` r
+
 npv_results <- st_results$npv_results
 pd_results <- st_results$pd_results
 company_trajectories <- st_results$company_trajectories
@@ -420,9 +432,10 @@ The `npv_results` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(npv_results)
 #> tibble [7 × 12] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                      : chr [1:7] "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" ...
+#>  $ run_id                      : chr [1:7] "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" ...
 #>  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...
 #>  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...
 #>  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...
@@ -438,14 +451,14 @@ str(npv_results)
 
 ##### Sample Data
 
-| run_id                               | company_id | asset_id | company_name | asset_name | sector  | technology    | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
-|:-------------------------------------|:-----------|:---------|:-------------|:-----------|:--------|:--------------|:-------------|---------------------------:|------------------------:|-----------------------------:|-------------------------:|
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | 101      | Company 1    | Company 1  | Oil&Gas | Gas           | DE           |                   51951.82 |                13549.28 |                    -38402.54 |               -0.7391952 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 102        | 102      | Company 2    | Company 2  | Coal    | Coal          | DE           |                13648160.57 |              4317747.56 |                  -9330413.02 |               -0.6836389 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 103        | 103      | Company 3    | Company 3  | Oil&Gas | Gas           | DE           |                27724344.25 |             12420187.12 |                 -15304157.13 |               -0.5520115 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 104        | 104      | Company 4    | Company 4  | Power   | RenewablesCap | DE           |              141635910\.26 |           202554984\.40 |                  60919074.14 |                0.4301104 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 105        | 105      | Company 5    | Company 5  | Power   | CoalCap       | DE           |                57418851.27 |             11874146.56 |                 -45544704.71 |               -0.7932013 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 105        | 105      | Company 5    | Company 5  | Power   | OilCap        | DE           |                 6210907.85 |              1416673.16 |                  -4794234.69 |               -0.7719056 |
+| run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
+|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 #### PD results
 
@@ -465,9 +478,10 @@ The `pd_results` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(pd_results)
 #> tibble [50 × 7] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id      : chr [1:50] "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" ...
+#>  $ run_id      : chr [1:50] "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" ...
 #>  $ company_id  : chr [1:50] "101" "101" "101" "101" ...
 #>  $ company_name: chr [1:50] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ sector      : chr [1:50] "Oil&Gas" "Oil&Gas" "Oil&Gas" "Oil&Gas" ...
@@ -478,14 +492,14 @@ str(pd_results)
 
 ##### Sample Data
 
-| run_id                               | company_id | company_name | sector  | term | pd_baseline |  pd_shock |
-|:-------------------------------------|:-----------|:-------------|:--------|-----:|------------:|----------:|
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    1 |   0.0000000 | 0.0000000 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    2 |   0.0000000 | 0.0000214 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    3 |   0.0000011 | 0.0004647 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    4 |   0.0000237 | 0.0022474 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    5 |   0.0001502 | 0.0059057 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101        | Company 1    | Oil&Gas |    6 |   0.0005218 | 0.0113956 |
+| run_id | company_id | company_name | sector | term | pd_baseline | pd_shock |
+|:---|:---|:---|:---|---:|---:|---:|
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 #### Company trajectories results
 
@@ -526,9 +540,10 @@ The `company_trajectories` dataset includes the following columns:
 ##### Data Structure
 
 ``` r
+
 str(company_trajectories)
 #> tibble [210 × 23] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                                  : chr [1:210] "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" "ce5e368d-1ee7-4060-b85c-7fd8b9332da5" ...
+#>  $ run_id                                  : chr [1:210] "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" "ab86af94-2fce-46aa-a234-75fac94502df" ...
 #>  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...
 #>  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...
@@ -555,11 +570,11 @@ str(company_trajectories)
 
 ##### Sample Data
 
-| run_id                               | asset_id | asset_name | company_id | company_name | country_iso2 | sector  | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario |        pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
-|:-------------------------------------|:---------|:-----------|:-----------|:-------------|:-------------|:--------|:-----------|-----:|-----------------------------------:|-----------------------------:|---------------------------:|--------------------------:|----------:|------------------:|------------------:|-----------:|------------------------:|---------------------:|------------------------------:|---------------------------:|-----------------------------------------:|--------------------------------------:|
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2022 |                               5000 |                         5000 |                   5000.000 |                      5000 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.867116 |             5.867116 |                      2239.895 |                   2239.895 |                                 2239.895 |                              2239.895 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2023 |                               5423 |                         5423 |                   5001.354 |                      5423 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.898569 |             5.898569 |                      2442.414 |                   2442.414 |                                 2282.630 |                              2282.630 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2024 |                               6200 |                         6200 |                   5002.708 |                      6200 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.930022 |             5.930022 |                      2807.250 |                   2807.250 |                                 2451.961 |                              2451.961 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2025 |                               7400 |                         7400 |                   5004.062 |                      7400 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.961475 |             5.961475 |                      3368.360 |                   3368.360 |                                 2749.585 |                              2749.585 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2026 |                               7800 |                         7800 |                   4862.620 |                      7800 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.945170 |             5.945170 |                      3540.723 |                   3540.723 |                                 2701.201 |                              2701.201 |
-| ce5e368d-1ee7-4060-b85c-7fd8b9332da5 | 101      | Company 1  | 101        | Company 1    | DE           | Oil&Gas | Gas        | 2027 |                               8600 |                         8600 |                   4721.178 |                      8600 | 0.0056224 |         0.0763542 |         0.1297317 |   0.259323 |                5.928866 |             5.928866 |                      3893.168 |                   3893.168 |                                 2775.775 |                              2775.775 |
+| run_id | asset_id | asset_name | company_id | company_name | country_iso2 | sector | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario | pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
+|:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
+| ab86af94-2fce-46aa-a234-75fac94502df | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
