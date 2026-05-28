@@ -155,3 +155,53 @@ Gitignored in `specs/plans/artifacts/`:
 - `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:509-557` — EL method math
 - `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:789-891` — EL adjustment bars (P2 source)
 - `~/Documents/repos/trisk.r.docker/app/modules/mod_results_scenarios.R:220-234` — Metric range lollipop (N1 inspiration)
+
+---
+
+## Santa Method NAUGHTY → NICE pass (2026-05-29, second half)
+
+A separate Santa Method review on `main` returned 🔴 NAUGHTY with one
+CRITICAL: `integrate_el(method = "zscore")` returned `-ead * adjusted_pd`,
+contradicting the positive-EL convention shipped in `59571f3`. Downstream
+plot/KPI sign logic assumed positive magnitudes, so worsening EL was
+rendering green. Three HIGH + four MEDIUM + one LOW finding alongside.
+
+**Fix series shipped** (10 commits, all on `origin/main`, latest `2b8b186`):
+
+| Item | Commit | Subject |
+|---|---|---|
+| C1 | `dbdeed3` | integrate_el zscore returns positive EL magnitude |
+| H1 | `7e93d3a` | empty-df + all-NA guards |
+| H2 | `4b2683e` | resolve_internal_series warns on unmatched company_ids |
+| H3 | `7bd88df` | zscore uses exposure_at_default when present |
+| M1 | `65f647a` | row-level *_change_pct = NA on zero baseline |
+| M2 | `2e77208` | plot tests with sign + colour assertions |
+| M3 | `3e48bbb` | ggplot2 deprecations cleanup |
+| M4 | `333d231` | plot_pd_waterfall actually cumulative |
+| L1 | `8b56f56` | el_to_bps helper + named constants |
+| LOW | `2b8b186` | post-audit cleanup (doc drift + neutral bucket) |
+
+**Audit verdict.** Two cold-context reviewers, isolated, same rubric. Both
+🟢 NICE on all 10 items. Tests went from 70/70 PASS (with smoke-only plot
+assertions hiding C1) to **112/112 PASS** with real sign/colour/magnitude
+assertions. R CMD check: 0 errors / 0 warnings / 2 NOTEs (transient).
+
+**Key new contracts (worth remembering for downstream work):**
+
+- All three `integrate_el` methods (`zscore`, `absolute`, `relative`) return
+  positive EL magnitudes. The plot/KPI layer reads positive = more loss = red.
+- `integrate_el(method = "zscore")` uses `exposure_at_default` as the
+  canonical EAD denominator when present (the column produced by
+  `compute_analysis_metrics()` and `run_trisk_on_simple_portfolio()`). The
+  column-presence check accepts either `exposure_at_default` OR the
+  `(exposure_value_usd, loss_given_default)` ingredients.
+- `resolve_internal_series` warns by name when user-supplied `company_id`
+  lookup misses any analysis_data IDs. Existing tests that exercise the
+  fallback wrap the call in `suppressWarnings()`.
+- `pd_change_pct` / `el_change_pct` (row-level) = NA on zero baseline,
+  matching the aggregate convention.
+- `plot_pd_waterfall` is now a genuine cumulative waterfall via `geom_rect`
+  with explicit `(xmin, xmax, ymin, ymax)`. The Adjustment bar bridges
+  `pmin(internal, adjusted) → pmax(internal, adjusted)`.
+- `plot_el_adjustment` neutral bucket: `|el_adjustment| < 1e-12` renders
+  `TRISK_HEX_GREY` instead of falling into the "better" green bucket.
