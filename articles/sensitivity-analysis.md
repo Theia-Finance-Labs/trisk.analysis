@@ -85,41 +85,41 @@ Consolidated NPV results
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 Consolidated PD results
 
 | run_id | company_id | company_name | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|:---|---:|---:|---:|
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 Consolidated company trajectories
 
 | run_id | asset_id | asset_name | company_id | company_name | country_iso2 | sector | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario | pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
-| eb82f6f0-12c5-4daf-aa50-558530479664 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
+| 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
 
 Consolidated params dataframe
 
 | baseline_scenario | target_scenario | scenario_geography | carbon_price_model | risk_free_rate | discount_rate | growth_rate | div_netprofit_prop_coef | shock_year | market_passthrough | run_id |
 |:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|:---|
-| NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 | Global | no_carbon_tax | 0.02 | 0.07 | 0.03 | 1 | 2030 | 0 | eb82f6f0-12c5-4daf-aa50-558530479664 |
-| NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 | Global | no_carbon_tax | 0.02 | 0.07 | 0.03 | 1 | 2025 | 0 | b0eb5b9c-0bc8-4442-a479-1c51c70d797f |
+| NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 | Global | no_carbon_tax | 0.02 | 0.07 | 0.03 | 1 | 2030 | 0 | 1f64b74d-b2e2-42b5-ba0e-6adf0cff1c93 |
+| NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 | Global | no_carbon_tax | 0.02 | 0.07 | 0.03 | 1 | 2025 | 0 | 71f3269d-8c94-4b69-a0d1-471f43a4c60f |
 
 #### Plot results
 
