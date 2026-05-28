@@ -16,6 +16,8 @@ A ggplot2 object.
 }
 \description{
 ggplot port of `mod_integration.R:789-834`. Horizontal bars of EL adjustment
-(Adjusted minus Internal) by sector, with `TRISK_HEX_RED` for negative
-(risk worsens) and `STATUS_GREEN` for positive (risk improves).
+(Adjusted minus Internal) by sector. Sign convention (with EL stored as a
+positive magnitude): positive adjustment = more loss = `TRISK_HEX_RED`
+(worse), negative adjustment = less loss = `STATUS_GREEN` (better). The
+adjustment is signed; the EL levels themselves are not coloured here.
 }
