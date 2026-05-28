@@ -1,90 +1,114 @@
-# Resume Context — PD & EL Integration Implementation
+# Resume Context - PD & EL Integration + 2026-05-28 Follow-ups
 
-**Status:** SHIPPED. All 20 plan tasks complete on `main`. N2 waterfall (originally conditional) built on 2026-05-28.
-
----
-
-## Where things stand
-
-| Branch | State |
-|---|---|
-| `main` | Canonical. Holds squashed feature merge (`8a6e824`), PR #42 follow-up (`9e2ae2f`), N2 waterfall (`f542ea5`), and vignette §10 update (`d015356`). |
-| `output-development` | Stale 91-commit workspace that produced the squashed merge. Do not commit further work here. Only unique content is the gitignored `DEBUG/khanbank-analysis/` artifacts. |
-| `patch/pd-integration-bars-defaults` | Source of PR #42. Already merged. |
+**Status:** Core PD/EL work shipped. EL sign refactor (positive-magnitude convention) shipped locally on `main`. Six follow-up items queued and pending.
 
 ---
 
-## What ships on main
+## Recent commits (2026-05-28, newest first)
+
+| Commit | Subject | Pushed? |
+|---|---|---|
+| `59571f3` | refactor: store expected_loss as positive magnitude | **local only** |
+| `146f089` | docs: refresh RESUME.md to current shipped state | yes (origin/main) |
+| `d015356` | docs: add PD waterfall section to pd-el-integration vignette | yes |
+| `f542ea5` | feat: pipeline_crispy_pd_waterfall (N2) | yes |
+
+Local `main` is **1 commit ahead** of `origin/main`. Push only on Jakub's explicit OK - this repo's branch protection bypasses but warns about it.
+
+---
+
+## Verification baseline (post `59571f3`)
+
+- `devtools::test()` - **70/70 PASS**, 0 fail / 0 warn / 0 skip.
+- `devtools::check()` - last full run was at `146f089` (one commit back): 0 errors / 0 warnings / 3 NOTEs (local workspace cruft). Re-run after env tasks 1-2 below to confirm the EL refactor stays clean.
+
+To run `check()` locally, pandoc must be reachable:
+```
+export RSTUDIO_PANDOC="/Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64"
+Rscript -e 'Sys.setenv(RSTUDIO_PANDOC="/Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64"); devtools::check(error_on = "never")'
+```
+
+---
+
+## Follow-up pipeline (six tasks queued, priority order)
+
+### 1. `.Rbuildignore` hygiene
+Add `.claude/`, `.ruff_cache/`, `dist/` so they stop showing up as R CMD check NOTEs.
+```
+echo '^\.claude$' >> .Rbuildignore
+echo '^\.ruff_cache$' >> .Rbuildignore
+echo '^dist$' >> .Rbuildignore
+```
+Then re-run `devtools::check()` to confirm 2 of the 3 NOTEs clear (the NTP-timestamp NOTE is transient and not ignorable).
+
+### 2. roxygen2 upgrade to 7.3.3
+Soft warning currently fires during `devtools::document()` because installed is 7.2.3 but DESCRIPTION pins 7.3.3.
+```
+Rscript -e 'install.packages("roxygen2")'
+Rscript -e 'devtools::document()'
+```
+If `document()` regenerates any Rd files, commit those separately as `docs: regenerate roxygen man pages`.
+
+### 3. dplyr 2.x migration (`group_by_at`)
+`dplyr::group_by_at` is superseded. Find and replace:
+```
+grep -rn "group_by_at" R/
+```
+Replace each `dplyr::group_by_at(cols)` with `dplyr::group_by(dplyr::across(dplyr::all_of(cols)))`. Some plot files already use the modern form (e.g. `R/plot_el_adjustment.R:19`); only patch the ones still on the old API. Run `devtools::test()` after to confirm equivalence.
+
+### 4. trisk.model upstream bug (separate repo)
+`calc_pd_change_overall()` in `~/Documents/repos/trisk.model` hardcodes `term = 1:5`. Portfolio rows with `term >= 6` silently become NA in the join. Surfaced during the Khan Bank diagnostic in April.
+- Switch to `~/Documents/repos/trisk.model/`, find `calc_pd_change_overall()`.
+- Replace the hardcoded sequence with `seq_len(max_term)` or `unique(portfolio$term)`.
+- Add a regression test (term=7 row should not produce NA).
+- Open a PR against the trisk.model main.
+
+### 5. S3 - viz walkthrough vignette (new)
+New vignette `vignettes/pd-el-viz-walkthrough.Rmd` that narrates each PD/EL plot in turn: what it shows, when to use it, common misreads. Bundled testdata only.
+- Section per plot (P1, P2, P3a, P3b, P4, N1, N2).
+- One narrative paragraph + one rendered figure + one "when to use" callout.
+- Cross-link to `pd-el-integration.Rmd` for the math.
+- No new code needed - all functions exist.
+
+### 6. S4 - sensitivity-analysis.Rmd rewrite (needs brainstorming first)
+Simplify the existing dense `vignettes/sensitivity-analysis.Rmd` and add bank-impact commentary.
+- **Brainstorm before coding.** Use `superpowers:brainstorming` to decide:
+  - What does "bank-impact framing" mean concretely? Capital, P&L, regulatory ratios?
+  - Which sensitivity dimensions are most useful to a bank reader (carbon price, discount rate, time horizon)?
+  - What to cut from the current vignette vs. what to keep?
+- Output: an updated vignette + possibly a new helper plot if a missing visual surfaces during brainstorm.
+
+---
+
+## What ships on main (recap)
 
 **Library functions** (`R/integrate.R`):
-- `integrate_pd(analysis_data, internal_pd, method)` — methods: `"absolute"`, `"relative"`, `"zscore"`
-- `integrate_el(analysis_data, internal_el, method)` — methods: `"absolute"`, `"relative"`
-- `aggregate_pd_integration(portfolio_df, group_cols)`
-- `aggregate_el_integration(portfolio_df, group_cols)`
-- `compute_analysis_metrics()` — exported helper (was internal)
+- `integrate_pd(...)` - methods: `"absolute"`, `"relative"`, `"zscore"`
+- `integrate_el(...)` - methods: `"absolute"`, `"relative"`
+- `aggregate_pd_integration()`, `aggregate_el_integration()` with optional `group_cols`
+- `compute_analysis_metrics()` - exported; now produces POSITIVE EL columns (changed in `59571f3`)
 
 **Visualizations:**
-- P1 `pipeline_crispy_pd_integration_bars` — 4-bar grouped, with `granularity` and `scale` args (`R/plot_pd_integration.R`)
-- P2 `pipeline_crispy_el_adjustment_bars` — horizontal sign-bars (`R/plot_el_adjustment.R`)
-- P3a `pipeline_crispy_pd_kpi_table` / P3b `pipeline_crispy_el_kpi_table` — kableExtra summaries (`R/plot_integration_kpi_table.R`)
-- P4 `pipeline_crispy_el_sector_breakdown_table` — kableExtra sector rollup
-- N1 `pipeline_crispy_pd_method_comparison` — lollipop with `granularity` and `scale` args (`R/plot_pd_method_comparison.R`)
-- N2 `pipeline_crispy_pd_waterfall` — Internal → Adjustment → Adjusted (`R/plot_pd_waterfall.R`)
+- P1 `pipeline_crispy_pd_integration_bars`, P2 `pipeline_crispy_el_adjustment_bars`, P3a/P3b KPI tables, P4 sector breakdown
+- N1 `pipeline_crispy_pd_method_comparison`, N2 `pipeline_crispy_pd_waterfall`
 
-**Vignette:** `vignettes/pd-el-integration.Rmd` (14 sections, bundled testdata only)
-
-**Extra features on main beyond the original plan:** `run_trisk_on_simple_portfolio` workflow + bundled `inst/testdata/simple_portfolio.csv` + `vignettes/simple-portfolio-analysis.Rmd`.
+**Vignettes:**
+- `pd-el-integration.Rmd` (canonical workflow, 14 sections)
+- `pd-el-integration_khan_bank.Rmd` (client-specific)
+- `simple-portfolio-analysis.Rmd` (the `run_trisk_on_simple_portfolio` flow)
 
 ---
 
-## Verification baseline (2026-05-28)
+## Out-of-scope / deferred indefinitely
 
-- `devtools::test()` — **70/70 PASS**, 0 fail, 0 warn, 0 skip
-- `devtools::check()` — **0 errors, 0 warnings, 3 NOTEs**
-  - 3 NOTEs are pre-existing local-workspace cruft (`.claude`, `.ruff_cache`, `dist/` at top level, NTP timestamp). Not fixable from inside the package.
-
----
-
-## Open follow-ups (out of scope for this work)
-
-- **S3 vignette:** PD/EL visualization walkthrough — separate spec + plan when this lands.
-- **S4 vignette:** Simplify / rewrite `sensitivity-analysis.Rmd` with bank-impact commentary — separate spec + plan.
-- **Upstream `trisk.model` bug:** `calc_pd_change_overall()` hardcodes `term = 1:5`; rows with `term = 6+` silently become NA. Separate `trisk.model` PR.
-- **dplyr 2.x migration:** `dplyr::group_by_at` is superseded; revisit if/when targeting dplyr 2.x.
-- **EL sign convention check:** `compute_analysis_metrics()` stores EL as negative; `integrate_el` treats it positively. Symmetric but worth confirming for client-facing output.
+- Cross-language EL sign audit in `trisk.r.docker` Shiny app - the desktop tool may still store EL as negative; not in this repo's scope.
+- dplyr `mutate_at` / `summarise_at` callers (if any) - same migration story as `group_by_at` but lower urgency.
 
 ---
 
-## Local environment notes
+## Cross-repo references (for Shiny ports)
 
-- **Pandoc** is required for `devtools::check()` to rebuild vignettes. It is NOT on PATH but is bundled with RStudio:
-  ```
-  export RSTUDIO_PANDOC="/Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64"
-  ```
-  Set this before running `check()`, or `brew install pandoc` for a system-wide fix.
-- **roxygen2** on disk is 7.2.3 but DESCRIPTION pins 7.3.3. `check()` skips re-document with a soft warning. `install.packages("roxygen2")` to upgrade if desired.
-
----
-
-## Cross-repo references
-
-When porting more Shiny logic, the source modules to read line-for-line:
-
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:170-234` — PD method math
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:509-557` — EL method math
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:321-356` — PD KPI valueBox strip (P3a)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:657-704` — EL KPI valueBox strip (P3b)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:707-786` — Sector breakdown (P4)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:789-891` — EL adjustment bar (P2)
-- `~/Documents/repos/trisk.r.docker/app/modules/mod_results_scenarios.R:220-234` — Metric range lollipop (N1 inspiration)
-
----
-
-## Render artifacts
-
-Standalone PNGs of N1 and N2 against bundled testdata sit at:
-
-- `specs/plans/artifacts/n1_method_comparison.png`
-- `specs/plans/artifacts/n2_pd_waterfall.png`
-
-Both gitignored (`specs/` excluded via `.Rbuildignore` and treated as workspace).
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:170-234` - PD method math
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:509-557` - EL method math
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_integration.R:789-891` - EL adjustment bars (P2 source)
+- `~/Documents/repos/trisk.r.docker/app/modules/mod_results_scenarios.R:220-234` - Metric range lollipop (N1 inspiration)
