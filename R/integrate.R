@@ -176,6 +176,16 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
     out <- default_vec
     idx <- match(as.character(analysis_data$company_id),
                  as.character(user_values$company_id))
+    unmatched_ids <- unique(as.character(analysis_data$company_id)[is.na(idx)])
+    if (length(unmatched_ids) > 0) {
+      warning(
+        "resolve_internal_series(): ", length(unmatched_ids),
+        " company_id(s) in analysis_data not present in user_values; ",
+        "falling back to '", default_col, "' for those rows. Unmatched: ",
+        paste(unmatched_ids, collapse = ", "),
+        call. = FALSE
+      )
+    }
     out[!is.na(idx)] <- user_values[[val_col]][idx[!is.na(idx)]]
     return(out)
   }

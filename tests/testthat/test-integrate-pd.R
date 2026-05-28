@@ -75,7 +75,9 @@ test_that("integrate_pd accepts data frame internal_pd matched by company_id", {
   df <- make_test_analysis_data()
   pd_df <- tibble::tibble(company_id = c("B", "A"),
                           internal_pd = c(0.10, 0.20))
-  result <- integrate_pd(df, internal_pd = pd_df, method = "absolute")
+  # C is intentionally missing from pd_df to exercise the fallback path; that
+  # now also emits a warning naming "C" (see resolve_internal_series fix).
+  result <- suppressWarnings(integrate_pd(df, internal_pd = pd_df, method = "absolute"))
 
   # A matches 0.20, B matches 0.10, C unmatched -> fallback to pd_baseline (0.01)
   expect_equal(result$portfolio$internal_pd, c(0.20, 0.10, 0.01))
@@ -147,5 +149,32 @@ test_that("integrate_pd errors when all resolved internal PD values are NA", {
   expect_error(
     integrate_pd(df, internal_pd = rep(NA_real_, nrow(df)), method = "zscore"),
     "all resolved internal"
+  )
+})
+
+test_that("resolve_internal_series warns when user dataframe misses company_ids", {
+  df <- make_test_analysis_data()
+  # Pass a lookup that names B only — A and C should fall back to default
+  # silently in the buggy version. Warning must name the unmatched IDs.
+  user_lookup <- data.frame(
+    company_id  = "B",
+    internal_pd = 0.5,
+    stringsAsFactors = FALSE
+  )
+  expect_warning(
+    integrate_pd(df, internal_pd = user_lookup, method = "absolute"),
+    "A.*C|missing|unmatched"
+  )
+})
+
+test_that("resolve_internal_series does not warn when all company_ids match", {
+  df <- make_test_analysis_data()
+  user_lookup <- data.frame(
+    company_id  = c("A", "B", "C"),
+    internal_pd = c(0.1, 0.2, 0.3),
+    stringsAsFactors = FALSE
+  )
+  expect_no_warning(
+    integrate_pd(df, internal_pd = user_lookup, method = "absolute")
   )
 })
