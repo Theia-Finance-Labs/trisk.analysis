@@ -355,12 +355,12 @@ NPV result sample (no country_iso2 column):
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| 120f7619-0714-471a-b769-35505f33d77d | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| 120f7619-0714-471a-b769-35505f33d77d | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| 120f7619-0714-471a-b769-35505f33d77d | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| 120f7619-0714-471a-b769-35505f33d77d | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| 120f7619-0714-471a-b769-35505f33d77d | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| 120f7619-0714-471a-b769-35505f33d77d | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| 0202b5d6-d313-4c3b-8ea7-9bc378e4c679 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 #### Run and return results with country granularity
 
@@ -435,7 +435,7 @@ The `npv_results` dataset includes the following columns:
 
 str(npv_results)
 #> tibble [7 × 12] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                      : chr [1:7] "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" ...
+#>  $ run_id                      : chr [1:7] "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" ...
 #>  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...
 #>  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...
 #>  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...
@@ -453,12 +453,12 @@ str(npv_results)
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| 94478461-985b-4116-bccf-5294c771944e | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| 94478461-985b-4116-bccf-5294c771944e | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| 94478461-985b-4116-bccf-5294c771944e | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| 94478461-985b-4116-bccf-5294c771944e | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| 94478461-985b-4116-bccf-5294c771944e | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| 94478461-985b-4116-bccf-5294c771944e | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| fc810279-1469-41be-870d-03cb7640be3e | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| fc810279-1469-41be-870d-03cb7640be3e | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| fc810279-1469-41be-870d-03cb7640be3e | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| fc810279-1469-41be-870d-03cb7640be3e | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| fc810279-1469-41be-870d-03cb7640be3e | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 #### PD results
 
@@ -481,7 +481,7 @@ The `pd_results` dataset includes the following columns:
 
 str(pd_results)
 #> tibble [50 × 7] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id      : chr [1:50] "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" ...
+#>  $ run_id      : chr [1:50] "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" ...
 #>  $ company_id  : chr [1:50] "101" "101" "101" "101" ...
 #>  $ company_name: chr [1:50] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ sector      : chr [1:50] "Oil&Gas" "Oil&Gas" "Oil&Gas" "Oil&Gas" ...
@@ -494,12 +494,12 @@ str(pd_results)
 
 | run_id | company_id | company_name | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|:---|---:|---:|---:|
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 #### Company trajectories results
 
@@ -543,7 +543,7 @@ The `company_trajectories` dataset includes the following columns:
 
 str(company_trajectories)
 #> tibble [210 × 23] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                                  : chr [1:210] "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" "94478461-985b-4116-bccf-5294c771944e" ...
+#>  $ run_id                                  : chr [1:210] "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" "fc810279-1469-41be-870d-03cb7640be3e" ...
 #>  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...
 #>  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...
@@ -572,9 +572,9 @@ str(company_trajectories)
 
 | run_id | asset_id | asset_name | company_id | company_name | country_iso2 | sector | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario | pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
-| 94478461-985b-4116-bccf-5294c771944e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
+| fc810279-1469-41be-870d-03cb7640be3e | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
