@@ -224,8 +224,11 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #' `exposure_value_usd` and `loss_given_default` columns in `analysis_data`.
 #'
 #' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
-#'   columns `expected_loss_baseline`, `expected_loss_shock` (and for zscore,
-#'   `exposure_value_usd`, `loss_given_default`).
+#'   columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
+#'   additionally needs an EAD denominator: it uses an `exposure_at_default`
+#'   column when present (the canonical contract, written by
+#'   [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and
+#'   otherwise reconstructs it as `exposure_value_usd * loss_given_default`.
 #' @param internal_el Numeric vector of length `nrow(analysis_data)`, or a data
 #'   frame with `company_id` + `internal_el` columns, or NULL (default) which
 #'   uses `expected_loss_baseline`.
@@ -253,13 +256,21 @@ integrate_el <- function(analysis_data,
   }
 
   required_cols <- c("expected_loss_baseline", "expected_loss_shock")
-  if (method == "zscore") {
-    required_cols <- c(required_cols, "exposure_value_usd", "loss_given_default")
-  }
   missing_cols <- setdiff(required_cols, colnames(analysis_data))
   if (length(missing_cols) > 0) {
     stop("integrate_el(): missing required columns: ",
          paste(missing_cols, collapse = ", "))
+  }
+  if (method == "zscore") {
+    # Need EAD: either an explicit exposure_at_default column, or the
+    # ingredients (exposure_value_usd + loss_given_default) to reconstruct it.
+    has_ead     <- "exposure_at_default" %in% colnames(analysis_data)
+    has_product <- all(c("exposure_value_usd", "loss_given_default")
+                       %in% colnames(analysis_data))
+    if (!has_ead && !has_product) {
+      stop("integrate_el(): zscore method needs either `exposure_at_default` ",
+           "or both `exposure_value_usd` + `loss_given_default` in analysis_data.")
+    }
   }
 
   internal_vec <- resolve_internal_series(analysis_data, internal_el,

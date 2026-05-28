@@ -12,6 +12,22 @@ test_that("pipeline_crispy_el_adjustment_bars returns a ggplot", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("el_adjustment near-zero classified as neutral (not green)", {
+  # Pre-existing nit caught by Reviewer C': el_adjustment == 0 was rendering
+  # green. Now it renders TRISK_HEX_GREY ("neutral").
+  portfolio <- tibble::tibble(
+    company_id    = c("X", "Y", "Z"),
+    sector        = c("WorseSec", "NeutralSec", "BetterSec"),
+    el_adjustment = c(+50, 0, -30)
+  )
+  prepared <- trisk.analysis:::prepare_for_el_adjustment_plot(
+    list(portfolio = portfolio), facet_var = "sector"
+  )
+  expect_equal(prepared$sign[prepared$sector == "WorseSec"],   "worse")
+  expect_equal(prepared$sign[prepared$sector == "NeutralSec"], "neutral")
+  expect_equal(prepared$sign[prepared$sector == "BetterSec"],  "better")
+})
+
 test_that("el_adjustment sign mapping: positive=worse=red, negative=better=green", {
   # Build a minimal integration_result with one positive-adjustment sector and
   # one negative-adjustment sector, so we can verify the sign mapping and the
