@@ -121,9 +121,7 @@ pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
       .groups = "drop"
     ) |>
     dplyr::mutate(
-      `EL_EAD_bps` = ifelse(.data$Exposure > 0,
-                            abs(.data$`Adjusted EL`) / .data$Exposure * 10000,
-                            NA_real_),
+      `EL_EAD_bps` = el_to_bps(.data$`Adjusted EL`, .data$Exposure),
       Direction = dplyr::case_when(
         .data$`EL Adjustment` >  0.01 ~ "\u2191",    # up arrow: loss worse
         .data$`EL Adjustment` < -0.01 ~ "\u2193",    # down arrow: loss better

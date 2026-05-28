@@ -50,6 +50,23 @@ TRISK_HEX_ADJUSTED <- "#AA2A2B"
 #' @export
 STATUS_GREEN <- "#3D8B5E"
 
+# Numeric constants used across the integration + plotting layer.
+# Default for `qnorm()` clip in the z-score effective-PD transform.
+ZSCORE_FLOOR_DEFAULT <- 1e-4
+ZSCORE_CAP_DEFAULT   <- 1 - 1e-4
+# Default sigma for `scales::pseudo_log_trans()`; small enough that PDs in
+# [0, 0.5] retain near-log spacing without exploding around zero.
+PSEUDO_LOG_SIGMA_DEFAULT <- 1e-5
+# Basis points scale factor (1 bp = 1e-4 of EAD).
+BPS_PER_UNIT <- 1e4
+
+# Convert a (signed or unsigned) EL value to basis points of EAD. Returns
+# NA if ead is zero or NA; takes abs(el) so the sign of el doesn't flip the
+# bps (callers attach direction separately).
+el_to_bps <- function(el, ead) {
+  ifelse(is.na(ead) | ead == 0, NA_real_, abs(el) / ead * BPS_PER_UNIT)
+}
+
 #' TRISK plot theme
 #'
 #' Standard ggplot2 theme used across trisk.analysis plots. Exported so

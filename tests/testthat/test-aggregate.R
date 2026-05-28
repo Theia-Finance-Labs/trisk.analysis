@@ -49,3 +49,10 @@ test_that("aggregate_el_integration sums correctly with bps", {
   # bps = abs(8.6) / 600 * 10000 = 143.33...
   expect_equal(agg$el_adjusted_bps, abs(8.6) / 600 * 10000)
 })
+
+test_that("el_to_bps converts EL to basis points and handles edge cases", {
+  expect_equal(trisk.analysis:::el_to_bps(50, 1e6), 0.5)
+  expect_equal(trisk.analysis:::el_to_bps(-50, 1e6), 0.5, info = "abs() applied")
+  expect_true(is.na(trisk.analysis:::el_to_bps(50, 0)))
+  expect_true(is.na(trisk.analysis:::el_to_bps(50, NA_real_)))
+})

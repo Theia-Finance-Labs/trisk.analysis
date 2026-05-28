@@ -27,8 +27,8 @@
 integrate_pd <- function(analysis_data,
                          internal_pd = NULL,
                          method = c("zscore", "absolute", "relative"),
-                         zscore_floor = 1e-4,
-                         zscore_cap = 1 - 1e-4) {
+                         zscore_floor = ZSCORE_FLOOR_DEFAULT,
+                         zscore_cap = ZSCORE_CAP_DEFAULT) {
   method <- match.arg(method)
 
   if (nrow(analysis_data) == 0) {
@@ -239,8 +239,8 @@ apply_pd_method <- function(internal, baseline, shock, method,
 integrate_el <- function(analysis_data,
                          internal_el = NULL,
                          method = c("zscore", "absolute", "relative"),
-                         zscore_floor = 1e-4,
-                         zscore_cap = 1 - 1e-4) {
+                         zscore_floor = ZSCORE_FLOOR_DEFAULT,
+                         zscore_cap = ZSCORE_CAP_DEFAULT) {
   method <- match.arg(method)
 
   if (nrow(analysis_data) == 0) {
@@ -330,8 +330,8 @@ integrate_el <- function(analysis_data,
 
 apply_el_method <- function(internal, baseline, shock, method,
                             ead = NULL,
-                            zscore_floor = 1e-4,
-                            zscore_cap = 1 - 1e-4) {
+                            zscore_floor = ZSCORE_FLOOR_DEFAULT,
+                            zscore_cap = ZSCORE_CAP_DEFAULT) {
   switch(method,
     absolute = internal + (shock - baseline),
     relative = {
@@ -392,11 +392,8 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
     ) |>
     dplyr::mutate(
       total_el_adjustment = .data$total_el_adjusted - .data$total_el_internal,
-      el_adjusted_bps     = dplyr::if_else(
-        !is.na(.data$total_exposure_usd) & .data$total_exposure_usd > 0,
-        abs(.data$total_el_adjusted) / .data$total_exposure_usd * 10000,
-        NA_real_
-      )
+      el_adjusted_bps     = el_to_bps(.data$total_el_adjusted,
+                                      .data$total_exposure_usd)
     )
 
   if (is.null(group_cols)) {

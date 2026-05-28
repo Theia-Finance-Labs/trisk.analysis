@@ -95,7 +95,7 @@ pipeline_crispy_pd_method_comparison <- function(analysis_data,
 
   x_scale <- if (scale == "pseudo_log") {
     ggplot2::scale_x_continuous(
-      transform = scales::pseudo_log_trans(sigma = 1e-5),
+      transform = scales::pseudo_log_trans(sigma = PSEUDO_LOG_SIGMA_DEFAULT),
       breaks    = c(0, 1e-4, 1e-3, 0.01, 0.05, 0.15),
       labels    = scales::percent_format(accuracy = 0.01)
     )
