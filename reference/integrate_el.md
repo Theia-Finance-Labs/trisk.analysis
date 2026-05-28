@@ -5,9 +5,9 @@ change into the bank's own internal EL scale. "absolute" and "relative"
 mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
 Vasicek recombination by transforming EL to an effective PD (\|EL\| /
 (EAD \* LGD)), applying the z-score combination in normal-quantile
-space, and converting back. The zscore method preserves the package's
-negative-EL convention (loss as negative number) and requires
-\`exposure_value_usd\` and \`loss_given_default\` columns in
+space, and converting back. All three methods return EL as a positive
+magnitude (post 59571f3 package-wide convention). The zscore method
+requires \`exposure_value_usd\` and \`loss_given_default\` columns in
 \`analysis_data\`.
 
 ## Usage
@@ -17,8 +17,8 @@ integrate_el(
   analysis_data,
   internal_el = NULL,
   method = c("zscore", "absolute", "relative"),
-  zscore_floor = 1e-04,
-  zscore_cap = 1 - 1e-04
+  zscore_floor = ZSCORE_FLOOR_DEFAULT,
+  zscore_cap = ZSCORE_CAP_DEFAULT
 )
 ```
 
@@ -27,8 +27,12 @@ integrate_el(
 - analysis_data:
 
   Data frame from \[run_trisk_on_portfolio()\]; must contain columns
-  \`expected_loss_baseline\`, \`expected_loss_shock\` (and for zscore,
-  \`exposure_value_usd\`, \`loss_given_default\`).
+  \`expected_loss_baseline\`, \`expected_loss_shock\`. The zscore method
+  additionally needs an EAD denominator: it uses an
+  \`exposure_at_default\` column when present (the canonical contract,
+  written by \[compute_analysis_metrics()\] and
+  \[run_trisk_on_simple_portfolio()\]) and otherwise reconstructs it as
+  \`exposure_value_usd \* loss_given_default\`.
 
 - internal_el:
 

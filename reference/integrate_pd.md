@@ -11,8 +11,8 @@ integrate_pd(
   analysis_data,
   internal_pd = NULL,
   method = c("zscore", "absolute", "relative"),
-  zscore_floor = 1e-04,
-  zscore_cap = 1 - 1e-04
+  zscore_floor = ZSCORE_FLOOR_DEFAULT,
+  zscore_cap = ZSCORE_CAP_DEFAULT
 )
 ```
 

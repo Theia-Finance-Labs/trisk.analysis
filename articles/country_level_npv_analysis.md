@@ -89,7 +89,7 @@ cat('Selected countries:', paste(selected_countries, collapse=', '), '\n')
 cat('Create aggregate:', create_aggregate, '\n')
 #> Create aggregate: TRUE
 cat('Output directory:', OUTPUT_DIR, '\n\n')
-#> Output directory: /tmp/RtmpNm0T8h
+#> Output directory: /tmp/RtmpmwR0oo
 ```
 
 ### Load Input Data

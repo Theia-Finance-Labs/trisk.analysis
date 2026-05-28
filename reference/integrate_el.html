@@ -4,15 +4,15 @@ change into the bank's own internal EL scale. &quot;absolute&quot; and &quot;rel
 mirror the Shiny EL integration logic; &quot;zscore&quot; adds a Basel IRB-aligned
 Vasicek recombination by transforming EL to an effective PD
 (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
-space, and converting back. The zscore method preserves the package's
-negative-EL convention (loss as negative number) and requires
+space, and converting back. All three methods return EL as a positive
+magnitude (post 59571f3 package-wide convention). The zscore method requires
 `exposure_value_usd` and `loss_given_default` columns in `analysis_data`."><meta property="og:description" content="Applies one of three methods to translate the TRISK baseline-to-shock EL
 change into the bank's own internal EL scale. &quot;absolute&quot; and &quot;relative&quot;
 mirror the Shiny EL integration logic; &quot;zscore&quot; adds a Basel IRB-aligned
 Vasicek recombination by transforming EL to an effective PD
 (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
-space, and converting back. The zscore method preserves the package's
-negative-EL convention (loss as negative number) and requires
+space, and converting back. All three methods return EL as a positive
+magnitude (post 59571f3 package-wide convention). The zscore method requires
 `exposure_value_usd` and `loss_given_default` columns in `analysis_data`."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -64,8 +64,8 @@ change into the bank's own internal EL scale. "absolute" and "relative"
 mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
 Vasicek recombination by transforming EL to an effective PD
 (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
-space, and converting back. The zscore method preserves the package's
-negative-EL convention (loss as negative number) and requires
+space, and converting back. All three methods return EL as a positive
+magnitude (post 59571f3 package-wide convention). The zscore method requires
 `exposure_value_usd` and `loss_given_default` columns in `analysis_data`.</p>
     </div>
 
@@ -75,8 +75,8 @@ negative-EL convention (loss as negative number) and requires
 <span>  <span class="va">analysis_data</span>,</span>
 <span>  internal_el <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"zscore"</span>, <span class="st">"absolute"</span>, <span class="st">"relative"</span><span class="op">)</span>,</span>
-<span>  zscore_floor <span class="op">=</span> <span class="fl">1e-04</span>,</span>
-<span>  zscore_cap <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">1e-04</span></span>
+<span>  zscore_floor <span class="op">=</span> <span class="va">ZSCORE_FLOOR_DEFAULT</span>,</span>
+<span>  zscore_cap <span class="op">=</span> <span class="va">ZSCORE_CAP_DEFAULT</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,8 +86,11 @@ negative-EL convention (loss as negative number) and requires
 
 <dl><dt id="arg-analysis-data">analysis_data<a class="anchor" aria-label="anchor" href="#arg-analysis-data"></a></dt>
 <dd><p>Data frame from [run_trisk_on_portfolio()]; must contain
-columns `expected_loss_baseline`, `expected_loss_shock` (and for zscore,
-`exposure_value_usd`, `loss_given_default`).</p></dd>
+columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
+additionally needs an EAD denominator: it uses an `exposure_at_default`
+column when present (the canonical contract, written by
+[compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and
+otherwise reconstructs it as `exposure_value_usd * loss_given_default`.</p></dd>
 
 
 <dt id="arg-internal-el">internal_el<a class="anchor" aria-label="anchor" href="#arg-internal-el"></a></dt>
