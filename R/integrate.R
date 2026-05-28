@@ -205,8 +205,8 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #' mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
 #' Vasicek recombination by transforming EL to an effective PD
 #' (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
-#' space, and converting back. The zscore method preserves the package's
-#' negative-EL convention (loss as negative number) and requires
+#' space, and converting back. All three methods return EL as a positive
+#' magnitude (post 59571f3 package-wide convention). The zscore method requires
 #' `exposure_value_usd` and `loss_given_default` columns in `analysis_data`.
 #'
 #' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
@@ -309,10 +309,11 @@ apply_el_method <- function(internal, baseline, shock, method,
     },
     zscore = {
       # Basel IRB style recombination, applied to EL via the
-      # effective-PD transform: EL = EAD * LGD * PD  -->  PD_eff = |EL| / EAD,
+      # effective-PD transform: EL = EAD * PD  -->  PD_eff = |EL| / EAD,
       # where `ead` is exposure_value_usd * loss_given_default. After z-score
-      # recombination in normal-quantile space, convert back via -EAD * PD_adj
-      # (preserving the package's negative-EL convention).
+      # recombination in normal-quantile space, convert back via EAD * PD_adj.
+      # Returns a positive magnitude, matching the package's positive-EL
+      # convention (see 59571f3).
       clip <- function(x) pmin(pmax(x, zscore_floor), zscore_cap)
       safe_div <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
       pd_internal <- clip(safe_div(internal))
@@ -323,7 +324,7 @@ apply_el_method <- function(internal, baseline, shock, method,
         stats::qnorm(pd_shock) -
         stats::qnorm(pd_baseline)
       )
-      -ead * adjusted_pd
+      ead * adjusted_pd
     }
   )
 }

@@ -28,14 +28,31 @@ test_that("integrate_el errors on unknown method", {
   expect_error(integrate_el(df, method = "unknown_method"))
 })
 
-test_that("integrate_el zscore method works via effective-PD transform", {
+test_that("integrate_el zscore returns positive magnitudes (post-59571f3 convention)", {
   df <- make_test_analysis_data()
-  internal <- c(-0.5, -2.0, -1.0)
-  result <- integrate_el(df, internal_el = internal, method = "zscore")
+  # Default internal_el = expected_loss_baseline (positive after 59571f3).
+  result <- integrate_el(df, method = "zscore")
   expect_type(result, "list")
   expect_equal(nrow(result$portfolio), nrow(df))
   expect_true(all(is.finite(result$portfolio$trisk_adjusted_el)))
-  expect_true(all(result$portfolio$trisk_adjusted_el <= 0))
+  # Positive-magnitude convention: trisk_adjusted_el >= 0 for all rows.
+  expect_true(all(result$portfolio$trisk_adjusted_el >= 0),
+              info = "EL must be stored as positive magnitudes (matches expected_loss_*).")
+  # Numeric fingerprint: when internal == expected_loss_baseline, the z-score
+  # recombination collapses qnorm(pd_internal) - qnorm(pd_baseline_eff) to 0,
+  # so the recovered adjusted EL equals ead * pd_shock_eff = expected_loss_shock.
+  expect_equal(result$portfolio$trisk_adjusted_el,
+               c(2.0, 4.8, 1.8), tolerance = 1e-6)
+})
+
+test_that("integrate_el zscore accepts positive internal vector", {
+  df <- make_test_analysis_data()
+  # User-supplied positive internal: different from baseline so we exercise the
+  # full qnorm(pd_internal) + qnorm(pd_shock_eff) - qnorm(pd_baseline_eff) path.
+  internal <- c(0.5, 2.0, 1.0)
+  result <- integrate_el(df, internal_el = internal, method = "zscore")
+  expect_true(all(result$portfolio$trisk_adjusted_el >= 0))
+  expect_true(all(is.finite(result$portfolio$trisk_adjusted_el)))
 })
 
 test_that("integrate_el zscore errors when exposure_value_usd is missing", {
