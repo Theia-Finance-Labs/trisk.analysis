@@ -1,0 +1,81 @@
+---
+title: "return-company-aggregated-results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{return-company-aggregated-results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(trisk.analysis)
+library(magrittr)
+```
+
+# Running aggregated results 
+
+In December 2024, the TRISK model methodology was updated to enhance the precision of stress test computations. Previously applied at the company and technology level, stress tests now operate at the company, country, and technology level. This increased granularity improves the accuracy of Net Present Value (NPV) and trajectory outputs, which now reflect country-specific variations.
+
+The Probability of Default (PD) results remain aggregated at the company and sector level, ensuring consistency with prior outputs for these metrics.
+
+The rest of this vignette demonstrates how to aggregate the results to remove the country-level granularity, replicating the previous output structure. This allows users to maintain backward compatibility with prior analyses or adapt the results to specific reporting needs.
+
+
+## Input Data and Configuration
+The input data is included as test datasets in the package. These datasets are used to demonstrate the process.
+
+```{r}
+assets_data <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
+scenarios_data <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
+financial_features_data <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
+ngfs_carbon_price_data <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
+```
+
+
+
+## Running the Model with Aggregation
+The run_trisk_agg function executes the TRISK model and aggregates the results to remove the country-level granularity.
+
+```{r}
+outputs <- run_trisk_agg(
+  assets_data = assets_data,
+  scenarios_data = scenarios_data,
+  financial_data = financial_features_data,
+  carbon_data = ngfs_carbon_price_data,
+  baseline_scenario = "NGFS2023GCAM_CP",
+  target_scenario = "NGFS2023GCAM_NZ2050",
+  shock_year = 2030,
+  scenario_geography = "Global"
+)
+```
+# Examining the Outputs
+
+## NPV Results
+
+```{r}
+knitr::kable(head(outputs$npv_results)) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+
+## PD Results
+```{r}
+knitr::kable(head(outputs$pd_results)) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+## Company Trajectories
+```{r}
+knitr::kable(head(outputs$company_trajectories)) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
