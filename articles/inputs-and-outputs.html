@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>inputs-and-outputs • trisk.analysis</title>
+<title>2. Inputs and outputs • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="inputs-and-outputs">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Inputs and outputs">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,15 +33,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">pd-el-integration</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-viz-walkthrough.html">PD &amp; EL plot walkthrough</a></li>
-    <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/simple-portfolio-analysis.html">simple-portfolio-analysis</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">4. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
   </ul>
 </li>
       </ul>
@@ -63,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>inputs-and-outputs</h1>
+      <h1>2. Inputs and outputs</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/vignettes/inputs-and-outputs.Rmd" class="external-link"><code>vignettes/inputs-and-outputs.Rmd</code></a></small>
@@ -74,57 +70,117 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">trisk.analysis</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="input-datasets">Input datasets<a class="anchor" aria-label="anchor" href="#input-datasets"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>Load the internal datasets</p>
+<p>This vignette is the reference for <em>what TRISK consumes and what
+it produces</em>. TRISK is a climate transition stress test: it compares
+each company’s value and default risk under a baseline scenario against
+a more ambitious (shock) scenario, so a credit analyst can see how a
+low-carbon transition reprices a book of counterparties. To run it you
+supply four reference datasets plus the model parameters; you get back
+three result tables (NPV, PD, and company trajectories). The sections
+below enumerate each input schema, show how to obtain production inputs,
+run a minimal example on the bundled test data, and explain how to read
+every output column.</p>
+</div>
+<div class="section level2">
+<h2 id="inputs">Inputs<a class="anchor" aria-label="anchor" href="#inputs"></a>
+</h2>
+<p>TRISK requires four reference datasets, all shipped as test data
+inside <code>trisk.model</code>. In production you swap these for the
+downloaded inputs (see <em>Obtaining inputs</em> below) and for your own
+portfolio file (a list of <code>company_id</code>s you hold exposure to,
+used downstream to filter results).</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th>Input</th>
+<th>Argument</th>
+<th>Grain</th>
+<th>Purpose</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Assets</td>
+<td><code>assets_data</code></td>
+<td>company / asset / year</td>
+<td>Physical production capacity and emissions</td>
+</tr>
+<tr class="even">
+<td>Scenarios</td>
+<td><code>scenarios_data</code></td>
+<td>scenario / sector / technology / year</td>
+<td>Price and production pathways per climate scenario</td>
+</tr>
+<tr class="odd">
+<td>Financial features</td>
+<td><code>financial_data</code></td>
+<td>company</td>
+<td>Starting PD and balance-sheet ratios</td>
+</tr>
+<tr class="even">
+<td>NGFS carbon price</td>
+<td><code>carbon_data</code></td>
+<td>model / scenario / year</td>
+<td>Optional carbon tax trajectories</td>
+</tr>
+<tr class="odd">
+<td>Portfolio</td>
+<td>(downstream)</td>
+<td>company</td>
+<td>The counterparties you hold; filters results</td>
+</tr>
+</tbody>
+</table>
+<p>Load the bundled test datasets:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">scenarios_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ngfs_carbon_price_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="assets-test-data">Assets Test Data<a class="anchor" aria-label="anchor" href="#assets-test-data"></a>
-</h4>
-<p>This dataset contains data about company assets, including
-production, technology, and geographical details.</p>
-<div class="section level5">
-<h5 id="data-description">Data Description<a class="anchor" aria-label="anchor" href="#data-description"></a>
-</h5>
-<p>The <code>assets_testdata</code> dataset includes the following
-columns:</p>
+<div class="section level3">
+<h3 id="assets">Assets<a class="anchor" aria-label="anchor" href="#assets"></a>
+</h3>
+<p>Company production assets: capacity, technology, sector and location.
+This is the physical exposure TRISK reprices.</p>
 <ul>
 <li>
-<code>company_id</code>: Unique identifier for the company.</li>
+<code>company_id</code>, <code>company_name</code>: company
+identifiers.</li>
 <li>
-<code>company_name</code>: Name of the company.</li>
+<code>asset_id</code>, <code>asset_name</code>: asset
+identifiers.</li>
 <li>
-<code>asset_id</code>: Unique identifier for the asset.</li>
+<code>country_iso2</code>: ISO 3166-1 alpha-2 country code.</li>
 <li>
-<code>country_iso2</code>: ISO 3166-1 alpha-2 code for the
-country.</li>
+<code>production_year</code>: year of the production record.</li>
 <li>
-<code>asset_name</code>: Name of the asset.</li>
+<code>emission_factor</code>: emissions per unit of production.</li>
 <li>
-<code>production_year</code>: Year of production data.</li>
+<code>technology</code>, <code>sector</code>: technology and
+production sector.</li>
 <li>
-<code>emission_factor</code>: Emissions from production.</li>
+<code>capacity</code>, <code>capacity_factor</code>: installed
+capacity and utilisation.</li>
 <li>
-<code>technology</code>: Type of technology used.</li>
-<li>
-<code>sector</code>: Production sector.</li>
-<li>
-<code>capacity</code>: Asset capacity.</li>
-<li>
-<code>capacity_factor</code>: Asset utilization percentage.</li>
-<li>
-<code>production_unit</code>: Unit for production.</li>
+<code>production_unit</code>: unit of production.</li>
 </ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure"></a>
-</h5>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">assets_testdata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'data.frame':    42 obs. of  12 variables:</span></span>
@@ -140,10 +196,6 @@ country.</li>
 <span><span class="co">#&gt;  $ capacity       : num  8600 8600 8600 8600 8600 ...</span></span>
 <span><span class="co">#&gt;  $ capacity_factor: num  0.581 0.631 0.721 0.86 0.907 ...</span></span>
 <span><span class="co">#&gt;  $ production_unit: chr  "GJ" "GJ" "GJ" "GJ" ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data"></a>
-</h5>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -416,422 +468,37 @@ GJ
 </tbody>
 </table>
 </div>
-<hr>
 </div>
-</div>
-<div class="section level4">
-<h4 id="financial-features-test-data">Financial Features Test Data<a class="anchor" aria-label="anchor" href="#financial-features-test-data"></a>
-</h4>
-<p>This dataset contains financial metrics necessary for calculating
-stress test outputs.</p>
-<div class="section level5">
-<h5 id="data-description-1">Data Description<a class="anchor" aria-label="anchor" href="#data-description-1"></a>
-</h5>
-<p>The <code>financial_features_testdata</code> dataset includes the
-following columns:</p>
+<div class="section level3">
+<h3 id="scenarios">Scenarios<a class="anchor" aria-label="anchor" href="#scenarios"></a>
+</h3>
+<p>Price and production pathways per climate scenario. Each TRISK run
+picks one baseline and one target scenario from this table.</p>
 <ul>
 <li>
-<code>company_id</code>: Unique identifier for the company.</li>
+<code>scenario_geography</code>: region the pathway applies to.</li>
 <li>
-<code>pd</code>: Probability of default for the company.</li>
-<li>
-<code>net_profit_margin</code>: Net profit margin for the
-company.</li>
-<li>
-<code>debt_equity_ratio</code>: Debt to equity ratio.</li>
-<li>
-<code>volatility</code>: Volatility of the company’s asset
-values.</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-1">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-1"></a>
-</h5>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">financial_features_testdata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    5 obs. of  5 variables:</span></span>
-<span><span class="co">#&gt;  $ company_id       : int  101 103 105 104 102</span></span>
-<span><span class="co">#&gt;  $ pd               : num  0.00562 0.00398 0.00246 0.00298 0.00365</span></span>
-<span><span class="co">#&gt;  $ net_profit_margin: num  0.0764 0.0717 0.0539 0.0539 0.1058</span></span>
-<span><span class="co">#&gt;  $ debt_equity_ratio: num  0.13 0.128 0.119 0.11 0.104</span></span>
-<span><span class="co">#&gt;  $ volatility       : num  0.259 0.251 0.236 0.251 0.317</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-1">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-1"></a>
-</h5>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_profit_margin
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-debt_equity_ratio
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-volatility
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-101
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.2593230
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-103
-</td>
-<td style="text-align:right;">
-0.0039782
-</td>
-<td style="text-align:right;">
-0.0716949
-</td>
-<td style="text-align:right;">
-0.1277164
-</td>
-<td style="text-align:right;">
-0.2513500
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-105
-</td>
-<td style="text-align:right;">
-0.0024568
-</td>
-<td style="text-align:right;">
-0.0539341
-</td>
-<td style="text-align:right;">
-0.1194000
-</td>
-<td style="text-align:right;">
-0.2360043
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-104
-</td>
-<td style="text-align:right;">
-0.0029792
-</td>
-<td style="text-align:right;">
-0.0539341
-</td>
-<td style="text-align:right;">
-0.1097633
-</td>
-<td style="text-align:right;">
-0.2513500
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-102
-</td>
-<td style="text-align:right;">
-0.0036483
-</td>
-<td style="text-align:right;">
-0.1057878
-</td>
-<td style="text-align:right;">
-0.1044025
-</td>
-<td style="text-align:right;">
-0.3167116
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<hr>
-</div>
-</div>
-<div class="section level4">
-<h4 id="ngfs-carbon-price-test-data">NGFS Carbon Price Test Data<a class="anchor" aria-label="anchor" href="#ngfs-carbon-price-test-data"></a>
-</h4>
-<p>This dataset provides carbon pricing data used in the stress test
-scenarios.</p>
-<div class="section level5">
-<h5 id="data-description-2">Data Description<a class="anchor" aria-label="anchor" href="#data-description-2"></a>
-</h5>
-<p>The <code>ngfs_carbon_price_testdata</code> dataset includes the
-following columns:</p>
-<ul>
-<li>
-<code>year</code>: Year of the carbon price.</li>
-<li>
-<code>model</code>: Model used to generate the carbon price.</li>
-<li>
-<code>scenario</code>: Scenario name.</li>
-<li>
-<code>scenario_geography</code>: Geographic region for the
-scenario.</li>
-<li>
-<code>variable</code>: The variable measured (e.g., carbon
-price).</li>
-<li>
-<code>unit</code>: Unit of the variable.</li>
-<li>
-<code>carbon_tax</code>: The amount of carbon tax applied in the
-scenario.</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-2">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-2"></a>
-</h5>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ngfs_carbon_price_testdata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    1376 obs. of  7 variables:</span></span>
-<span><span class="co">#&gt;  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...</span></span>
-<span><span class="co">#&gt;  $ model             : chr  "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" ...</span></span>
-<span><span class="co">#&gt;  $ scenario          : chr  "B2DS" "B2DS" "B2DS" "B2DS" ...</span></span>
-<span><span class="co">#&gt;  $ scenario_geography: chr  "Global" "Global" "Global" "Global" ...</span></span>
-<span><span class="co">#&gt;  $ variable          : chr  "Price|Carbon" "Price|Carbon" "Price|Carbon" "Price|Carbon" ...</span></span>
-<span><span class="co">#&gt;  $ unit              : chr  "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" ...</span></span>
-<span><span class="co">#&gt;  $ carbon_tax        : num  0 0 0 0 0 0 0 0 0 0 ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-2">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-2"></a>
-</h5>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-year
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-model
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-scenario
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-scenario_geography
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-variable
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-unit
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-carbon_tax
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-2015
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2016
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2017
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2018
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2019
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2020
-</td>
-<td style="text-align:left;">
-GCAM 5.3+ NGFS
-</td>
-<td style="text-align:left;">
-B2DS
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-Price&amp;#124;Carbon
-</td>
-<td style="text-align:left;">
-US$2010/t CO2
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<hr>
-</div>
-</div>
-<div class="section level4">
-<h4 id="scenarios-test-data">Scenarios Test Data<a class="anchor" aria-label="anchor" href="#scenarios-test-data"></a>
-</h4>
-<p>This dataset contains scenario-specific data including price paths,
-capacity factors, and other relevant information.</p>
-<div class="section level5">
-<h5 id="data-description-3">Data Description<a class="anchor" aria-label="anchor" href="#data-description-3"></a>
-</h5>
-<p>The <code>scenarios_testdata</code> dataset includes the following
-columns:</p>
-<ul>
-<li>
-<code>scenario_geography</code>: Region relevant to the
-scenario.</li>
-<li>
-<code>scenario</code>: Scenario name.</li>
-<li>
-<code>scenario_pathway</code>: Specific pathway for the
-scenario.</li>
-<li>
-<code>scenario_type</code>: Type of scenario (e.g., baseline,
+<code>scenario</code>, <code>scenario_pathway</code>,
+<code>scenario_type</code>: scenario name, pathway and type (baseline or
 shock).</li>
 <li>
-<code>sector</code>: Sector of production.</li>
-<li>
-<code>technology</code>: Type of technology.</li>
-<li>
-<code>scenario_year</code>: Year of the scenario data.</li>
-<li>
-<code>scenario_price</code>: Price in the scenario.</li>
-<li>
-<code>price_unit</code>: Unit for the price.</li>
-<li>
-<code>pathway_unit</code>: Unit of the pathway.</li>
-<li>
-<code>technology_type</code>: Type of technology involved (carbon or
+<code>sector</code>, <code>technology</code>,
+<code>technology_type</code>: technology classification (carbon or
 renewable).</li>
+<li>
+<code>scenario_year</code>: year of the pathway record.</li>
+<li>
+<code>scenario_price</code>, <code>price_unit</code>,
+<code>pathway_unit</code>: price and units.</li>
+<li>
+<code>scenario_capacity_factor</code>,
+<code>country_iso2_list</code>, <code>scenario_provider</code>: capacity
+factor, the countries the geography aggregates, and the IAM/source that
+produced the pathway.</li>
 </ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-3">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-3"></a>
-</h5>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">scenarios_testdata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'data.frame':    1422 obs. of  14 variables:</span></span>
+<span><span class="co">#&gt; 'data.frame':    2766 obs. of  14 variables:</span></span>
 <span><span class="co">#&gt;  $ scenario                : chr  "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" ...</span></span>
 <span><span class="co">#&gt;  $ scenario_type           : chr  "baseline" "baseline" "baseline" "baseline" ...</span></span>
 <span><span class="co">#&gt;  $ scenario_geography      : chr  "Global" "Global" "Global" "Global" ...</span></span>
@@ -846,10 +513,6 @@ renewable).</li>
 <span><span class="co">#&gt;  $ scenario_capacity_factor: num  1 1 1 1 1 1 1 1 1 1 ...</span></span>
 <span><span class="co">#&gt;  $ country_iso2_list       : logi  NA NA NA NA NA NA ...</span></span>
 <span><span class="co">#&gt;  $ scenario_provider       : chr  "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-3">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-3"></a>
-</h5>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -3101,74 +2764,528 @@ NGFS2023GCAM
 </table>
 </div>
 </div>
+<div class="section level3">
+<h3 id="financial-features">Financial features<a class="anchor" aria-label="anchor" href="#financial-features"></a>
+</h3>
+<p>Per-company starting financials. The <code>pd</code> here is the
+pre-stress probability of default that TRISK shocks.</p>
+<ul>
+<li>
+<code>company_id</code>: company identifier.</li>
+<li>
+<code>pd</code>: starting probability of default.</li>
+<li>
+<code>net_profit_margin</code>, <code>debt_equity_ratio</code>,
+<code>volatility</code>: balance-sheet inputs to the valuation and
+Merton PD model.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">financial_features_testdata</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    5 obs. of  5 variables:</span></span>
+<span><span class="co">#&gt;  $ company_id       : int  101 103 105 104 102</span></span>
+<span><span class="co">#&gt;  $ pd               : num  0.00562 0.00398 0.00246 0.00298 0.00365</span></span>
+<span><span class="co">#&gt;  $ net_profit_margin: num  0.0764 0.0717 0.0539 0.0539 0.1058</span></span>
+<span><span class="co">#&gt;  $ debt_equity_ratio: num  0.13 0.128 0.119 0.11 0.104</span></span>
+<span><span class="co">#&gt;  $ volatility       : num  0.259 0.251 0.236 0.251 0.317</span></span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+company_id
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+pd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+net_profit_margin
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+debt_equity_ratio
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+volatility
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+0.0056224
+</td>
+<td style="text-align:right;">
+0.0763542
+</td>
+<td style="text-align:right;">
+0.1297317
+</td>
+<td style="text-align:right;">
+0.2593230
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+103
+</td>
+<td style="text-align:right;">
+0.0039782
+</td>
+<td style="text-align:right;">
+0.0716949
+</td>
+<td style="text-align:right;">
+0.1277164
+</td>
+<td style="text-align:right;">
+0.2513500
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+0.0024568
+</td>
+<td style="text-align:right;">
+0.0539341
+</td>
+<td style="text-align:right;">
+0.1194000
+</td>
+<td style="text-align:right;">
+0.2360043
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+104
+</td>
+<td style="text-align:right;">
+0.0029792
+</td>
+<td style="text-align:right;">
+0.0539341
+</td>
+<td style="text-align:right;">
+0.1097633
+</td>
+<td style="text-align:right;">
+0.2513500
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+102
+</td>
+<td style="text-align:right;">
+0.0036483
+</td>
+<td style="text-align:right;">
+0.1057878
+</td>
+<td style="text-align:right;">
+0.1044025
+</td>
+<td style="text-align:right;">
+0.3167116
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level3">
+<h3 id="ngfs-carbon-price">NGFS carbon price<a class="anchor" aria-label="anchor" href="#ngfs-carbon-price"></a>
+</h3>
+<p>Optional carbon tax trajectories applied to company profits. Used
+only when you select a <code>carbon_price_model</code> other than
+<code>no_carbon_tax</code>.</p>
+<ul>
+<li>
+<code>year</code>, <code>model</code>, <code>scenario</code>: carbon
+price record keys.</li>
+<li>
+<code>scenario_geography</code>, <code>variable</code>,
+<code>unit</code>: region and units.</li>
+<li>
+<code>carbon_tax</code>: tax amount per ton of CO2.</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ngfs_carbon_price_testdata</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'data.frame':    1376 obs. of  7 variables:</span></span>
+<span><span class="co">#&gt;  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...</span></span>
+<span><span class="co">#&gt;  $ model             : chr  "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" ...</span></span>
+<span><span class="co">#&gt;  $ scenario          : chr  "B2DS" "B2DS" "B2DS" "B2DS" ...</span></span>
+<span><span class="co">#&gt;  $ scenario_geography: chr  "Global" "Global" "Global" "Global" ...</span></span>
+<span><span class="co">#&gt;  $ variable          : chr  "Price|Carbon" "Price|Carbon" "Price|Carbon" "Price|Carbon" ...</span></span>
+<span><span class="co">#&gt;  $ unit              : chr  "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" ...</span></span>
+<span><span class="co">#&gt;  $ carbon_tax        : num  0 0 0 0 0 0 0 0 0 0 ...</span></span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+year
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+model
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_geography
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+variable
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+unit
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+carbon_tax
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+GCAM 5.3+ NGFS
+</td>
+<td style="text-align:left;">
+B2DS
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+Price&amp;#124;Carbon
+</td>
+<td style="text-align:left;">
+US$2010/t CO2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level3">
+<h3 id="obtaining-inputs">Obtaining inputs<a class="anchor" aria-label="anchor" href="#obtaining-inputs"></a>
+</h3>
+<p>The test data above is small and fixed. For real analysis, download
+the full production inputs (assets, scenarios, financial features and
+carbon prices) from the public endpoint:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"</span></span></code></pre></div>
+<p><code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> writes the four CSV files to a
+folder of your choice (skipped here so the vignette has no network
+dependency):</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/download_trisk_inputs.html">download_trisk_inputs</a></span><span class="op">(</span>local_save_folder <span class="op">=</span> <span class="va">trisk_inputs_folder</span>, skip_confirmation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; Download completed.</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>Once downloaded you read the CSVs the same way as the test data. The
+production <code>scenarios.csv</code> covers many more scenarios than
+the bundled sample: six providers (NGFS, WEO, IPR, Oxford, GECO and the
+Mission Possible Partnership for steel), each with one or more data
+vintages.</p>
+<p>Scenario names encode provider, vintage and scenario,
+e.g. <code>WEO2023_STEPS</code> is the IEA World Energy Outlook 2023
+“Stated Policies” baseline; <code>NGFS2023GCAM_NZ2050</code> is the NGFS
+2023 “Net Zero 2050” target run on the GCAM integrated-assessment model.
+As a rule, pick the baseline and target from the <em>same
+provider</em>.</p>
+<p>The bundled scenarios already expose the valid baseline/target
+pairings via <code><a href="../reference/get_available_parameters.html">get_available_parameters()</a></code> (run here on the
+test data so it needs no network):</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">available_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_available_parameters.html">get_available_parameters</a></span><span class="op">(</span><span class="va">scenarios_testdata</span><span class="op">)</span></span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_provider
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+scenario_geography
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+baseline_scenario
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+target_scenario
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+NGFS2023GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023_GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_B2DS
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023_GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_DT
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023_GCAM
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_CP
+</td>
+<td style="text-align:left;">
+NGFS2023_GCAM_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023_MESSAGE
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023_MESSAGE_CP
+</td>
+<td style="text-align:left;">
+NGFS2023_MESSAGE_NZ2050
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NGFS2023_REMIND
+</td>
+<td style="text-align:left;">
+Global
+</td>
+<td style="text-align:left;">
+NGFS2023_REMIND_CP
+</td>
+<td style="text-align:left;">
+NGFS2023_REMIND_NZ2050
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When choosing a scenario consider: data vintage (newer is usually
+more relevant), geography coverage (NGFS GCAM offers sub-global
+regions), the target’s ambition level (e.g. NGFS B2DS below 2 degrees vs
+NZ2050 net zero), and narrative — some NGFS scenarios such as “LD” (Low
+Demand) reach net zero through demand assumptions rather than policy
+alone. See <a href="https://www.ngfs.net/en" class="external-link uri">https://www.ngfs.net/en</a> for narrative detail.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="trisk-run">Trisk run<a class="anchor" aria-label="anchor" href="#trisk-run"></a>
+<h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
 </h2>
-<div class="section level4">
-<h4 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
-</h4>
-<p>Trisk takes several parameters in input, allowing to adjust the
-model’s assumptions.</p>
-<ul>
-<li>
-<code>baseline_scenario</code>: String specifying the name of the
-baseline scenario.</li>
-<li>
-<code>target_scenario</code>: String specifying the name of the
-shock scenario.</li>
-<li>
-<code>scenario_geography</code>: Character vector indicating which
-geographical region(s) to calculate results for.</li>
-<li>
-<code>carbon_price_model</code>: Character vector specifying which
-NGFS model to use for carbon prices.</li>
-<li>
-<code>risk_free_rate</code>: Numeric value for the risk-free
-interest rate.</li>
-<li>
-<code>discount_rate</code>: Numeric value for the discount rate of
-dividends per year in the DCF.</li>
-<li>
-<code>growth_rate</code>: Numeric value for the terminal growth rate
-of profits beyond the final year in the DCF.</li>
-<li>
-<code>div_netprofit_prop_coef</code>: Numeric coefficient
-determining how strongly future dividends propagate to company
-value.</li>
-<li>
-<code>shock_year</code>: Numeric value specifying the year when the
-shock is applied.</li>
-<li>
-<code>market_passthrough</code>: Numeric value representing the
-firm’s ability to pass carbon tax onto the consumer.</li>
-</ul>
-<p>Those parameters have an impact on trajectories</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The smallest runnable stress test against the bundled data. The
+parameters fall into two groups: scenario selection (which pathways to
+compare and where) and financial assumptions (the DCF and PD model
+knobs).</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_CP"</span></span>
 <span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
 <span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"Global"</span></span>
-<span><span class="va">shock_year</span> <span class="op">&lt;-</span> <span class="fl">2030</span></span></code></pre></div>
-<p>Those parameters will have an impact on internal NPV and PD
-computations:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">carbon_price_model</span> <span class="op">&lt;-</span> <span class="st">"no_carbon_tax"</span></span>
+<span><span class="va">shock_year</span> <span class="op">&lt;-</span> <span class="fl">2030</span></span>
+<span></span>
+<span><span class="va">carbon_price_model</span> <span class="op">&lt;-</span> <span class="st">"no_carbon_tax"</span></span>
 <span><span class="va">risk_free_rate</span> <span class="op">&lt;-</span> <span class="fl">0.02</span></span>
 <span><span class="va">discount_rate</span> <span class="op">&lt;-</span> <span class="fl">0.07</span></span>
 <span><span class="va">growth_rate</span> <span class="op">&lt;-</span> <span class="fl">0.03</span></span>
 <span><span class="va">div_netprofit_prop_coef</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">shock_year</span> <span class="op">&lt;-</span> <span class="fl">2030</span></span>
 <span><span class="va">market_passthrough</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="run-and-return-aggregated-result">Run and return aggregated result<a class="anchor" aria-label="anchor" href="#run-and-return-aggregated-result"></a>
-</h4>
-<p>The function <code><a href="../reference/run_trisk_agg.html">run_trisk_agg()</a></code> runs the Trisk model using
-the provided input and returns the outputs, with NPVs aggregated per
-company over technology.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">st_results_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_agg.html">run_trisk_agg</a></span><span class="op">(</span></span>
+<p>Parameter reference:</p>
+<ul>
+<li>
+<code>baseline_scenario</code>, <code>target_scenario</code>: the
+status-quo and shock scenario names.</li>
+<li>
+<code>scenario_geography</code>: region(s) to compute. Choosing a
+region other than <code>"Global"</code> filters assets to that region’s
+countries and uses region-specific pathways.</li>
+<li>
+<code>shock_year</code>: the year the transition shock is
+applied.</li>
+<li>
+<code>carbon_price_model</code>: which carbon tax trajectory to
+apply (<code>no_carbon_tax</code> to skip).</li>
+<li>
+<code>market_passthrough</code>: share of the carbon tax the firm
+passes to customers.</li>
+<li>
+<code>risk_free_rate</code>, <code>discount_rate</code>,
+<code>growth_rate</code>, <code>div_netprofit_prop_coef</code>: DCF and
+PD valuation assumptions.</li>
+</ul>
+<p><code><a href="../reference/run_trisk_model.html">run_trisk_model()</a></code> runs the model and returns results at
+the asset grain (one row per company / asset / country /
+technology):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
 <span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
 <span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
@@ -3192,13 +3309,45 @@ company over technology.</p>
 <span><span class="co">#&gt; -- Calculating net profits.</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
-<span><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
-<p>Get result dataframes from function output</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">npv_results_agg</span> <span class="op">&lt;-</span> <span class="va">st_results_agg</span><span class="op">$</span><span class="va">npv_results</span></span>
-<span><span class="va">pd_results_agg</span> <span class="op">&lt;-</span> <span class="va">st_results_agg</span><span class="op">$</span><span class="va">pd_results</span></span>
-<span><span class="va">company_trajectories_agg</span> <span class="op">&lt;-</span> <span class="va">st_results_agg</span><span class="op">$</span><span class="va">company_trajectories</span></span></code></pre></div>
-NPV result sample (no country_iso2 column):
+<span><span class="co">#&gt; -- Calculating credit risk.</span></span>
+<span></span>
+<span><span class="va">npv_results</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">npv_results</span></span>
+<span><span class="va">pd_results</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">pd_results</span></span>
+<span><span class="va">company_trajectories</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">company_trajectories</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="company-aggregated-results">Company-aggregated results<a class="anchor" aria-label="anchor" href="#company-aggregated-results"></a>
+</h3>
+<p>Since December 2024 TRISK runs at the company / country / technology
+grain, which improves NPV and trajectory accuracy but changes the output
+shape relative to older analyses. <code><a href="../reference/run_trisk_agg.html">run_trisk_agg()</a></code> takes the
+same arguments and aggregates NPVs per company over country and
+technology, restoring the pre-2024 output structure for backward
+compatibility or simpler reporting. PD results are unaffected — they are
+already at the company/sector grain in both functions.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st_results_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_agg.html">run_trisk_agg</a></span><span class="op">(</span></span>
+<span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  baseline_scenario <span class="op">=</span> <span class="va">baseline_scenario</span>,</span>
+<span>  target_scenario <span class="op">=</span> <span class="va">target_scenario</span>,</span>
+<span>  scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span>,</span>
+<span>  shock_year <span class="op">=</span> <span class="va">shock_year</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk.</span></span>
+<span></span>
+<span><span class="va">npv_results_agg</span> <span class="op">&lt;-</span> <span class="va">st_results_agg</span><span class="op">$</span><span class="va">npv_results</span></span></code></pre></div>
+<p>The aggregated NPV table drops the <code>country_iso2</code>
+column:</p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -3239,7 +3388,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 101
@@ -3274,7 +3423,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 102
@@ -3309,7 +3458,7 @@ Coal
 </tr>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 103
@@ -3344,7 +3493,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 104
@@ -3379,7 +3528,7 @@ RenewablesCap
 </tr>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 105
@@ -3414,7 +3563,7 @@ CoalCap
 </tr>
 <tr>
 <td style="text-align:left;">
-46e0f84d-9773-4c82-84ed-066ebea371f5
+be9901c5-837a-42d0-b881-d86cede92e1b
 </td>
 <td style="text-align:left;">
 105
@@ -3451,14 +3600,25 @@ OilCap
 </table>
 </div>
 </div>
-<div class="section level4">
-<h4 id="run-and-return-results-with-country-granularity">Run and return results with country granularity<a class="anchor" aria-label="anchor" href="#run-and-return-results-with-country-granularity"></a>
-</h4>
-<p>The function <code><a href="../reference/run_trisk_model.html">run_trisk_model()</a></code> runs the Trisk model
-using the provided input and returns the outputs, with NPVs
-disaggregated per country.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">st_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
+<div class="section level3">
+<h3 id="adding-a-carbon-tax">Adding a carbon tax<a class="anchor" aria-label="anchor" href="#adding-a-carbon-tax"></a>
+</h3>
+<p>To stress profits with a carbon tax, pick a
+<code>carbon_price_model</code> present in your carbon data and a
+<code>market_passthrough</code> between 0 and 1. The test data ships the
+<code>GCAM 5.3+ NGFS</code> trajectory plus several illustrative flat
+and increasing taxes:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ngfs_carbon_price_testdata</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                                  model</span></span>
+<span><span class="co">#&gt; 1                       GCAM 5.3+ NGFS</span></span>
+<span><span class="co">#&gt; 2                   flat_carbon_tax_50</span></span>
+<span><span class="co">#&gt; 3             increasing_carbon_tax_50</span></span>
+<span><span class="co">#&gt; 4 independent_increasing_carbon_tax_50</span></span>
+<span><span class="co">#&gt; 5                        no_carbon_tax</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st_results_tax</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_model.html">run_trisk_model</a></span><span class="op">(</span></span>
 <span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
 <span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
@@ -3466,13 +3626,8 @@ disaggregated per country.</p>
 <span>  baseline_scenario <span class="op">=</span> <span class="va">baseline_scenario</span>,</span>
 <span>  target_scenario <span class="op">=</span> <span class="va">target_scenario</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span>,</span>
-<span>  shock_year <span class="op">=</span> <span class="va">shock_year</span>,</span>
-<span>  carbon_price_model <span class="op">=</span> <span class="va">carbon_price_model</span>,</span>
-<span>  risk_free_rate <span class="op">=</span> <span class="va">risk_free_rate</span>,</span>
-<span>  discount_rate <span class="op">=</span> <span class="va">discount_rate</span>,</span>
-<span>  growth_rate <span class="op">=</span> <span class="va">growth_rate</span>,</span>
-<span>  div_netprofit_prop_coef <span class="op">=</span> <span class="va">div_netprofit_prop_coef</span>,</span>
-<span>  market_passthrough <span class="op">=</span> <span class="va">market_passthrough</span></span>
+<span>  carbon_price_model <span class="op">=</span> <span class="st">"GCAM 5.3+ NGFS"</span>,</span>
+<span>  market_passthrough <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
@@ -3483,59 +3638,47 @@ disaggregated per country.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
-<p>Get result dataframes from function output</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">npv_results</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">npv_results</span></span>
-<span><span class="va">pd_results</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">pd_results</span></span>
-<span><span class="va">company_trajectories</span> <span class="op">&lt;-</span> <span class="va">st_results</span><span class="op">$</span><span class="va">company_trajectories</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="output-datasets">Output datasets<a class="anchor" aria-label="anchor" href="#output-datasets"></a>
+<h2 id="outputs-and-interpretation">Outputs and interpretation<a class="anchor" aria-label="anchor" href="#outputs-and-interpretation"></a>
 </h2>
-<div class="section level4">
-<h4 id="npv-results">NPV results<a class="anchor" aria-label="anchor" href="#npv-results"></a>
-</h4>
-<div class="section level5">
-<h5 id="data-description-4">Data Description<a class="anchor" aria-label="anchor" href="#data-description-4"></a>
-</h5>
-<p>The <code>npv_results</code> dataset includes the following
-columns:</p>
+<p>Each run returns a list of three tables. For a credit analyst the
+headline is the <em>difference</em> between baseline and shock columns:
+a large drop from baseline to shock NPV, or a jump from baseline to
+shock PD, flags a counterparty whose value or creditworthiness is
+sensitive to the transition.</p>
+<div class="section level3">
+<h3 id="npv-results">NPV results<a class="anchor" aria-label="anchor" href="#npv-results"></a>
+</h3>
+<p>Net present value of each asset under both scenarios. Compare
+<code>net_present_value_baseline</code> against
+<code>net_present_value_shock</code>: the gap is the transition
+value-at-risk for that asset.</p>
 <ul>
 <li>
-<code>run_id</code>: Unique identifier for the simulation run.</li>
+<code>run_id</code>: identifier for the simulation run.</li>
 <li>
-<code>company_id</code>: Unique identifier for the company.</li>
+<code>company_id</code>, <code>asset_id</code>,
+<code>company_name</code>, <code>asset_name</code>: identifiers.</li>
 <li>
-<code>asset_id</code>: Unique identifier for the asset.</li>
+<code>country_iso2</code>: country of the asset (absent in
+<code><a href="../reference/run_trisk_agg.html">run_trisk_agg()</a></code> output).</li>
 <li>
-<code>company_name</code>: Name of the company.</li>
+<code>sector</code>, <code>technology</code>: classification
+(e.g. Oil&amp;Gas, Coal, Power; Gas, CoalCap, RenewablesCap).</li>
 <li>
-<code>asset_name</code>: Name of the asset.</li>
+<code>net_present_value_baseline</code>,
+<code>net_present_value_shock</code>: NPV under each scenario.</li>
 <li>
-<code>country_iso2</code>: ISO 3166-1 alpha-2 code for the
-country.</li>
-<li>
-<code>sector</code>: Sector in which the company operates (e.g.,
-Oil&amp;Gas, Coal, Power).</li>
-<li>
-<code>technology</code>: Type of technology used by the company
-(e.g., Gas, CoalCap, RenewablesCap).</li>
-<li>
-<code>net_present_value_baseline</code>: Net present value (NPV)
-under the baseline scenario.</li>
-<li>
-<code>net_present_value_shock</code>: Net present value (NPV) under
-the shock scenario.</li>
+<code>net_present_value_difference</code>,
+<code>net_present_value_change</code>: shock minus baseline (absolute)
+and the relative change.</li>
 </ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-4">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-4"></a>
-</h5>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">npv_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [7 × 12] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...</span></span>
@@ -3547,10 +3690,6 @@ the shock scenario.</li>
 <span><span class="co">#&gt;  $ net_present_value_shock     : num [1:7] 1.35e+04 4.32e+06 1.24e+07 2.03e+08 1.19e+07 ...</span></span>
 <span><span class="co">#&gt;  $ net_present_value_difference: num [1:7] -38403 -9330413 -15304157 60919074 -45544705 ...</span></span>
 <span><span class="co">#&gt;  $ net_present_value_change    : num [1:7] -0.739 -0.684 -0.552 0.43 -0.793 ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-4">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-4"></a>
-</h5>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -3594,7 +3733,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -3632,7 +3771,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 102
@@ -3670,7 +3809,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 103
@@ -3708,7 +3847,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 104
@@ -3746,7 +3885,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 105
@@ -3784,7 +3923,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 105
@@ -3824,53 +3963,35 @@ DE
 </table>
 </div>
 </div>
-</div>
-<div class="section level4">
-<h4 id="pd-results">PD results<a class="anchor" aria-label="anchor" href="#pd-results"></a>
-</h4>
-<div class="section level5">
-<h5 id="data-description-5">Data Description<a class="anchor" aria-label="anchor" href="#data-description-5"></a>
-</h5>
-<p>The <code>pd_results</code> dataset includes the following
-columns:</p>
+<div class="section level3">
+<h3 id="pd-results">PD results<a class="anchor" aria-label="anchor" href="#pd-results"></a>
+</h3>
+<p>Probability of default per company and term, before and after the
+shock. The <code>pd_shock - pd_baseline</code> spread is the
+transition-driven increase in default risk to feed into credit
+models.</p>
 <ul>
 <li>
-<code>run_id</code>: Unique identifier for the simulation run.</li>
+<code>run_id</code>, <code>company_id</code>,
+<code>company_name</code>: identifiers.</li>
 <li>
-<code>company_id</code>: Unique identifier for the company.</li>
+<code>sector</code>: company sector.</li>
 <li>
-<code>company_name</code>: Name of the company.</li>
+<code>term</code>: horizon of the PD estimate.</li>
 <li>
-<code>sector</code>: Sector in which the company operates (e.g.,
-Oil&amp;Gas, Coal).</li>
-<li>
-<code>term</code>: Time period for the probability of default (PD)
-calculation.</li>
-<li>
-<code>pd_baseline</code>: Probability of default (PD) under the
-baseline scenario.</li>
-<li>
-<code>pd_shock</code>: Probability of default (PD) under the shock
+<code>pd_baseline</code>, <code>pd_shock</code>: PD under each
 scenario.</li>
 </ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-5">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-5"></a>
-</h5>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pd_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [145 × 7] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id      : chr [1:145] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...</span></span>
+<span><span class="co">#&gt;  $ run_id      : chr [1:145] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...</span></span>
 <span><span class="co">#&gt;  $ company_id  : chr [1:145] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ company_name: chr [1:145] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ sector      : chr [1:145] "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" ...</span></span>
 <span><span class="co">#&gt;  $ term        : int [1:145] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
 <span><span class="co">#&gt;  $ pd_baseline : num [1:145] 0.00 2.82e-09 1.14e-06 2.37e-05 1.50e-04 ...</span></span>
 <span><span class="co">#&gt;  $ pd_shock    : num [1:145] 2.61e-09 2.14e-05 4.65e-04 2.25e-03 5.91e-03 ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-5">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-5"></a>
-</h5>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -3899,7 +4020,7 @@ pd_shock
 <tbody>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -3922,7 +4043,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -3945,7 +4066,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -3968,7 +4089,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -3991,7 +4112,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4014,7 +4135,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4039,84 +4160,48 @@ Oil&amp;Gas
 </table>
 </div>
 </div>
-</div>
-<div class="section level4">
-<h4 id="company-trajectories-results">Company trajectories results<a class="anchor" aria-label="anchor" href="#company-trajectories-results"></a>
-</h4>
-<div class="section level5">
-<h5 id="data-description-6">Data Description<a class="anchor" aria-label="anchor" href="#data-description-6"></a>
-</h5>
-<p>The <code>company_trajectories</code> dataset includes the following
-columns:</p>
+<div class="section level3">
+<h3 id="company-trajectories">Company trajectories<a class="anchor" aria-label="anchor" href="#company-trajectories"></a>
+</h3>
+<p>The year-by-year detail behind the NPV and PD numbers: production,
+prices and profits along each pathway. Use this to audit <em>why</em> a
+company’s value moved — for example a coal asset whose shock-scenario
+production collapses while its baseline holds.</p>
 <ul>
 <li>
-<code>run_id</code>: Unique identifier for the simulation run.</li>
+<code>run_id</code>, <code>asset_id</code>, <code>asset_name</code>,
+<code>company_id</code>, <code>company_name</code>,
+<code>country_iso2</code>: identifiers.</li>
 <li>
-<code>asset_id</code>: Unique identifier for the asset.</li>
+<code>year</code>, <code>sector</code>, <code>technology</code>:
+time and classification.</li>
 <li>
-<code>asset_name</code>: Name of the asset.</li>
+<code>production_plan_company_technology</code>: the company’s own
+production plan.</li>
 <li>
-<code>company_id</code>: Unique identifier for the company.</li>
+<code>production_baseline_scenario</code>,
+<code>production_target_scenario</code>,
+<code>production_shock_scenario</code>: production along each
+pathway.</li>
 <li>
-<code>company_name</code>: Name of the company.</li>
+<code>pd</code>, <code>net_profit_margin</code>,
+<code>debt_equity_ratio</code>, <code>volatility</code>: carried-through
+financial features.</li>
 <li>
-<code>year</code>: Year of the scenario data.</li>
+<code>scenario_price_baseline</code>,
+<code>price_shock_scenario</code>: prices per scenario.</li>
 <li>
-<code>sector</code>: Sector in which the company operates (e.g.,
-Oil&amp;Gas, Coal).</li>
+<code>net_profits_baseline_scenario</code>,
+<code>net_profits_shock_scenario</code>: net profits per scenario.</li>
 <li>
-<code>technology</code>: Type of technology used by the
-company.</li>
-<li>
-<code>production_plan_company_technology</code>: Production plan for
-the company’s technology.</li>
-<li>
-<code>production_baseline_scenario</code>: Production output under
-the baseline scenario.</li>
-<li>
-<code>production_target_scenario</code>: Production output under the
-target scenario.</li>
-<li>
-<code>production_shock_scenario</code>: Production output under the
-shock scenario.</li>
-<li>
-<code>pd</code>: Probability of default for the company.</li>
-<li>
-<code>net_profit_margin</code>: Net profit margin for the
-company.</li>
-<li>
-<code>debt_equity_ratio</code>: Debt to equity ratio for the
-company.</li>
-<li>
-<code>volatility</code>: Volatility of the company’s asset
-values.</li>
-<li>
-<code>scenario_price_baseline</code>: Price under the baseline
-scenario.</li>
-<li>
-<code>price_shock_scenario</code>: Price under the shock
-scenario.</li>
-<li>
-<code>net_profits_baseline_scenario</code>: Net profits under the
-baseline scenario.</li>
-<li>
-<code>net_profits_shock_scenario</code>: Net profits under the shock
-scenario.</li>
-<li>
-<code>discounted_net_profits_baseline_scenario</code>: Discounted
-net profits under the baseline scenario.</li>
-<li>
-<code>discounted_net_profits_shock_scenario</code>: Discounted net
-profits under the shock scenario.</li>
+<code>discounted_net_profits_baseline_scenario</code>,
+<code>discounted_net_profits_shock_scenario</code>: discounted net
+profits feeding the NPV.</li>
 </ul>
-</div>
-<div class="section level5">
-<h5 id="data-structure-6">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure-6"></a>
-</h5>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">company_trajectories</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [210 × 23] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...</span></span>
@@ -4139,10 +4224,6 @@ profits under the shock scenario.</li>
 <span><span class="co">#&gt;  $ net_profits_shock_scenario              : num [1:210] 2240 2442 2807 3368 3541 ...</span></span>
 <span><span class="co">#&gt;  $ discounted_net_profits_baseline_scenario: num [1:210] 2240 2283 2452 2750 2701 ...</span></span>
 <span><span class="co">#&gt;  $ discounted_net_profits_shock_scenario   : num [1:210] 2240 2283 2452 2750 2701 ...</span></span></code></pre></div>
-</div>
-<div class="section level5">
-<h5 id="sample-data-6">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data-6"></a>
-</h5>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -4219,7 +4300,7 @@ discounted_net_profits_shock_scenario
 <tbody>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4290,7 +4371,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4361,7 +4442,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4432,7 +4513,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4503,7 +4584,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4574,7 +4655,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-ce1a5f22-bdbd-4fa3-b179-0985c78c9654
+50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc
 </td>
 <td style="text-align:left;">
 101
@@ -4648,6 +4729,48 @@ Gas
 </div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="caveats">Caveats<a class="anchor" aria-label="anchor" href="#caveats"></a>
+</h2>
+<ul>
+<li>
+<strong>Scenario coverage is uneven.</strong> Some sectors (notably
+steel) have far fewer scenarios than power, because of upstream data
+limitations. Always pair a baseline and target from the same provider
+and vintage.</li>
+<li>
+<strong>Geography filtering is implicit.</strong> Choosing a
+<code>scenario_geography</code> other than <code>"Global"</code>
+silently drops assets outside that region’s countries — check your asset
+count after filtering.</li>
+<li>
+<strong>Carbon tax requires matching data.</strong> A
+<code>carbon_price_model</code> only takes effect if that model exists
+in <code>carbon_data</code>; otherwise leave it as
+<code>no_carbon_tax</code>.</li>
+<li>
+<strong>Test data is illustrative.</strong> The bundled datasets
+exist to make examples runnable, not to produce representative risk
+numbers — use the downloaded production inputs for real analysis.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
+</h2>
+<ul>
+<li>
+<code>getting-started</code> — install and run your first stress
+test.</li>
+<li>
+<code>run-on-a-portfolio</code> — apply TRISK to a portfolio of
+counterparties.</li>
+<li>
+<code>pd-el-integration</code> — turn shocked PDs into expected-loss
+figures.</li>
+<li>
+<code>sensitivity-analysis</code> — sweep parameters to test result
+stability.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

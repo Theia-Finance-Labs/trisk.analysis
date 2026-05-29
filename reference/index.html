@@ -18,15 +18,11 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">pd-el-integration</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-viz-walkthrough.html">PD &amp; EL plot walkthrough</a></li>
-    <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/simple-portfolio-analysis.html">simple-portfolio-analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">4. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -43,9 +39,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="run-trisk">Run TRISK<a class="anchor" aria-label="anchor" href="#run-trisk"></a></h2>
 
-
+      <div class="section-desc"><p>Entry points that execute the TRISK model — on raw inputs, on a portfolio, or across a grid of parameter sets for sensitivity analysis.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -54,10 +50,112 @@
 
       <dl><dt>
 
-          <code><a href="TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC()</a></code>
+          <code><a href="run_trisk_model.html">run_trisk_model</a></code>
 
         </dt>
-        <dd>TRISK plot theme</dd>
+        <dd>run_trisk_model</dd>
+
+        <dt>
+
+          <code><a href="run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code>
+
+        </dt>
+        <dd>Run TRISK Model on Portfolio</dd>
+
+        <dt>
+
+          <code><a href="run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code>
+
+        </dt>
+        <dd>Run TRISK Model on Simple Portfolio</dd>
+
+        <dt>
+
+          <code><a href="run_trisk_sa.html">run_trisk_sa()</a></code>
+
+        </dt>
+        <dd>Run TRISK sensitivity analysis on multiple scenarios</dd>
+
+        <dt>
+
+          <code><a href="run_trisk_agg.html">run_trisk_agg()</a></code>
+
+        </dt>
+        <dd>Run TRISK Model with Aggregated Results</dd>
+
+        <dt>
+
+          <code><a href="run_trisk_from_db.html">run_trisk_from_db()</a></code>
+
+        </dt>
+        <dd>Fetch Data from PostgreSQL and Run Transition Risk Aggregation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="inputs-and-parameters">Inputs and parameters<a class="anchor" aria-label="anchor" href="#inputs-and-parameters"></a></h2>
+
+      <div class="section-desc"><p>Download bundled inputs, list available scenario parameters, and match companies.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="download_trisk_inputs.html">download_trisk_inputs()</a></code>
+
+        </dt>
+        <dd>Download TRISK input data files from a specified endpoint</dd>
+
+        <dt>
+
+          <code><a href="get_available_parameters.html">get_available_parameters()</a></code>
+
+        </dt>
+        <dd>Get the possible parameters values for Trisk from the scenario data</dd>
+
+        <dt>
+
+          <code><a href="fuzzy_match_company_ids.html">fuzzy_match_company_ids()</a></code>
+
+        </dt>
+        <dd>Fuzzy Match Company IDs</dd>
+      </dl></div><div class="section level2">
+      <h2 id="portfolio-metrics-and-checks">Portfolio metrics and checks<a class="anchor" aria-label="anchor" href="#portfolio-metrics-and-checks"></a></h2>
+
+      <div class="section-desc"><p>Validate a portfolio, join it to TRISK outputs, and compute exposure metrics.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="check_portfolio.html">check_portfolio()</a></code>
+
+        </dt>
+        <dd>Check Portfolio and Match Company IDs</dd>
+
+        <dt>
+
+          <code><a href="check_portfolio_simple.html">check_portfolio_simple()</a></code>
+
+        </dt>
+        <dd>Check Simple Portfolio</dd>
+
+        <dt>
+
+          <code><a href="compute_analysis_metrics.html">compute_analysis_metrics()</a></code>
+
+        </dt>
+        <dd>Compute Analysis Metrics</dd>
+
+        <dt>
+
+          <code><a href="compute_simple_portfolio_metrics.html">compute_simple_portfolio_metrics()</a></code>
+
+        </dt>
+        <dd>Compute value-change and expected-loss metrics on exposure shares</dd>
 
         <dt>
 
@@ -68,31 +166,33 @@
 
         <dt>
 
+          <code><a href="join_trisk_outputs_to_portfolio.html">join_trisk_outputs_to_portfolio()</a></code>
+
+        </dt>
+        <dd>Join TRISK Outputs to Portfolio</dd>
+
+        <dt>
+
+          <code><a href="join_simple_portfolio_to_trisk.html">join_simple_portfolio_to_trisk()</a></code>
+
+        </dt>
+        <dd>Join simple portfolio to aggregated TRISK outputs</dd>
+      </dl></div><div class="section level2">
+      <h2 id="aggregation">Aggregation<a class="anchor" aria-label="anchor" href="#aggregation"></a></h2>
+
+      <div class="section-desc"><p>Roll up firm-level facts to portfolio and sector aggregates.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="aggregate_el_integration.html">aggregate_el_integration()</a></code>
 
         </dt>
         <dd>Aggregate EL integration results to portfolio level</dd>
-
-        <dt>
-
-          <code><a href="aggregate_facts.html">aggregate_facts()</a></code>
-
-        </dt>
-        <dd>Title</dd>
-
-        <dt>
-
-          <code><a href="aggregate_facts_portfolio.html">aggregate_facts_portfolio()</a></code>
-
-        </dt>
-        <dd>Title</dd>
-
-        <dt>
-
-          <code><a href="aggregate_facts_trisk.html">aggregate_facts_trisk()</a></code>
-
-        </dt>
-        <dd>Title</dd>
 
         <dt>
 
@@ -128,99 +228,17 @@
 
         </dt>
         <dd>Aggregate TRISK outputs for simple portfolio analysis</dd>
+      </dl></div><div class="section level2">
+      <h2 id="pd-and-el-integration">PD and EL integration<a class="anchor" aria-label="anchor" href="#pd-and-el-integration"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Recombine TRISK shock PDs with the bank’s internal PDs and translate to expected loss.</p></div>
 
-          <code><a href="check_portfolio.html">check_portfolio()</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Check Portfolio and Match Company IDs</dd>
 
-        <dt>
 
-          <code><a href="check_portfolio_simple.html">check_portfolio_simple()</a></code>
 
-        </dt>
-        <dd>Check Simple Portfolio</dd>
-
-        <dt>
-
-          <code><a href="compute_analysis_metrics.html">compute_analysis_metrics()</a></code>
-
-        </dt>
-        <dd>Compute Analysis Metrics</dd>
-
-        <dt>
-
-          <code><a href="compute_simple_portfolio_metrics.html">compute_simple_portfolio_metrics()</a></code>
-
-        </dt>
-        <dd>Compute value-change and expected-loss metrics on exposure shares</dd>
-
-        <dt>
-
-          <code><a href="download_trisk_inputs.html">download_trisk_inputs()</a></code>
-
-        </dt>
-        <dd>Download TRISK input data files from a specified endpoint</dd>
-
-        <dt>
-
-          <code><a href="draw_crispy_npv_change_plot.html">draw_crispy_npv_change_plot()</a></code>
-
-        </dt>
-        <dd>Construct NPV Change Visualization Plot</dd>
-
-        <dt>
-
-          <code><a href="draw_exposure_change_plot.html">draw_exposure_change_plot()</a></code>
-
-        </dt>
-        <dd>Generate Exposure Change and Value Loss Plot</dd>
-
-        <dt>
-
-          <code><a href="draw_pd_term_plot.html">draw_pd_term_plot()</a></code>
-
-        </dt>
-        <dd>Generate Plot of PD Values by Term and Scenario</dd>
-
-        <dt>
-
-          <code><a href="draw_trisk_line_plot.html">draw_trisk_line_plot()</a></code>
-
-        </dt>
-        <dd>Draw Line Plot for Risk Trajectories</dd>
-
-        <dt>
-
-          <code><a href="fuzzy_match_company_ids.html">fuzzy_match_company_ids()</a></code>
-
-        </dt>
-        <dd>Fuzzy Match Company IDs</dd>
-
-        <dt>
-
-          <code><a href="get_available_parameters.html">get_available_parameters()</a></code>
-
-        </dt>
-        <dd>Get the possible parameters values for Trisk from the scenario data</dd>
-
-        <dt>
-
-          <code><a href="get_filtered_assets_data.html">get_filtered_assets_data()</a></code>
-
-        </dt>
-        <dd>Filter assets based on provided criteria</dd>
-
-        <dt>
-
-          <code><a href="integrate_el.html">integrate_el()</a></code>
-
-        </dt>
-        <dd>Integrate TRISK EL shift into an internal EL estimate</dd>
-
-        <dt>
+      <dl><dt>
 
           <code><a href="integrate_pd.html">integrate_pd()</a></code>
 
@@ -229,17 +247,54 @@
 
         <dt>
 
-          <code><a href="join_simple_portfolio_to_trisk.html">join_simple_portfolio_to_trisk()</a></code>
+          <code><a href="integrate_el.html">integrate_el()</a></code>
 
         </dt>
-        <dd>Join simple portfolio to aggregated TRISK outputs</dd>
+        <dd>Integrate TRISK EL shift into an internal EL estimate</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plots-and-kpi-tables">Plots and KPI tables<a class="anchor" aria-label="anchor" href="#plots-and-kpi-tables"></a></h2>
+
+      <div class="section-desc"><p>Visualisations and summary tables for PD, EL, NPV, and exposure results.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars()</a></code>
+
+        </dt>
+        <dd>PD integration bar plot (4-bar grouped)</dd>
 
         <dt>
 
-          <code><a href="join_trisk_outputs_to_portfolio.html">join_trisk_outputs_to_portfolio()</a></code>
+          <code><a href="pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison()</a></code>
 
         </dt>
-        <dd>Join TRISK Outputs to Portfolio</dd>
+        <dd>PD Integration Method Comparison Plot</dd>
+
+        <dt>
+
+          <code><a href="pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall()</a></code>
+
+        </dt>
+        <dd>PD waterfall plot</dd>
+
+        <dt>
+
+          <code><a href="pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot()</a></code>
+
+        </dt>
+        <dd>Visualize PD Values by Term and Business Unit</dd>
+
+        <dt>
+
+          <code><a href="pipeline_crispy_pd_kpi_table.html">pipeline_crispy_pd_kpi_table()</a></code>
+
+        </dt>
+        <dd>PD Integration KPI Table</dd>
 
         <dt>
 
@@ -285,122 +340,26 @@
 
         <dt>
 
-          <code><a href="pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars()</a></code>
-
-        </dt>
-        <dd>PD integration bar plot (4-bar grouped)</dd>
-
-        <dt>
-
-          <code><a href="pipeline_crispy_pd_kpi_table.html">pipeline_crispy_pd_kpi_table()</a></code>
-
-        </dt>
-        <dd>PD Integration KPI Table</dd>
-
-        <dt>
-
-          <code><a href="pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison()</a></code>
-
-        </dt>
-        <dd>PD Integration Method Comparison Plot</dd>
-
-        <dt>
-
-          <code><a href="pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot()</a></code>
-
-        </dt>
-        <dd>Visualize PD Values by Term and Business Unit</dd>
-
-        <dt>
-
-          <code><a href="pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall()</a></code>
-
-        </dt>
-        <dd>PD waterfall plot</dd>
-
-        <dt>
-
           <code><a href="plot_multi_trajectories.html">plot_multi_trajectories()</a></code>
 
         </dt>
         <dd>Visualize Trajectory Risks Over Time by Business Unit and Sector</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plot-styling">Plot styling<a class="anchor" aria-label="anchor" href="#plot-styling"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Shared theme and palette used across the package plots.</p></div>
 
-          <code><a href="prepare_for_crispy_npv_change_plot.html">prepare_for_crispy_npv_change_plot()</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Prepare Data for NPV Change Visualization</dd>
 
-        <dt>
 
-          <code><a href="prepare_for_expected_loss_plot.html">prepare_for_expected_loss_plot()</a></code>
 
-        </dt>
-        <dd>Data Preparation for Financial Risk Visualization</dd>
+      <dl><dt>
 
-        <dt>
-
-          <code><a href="prepare_for_exposure_change_plot.html">prepare_for_exposure_change_plot()</a></code>
+          <code><a href="TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC()</a></code>
 
         </dt>
-        <dd>Preprocess Data for Exposure and Value Loss Visualization</dd>
-
-        <dt>
-
-          <code><a href="prepare_for_pd_term_plot.html">prepare_for_pd_term_plot()</a></code>
-
-        </dt>
-        <dd>Prepare Data for PD Term Visualization</dd>
-
-        <dt>
-
-          <code><a href="prepare_for_trisk_line_plot.html">prepare_for_trisk_line_plot()</a></code>
-
-        </dt>
-        <dd>Prepare Data for Risk Trajectory Line Plot</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_agg.html">run_trisk_agg()</a></code>
-
-        </dt>
-        <dd>Run TRISK Model with Aggregated Results</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_from_db.html">run_trisk_from_db()</a></code>
-
-        </dt>
-        <dd>Fetch Data from PostgreSQL and Run Transition Risk Aggregation</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_model.html">run_trisk_model</a></code>
-
-        </dt>
-        <dd>run_trisk_model</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code>
-
-        </dt>
-        <dd>Run TRISK Model on Portfolio</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code>
-
-        </dt>
-        <dd>Run TRISK Model on Simple Portfolio</dd>
-
-        <dt>
-
-          <code><a href="run_trisk_sa.html">run_trisk_sa()</a></code>
-
-        </dt>
-        <dd>Run TRISK sensitivity analysis on multiple scenarios</dd>
+        <dd>TRISK plot theme</dd>
 
         <dt>
 
@@ -409,7 +368,8 @@
         </dt>
         <dd>TRISK plot palette constants</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

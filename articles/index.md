@@ -1,13 +1,9 @@
 # Articles
 
-### All vignettes
+### Articles
 
-- [country-level-npv-analysis](country_level_npv_analysis.md):
-- [download-scenarios](download-scenarios.md):
-- [inputs-and-outputs](inputs-and-outputs.md):
-- [pd-el-integration](pd-el-integration.md):
-- [PD & EL plot walkthrough](pd-el-viz-walkthrough.md):
-- [portfolio-analysis](portfolio-analysis.md):
-- [return-company-aggregated-results](return-company-aggregated-results.md):
-- [sensitivity-analysis](sensitivity-analysis.md):
-- [simple-portfolio-analysis](simple-portfolio-analysis.md):
+- [1. Getting started](getting-started.md):
+- [2. Inputs and outputs](inputs-and-outputs.md):
+- [3. Run on a portfolio](run-on-a-portfolio.md):
+- [4. PD & EL integration](pd-el-integration.md):
+- [5. Sensitivity analysis (bank-impact view)](sensitivity-analysis.md):

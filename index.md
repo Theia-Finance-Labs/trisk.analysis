@@ -1,6 +1,6 @@
 # trisk.analysis
 
-[![R-CMD-check](https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/Theia-Finance-Labs/trisk.analysis/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Theia-Finance-Labs/trisk.analysis/actions/workflows/R-CMD-check.yaml)
 
 The goal of trisk.analysis is to provide a tool that can be used to
 conduct what-if climate stress test analyses for financial institutions,
@@ -16,9 +16,7 @@ related links is available on
 - [trisk.analysis](#triskanalysis)
   - [Use the package](#use-the-package)
     - [Installation](#installation)
-    - [Input and output dataframes
-      columns](#input-and-output-dataframes-columns)
-    - [Scenarios data](#scenarios-data)
+    - [Reading path](#reading-path)
   - [Analyses](#analyses)
     - [Portfolio analysis](#portfolio-analysis)
     - [Sensitivity analysis](#sensitivity-analysis)
@@ -45,22 +43,33 @@ package in R.
     pak::pak("Theia-Finance-Labs/trisk.analysis")
     ```
 
-### Input and output dataframes columns
+### Reading path
 
-There are 4 input datasets (assets, scenarios, financial_features,
-ngfs_carbon_prices), and 3 output datasets (npv_results, pd_results,
-company_trajectories). The [Inputs and
-Outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html)
-describes their columns structure with a simple Trisk run, and the
-definitions of Trisk input parameters.
+The documentation is a five-step path, each article building on the
+previous one:
 
-### Scenarios data
-
-We provide consolidated scenarios data from publicly available sources.
-The [Download
-Scenarios](https://theia-finance-labs.github.io/trisk.analysis/articles/download-scenarios.html)
-vignette showcases how to access this data and explore available
-scenarios.
+1.  **[Getting
+    started](https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html)**
+    — install the package and run TRISK on the bundled toy portfolio in
+    a few lines.
+2.  **[Inputs and
+    outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html)**
+    — the 4 input datasets (assets, scenarios, financial_features,
+    ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results,
+    company_trajectories), their column structure, the Trisk parameter
+    definitions, and how to access the bundled scenarios.
+3.  **[Run on a
+    portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html)**
+    — match a portfolio to TRISK, compute PD / NPV / expected loss, and
+    visualise the results.
+4.  **[PD & EL
+    integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)**
+    — recombine TRISK shock PDs with your internal PDs and translate the
+    result into expected-loss basis points.
+5.  **[Sensitivity
+    analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)**
+    — sweep shock year, IAM, and ambition policy, each read through a
+    bank-impact lens.
 
 > **Note** Application of the code requires availability of custom data
 > for assets and financial data. Those inputs need to be pre-processed
@@ -77,12 +86,13 @@ An online version of those analyses is available on our apps portal
 A wrapper function called
 [`run_trisk_on_portfolio()`](reference/run_trisk_on_portfolio.md) can be
 used to run Trisk on a subset of the input assets dataframe, based on
-companies that can be matched between the two. Along with PDs and NPVs
-computed in the model the function also returns the expected loss,
-computed using the loss given default provided in the input portfolio.
-Plots to visualize the results are included in the package. Example
-showcased in the [Portfolio
-Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/portfolio-analysis.html)
+companies that can be matched between the two. It returns the model’s
+PDs and NPVs alongside the matched exposures; the derived metrics such
+as expected loss are then computed with
+[`compute_analysis_metrics()`](reference/compute_analysis_metrics.md)
+(which the plotting pipelines call for you). Plots to visualize the
+results are included in the package. Example showcased in the [Run on a
+portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html)
 vignette.
 
 ### Sensitivity analysis

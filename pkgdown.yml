@@ -2,13 +2,9 @@ pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  country_level_npv_analysis: country_level_npv_analysis.html
-  download-scenarios: download-scenarios.html
+  getting-started: getting-started.html
   inputs-and-outputs: inputs-and-outputs.html
   pd-el-integration: pd-el-integration.html
-  pd-el-viz-walkthrough: pd-el-viz-walkthrough.html
-  portfolio-analysis: portfolio-analysis.html
-  return-company-aggregated-results: return-company-aggregated-results.html
+  run-on-a-portfolio: run-on-a-portfolio.html
   sensitivity-analysis: sensitivity-analysis.html
-  simple-portfolio-analysis: simple-portfolio-analysis.html
-last_built: 2026-05-28T23:15Z
+last_built: 2026-05-29T06:52Z

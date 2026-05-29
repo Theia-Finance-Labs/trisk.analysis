@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>sensitivity-analysis • trisk.analysis</title>
+<title>5. Sensitivity analysis (bank-impact view) • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="sensitivity-analysis">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="5. Sensitivity analysis (bank-impact view)">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,15 +33,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">pd-el-integration</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-viz-walkthrough.html">PD &amp; EL plot walkthrough</a></li>
-    <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/simple-portfolio-analysis.html">simple-portfolio-analysis</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">4. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
   </ul>
 </li>
       </ul>
@@ -63,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>sensitivity-analysis</h1>
+      <h1>5. Sensitivity analysis (bank-impact view)</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/vignettes/sensitivity-analysis.Rmd" class="external-link"><code>vignettes/sensitivity-analysis.Rmd</code></a></small>
@@ -75,1158 +71,289 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">trisk.analysis</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">assets_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">scenarios_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ngfs_carbon_price_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="sensitivity-analysis">Sensitivity Analysis<a class="anchor" aria-label="anchor" href="#sensitivity-analysis"></a>
+<h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<div class="section level3">
-<h3 id="vary-parameters-over-entire-dataset">Vary parameters over entire dataset<a class="anchor" aria-label="anchor" href="#vary-parameters-over-entire-dataset"></a>
-</h3>
-<p>Sensitivity analysis allows us to explore how changes in parameters
-affect the results. In this example, we show how to vary the shock year
-in multiple TRISK runs when defining run parameters for sensitivity
-analysis.</p>
+<p>This vignette uses the bundled testdata to demonstrate sensitivity
+analysis in three dimensions (shock year, IAM, ambition policy), each
+read through a bank-impact lens: actual portfolio terms, EAD-weighted
+sector aggregation, and an integrated expected-loss bps callout at the
+end.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">assets_testdata</span>             <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,             package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">scenarios_testdata</span>          <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>,          package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ngfs_carbon_price_testdata</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>,  package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">portfolio_ids_internal_pd</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_ids_internal_pd_testdata.csv"</span>,</span>
+<span>                                                    package <span class="op">=</span> <span class="st">"trisk.analysis"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># TRISK echoes company_id back as a character key; read.csv infers integers for</span></span>
+<span><span class="co"># the bundled portfolio file. Coerce once here so every downstream join on</span></span>
+<span><span class="co"># `company_id` matches on type.</span></span>
+<span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Portfolio file must include an `internal_pd` column per exposure."</span> <span class="op">=</span></span>
+<span>    <span class="st">"internal_pd"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">)</span>,</span>
+<span>  <span class="st">"`internal_pd` values must be numeric in [0, 1]."</span> <span class="op">=</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span> <span class="op">&gt;=</span> <span class="fl">0</span> <span class="op">&amp;</span></span>
+<span>            <span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span> <span class="op">&lt;=</span> <span class="fl">1</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">portfolio_terms</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span>, <span class="st">"exposure_value_usd"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="why-sensitivity">Why sensitivity<a class="anchor" aria-label="anchor" href="#why-sensitivity"></a>
+</h2>
+<p>Climate stress-testing carries three layers of uncertainty a bank
+reader cares about: <strong>when</strong> the shock arrives
+(<code>shock_year</code>), <strong>whose model</strong> of the
+transition you trust (the IAM), and <strong>how ambitious</strong> the
+target scenario is. This vignette sweeps each one and reads the result
+as a change in the bank’s portfolio risk picture, not as an abstract
+model output.</p>
+</div>
+<div class="section level2">
+<h2 id="base-run">Base run<a class="anchor" aria-label="anchor" href="#base-run"></a>
+</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">run_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">run_params_base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>    baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>    target_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
-<span>    shock_year <span class="op">=</span> <span class="fl">2030</span> <span class="co"># SHOCK YEAR 1</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>    baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>    target_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
-<span>    shock_year <span class="op">=</span> <span class="fl">2025</span> <span class="co"># SHOCK YEAR 2</span></span>
+<span>    baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>    target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>    shock_year         <span class="op">=</span> <span class="fl">2030</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>The function <code><a href="../reference/run_trisk_sa.html">run_trisk_sa()</a></code> is used to run a sensitivity
-analysis with Trisk:</p>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_base</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span>  assets_data    <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params_base</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Starting the execution of 1 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 1 / 1 total runs"</span></span>
+<span><span class="co">#&gt; [1] "All runs completed."</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sa_base</span><span class="op">$</span><span class="va">pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run_id"</span>, <span class="st">"company_id"</span>, <span class="st">"sector"</span>, <span class="st">"term"</span>,</span>
+<span>                                 <span class="st">"pd_baseline"</span>, <span class="st">"pd_shock"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="44%">
+<col width="13%">
+<col width="9%">
+<col width="6%">
+<col width="14%">
+<col width="12%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">run_id</th>
+<th align="left">company_id</th>
+<th align="left">sector</th>
+<th align="right">term</th>
+<th align="right">pd_baseline</th>
+<th align="right">pd_shock</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">1</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">2</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000214</td>
+</tr>
+<tr class="odd">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">3</td>
+<td align="right">0.0000011</td>
+<td align="right">0.0004647</td>
+</tr>
+<tr class="even">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">4</td>
+<td align="right">0.0000237</td>
+<td align="right">0.0022474</td>
+</tr>
+<tr class="odd">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">5</td>
+<td align="right">0.0001502</td>
+<td align="right">0.0059057</td>
+</tr>
+<tr class="even">
+<td align="left">45274b46-a45b-45bf-89d0-cdb7a6d5dc32</td>
+<td align="left">101</td>
+<td align="left">Oil&amp;Gas</td>
+<td align="right">6</td>
+<td align="right">0.0005218</td>
+<td align="right">0.0113956</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="convention-actual-portfolio-terms-ead-weighted">Convention: actual portfolio terms, EAD-weighted<a class="anchor" aria-label="anchor" href="#convention-actual-portfolio-terms-ead-weighted"></a>
+</h2>
+<p>Every plot below evaluates PD at each firm’s contractual loan term
+(from <code>portfolio_terms</code>) and aggregates sector-level numbers
+as EAD-weighted means. This matches the convention used by the
+integration pipeline (<code>pipeline_crispy_pd_integration_bars</code>
+and siblings) and means the PDs and EL deltas read here are directly
+comparable to those in <a href="pd-el-integration.html"><code>pd-el-integration</code></a> — no
+per-section translation needed.</p>
+<blockquote>
+<p><strong>Caveat.</strong> If a portfolio row has a contractual term
+beyond TRISK’s Merton grid (sized to the analysis horizon since the ADO
+1943 term-grid fix in <code>trisk.model</code>), the term join silently
+drops it. The helper below emits a warning naming the dropped
+<code>(company_id, term)</code> pairs so the omission is visible.</p>
+</blockquote>
+</div>
+<div class="section level2">
+<h2 id="plot-helpers">Plot helpers<a class="anchor" aria-label="anchor" href="#plot-helpers"></a>
+</h2>
+<p>These three functions are defined inline in the vignette (not
+exported from the package). Each one takes the long-format PD output of
+<code><a href="../reference/run_trisk_sa.html">run_trisk_sa()</a></code>, attaches the bank’s contractual portfolio
+terms, and produces a comparison plot of PD difference
+(<code>pd_shock - pd_baseline</code>) per variant.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sensitivity_analysis_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
-<span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
-<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
-<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
-<span>  carbon_data <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
-<span>  run_params <span class="op">=</span> <span class="va">run_params</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Starting the execution of 2 total runs"</span></span>
-<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
-<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
-<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
-<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits.</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
-<span><span class="co">#&gt; -- Calculating market risk. </span></span>
-<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
-<span><span class="co">#&gt; [1] "Done 1 / 2 total runs"</span></span>
-<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
-<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
-<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
-<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits.</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
-<span><span class="co">#&gt; -- Calculating market risk. </span></span>
-<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
-<span><span class="co">#&gt; [1] "Done 2 / 2 total runs"</span></span>
-<span><span class="co">#&gt; [1] "All runs completed."</span></span></code></pre></div>
-<p>Contrary to a simple run of trisk with the “run_trisk_model”
-function, here it is possible to navigate through multiple Trisk runs in
-the same dataframe, using the run_id column as an index.</p>
-<p>Consolidated NPV results</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-run_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_shock
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_difference
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_change
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-51951.82
-</td>
-<td style="text-align:right;">
-13549.28
-</td>
-<td style="text-align:right;">
--38402.54
-</td>
-<td style="text-align:right;">
--0.7391952
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-102
-</td>
-<td style="text-align:left;">
-102
-</td>
-<td style="text-align:left;">
-Company 2
-</td>
-<td style="text-align:left;">
-Company 2
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-13648160.57
-</td>
-<td style="text-align:right;">
-4317747.56
-</td>
-<td style="text-align:right;">
--9330413.02
-</td>
-<td style="text-align:right;">
--0.6836389
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-103
-</td>
-<td style="text-align:left;">
-103
-</td>
-<td style="text-align:left;">
-Company 3
-</td>
-<td style="text-align:left;">
-Company 3
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-27724344.25
-</td>
-<td style="text-align:right;">
-12420187.12
-</td>
-<td style="text-align:right;">
--15304157.13
-</td>
-<td style="text-align:right;">
--0.5520115
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-104
-</td>
-<td style="text-align:left;">
-104
-</td>
-<td style="text-align:left;">
-Company 4
-</td>
-<td style="text-align:left;">
-Company 4
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-RenewablesCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-141635910.26
-</td>
-<td style="text-align:right;">
-202554984.40
-</td>
-<td style="text-align:right;">
-60919074.14
-</td>
-<td style="text-align:right;">
-0.4301104
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-105
-</td>
-<td style="text-align:left;">
-105
-</td>
-<td style="text-align:left;">
-Company 5
-</td>
-<td style="text-align:left;">
-Company 5
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-CoalCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-57418851.27
-</td>
-<td style="text-align:right;">
-11874146.56
-</td>
-<td style="text-align:right;">
--45544704.71
-</td>
-<td style="text-align:right;">
--0.7932013
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-105
-</td>
-<td style="text-align:left;">
-105
-</td>
-<td style="text-align:left;">
-Company 5
-</td>
-<td style="text-align:left;">
-Company 5
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-OilCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-6210907.85
-</td>
-<td style="text-align:right;">
-1416673.16
-</td>
-<td style="text-align:right;">
--4794234.69
-</td>
-<td style="text-align:right;">
--0.7719056
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Consolidated PD results</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-run_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-term
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_shock
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:right;">
-0.0000214
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0.0000011
-</td>
-<td style="text-align:right;">
-0.0004647
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.0000237
-</td>
-<td style="text-align:right;">
-0.0022474
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.0001502
-</td>
-<td style="text-align:right;">
-0.0059057
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0005218
-</td>
-<td style="text-align:right;">
-0.0113956
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Consolidated company trajectories</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-run_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-year
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-production_plan_company_technology
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-production_baseline_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-production_target_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-production_shock_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_profit_margin
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-debt_equity_ratio
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-volatility
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-scenario_price_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-price_shock_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_profits_baseline_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_profits_shock_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-discounted_net_profits_baseline_scenario
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-discounted_net_profits_shock_scenario
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2022
-</td>
-<td style="text-align:right;">
-5000
-</td>
-<td style="text-align:right;">
-5000
-</td>
-<td style="text-align:right;">
-5000.000
-</td>
-<td style="text-align:right;">
-5000
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.867116
-</td>
-<td style="text-align:right;">
-5.867116
-</td>
-<td style="text-align:right;">
-2239.895
-</td>
-<td style="text-align:right;">
-2239.895
-</td>
-<td style="text-align:right;">
-2239.895
-</td>
-<td style="text-align:right;">
-2239.895
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-5423
-</td>
-<td style="text-align:right;">
-5423
-</td>
-<td style="text-align:right;">
-5001.354
-</td>
-<td style="text-align:right;">
-5423
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.898569
-</td>
-<td style="text-align:right;">
-5.898569
-</td>
-<td style="text-align:right;">
-2442.414
-</td>
-<td style="text-align:right;">
-2442.414
-</td>
-<td style="text-align:right;">
-2282.630
-</td>
-<td style="text-align:right;">
-2282.630
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2024
-</td>
-<td style="text-align:right;">
-6200
-</td>
-<td style="text-align:right;">
-6200
-</td>
-<td style="text-align:right;">
-5002.708
-</td>
-<td style="text-align:right;">
-6200
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.930022
-</td>
-<td style="text-align:right;">
-5.930022
-</td>
-<td style="text-align:right;">
-2807.250
-</td>
-<td style="text-align:right;">
-2807.250
-</td>
-<td style="text-align:right;">
-2451.961
-</td>
-<td style="text-align:right;">
-2451.961
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2025
-</td>
-<td style="text-align:right;">
-7400
-</td>
-<td style="text-align:right;">
-7400
-</td>
-<td style="text-align:right;">
-5004.062
-</td>
-<td style="text-align:right;">
-7400
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.961475
-</td>
-<td style="text-align:right;">
-5.961475
-</td>
-<td style="text-align:right;">
-3368.360
-</td>
-<td style="text-align:right;">
-3368.360
-</td>
-<td style="text-align:right;">
-2749.585
-</td>
-<td style="text-align:right;">
-2749.585
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2026
-</td>
-<td style="text-align:right;">
-7800
-</td>
-<td style="text-align:right;">
-7800
-</td>
-<td style="text-align:right;">
-4862.620
-</td>
-<td style="text-align:right;">
-7800
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.945170
-</td>
-<td style="text-align:right;">
-5.945170
-</td>
-<td style="text-align:right;">
-3540.723
-</td>
-<td style="text-align:right;">
-3540.723
-</td>
-<td style="text-align:right;">
-2701.201
-</td>
-<td style="text-align:right;">
-2701.201
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:right;">
-2027
-</td>
-<td style="text-align:right;">
-8600
-</td>
-<td style="text-align:right;">
-8600
-</td>
-<td style="text-align:right;">
-4721.178
-</td>
-<td style="text-align:right;">
-8600
-</td>
-<td style="text-align:right;">
-0.0056224
-</td>
-<td style="text-align:right;">
-0.0763542
-</td>
-<td style="text-align:right;">
-0.1297317
-</td>
-<td style="text-align:right;">
-0.259323
-</td>
-<td style="text-align:right;">
-5.928866
-</td>
-<td style="text-align:right;">
-5.928866
-</td>
-<td style="text-align:right;">
-3893.168
-</td>
-<td style="text-align:right;">
-3893.168
-</td>
-<td style="text-align:right;">
-2775.775
-</td>
-<td style="text-align:right;">
-2775.775
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Consolidated params dataframe</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-baseline_scenario
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-target_scenario
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-scenario_geography
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-carbon_price_model
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-risk_free_rate
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-discount_rate
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-growth_rate
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-div_netprofit_prop_coef
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-shock_year
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-market_passthrough
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-run_id
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-NGFS2023GCAM_CP
-</td>
-<td style="text-align:left;">
-NGFS2023GCAM_NZ2050
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-no_carbon_tax
-</td>
-<td style="text-align:right;">
-0.02
-</td>
-<td style="text-align:right;">
-0.07
-</td>
-<td style="text-align:right;">
-0.03
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2030
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-10d37b0a-c86b-4f36-948a-5dbcc2454a09
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NGFS2023GCAM_CP
-</td>
-<td style="text-align:left;">
-NGFS2023GCAM_NZ2050
-</td>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:left;">
-no_carbon_tax
-</td>
-<td style="text-align:right;">
-0.02
-</td>
-<td style="text-align:right;">
-0.07
-</td>
-<td style="text-align:right;">
-0.03
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-2025
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-3d54f5af-9d57-4b6e-b8d1-884d109f0551
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level4">
-<h4 id="plot-results">Plot results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
-</h4>
-<p>Plot the sum of production trajectories, scaled in percentage of the
-first year value. The run_id identifies each run and can be found in the
-parameters dataframe.</p>
+<code class="sourceCode R"><span><span class="va">attach_portfolio_term</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sa_pd</span>, <span class="va">portfolio_terms</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">joined</span> <span class="op">&lt;-</span> <span class="va">sa_pd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">portfolio_terms</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">present</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">joined</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">n_dropped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">portfolio_terms</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">present</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">n_dropped</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">dropped</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html" class="external-link">anti_join</a></span><span class="op">(</span><span class="va">portfolio_terms</span>, <span class="va">present</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Dropped "</span>, <span class="va">n_dropped</span>, <span class="st">" portfolio row(s) whose term is outside the Merton grid: "</span>,</span>
+<span>            <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">dropped</span><span class="op">$</span><span class="va">company_id</span>, <span class="va">dropped</span><span class="op">$</span><span class="va">term</span>, sep <span class="op">=</span> <span class="st">"/term="</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>            call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">joined</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">label_by_variant</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sa_result</span>, <span class="va">label_fn</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">sa_result</span><span class="op">$</span><span class="va">pd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">sa_result</span><span class="op">$</span><span class="va">params</span>, by <span class="op">=</span> <span class="st">"run_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>variant <span class="op">=</span> <span class="fu">label_fn</span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">draw_pd_by_sector</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">labelled_pd</span>, <span class="va">portfolio_terms</span>, <span class="va">variant_name</span>,</span>
+<span>                              <span class="va">palette_values</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">agg</span> <span class="op">&lt;-</span> <span class="va">labelled_pd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">attach_portfolio_term</span><span class="op">(</span><span class="va">portfolio_terms</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pd_difference <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_shock</span> <span class="op">-</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_baseline</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">sector</span>, <span class="va">.data</span><span class="op">$</span><span class="va">variant</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>      pd_difference <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/weighted.mean.html" class="external-link">weighted.mean</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">pd_difference</span>,</span>
+<span>                                           w <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">exposure_value_usd</span>,</span>
+<span>                                           na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>      .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">agg</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">variant</span>,</span>
+<span>                                         y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_difference</span>,</span>
+<span>                                         fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">variant</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">sector</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>      trans  <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/transform_log.html" class="external-link">pseudo_log_trans</a></span><span class="op">(</span>sigma <span class="op">=</span> <span class="fl">1e-7</span><span class="op">)</span>,</span>
+<span>      labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent_format</a></span><span class="op">(</span>accuracy <span class="op">=</span> <span class="fl">0.0001</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">variant_name</span>, y <span class="op">=</span> <span class="st">"EAD-weighted PD difference (shock - baseline)"</span>,</span>
+<span>                  fill <span class="op">=</span> <span class="va">variant_name</span>,</span>
+<span>                  title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"PD sensitivity to"</span>, <span class="va">variant_name</span>, <span class="st">"by sector"</span><span class="op">)</span>,</span>
+<span>                  subtitle <span class="op">=</span> <span class="st">"Actual portfolio terms; EAD-weighted; pseudo-log y per sector"</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">palette_values</span><span class="op">)</span><span class="op">)</span> <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">palette_values</span><span class="op">)</span></span>
+<span>  <span class="va">p</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">draw_pd_by_exposure</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">labelled_pd</span>, <span class="va">portfolio_terms</span>, <span class="va">variant_name</span>,</span>
+<span>                                <span class="va">palette_values</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">agg</span> <span class="op">&lt;-</span> <span class="va">labelled_pd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">attach_portfolio_term</span><span class="op">(</span><span class="va">portfolio_terms</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>firm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">company_id</span>, <span class="va">.data</span><span class="op">$</span><span class="va">sector</span>, sep <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span>,</span>
+<span>                  pd_difference <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_shock</span> <span class="op">-</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_baseline</span><span class="op">)</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">agg</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">firm</span>,</span>
+<span>                                         y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">pd_difference</span>,</span>
+<span>                                         fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">variant</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">sector</span>, scales <span class="op">=</span> <span class="st">"free"</span>, space <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
+<span>      trans  <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/transform_log.html" class="external-link">pseudo_log_trans</a></span><span class="op">(</span>sigma <span class="op">=</span> <span class="fl">1e-7</span><span class="op">)</span>,</span>
+<span>      labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/percent_format.html" class="external-link">percent_format</a></span><span class="op">(</span>accuracy <span class="op">=</span> <span class="fl">0.0001</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Firm / sector"</span>, y <span class="op">=</span> <span class="st">"PD difference (shock - baseline)"</span>,</span>
+<span>                  fill <span class="op">=</span> <span class="va">variant_name</span>,</span>
+<span>                  title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Per-exposure PD sensitivity to"</span>, <span class="va">variant_name</span><span class="op">)</span>,</span>
+<span>                  subtitle <span class="op">=</span> <span class="st">"Actual portfolio terms; pseudo-log y per sector"</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">palette_values</span><span class="op">)</span><span class="op">)</span> <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">palette_values</span><span class="op">)</span></span>
+<span>  <span class="va">p</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>A small palette shared across the three dimension sections so the
+same variant index gets the same colour everywhere:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_multi_trajectories.html">plot_multi_trajectories</a></span><span class="op">(</span><span class="va">sensitivity_analysis_results</span><span class="op">$</span><span class="va">trajectories</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">linetype</span> : <span style="color: #0000BB;">"Scenario"</span></span></span></code></pre></div>
-<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
+<code class="sourceCode R"><span><span class="va">TRAJ_PALETTE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#1b324f"</span>, <span class="st">"#00c082"</span>, <span class="st">"#ff9623"</span><span class="op">)</span>  <span class="co"># matches plot_multi_trajectories()</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level3">
-<h3 id="vary-parameters-over-a-single-or-a-group-of-countries">Vary parameters over a single or a group of countries<a class="anchor" aria-label="anchor" href="#vary-parameters-over-a-single-or-a-group-of-countries"></a>
-</h3>
-<p>You can also perform sensitivity analysis on a filtered subset of
-assets. This example filters the dataset by country, and then runs the
-analysis.</p>
+<div class="section level2">
+<h2 id="shock-year">Shock year<a class="anchor" aria-label="anchor" href="#shock-year"></a>
+</h2>
+<p>What happens to portfolio PD when the policy shock hits earlier or
+later? This section sweeps <code>shock_year</code> across 2026 / 2030 /
+2035, holding the scenario pair fixed at NGFS2023GCAM CP vs NZ2050.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run sensitivity analysis across multiple TRISK runs</span></span>
-<span><span class="va">sensitivity_analysis_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
-<span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<code class="sourceCode R"><span><span class="va">run_params_shockyear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2026</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2035</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_shockyear</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span>  assets_data    <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
 <span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
-<span>  carbon_data <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
-<span>  run_params <span class="op">=</span> <span class="va">run_params</span>,</span>
-<span>  country_iso2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span> <span class="co"># FILTER ASSETS ON COUNTRIES</span></span>
+<span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params_shockyear</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Starting the execution of 2 total runs"</span></span>
+<span><span class="co">#&gt; [1] "Starting the execution of 3 total runs"</span></span>
 <span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
@@ -1236,7 +363,7 @@ analysis.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
-<span><span class="co">#&gt; [1] "Done 1 / 2 total runs"</span></span>
+<span><span class="co">#&gt; [1] "Done 1 / 3 total runs"</span></span>
 <span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
 <span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
@@ -1246,9 +373,327 @@ analysis.</p>
 <span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk. </span></span>
-<span><span class="co">#&gt; [1] "Done 2 / 2 total runs"</span></span>
-<span><span class="co">#&gt; [1] "All runs completed."</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Done 2 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 3 / 3 total runs"</span></span>
+<span><span class="co">#&gt; [1] "All runs completed."</span></span>
+<span></span>
+<span><span class="va">pd_shockyear</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_shockyear</span>,</span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">shock_year</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2026</span>, <span class="fl">2030</span>, <span class="fl">2035</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_shockyear</span>, <span class="va">portfolio_terms</span>, <span class="st">"shock year"</span>,</span>
+<span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2026"</span>, <span class="st">"2030"</span>, <span class="st">"2035"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="768"></p>
+<div class="section level4">
+<h4 id="advanced-per-firm-view">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view"></a>
+</h4>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_shockyear</span>, <span class="va">portfolio_terms</span>, <span class="st">"shock year"</span>,</span>
+<span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2026"</span>, <span class="st">"2030"</span>, <span class="st">"2035"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="960"></p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="iam-integrated-assessment-model">IAM (integrated assessment model)<a class="anchor" aria-label="anchor" href="#iam-integrated-assessment-model"></a>
+</h2>
+<p>Same transition story, different model: NGFS2023 publishes its CP and
+NZ2050 scenarios under three IAMs — GCAM, REMIND, and MESSAGE. Bank
+readers who pick one IAM should know how their numbers move under the
+other two.</p>
+<blockquote>
+<p><strong>Scope of the bundled IAM/ambition data.</strong> NGFS2023
+only publishes the REMIND and MESSAGE models — and the B2DS / DT
+ambition variants used in the next section — for the <strong>Power
+sector</strong>, spanning <strong>2023–2050</strong>. The legacy
+multi-sector <code>NGFS2023GCAM_*</code> scenarios used in the sections
+above run 2022–2100 across Coal, Oil &amp; Gas, and Power. Because TRISK
+derives its analysis window from the scenario’s own year range, we scope
+the portfolio to that window before running these two sections — keeping
+the cross-variant comparison apples-to-apples on the bank’s power
+exposure.</p>
+</blockquote>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># This filter is YEAR scoping only: the scenario-derived analysis window starts</span></span>
+<span><span class="co"># at 2023 for these variants, and the model asserts every asset's production_year</span></span>
+<span><span class="co"># falls inside that window (it errors rather than trimming), so we drop the lone</span></span>
+<span><span class="co"># 2022 rows. It does NOT do sector scoping — assets_power still holds Coal and</span></span>
+<span><span class="co"># Oil &amp; Gas rows. The Power-only restriction happens automatically downstream:</span></span>
+<span><span class="co"># the model inner-joins assets to the scenario technologies, which are Power-only</span></span>
+<span><span class="co"># for these variants, so the other sectors drop out without error.</span></span>
+<span><span class="va">assets_power</span> <span class="op">&lt;-</span> <span class="va">assets_testdata</span><span class="op">[</span><span class="va">assets_testdata</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Scope the term table to the portfolio's Power exposure so the term-join</span></span>
+<span><span class="co"># warning flags only genuine term-grid drops, not the Coal / Oil &amp; Gas firms</span></span>
+<span><span class="co"># that these Power-only scenarios legitimately exclude.</span></span>
+<span><span class="va">power_ids</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span><span class="op">[</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">sector</span> <span class="op">==</span> <span class="st">"Power"</span><span class="op">]</span></span>
+<span><span class="va">portfolio_terms_power</span> <span class="op">&lt;-</span> <span class="va">portfolio_terms</span><span class="op">[</span><span class="va">portfolio_terms</span><span class="op">$</span><span class="va">company_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">power_ids</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="va">run_params_iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_REMIND_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_REMIND_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_MESSAGE_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_MESSAGE_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span>  assets_data    <span class="op">=</span> <span class="va">assets_power</span>,</span>
+<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params_iam</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Starting the execution of 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 1 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 2 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 3 / 3 total runs"</span></span>
+<span><span class="co">#&gt; [1] "All runs completed."</span></span>
+<span></span>
+<span><span class="va">pd_iam</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_iam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_([A-Z]+)_.*"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">baseline_scenario</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">iam</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_iam</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"IAM"</span>,</span>
+<span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="768"></p>
+<div class="section level4">
+<h4 id="advanced-per-firm-view-1">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view-1"></a>
+</h4>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_iam</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"IAM"</span>,</span>
+<span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="960"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="ambition-policy">Ambition policy<a class="anchor" aria-label="anchor" href="#ambition-policy"></a>
+</h2>
+<p>Same IAM (GCAM), different target stringency: how does the PD signal
+change across Net Zero 2050, Below 2°C, and Delayed Transition, each
+measured against Current Policies as the baseline?</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">run_params_ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_NZ2050"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_B2DS"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_DT"</span>,</span>
+<span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span>  assets_data    <span class="op">=</span> <span class="va">assets_power</span>,</span>
+<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params_ambition</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Starting the execution of 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 1 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 2 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 3 / 3 total runs"</span></span>
+<span><span class="co">#&gt; [1] "All runs completed."</span></span>
+<span></span>
+<span><span class="va">pd_ambition</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_ambition</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_GCAM_(.*)$"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">target_scenario</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ambition</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_ambition</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"ambition policy"</span>,</span>
+<span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="768"></p>
+<div class="section level4">
+<h4 id="advanced-per-firm-view-2">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view-2"></a>
+</h4>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_ambition</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"ambition policy"</span>,</span>
+<span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
+<span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sensitivity-analysis_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="960"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="what-this-means-for-the-bank">What this means for the bank<a class="anchor" aria-label="anchor" href="#what-this-means-for-the-bank"></a>
+</h2>
+<p>The previous sections show how raw PD shifts under different design
+choices. The bank-impact question is: how does that translate into
+expected-loss basis points on the actual portfolio? We pick one variant
+(<code>shock_year = 2030</code>, NGFS2023GCAM CP vs NZ2050, Global — the
+base run) and walk it through the integration pipeline, ending with the
+EL bps KPI used elsewhere in the package.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
+<span>  assets_data       <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<span>  scenarios_data    <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data    <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data       <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  portfolio_data    <span class="op">=</span> <span class="va">portfolio_ids_internal_pd</span>,</span>
+<span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>  target_scenario   <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk.</span></span>
+<span><span class="va">analysis_data_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">internal_pd_lookup</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_pd"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
+<span>  <span class="va">analysis_data_el</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  <span class="va">internal_pd_lookup</span>,</span>
+<span>  by <span class="op">=</span> <span class="st">"company_id"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_el</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">exposure_value_usd</span> <span class="op">*</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">loss_given_default</span> <span class="op">*</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_pd</span></span>
+<span></span>
+<span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
+<span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_kpi_table.html">pipeline_crispy_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;">
+Total Exposure (USD)
+</th>
+<th style="text-align:right;">
+Total Internal EL
+</th>
+<th style="text-align:right;">
+Total Adjusted EL
+</th>
+<th style="text-align:right;">
+EL Adjustment
+</th>
+<th style="text-align:right;">
+Adjusted EL (bps)
+</th>
+</tr></thead>
+<tbody><tr>
+<td style="text-align:right;">
+21.06M
+</td>
+<td style="text-align:right;">
+318.1K
+</td>
+<td style="text-align:right;">
+527.8K
+</td>
+<td style="text-align:right;">
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">209.7K</span>
+</td>
+<td style="text-align:right;">
+250.6 bps
+</td>
+</tr></tbody>
+</table>
+<p>Read the EL bps delta as the bank-impact summary of this one variant.
+The sensitivity sections above tell you how that number would move if
+you chose a different shock year, IAM, or ambition tier. For deeper plot
+references and the full methodology, see <a href="pd-el-integration.html"><code>pd-el-integration</code></a>.</p>
+</div>
+<div class="section level2">
+<h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
+</h2>
+<ul>
+<li>
+<a href="getting-started.html"><code>getting-started</code></a> —
+the reading-path entry point.</li>
+<li>
+<a href="run-on-a-portfolio.html"><code>run-on-a-portfolio</code></a> — how
+the underlying TRISK runs that feed this analysis are produced.</li>
+<li>
+<a href="pd-el-integration.html"><code>pd-el-integration</code></a>
+— the full PD/EL integration methodology and the EL bps KPI surfaced in
+the closing section.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

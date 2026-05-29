@@ -1,14 +1,50 @@
-# inputs-and-outputs
+# 2. Inputs and outputs
 
 ``` r
 
 library(trisk.analysis)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 library(magrittr)
 ```
 
-## Input datasets
+## Overview
 
-Load the internal datasets
+This vignette is the reference for *what TRISK consumes and what it
+produces*. TRISK is a climate transition stress test: it compares each
+company’s value and default risk under a baseline scenario against a
+more ambitious (shock) scenario, so a credit analyst can see how a
+low-carbon transition reprices a book of counterparties. To run it you
+supply four reference datasets plus the model parameters; you get back
+three result tables (NPV, PD, and company trajectories). The sections
+below enumerate each input schema, show how to obtain production inputs,
+run a minimal example on the bundled test data, and explain how to read
+every output column.
+
+## Inputs
+
+TRISK requires four reference datasets, all shipped as test data inside
+`trisk.model`. In production you swap these for the downloaded inputs
+(see *Obtaining inputs* below) and for your own portfolio file (a list
+of `company_id`s you hold exposure to, used downstream to filter
+results).
+
+| Input | Argument | Grain | Purpose |
+|----|----|----|----|
+| Assets | `assets_data` | company / asset / year | Physical production capacity and emissions |
+| Scenarios | `scenarios_data` | scenario / sector / technology / year | Price and production pathways per climate scenario |
+| Financial features | `financial_data` | company | Starting PD and balance-sheet ratios |
+| NGFS carbon price | `carbon_data` | model / scenario / year | Optional carbon tax trajectories |
+| Portfolio | (downstream) | company | The counterparties you hold; filters results |
+
+Load the bundled test datasets:
 
 ``` r
 
@@ -18,29 +54,19 @@ financial_features_testdata <- read.csv(system.file("testdata", "financial_featu
 ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
 ```
 
-#### Assets Test Data
+### Assets
 
-This dataset contains data about company assets, including production,
-technology, and geographical details.
+Company production assets: capacity, technology, sector and location.
+This is the physical exposure TRISK reprices.
 
-##### Data Description
-
-The `assets_testdata` dataset includes the following columns:
-
-- `company_id`: Unique identifier for the company.
-- `company_name`: Name of the company.
-- `asset_id`: Unique identifier for the asset.
-- `country_iso2`: ISO 3166-1 alpha-2 code for the country.
-- `asset_name`: Name of the asset.
-- `production_year`: Year of production data.
-- `emission_factor`: Emissions from production.
-- `technology`: Type of technology used.
-- `sector`: Production sector.
-- `capacity`: Asset capacity.
-- `capacity_factor`: Asset utilization percentage.
-- `production_unit`: Unit for production.
-
-##### Data Structure
+- `company_id`, `company_name`: company identifiers.
+- `asset_id`, `asset_name`: asset identifiers.
+- `country_iso2`: ISO 3166-1 alpha-2 country code.
+- `production_year`: year of the production record.
+- `emission_factor`: emissions per unit of production.
+- `technology`, `sector`: technology and production sector.
+- `capacity`, `capacity_factor`: installed capacity and utilisation.
+- `production_unit`: unit of production.
 
 ``` r
 
@@ -60,8 +86,6 @@ str(assets_testdata)
 #>  $ production_unit: chr  "GJ" "GJ" "GJ" "GJ" ...
 ```
 
-##### Sample Data
-
 | company_id | company_name | asset_id | country_iso2 | asset_name | production_year | emission_factor | technology | sector | capacity | capacity_factor | production_unit |
 |---:|:---|---:|:---|:---|---:|---:|:---|:---|---:|---:|:---|
 | 101 | Company 1 | 101 | DE | Company 1 | 2022 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.5813953 | GJ |
@@ -71,121 +95,26 @@ str(assets_testdata)
 | 101 | Company 1 | 101 | DE | Company 1 | 2026 | 0.0620259 | Gas | Oil&Gas | 8600 | 0.9069767 | GJ |
 | 101 | Company 1 | 101 | DE | Company 1 | 2027 | 0.0620259 | Gas | Oil&Gas | 8600 | 1.0000000 | GJ |
 
-------------------------------------------------------------------------
+### Scenarios
 
-#### Financial Features Test Data
+Price and production pathways per climate scenario. Each TRISK run picks
+one baseline and one target scenario from this table.
 
-This dataset contains financial metrics necessary for calculating stress
-test outputs.
-
-##### Data Description
-
-The `financial_features_testdata` dataset includes the following
-columns:
-
-- `company_id`: Unique identifier for the company.
-- `pd`: Probability of default for the company.
-- `net_profit_margin`: Net profit margin for the company.
-- `debt_equity_ratio`: Debt to equity ratio.
-- `volatility`: Volatility of the company’s asset values.
-
-##### Data Structure
-
-``` r
-
-str(financial_features_testdata)
-#> 'data.frame':    5 obs. of  5 variables:
-#>  $ company_id       : int  101 103 105 104 102
-#>  $ pd               : num  0.00562 0.00398 0.00246 0.00298 0.00365
-#>  $ net_profit_margin: num  0.0764 0.0717 0.0539 0.0539 0.1058
-#>  $ debt_equity_ratio: num  0.13 0.128 0.119 0.11 0.104
-#>  $ volatility       : num  0.259 0.251 0.236 0.251 0.317
-```
-
-##### Sample Data
-
-| company_id |        pd | net_profit_margin | debt_equity_ratio | volatility |
-|-----------:|----------:|------------------:|------------------:|-----------:|
-|        101 | 0.0056224 |         0.0763542 |         0.1297317 |  0.2593230 |
-|        103 | 0.0039782 |         0.0716949 |         0.1277164 |  0.2513500 |
-|        105 | 0.0024568 |         0.0539341 |         0.1194000 |  0.2360043 |
-|        104 | 0.0029792 |         0.0539341 |         0.1097633 |  0.2513500 |
-|        102 | 0.0036483 |         0.1057878 |         0.1044025 |  0.3167116 |
-
-------------------------------------------------------------------------
-
-#### NGFS Carbon Price Test Data
-
-This dataset provides carbon pricing data used in the stress test
-scenarios.
-
-##### Data Description
-
-The `ngfs_carbon_price_testdata` dataset includes the following columns:
-
-- `year`: Year of the carbon price.
-- `model`: Model used to generate the carbon price.
-- `scenario`: Scenario name.
-- `scenario_geography`: Geographic region for the scenario.
-- `variable`: The variable measured (e.g., carbon price).
-- `unit`: Unit of the variable.
-- `carbon_tax`: The amount of carbon tax applied in the scenario.
-
-##### Data Structure
-
-``` r
-
-str(ngfs_carbon_price_testdata)
-#> 'data.frame':    1376 obs. of  7 variables:
-#>  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...
-#>  $ model             : chr  "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" ...
-#>  $ scenario          : chr  "B2DS" "B2DS" "B2DS" "B2DS" ...
-#>  $ scenario_geography: chr  "Global" "Global" "Global" "Global" ...
-#>  $ variable          : chr  "Price|Carbon" "Price|Carbon" "Price|Carbon" "Price|Carbon" ...
-#>  $ unit              : chr  "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" ...
-#>  $ carbon_tax        : num  0 0 0 0 0 0 0 0 0 0 ...
-```
-
-##### Sample Data
-
-| year | model | scenario | scenario_geography | variable | unit | carbon_tax |
-|---:|:---|:---|:---|:---|:---|---:|
-| 2015 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-| 2016 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-| 2017 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-| 2018 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-| 2019 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-| 2020 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
-
-------------------------------------------------------------------------
-
-#### Scenarios Test Data
-
-This dataset contains scenario-specific data including price paths,
-capacity factors, and other relevant information.
-
-##### Data Description
-
-The `scenarios_testdata` dataset includes the following columns:
-
-- `scenario_geography`: Region relevant to the scenario.
-- `scenario`: Scenario name.
-- `scenario_pathway`: Specific pathway for the scenario.
-- `scenario_type`: Type of scenario (e.g., baseline, shock).
-- `sector`: Sector of production.
-- `technology`: Type of technology.
-- `scenario_year`: Year of the scenario data.
-- `scenario_price`: Price in the scenario.
-- `price_unit`: Unit for the price.
-- `pathway_unit`: Unit of the pathway.
-- `technology_type`: Type of technology involved (carbon or renewable).
-
-##### Data Structure
+- `scenario_geography`: region the pathway applies to.
+- `scenario`, `scenario_pathway`, `scenario_type`: scenario name,
+  pathway and type (baseline or shock).
+- `sector`, `technology`, `technology_type`: technology classification
+  (carbon or renewable).
+- `scenario_year`: year of the pathway record.
+- `scenario_price`, `price_unit`, `pathway_unit`: price and units.
+- `scenario_capacity_factor`, `country_iso2_list`, `scenario_provider`:
+  capacity factor, the countries the geography aggregates, and the
+  IAM/source that produced the pathway.
 
 ``` r
 
 str(scenarios_testdata)
-#> 'data.frame':    1422 obs. of  14 variables:
+#> 'data.frame':    2766 obs. of  14 variables:
 #>  $ scenario                : chr  "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" "NGFS2023GCAM_CP" ...
 #>  $ scenario_type           : chr  "baseline" "baseline" "baseline" "baseline" ...
 #>  $ scenario_geography      : chr  "Global" "Global" "Global" "Global" ...
@@ -201,8 +130,6 @@ str(scenarios_testdata)
 #>  $ country_iso2_list       : logi  NA NA NA NA NA NA ...
 #>  $ scenario_provider       : chr  "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" "NGFS2023GCAM" ...
 ```
-
-##### Sample Data
 
 | scenario | scenario_type | scenario_geography | sector | technology | scenario_year | price_unit | scenario_price | pathway_unit | scenario_pathway | technology_type | scenario_capacity_factor | country_iso2_list | scenario_provider |
 |:---|:---|:---|:---|:---|---:|:---|---:|:---|---:|:---|---:|:---|:---|
@@ -257,33 +184,137 @@ str(scenarios_testdata)
 | NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2070 | \$/tonnes | 62.01973 | EJ/yr | 157.1612 | carbontech | 1 | NA | NGFS2023GCAM |
 | NGFS2023GCAM_CP | baseline | Global | Coal | Coal | 2071 | \$/tonnes | 61.87448 | EJ/yr | 156.1628 | carbontech | 1 | NA | NGFS2023GCAM |
 
-## Trisk run
+### Financial features
 
-#### Parameters
+Per-company starting financials. The `pd` here is the pre-stress
+probability of default that TRISK shocks.
 
-Trisk takes several parameters in input, allowing to adjust the model’s
-assumptions.
+- `company_id`: company identifier.
+- `pd`: starting probability of default.
+- `net_profit_margin`, `debt_equity_ratio`, `volatility`: balance-sheet
+  inputs to the valuation and Merton PD model.
 
-- `baseline_scenario`: String specifying the name of the baseline
-  scenario.
-- `target_scenario`: String specifying the name of the shock scenario.
-- `scenario_geography`: Character vector indicating which geographical
-  region(s) to calculate results for.
-- `carbon_price_model`: Character vector specifying which NGFS model to
-  use for carbon prices.
-- `risk_free_rate`: Numeric value for the risk-free interest rate.
-- `discount_rate`: Numeric value for the discount rate of dividends per
-  year in the DCF.
-- `growth_rate`: Numeric value for the terminal growth rate of profits
-  beyond the final year in the DCF.
-- `div_netprofit_prop_coef`: Numeric coefficient determining how
-  strongly future dividends propagate to company value.
-- `shock_year`: Numeric value specifying the year when the shock is
-  applied.
-- `market_passthrough`: Numeric value representing the firm’s ability to
-  pass carbon tax onto the consumer.
+``` r
 
-Those parameters have an impact on trajectories
+str(financial_features_testdata)
+#> 'data.frame':    5 obs. of  5 variables:
+#>  $ company_id       : int  101 103 105 104 102
+#>  $ pd               : num  0.00562 0.00398 0.00246 0.00298 0.00365
+#>  $ net_profit_margin: num  0.0764 0.0717 0.0539 0.0539 0.1058
+#>  $ debt_equity_ratio: num  0.13 0.128 0.119 0.11 0.104
+#>  $ volatility       : num  0.259 0.251 0.236 0.251 0.317
+```
+
+| company_id |        pd | net_profit_margin | debt_equity_ratio | volatility |
+|-----------:|----------:|------------------:|------------------:|-----------:|
+|        101 | 0.0056224 |         0.0763542 |         0.1297317 |  0.2593230 |
+|        103 | 0.0039782 |         0.0716949 |         0.1277164 |  0.2513500 |
+|        105 | 0.0024568 |         0.0539341 |         0.1194000 |  0.2360043 |
+|        104 | 0.0029792 |         0.0539341 |         0.1097633 |  0.2513500 |
+|        102 | 0.0036483 |         0.1057878 |         0.1044025 |  0.3167116 |
+
+### NGFS carbon price
+
+Optional carbon tax trajectories applied to company profits. Used only
+when you select a `carbon_price_model` other than `no_carbon_tax`.
+
+- `year`, `model`, `scenario`: carbon price record keys.
+- `scenario_geography`, `variable`, `unit`: region and units.
+- `carbon_tax`: tax amount per ton of CO2.
+
+``` r
+
+str(ngfs_carbon_price_testdata)
+#> 'data.frame':    1376 obs. of  7 variables:
+#>  $ year              : int  2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 ...
+#>  $ model             : chr  "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" "GCAM 5.3+ NGFS" ...
+#>  $ scenario          : chr  "B2DS" "B2DS" "B2DS" "B2DS" ...
+#>  $ scenario_geography: chr  "Global" "Global" "Global" "Global" ...
+#>  $ variable          : chr  "Price|Carbon" "Price|Carbon" "Price|Carbon" "Price|Carbon" ...
+#>  $ unit              : chr  "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" "US$2010/t CO2" ...
+#>  $ carbon_tax        : num  0 0 0 0 0 0 0 0 0 0 ...
+```
+
+| year | model | scenario | scenario_geography | variable | unit | carbon_tax |
+|---:|:---|:---|:---|:---|:---|---:|
+| 2015 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2016 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2017 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2018 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2019 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+| 2020 | GCAM 5.3+ NGFS | B2DS | Global | Price&#124;Carbon | US\$2010/t CO2 | 0 |
+
+### Obtaining inputs
+
+The test data above is small and fixed. For real analysis, download the
+full production inputs (assets, scenarios, financial features and carbon
+prices) from the public endpoint:
+
+``` r
+
+print(
+  paste0(trisk.analysis:::TRISK_DATA_INPUT_ENDPOINT, "/", trisk.analysis:::TRISK_DATA_S3_PREFIX)
+)
+#> [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"
+```
+
+[`download_trisk_inputs()`](../reference/download_trisk_inputs.md)
+writes the four CSV files to a folder of your choice (skipped here so
+the vignette has no network dependency):
+
+``` r
+
+trisk_inputs_folder <- file.path(".", "trisk_inputs")
+if (!is_CRAN) {
+  download_trisk_inputs(local_save_folder = trisk_inputs_folder, skip_confirmation = TRUE)
+}
+#> Download completed.
+#> [1] TRUE
+```
+
+Once downloaded you read the CSVs the same way as the test data. The
+production `scenarios.csv` covers many more scenarios than the bundled
+sample: six providers (NGFS, WEO, IPR, Oxford, GECO and the Mission
+Possible Partnership for steel), each with one or more data vintages.
+
+Scenario names encode provider, vintage and scenario,
+e.g. `WEO2023_STEPS` is the IEA World Energy Outlook 2023 “Stated
+Policies” baseline; `NGFS2023GCAM_NZ2050` is the NGFS 2023 “Net Zero
+2050” target run on the GCAM integrated-assessment model. As a rule,
+pick the baseline and target from the *same provider*.
+
+The bundled scenarios already expose the valid baseline/target pairings
+via
+[`get_available_parameters()`](../reference/get_available_parameters.md)
+(run here on the test data so it needs no network):
+
+``` r
+
+available_parameters <- get_available_parameters(scenarios_testdata)
+```
+
+| scenario_provider | scenario_geography | baseline_scenario | target_scenario |
+|:---|:---|:---|:---|
+| NGFS2023GCAM | Global | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| NGFS2023_GCAM | Global | NGFS2023_GCAM_CP | NGFS2023_GCAM_B2DS |
+| NGFS2023_GCAM | Global | NGFS2023_GCAM_CP | NGFS2023_GCAM_DT |
+| NGFS2023_GCAM | Global | NGFS2023_GCAM_CP | NGFS2023_GCAM_NZ2050 |
+| NGFS2023_MESSAGE | Global | NGFS2023_MESSAGE_CP | NGFS2023_MESSAGE_NZ2050 |
+| NGFS2023_REMIND | Global | NGFS2023_REMIND_CP | NGFS2023_REMIND_NZ2050 |
+
+When choosing a scenario consider: data vintage (newer is usually more
+relevant), geography coverage (NGFS GCAM offers sub-global regions), the
+target’s ambition level (e.g. NGFS B2DS below 2 degrees vs NZ2050 net
+zero), and narrative — some NGFS scenarios such as “LD” (Low Demand)
+reach net zero through demand assumptions rather than policy alone. See
+<https://www.ngfs.net/en> for narrative detail.
+
+## Minimal example
+
+The smallest runnable stress test against the bundled data. The
+parameters fall into two groups: scenario selection (which pathways to
+compare and where) and financial assumptions (the DCF and PD model
+knobs).
 
 ``` r
 
@@ -291,82 +322,33 @@ baseline_scenario <- "NGFS2023GCAM_CP"
 target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
 shock_year <- 2030
-```
-
-Those parameters will have an impact on internal NPV and PD
-computations:
-
-``` r
 
 carbon_price_model <- "no_carbon_tax"
 risk_free_rate <- 0.02
 discount_rate <- 0.07
 growth_rate <- 0.03
 div_netprofit_prop_coef <- 1
-shock_year <- 2030
 market_passthrough <- 0
 ```
 
-#### Run and return aggregated result
+Parameter reference:
 
-The function [`run_trisk_agg()`](../reference/run_trisk_agg.md) runs the
-Trisk model using the provided input and returns the outputs, with NPVs
-aggregated per company over technology.
+- `baseline_scenario`, `target_scenario`: the status-quo and shock
+  scenario names.
+- `scenario_geography`: region(s) to compute. Choosing a region other
+  than `"Global"` filters assets to that region’s countries and uses
+  region-specific pathways.
+- `shock_year`: the year the transition shock is applied.
+- `carbon_price_model`: which carbon tax trajectory to apply
+  (`no_carbon_tax` to skip).
+- `market_passthrough`: share of the carbon tax the firm passes to
+  customers.
+- `risk_free_rate`, `discount_rate`, `growth_rate`,
+  `div_netprofit_prop_coef`: DCF and PD valuation assumptions.
 
-``` r
-
-st_results_agg <- run_trisk_agg(
-  assets_data = assets_testdata,
-  scenarios_data = scenarios_testdata,
-  financial_data = financial_features_testdata,
-  carbon_data = ngfs_carbon_price_testdata,
-  baseline_scenario = baseline_scenario,
-  target_scenario = target_scenario,
-  scenario_geography = scenario_geography,
-  shock_year = shock_year,
-  carbon_price_model = carbon_price_model,
-  risk_free_rate = risk_free_rate,
-  discount_rate = discount_rate,
-  growth_rate = growth_rate,
-  div_netprofit_prop_coef = div_netprofit_prop_coef,
-  market_passthrough = market_passthrough
-)
-#> -- Retyping Dataframes. 
-#> -- Processing Assets and Scenarios. 
-#> -- Transforming to Trisk model input. 
-#> -- Calculating baseline, target, and shock trajectories. 
-#> -- Applying zero-trajectory logic to production trajectories. 
-#> -- Calculating net profits.
-#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
-#> -- Calculating market risk. 
-#> -- Calculating credit risk.
-```
-
-Get result dataframes from function output
-
-``` r
-
-npv_results_agg <- st_results_agg$npv_results
-pd_results_agg <- st_results_agg$pd_results
-company_trajectories_agg <- st_results_agg$company_trajectories
-```
-
-NPV result sample (no country_iso2 column):
-
-| run_id | company_id | asset_id | company_name | asset_name | sector | technology | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
-|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| 46e0f84d-9773-4c82-84ed-066ebea371f5 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
-
-#### Run and return results with country granularity
-
-The function [`run_trisk_model()`](../reference/run_trisk_model.md) runs
-the Trisk model using the provided input and returns the outputs, with
-NPVs disaggregated per country.
+[`run_trisk_model()`](../reference/run_trisk_model.md) runs the model
+and returns results at the asset grain (one row per company / asset /
+country / technology):
 
 ``` r
 
@@ -395,47 +377,132 @@ st_results <- run_trisk_model(
 #> Joining with `by = join_by(asset_id, company_id, sector, technology)`
 #> -- Calculating market risk. 
 #> -- Calculating credit risk.
-```
-
-Get result dataframes from function output
-
-``` r
 
 npv_results <- st_results$npv_results
 pd_results <- st_results$pd_results
 company_trajectories <- st_results$company_trajectories
 ```
 
-## Output datasets
+### Company-aggregated results
 
-#### NPV results
+Since December 2024 TRISK runs at the company / country / technology
+grain, which improves NPV and trajectory accuracy but changes the output
+shape relative to older analyses.
+[`run_trisk_agg()`](../reference/run_trisk_agg.md) takes the same
+arguments and aggregates NPVs per company over country and technology,
+restoring the pre-2024 output structure for backward compatibility or
+simpler reporting. PD results are unaffected — they are already at the
+company/sector grain in both functions.
 
-##### Data Description
+``` r
 
-The `npv_results` dataset includes the following columns:
+st_results_agg <- run_trisk_agg(
+  assets_data = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data = ngfs_carbon_price_testdata,
+  baseline_scenario = baseline_scenario,
+  target_scenario = target_scenario,
+  scenario_geography = scenario_geography,
+  shock_year = shock_year
+)
+#> -- Retyping Dataframes. 
+#> -- Processing Assets and Scenarios. 
+#> -- Transforming to Trisk model input. 
+#> -- Calculating baseline, target, and shock trajectories. 
+#> -- Applying zero-trajectory logic to production trajectories. 
+#> -- Calculating net profits.
+#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
+#> -- Calculating market risk. 
+#> -- Calculating credit risk.
 
-- `run_id`: Unique identifier for the simulation run.
-- `company_id`: Unique identifier for the company.
-- `asset_id`: Unique identifier for the asset.
-- `company_name`: Name of the company.
-- `asset_name`: Name of the asset.
-- `country_iso2`: ISO 3166-1 alpha-2 code for the country.
-- `sector`: Sector in which the company operates (e.g., Oil&Gas, Coal,
-  Power).
-- `technology`: Type of technology used by the company (e.g., Gas,
-  CoalCap, RenewablesCap).
-- `net_present_value_baseline`: Net present value (NPV) under the
-  baseline scenario.
-- `net_present_value_shock`: Net present value (NPV) under the shock
-  scenario.
+npv_results_agg <- st_results_agg$npv_results
+```
 
-##### Data Structure
+The aggregated NPV table drops the `country_iso2` column:
+
+| run_id | company_id | asset_id | company_name | asset_name | sector | technology | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
+|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
+| be9901c5-837a-42d0-b881-d86cede92e1b | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| be9901c5-837a-42d0-b881-d86cede92e1b | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| be9901c5-837a-42d0-b881-d86cede92e1b | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| be9901c5-837a-42d0-b881-d86cede92e1b | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| be9901c5-837a-42d0-b881-d86cede92e1b | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| be9901c5-837a-42d0-b881-d86cede92e1b | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+
+### Adding a carbon tax
+
+To stress profits with a carbon tax, pick a `carbon_price_model` present
+in your carbon data and a `market_passthrough` between 0 and 1. The test
+data ships the `GCAM 5.3+ NGFS` trajectory plus several illustrative
+flat and increasing taxes:
+
+``` r
+
+ngfs_carbon_price_testdata %>%
+  distinct(model)
+#>                                  model
+#> 1                       GCAM 5.3+ NGFS
+#> 2                   flat_carbon_tax_50
+#> 3             increasing_carbon_tax_50
+#> 4 independent_increasing_carbon_tax_50
+#> 5                        no_carbon_tax
+```
+
+``` r
+
+st_results_tax <- run_trisk_model(
+  assets_data = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data = ngfs_carbon_price_testdata,
+  baseline_scenario = baseline_scenario,
+  target_scenario = target_scenario,
+  scenario_geography = scenario_geography,
+  carbon_price_model = "GCAM 5.3+ NGFS",
+  market_passthrough = 0.3
+)
+#> -- Retyping Dataframes. 
+#> -- Processing Assets and Scenarios. 
+#> -- Transforming to Trisk model input. 
+#> -- Calculating baseline, target, and shock trajectories. 
+#> -- Applying zero-trajectory logic to production trajectories. 
+#> -- Calculating net profits.
+#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
+#> -- Calculating market risk. 
+#> -- Calculating credit risk.
+```
+
+## Outputs and interpretation
+
+Each run returns a list of three tables. For a credit analyst the
+headline is the *difference* between baseline and shock columns: a large
+drop from baseline to shock NPV, or a jump from baseline to shock PD,
+flags a counterparty whose value or creditworthiness is sensitive to the
+transition.
+
+### NPV results
+
+Net present value of each asset under both scenarios. Compare
+`net_present_value_baseline` against `net_present_value_shock`: the gap
+is the transition value-at-risk for that asset.
+
+- `run_id`: identifier for the simulation run.
+- `company_id`, `asset_id`, `company_name`, `asset_name`: identifiers.
+- `country_iso2`: country of the asset (absent in
+  [`run_trisk_agg()`](../reference/run_trisk_agg.md) output).
+- `sector`, `technology`: classification (e.g. Oil&Gas, Coal, Power;
+  Gas, CoalCap, RenewablesCap).
+- `net_present_value_baseline`, `net_present_value_shock`: NPV under
+  each scenario.
+- `net_present_value_difference`, `net_present_value_change`: shock
+  minus baseline (absolute) and the relative change.
 
 ``` r
 
 str(npv_results)
 #> tibble [7 × 12] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                      : chr [1:7] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...
+#>  $ run_id                      : chr [1:7] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...
 #>  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...
 #>  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...
 #>  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...
@@ -449,39 +516,31 @@ str(npv_results)
 #>  $ net_present_value_change    : num [1:7] -0.739 -0.684 -0.552 0.43 -0.793 ...
 ```
 
-##### Sample Data
-
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
-#### PD results
+### PD results
 
-##### Data Description
+Probability of default per company and term, before and after the shock.
+The `pd_shock - pd_baseline` spread is the transition-driven increase in
+default risk to feed into credit models.
 
-The `pd_results` dataset includes the following columns:
-
-- `run_id`: Unique identifier for the simulation run.
-- `company_id`: Unique identifier for the company.
-- `company_name`: Name of the company.
-- `sector`: Sector in which the company operates (e.g., Oil&Gas, Coal).
-- `term`: Time period for the probability of default (PD) calculation.
-- `pd_baseline`: Probability of default (PD) under the baseline
-  scenario.
-- `pd_shock`: Probability of default (PD) under the shock scenario.
-
-##### Data Structure
+- `run_id`, `company_id`, `company_name`: identifiers.
+- `sector`: company sector.
+- `term`: horizon of the PD estimate.
+- `pd_baseline`, `pd_shock`: PD under each scenario.
 
 ``` r
 
 str(pd_results)
 #> tibble [145 × 7] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id      : chr [1:145] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...
+#>  $ run_id      : chr [1:145] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...
 #>  $ company_id  : chr [1:145] "101" "101" "101" "101" ...
 #>  $ company_name: chr [1:145] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ sector      : chr [1:145] "Oil&Gas" "Oil&Gas" "Oil&Gas" "Oil&Gas" ...
@@ -490,60 +549,44 @@ str(pd_results)
 #>  $ pd_shock    : num [1:145] 2.61e-09 2.14e-05 4.65e-04 2.25e-03 5.91e-03 ...
 ```
 
-##### Sample Data
-
 | run_id | company_id | company_name | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|:---|---:|---:|---:|
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
-#### Company trajectories results
+### Company trajectories
 
-##### Data Description
+The year-by-year detail behind the NPV and PD numbers: production,
+prices and profits along each pathway. Use this to audit *why* a
+company’s value moved — for example a coal asset whose shock-scenario
+production collapses while its baseline holds.
 
-The `company_trajectories` dataset includes the following columns:
-
-- `run_id`: Unique identifier for the simulation run.
-- `asset_id`: Unique identifier for the asset.
-- `asset_name`: Name of the asset.
-- `company_id`: Unique identifier for the company.
-- `company_name`: Name of the company.
-- `year`: Year of the scenario data.
-- `sector`: Sector in which the company operates (e.g., Oil&Gas, Coal).
-- `technology`: Type of technology used by the company.
-- `production_plan_company_technology`: Production plan for the
-  company’s technology.
-- `production_baseline_scenario`: Production output under the baseline
+- `run_id`, `asset_id`, `asset_name`, `company_id`, `company_name`,
+  `country_iso2`: identifiers.
+- `year`, `sector`, `technology`: time and classification.
+- `production_plan_company_technology`: the company’s own production
+  plan.
+- `production_baseline_scenario`, `production_target_scenario`,
+  `production_shock_scenario`: production along each pathway.
+- `pd`, `net_profit_margin`, `debt_equity_ratio`, `volatility`:
+  carried-through financial features.
+- `scenario_price_baseline`, `price_shock_scenario`: prices per
   scenario.
-- `production_target_scenario`: Production output under the target
-  scenario.
-- `production_shock_scenario`: Production output under the shock
-  scenario.
-- `pd`: Probability of default for the company.
-- `net_profit_margin`: Net profit margin for the company.
-- `debt_equity_ratio`: Debt to equity ratio for the company.
-- `volatility`: Volatility of the company’s asset values.
-- `scenario_price_baseline`: Price under the baseline scenario.
-- `price_shock_scenario`: Price under the shock scenario.
-- `net_profits_baseline_scenario`: Net profits under the baseline
-  scenario.
-- `net_profits_shock_scenario`: Net profits under the shock scenario.
-- `discounted_net_profits_baseline_scenario`: Discounted net profits
-  under the baseline scenario.
-- `discounted_net_profits_shock_scenario`: Discounted net profits under
-  the shock scenario.
-
-##### Data Structure
+- `net_profits_baseline_scenario`, `net_profits_shock_scenario`: net
+  profits per scenario.
+- `discounted_net_profits_baseline_scenario`,
+  `discounted_net_profits_shock_scenario`: discounted net profits
+  feeding the NPV.
 
 ``` r
 
 str(company_trajectories)
 #> tibble [210 × 23] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                                  : chr [1:210] "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" "ce1a5f22-bdbd-4fa3-b179-0985c78c9654" ...
+#>  $ run_id                                  : chr [1:210] "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" "50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc" ...
 #>  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...
 #>  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...
@@ -568,13 +611,33 @@ str(company_trajectories)
 #>  $ discounted_net_profits_shock_scenario   : num [1:210] 2240 2283 2452 2750 2701 ...
 ```
 
-##### Sample Data
-
 | run_id | asset_id | asset_name | company_id | company_name | country_iso2 | sector | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario | pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
-| ce1a5f22-bdbd-4fa3-b179-0985c78c9654 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2282.630 | 2282.630 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2451.961 | 2451.961 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2749.585 | 2749.585 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2701.201 | 2701.201 |
+| 50372011-38f4-4b9e-bd1a-2ea2ee0ad6bc | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2775.775 | 2775.775 |
+
+## Caveats
+
+- **Scenario coverage is uneven.** Some sectors (notably steel) have far
+  fewer scenarios than power, because of upstream data limitations.
+  Always pair a baseline and target from the same provider and vintage.
+- **Geography filtering is implicit.** Choosing a `scenario_geography`
+  other than `"Global"` silently drops assets outside that region’s
+  countries — check your asset count after filtering.
+- **Carbon tax requires matching data.** A `carbon_price_model` only
+  takes effect if that model exists in `carbon_data`; otherwise leave it
+  as `no_carbon_tax`.
+- **Test data is illustrative.** The bundled datasets exist to make
+  examples runnable, not to produce representative risk numbers — use
+  the downloaded production inputs for real analysis.
+
+## See also
+
+- `getting-started` — install and run your first stress test.
+- `run-on-a-portfolio` — apply TRISK to a portfolio of counterparties.
+- `pd-el-integration` — turn shocked PDs into expected-loss figures.
+- `sensitivity-analysis` — sweep parameters to test result stability.

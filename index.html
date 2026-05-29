@@ -35,15 +35,11 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
-    <li><a class="dropdown-item" href="articles/download-scenarios.html">download-scenarios</a></li>
-    <li><a class="dropdown-item" href="articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
-    <li><a class="dropdown-item" href="articles/pd-el-integration.html">pd-el-integration</a></li>
-    <li><a class="dropdown-item" href="articles/pd-el-viz-walkthrough.html">PD &amp; EL plot walkthrough</a></li>
-    <li><a class="dropdown-item" href="articles/portfolio-analysis.html">portfolio-analysis</a></li>
-    <li><a class="dropdown-item" href="articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
-    <li><a class="dropdown-item" href="articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
-    <li><a class="dropdown-item" href="articles/simple-portfolio-analysis.html">simple-portfolio-analysis</a></li>
+<li><a class="dropdown-item" href="articles/getting-started.html">1. Getting started</a></li>
+    <li><a class="dropdown-item" href="articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="articles/pd-el-integration.html">4. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
   </ul>
 </li>
       </ul>
@@ -59,7 +55,7 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p><!-- badges: start --> <a href="https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Theia-Finance-Labs/trisk.utils/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <!-- badges: end --></p>
+  <main id="main" class="col-md-9"><p><!-- badges: start --> <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Theia-Finance-Labs/trisk.analysis/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <!-- badges: end --></p>
 <div class="section level1">
 <div class="page-header"><h1 id="triskanalysis">trisk.analysis<a class="anchor" aria-label="anchor" href="#triskanalysis"></a>
 </h1></div>
@@ -72,8 +68,7 @@
 <a href="#use-the-package">Use the package</a>
 <ul>
 <li><a href="#installation">Installation</a></li>
-<li><a href="#input-and-output-dataframes-columns">Input and output dataframes columns</a></li>
-<li><a href="#scenarios-data">Scenarios data</a></li>
+<li><a href="#reading-path">Reading path</a></li>
 </ul>
 </li>
 <li>
@@ -108,14 +103,21 @@
 </ol>
 </div>
 <div class="section level3">
-<h3 id="input-and-output-dataframes-columns">Input and output dataframes columns<a class="anchor" aria-label="anchor" href="#input-and-output-dataframes-columns"></a>
+<h3 id="reading-path">Reading path<a class="anchor" aria-label="anchor" href="#reading-path"></a>
 </h3>
-<p>There are 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices), and 3 output datasets (npv_results, pd_results, company_trajectories). The <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html" class="external-link">Inputs and Outputs</a> describes their columns structure with a simple Trisk run, and the definitions of Trisk input parameters.</p>
-</div>
-<div class="section level3">
-<h3 id="scenarios-data">Scenarios data<a class="anchor" aria-label="anchor" href="#scenarios-data"></a>
-</h3>
-<p>We provide consolidated scenarios data from publicly available sources. The <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/download-scenarios.html" class="external-link">Download Scenarios</a> vignette showcases how to access this data and explore available scenarios.</p>
+<p>The documentation is a five-step path, each article building on the previous one:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html" class="external-link">Getting started</a></strong> — install the package and run TRISK on the bundled toy portfolio in a few lines.</li>
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html" class="external-link">Inputs and outputs</a></strong> — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, the Trisk parameter definitions, and how to access the bundled scenarios.</li>
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html" class="external-link">Run on a portfolio</a></strong> — match a portfolio to TRISK, compute PD / NPV / expected loss, and visualise the results.</li>
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html" class="external-link">PD &amp; EL integration</a></strong> — recombine TRISK shock PDs with your internal PDs and translate the result into expected-loss basis points.</li>
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html" class="external-link">Sensitivity analysis</a></strong> — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.</li>
+</ol>
 <blockquote>
 <p><strong>Note</strong> Application of the code requires availability of custom data for assets and financial data. Those inputs need to be pre-processed independantly, following the structure of the mock datasets presented in the vignettes.</p>
 </blockquote>
@@ -128,7 +130,7 @@
 <div class="section level3">
 <h3 id="portfolio-analysis">Portfolio analysis<a class="anchor" aria-label="anchor" href="#portfolio-analysis"></a>
 </h3>
-<p>A wrapper function called <code><a href="reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> can be used to run Trisk on a subset of the input assets dataframe, based on companies that can be matched between the two. Along with PDs and NPVs computed in the model the function also returns the expected loss, computed using the loss given default provided in the input portfolio. Plots to visualize the results are included in the package. Example showcased in the <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/portfolio-analysis.html" class="external-link">Portfolio Analysis</a> vignette.</p>
+<p>A wrapper function called <code><a href="reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> can be used to run Trisk on a subset of the input assets dataframe, based on companies that can be matched between the two. It returns the model’s PDs and NPVs alongside the matched exposures; the derived metrics such as expected loss are then computed with <code><a href="reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> (which the plotting pipelines call for you). Plots to visualize the results are included in the package. Example showcased in the <a href="https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html" class="external-link">Run on a portfolio</a> vignette.</p>
 </div>
 <div class="section level3">
 <h3 id="sensitivity-analysis">Sensitivity analysis<a class="anchor" aria-label="anchor" href="#sensitivity-analysis"></a>

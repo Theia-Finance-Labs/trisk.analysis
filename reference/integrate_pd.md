@@ -31,9 +31,11 @@ integrate_pd(
 
 - method:
 
-  One of "zscore", "absolute", "relative". Default "zscore" (Basel
-  IRB-aligned; zero-safe via clipping; recommended for sparse portfolios
-  where baseline PDs can underflow from Merton inputs).
+  One of "zscore", "absolute", "relative". Default "zscore"
+  (Merton-style probit recombination of default thresholds, not the
+  Basel IRB/Vasicek formula; zero-safe via clipping; recommended for
+  sparse portfolios where baseline PDs can underflow from Merton
+  inputs).
 
 - zscore_floor:
 

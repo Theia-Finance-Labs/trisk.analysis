@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>pd-el-integration • trisk.analysis</title>
+<title>4. PD &amp; EL integration • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="pd-el-integration">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="4. PD &amp; EL integration">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,15 +33,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/country_level_npv_analysis.html">country-level-npv-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/download-scenarios.html">download-scenarios</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">inputs-and-outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">pd-el-integration</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-viz-walkthrough.html">PD &amp; EL plot walkthrough</a></li>
-    <li><a class="dropdown-item" href="../articles/portfolio-analysis.html">portfolio-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/return-company-aggregated-results.html">return-company-aggregated-results</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">sensitivity-analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/simple-portfolio-analysis.html">simple-portfolio-analysis</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">4. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
   </ul>
 </li>
       </ul>
@@ -63,7 +59,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>pd-el-integration</h1>
+      <h1>4. PD &amp; EL integration</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/vignettes/pd-el-integration.Rmd" class="external-link"><code>vignettes/pd-el-integration.Rmd</code></a></small>
@@ -79,16 +75,102 @@
 <h2 id="pd-and-el-integration">PD and EL Integration<a class="anchor" aria-label="anchor" href="#pd-and-el-integration"></a>
 </h2>
 <div class="section level3">
-<h3 id="setup">1. Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h3>
-<p>Load the bundled testdata shipped with <code>trisk.model</code> and
-<code>trisk.analysis</code>. The portfolio file is
-<code>portfolio_ids_internal_pd_testdata.csv</code>, which augments the
-classic <code>portfolio_ids_testdata.csv</code> with an
-<code>internal_pd</code> column per exposure. That column is
-<strong>mandatory</strong> — integration is meaningless without the
-bank’s own PD to integrate TRISK’s shift into, so the setup fails loudly
-if it’s missing.</p>
+<p>TRISK recomputes probability of default (PD) from a Merton structural
+credit model under a climate-transition shock. That model PD is
+<strong>not</strong> directly comparable to the internal PD your
+institution already carries: levels differ by calibration, rating
+philosophy, and point-in-time vs through-the-cycle treatment. Only the
+<em>baseline-to-shock change</em> carries portable meaning.</p>
+<p><code><a href="../reference/integrate_pd.html">integrate_pd()</a></code> and <code><a href="../reference/integrate_el.html">integrate_el()</a></code> translate
+that TRISK shift onto your own internal scale, using one of three
+methods (<code>zscore</code>, the default; <code>absolute</code>;
+<code>relative</code>). This vignette covers the maths, a worked numeric
+example, the input schema, the seven pipeline plots/tables, and the
+limitations a credit-risk analyst should keep in mind.</p>
+<p>Audience: an analyst who already knows PD / EL / IFRS-9 but is new to
+TRISK.</p>
+</div>
+<div class="section level3">
+<h3 id="inputs">Inputs<a class="anchor" aria-label="anchor" href="#inputs"></a>
+</h3>
+<div class="section level4">
+<h4 id="portfolio-file-schema">Portfolio file schema<a class="anchor" aria-label="anchor" href="#portfolio-file-schema"></a>
+</h4>
+<p>Integration needs the bank’s own PD per exposure, so it runs on the
+augmented portfolio file
+<code>portfolio_ids_internal_pd_testdata.csv</code> — the classic
+<code>portfolio_ids_testdata.csv</code> plus a mandatory
+<code>internal_pd</code> column.</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="10%">
+<col width="64%">
+</colgroup>
+<thead><tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>company_id</code></td>
+<td>int</td>
+<td>Counterparty key; joins TRISK output to internal PD.</td>
+</tr>
+<tr class="even">
+<td><code>company_name</code></td>
+<td>chr</td>
+<td>Display label (may be <code>NA</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>sector</code></td>
+<td>chr</td>
+<td>TRISK sector (e.g. <code>Oil&amp;Gas</code>, <code>Coal</code>,
+<code>Power</code>).</td>
+</tr>
+<tr class="even">
+<td><code>technology</code></td>
+<td>chr</td>
+<td>Production technology within the sector.</td>
+</tr>
+<tr class="odd">
+<td><code>country_iso2</code></td>
+<td>chr</td>
+<td>ISO-2 country code of the asset.</td>
+</tr>
+<tr class="even">
+<td><code>exposure_value_usd</code></td>
+<td>dbl</td>
+<td>Exposure / outstanding, USD. Used as the EAD basis.</td>
+</tr>
+<tr class="odd">
+<td><code>term</code></td>
+<td>int</td>
+<td>Loan term in years.</td>
+</tr>
+<tr class="even">
+<td><code>loss_given_default</code></td>
+<td>dbl</td>
+<td>LGD as a fraction in <code>[0, 1]</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>internal_pd</code></td>
+<td>dbl</td>
+<td>Bank’s own PD per exposure, in <code>[0, 1]</code>.
+<strong>Mandatory.</strong>
+</td>
+</tr>
+</tbody>
+</table>
+<p><code>internal_pd</code> is mandatory because integration is
+meaningless without a bank number to integrate the TRISK shift into —
+the setup below fails loudly if it is missing or out of range. Internal
+EL is <strong>derived</strong>, not stored:
+<code>internal_el = EAD * LGD * internal_pd</code> (see the EL
+section).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,    package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">scenarios_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
@@ -106,14 +188,82 @@ if it’s missing.</p>
 <span>          <span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span> <span class="op">&lt;=</span> <span class="fl">1</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="run-trisk-on-the-portfolio">2. Run TRISK on the portfolio<a class="anchor" aria-label="anchor" href="#run-trisk-on-the-portfolio"></a>
-</h3>
-<p>The <code>internal_pd</code> column is carried alongside — TRISK only
-needs the standard portfolio schema, and we keep the internal PDs as a
-separate lookup table to feed into <code><a href="../reference/integrate_pd.html">integrate_pd()</a></code>
-later.</p>
+<div class="section level4">
+<h4 id="the-three-integration-methods">The three integration methods<a class="anchor" aria-label="anchor" href="#the-three-integration-methods"></a>
+</h4>
+<p>Let <code>p_int</code> be the internal PD, <code>p_base</code> the
+TRISK baseline PD, and <code>p_shock</code> the TRISK shock PD for a
+given exposure. Each method returns an <em>adjusted PD</em>
+<code>p_adj</code>, then <code><a href="../reference/integrate_pd.html">integrate_pd()</a></code> clips it to
+<code>[0, 1]</code>.</p>
+<p><strong>Absolute</strong> — add the raw PD shift onto the internal
+PD:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = p_{int} + (p_{shock} - p_{base}) </annotation></semantics></math></p>
+<p><strong>Relative</strong> — scale the internal PD by the proportional
+shift:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mrow><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo>≠</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = p_{int}\left(1 + \frac{p_{shock} - p_{base}}{p_{base}}\right),
+   \qquad (p_{base} \neq 0) </annotation></semantics></math></p>
+<p>When <code>p_base = 0</code> the relative method returns
+<code>p_int</code> unchanged — the shock signal is lost on zero-baseline
+rows. Prefer <code>absolute</code> or <code>zscore</code> there.</p>
+<p><strong>Z-score (default)</strong> — recombine the three PDs in
+normal-quantile (probit) space. With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
+the standard-normal CDF and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Phi^{-1}</annotation></semantics></math>
+its quantile function, and clipping each PD to
+<code>[zscore_floor, zscore_cap]</code> before the quantile:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><mi mathvariant="normal">Φ</mi><mspace width="-0.167em"></mspace><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = \Phi\!\Big(\Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock})
+   - \Phi^{-1}(p_{base})\Big) </annotation></semantics></math></p>
+<p>This is a <strong>probit / Merton-style recombination of default
+thresholds</strong>, not the Basel IRB risk-weight formula. It adds the
+TRISK shock-minus-baseline <em>distance-to-default</em> shift to the
+internal PD’s implied default threshold, then maps back to a
+probability. It is the right default because it is zero-safe (via
+clipping), it preserves the non-linear compression of PDs near the
+distribution tails, and it behaves sensibly on sparse portfolios where
+Merton inputs drive some baseline PDs to underflow. It does
+<strong>not</strong> invoke the Basel asset-correlation / Vasicek
+conditional-PD capital formula — there is no correlation parameter and
+no supervisory confidence level here.</p>
+<p>The <code>zscore_floor</code> (default <code>1e-4</code>) and
+<code>zscore_cap</code> (default <code>1 - 1e-4</code>) parameters bound
+the PDs before <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm()</a></code>, since <code>qnorm(0) = -Inf</code>
+and <code>qnorm(1) = +Inf</code> would otherwise propagate infinities.
+Widen the floor toward zero only if your internal PDs are reliably
+calibrated that low; tighten it to de-sensitise the tails.</p>
+</div>
+<div class="section level4">
+<h4 id="worked-example-one-row-through-z-score">Worked example: one row through z-score<a class="anchor" aria-label="anchor" href="#worked-example-one-row-through-z-score"></a>
+</h4>
+<p>Take a single Oil&amp;Gas exposure with
+<code>internal_pd = 0.025</code>, and suppose TRISK returns
+<code>pd_baseline = 0.020</code> and <code>pd_shock = 0.060</code> for
+it. None of the three values hit the clip bounds, so:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">z_int</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">0.025</span><span class="op">)</span>   <span class="co"># internal</span></span>
+<span><span class="va">z_base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">0.020</span><span class="op">)</span>   <span class="co"># TRISK baseline</span></span>
+<span><span class="va">z_shk</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="fl">0.060</span><span class="op">)</span>   <span class="co"># TRISK shock</span></span>
+<span><span class="va">p_adj</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">z_int</span> <span class="op">+</span> <span class="va">z_shk</span> <span class="op">-</span> <span class="va">z_base</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>z_internal <span class="op">=</span> <span class="va">z_int</span>, z_baseline <span class="op">=</span> <span class="va">z_base</span>, z_shock <span class="op">=</span> <span class="va">z_shk</span>,</span>
+<span>        adjusted_pd <span class="op">=</span> <span class="va">p_adj</span>, adjustment_pp <span class="op">=</span> <span class="op">(</span><span class="va">p_adj</span> <span class="op">-</span> <span class="fl">0.025</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    z_internal    z_baseline       z_shock   adjusted_pd adjustment_pp </span></span>
+<span><span class="co">#&gt;       -1.9600       -2.0537       -1.5548        0.0720        4.7009</span></span></code></pre></div>
+<p>The probit shift <code>z_shk - z_base</code> is positive (the shock
+raises model PD), so the recombined internal PD rises above 0.025 — a
+worsening, which the plots below render red.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
+</h3>
+<div class="section level4">
+<h4 id="run-trisk-on-the-portfolio">Run TRISK on the portfolio<a class="anchor" aria-label="anchor" href="#run-trisk-on-the-portfolio"></a>
+</h4>
+<p>The <code>internal_pd</code> column rides along on the standard
+portfolio schema; we keep it as a separate lookup table to feed into
+<code><a href="../reference/integrate_pd.html">integrate_pd()</a></code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
 <span>  assets_data       <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data    <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
@@ -121,7 +271,8 @@ later.</p>
 <span>  carbon_data       <span class="op">=</span> <span class="va">carbon_testdata</span>,</span>
 <span>  portfolio_data    <span class="op">=</span> <span class="va">portfolio_ids_internal_pd</span>,</span>
 <span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario   <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
+<span>  target_scenario   <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
 <span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
@@ -133,8 +284,11 @@ later.</p>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk.</span></span>
 <span></span>
-<span><span class="co"># The internal_pd lookup used throughout the rest of the vignette:</span></span>
-<span><span class="va">internal_pd_lookup</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_pd"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="co"># The internal_pd lookup used throughout the rest of the vignette. TRISK returns</span></span>
+<span><span class="co"># company_id as character, so coerce the lookup key to match and keep the join</span></span>
+<span><span class="co"># on like types (read.csv reads it as integer).</span></span>
+<span><span class="va">internal_pd_lookup</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_pd"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">internal_pd_lookup</span><span class="op">$</span><span class="va">company_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">internal_pd_lookup</span><span class="op">$</span><span class="va">company_id</span><span class="op">)</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -272,60 +426,20 @@ RenewablesCap
 </table>
 </div>
 </div>
-<div class="section level3">
-<h3 id="bank-risk-context-before-integration">3. Bank-risk context (before integration)<a class="anchor" aria-label="anchor" href="#bank-risk-context-before-integration"></a>
-</h3>
-<p>Before layering the integration methods on top, look at the raw
-bank-risk picture that TRISK produces. The four standard portfolio plots
-answer “what did the shock do?” at the equity (NPV, exposure) and credit
-(PD term, EL) levels, using the same <code>analysis_data</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(sector, term)`</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="672"></p>
-<p>Expected loss by sector (baseline vs shock), all sectors on a single
-row:</p>
+<div class="section level4">
+<h4 id="integrate-pd-three-methods">Integrate PD — three methods<a class="anchor" aria-label="anchor" href="#integrate-pd-three-methods"></a>
+</h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ad_el_preview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="va">el_by_sector</span> <span class="op">&lt;-</span> <span class="va">ad_el_preview</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">expected_loss_baseline</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    shock    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">expected_loss_shock</span>,    na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups  <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
-<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"baseline"</span>, <span class="st">"shock"</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"scenario"</span>, values_to <span class="op">=</span> <span class="st">"el"</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">el_by_sector</span>,</span>
-<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sector</span>, y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el</span>, fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>                    width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">1e-6</span>, suffix <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>baseline <span class="op">=</span> <span class="st">"#5D9324"</span>, shock <span class="op">=</span> <span class="st">"#F53D3F"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"Expected loss (USD, millions)"</span>,</span>
-<span>                fill <span class="op">=</span> <span class="st">"Scenario"</span>,</span>
-<span>                title <span class="op">=</span> <span class="st">"Expected loss by sector: baseline vs shock"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="768"></p>
-</div>
-<div class="section level3">
-<h3 id="why-integration-matters">4. Why integration matters<a class="anchor" aria-label="anchor" href="#why-integration-matters"></a>
-</h3>
-<p>TRISK recomputes PD from a Merton structural credit model. That PD
-level is not directly comparable to the internal PD your institution
-already uses; only the change from baseline to shock carries meaning.
-Three integration methods translate the TRISK shift into your internal
-PD scale.</p>
-</div>
-<div class="section level3">
-<h3 id="method-1---absolute">5. Method 1 - Absolute<a class="anchor" aria-label="anchor" href="#method-1---absolute"></a>
-</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_abs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
-<span>                           method      <span class="op">=</span> <span class="st">"absolute"</span><span class="op">)</span></span></code></pre></div>
+<span>                           method      <span class="op">=</span> <span class="st">"absolute"</span><span class="op">)</span></span>
+<span><span class="va">result_rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
+<span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
+<span>                           method      <span class="op">=</span> <span class="st">"relative"</span><span class="op">)</span></span>
+<span><span class="co"># zscore is the default; explicit here for clarity.</span></span>
+<span><span class="va">result_zs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
+<span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
+<span>                           method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -369,10 +483,10 @@ Oil&amp;Gas
 0.0004647
 </td>
 <td style="text-align:right;">
-0.0254636
+0.0603323
 </td>
 <td style="text-align:right;">
-0.0004636
+0.0353323
 </td>
 </tr>
 <tr>
@@ -415,10 +529,10 @@ Oil&amp;Gas
 0.0012524
 </td>
 <td style="text-align:right;">
-0.0311716
+0.1181008
 </td>
 <td style="text-align:right;">
-0.0011716
+0.0881008
 </td>
 </tr>
 <tr>
@@ -438,212 +552,166 @@ Power
 0.0000003
 </td>
 <td style="text-align:right;">
-0.0149970
+0.0150000
 </td>
 <td style="text-align:right;">
--0.0000030
+0.0000000
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</div>
-<div class="section level3">
-<h3 id="method-2---relative">6. Method 2 - Relative<a class="anchor" aria-label="anchor" href="#method-2---relative"></a>
-</h3>
-<blockquote>
-<p><strong>Note:</strong> when <code>pd_baseline = 0</code> the relative
-method returns the internal PD unchanged; the shock signal is lost on
-zero-baseline rows. Use <code>absolute</code> or <code>zscore</code> if
-this matters.</p>
-</blockquote>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
-<span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
-<span>                           method      <span class="op">=</span> <span class="st">"relative"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="method-3---z-score-basel-irb">7. Method 3 - Z-score (Basel IRB)<a class="anchor" aria-label="anchor" href="#method-3---z-score-basel-irb"></a>
-</h3>
-<p>The z-score method combines PDs in the normal-quantile space,
-preserving the non-linear relationship at distribution tails.
-Recommended for Basel IRB-aligned institutions.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_zs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
-<span>                          internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
-<span>                          method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="overriding-internal-pds-on-the-fly">8. Overriding internal PDs on the fly<a class="anchor" aria-label="anchor" href="#overriding-internal-pds-on-the-fly"></a>
-</h3>
-<p>If you want to stress-test with a hypothetical flat internal PD (for
-example, as a sanity check), build a vector or alternate lookup and pass
-it instead:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>You can also override internal PDs on the fly — pass a numeric vector
+of length <code>nrow(analysis_data)</code> (or an alternate lookup) for
+a sanity-check stress:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flat_internal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.03</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">result_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                              internal_pd <span class="op">=</span> <span class="va">flat_internal</span>,</span>
 <span>                              method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="method-comparison">9. Method comparison<a class="anchor" aria-label="anchor" href="#method-comparison"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
-<span>                                     internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="672"></p>
 <div class="section level4">
-<h4 id="advanced-firm-level-and-pseudo-log-scale">Advanced: firm-level and pseudo-log scale<a class="anchor" aria-label="anchor" href="#advanced-firm-level-and-pseudo-log-scale"></a>
+<h4 id="integrate-el">Integrate EL<a class="anchor" aria-label="anchor" href="#integrate-el"></a>
 </h4>
-<p>On sparse portfolios where many firms have baseline PDs near zero
-(Merton underflow) and a few have visible signal, the default
-sector-aggregate linear view can bunch everything against zero. Two
-arguments open up the per-firm picture:</p>
-<ul>
-<li>
-<code>granularity = "firm"</code> — one row per firm instead of an
-EAD-weighted sector aggregate. Reveals within-sector method
-divergence.</li>
-<li>
-<code>scale = "pseudo_log"</code> — x-axis uses
-<code>scales::pseudo_log_trans(sigma = 1e-5)</code>. Zero-safe and
-spreads values across many orders of magnitude.</li>
-</ul>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span></span>
-<span>  <span class="va">analysis_data</span>,</span>
-<span>  internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
-<span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
-<span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="768"></p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="magnitude-story-the-pd-waterfall">10. Magnitude story: the PD waterfall<a class="anchor" aria-label="anchor" href="#magnitude-story-the-pd-waterfall"></a>
-</h3>
-<p>The method comparison answers <em>which</em> integration method to
-pick. The waterfall answers a different question: <em>how much</em> does
-integration move PD, by sector? Three bars per sector — Internal, signed
-Adjustment, Adjusted — with the Adjustment fill flipped on sign (red
-worsens risk, green improves). Reading left-to-right gives the magnitude
-story at a glance.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="672"></p>
-</div>
-<div class="section level3">
-<h3 id="integration-charts">11. Integration charts<a class="anchor" aria-label="anchor" href="#integration-charts"></a>
-</h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
-<p>The same <code>granularity</code> + <code>scale</code> arguments work
-on the bar plot:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span></span>
-<span>  <span class="va">result_zs</span>,</span>
-<span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
-<span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="768"></p>
-</div>
-<div class="section level3">
-<h3 id="el-integration">12. EL integration<a class="anchor" aria-label="anchor" href="#el-integration"></a>
-</h3>
-<p><code><a href="../reference/integrate_el.html">integrate_el()</a></code> expects
-<code>expected_loss_baseline</code> and <code>expected_loss_shock</code>
-columns, which <code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> does not produce on
-its own. Call <code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> first to derive
-them as EAD * PD.</p>
-<p>For the bank’s internal EL, we derive it the same way:
-<code>EAD * LGD * internal_pd</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/integrate_el.html">integrate_el()</a></code> needs <code>expected_loss_baseline</code>
+/ <code>expected_loss_shock</code>, which
+<code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> does not emit on its own — call
+<code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> first to derive them as
+<code>EAD * PD</code>. For the bank’s internal EL we use the same
+identity: <code>internal_el = EAD * LGD * internal_pd</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_data_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
 <span>  <span class="va">analysis_data_el</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  <span class="va">internal_pd_lookup</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"company_id"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co"># Positive magnitude, matching the package-wide EL convention.</span></span>
 <span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_el</span> <span class="op">&lt;-</span></span>
-<span>  <span class="op">-</span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">exposure_value_usd</span> <span class="op">*</span></span>
-<span>   <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">loss_given_default</span> <span class="op">*</span></span>
-<span>   <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_pd</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">exposure_value_usd</span> <span class="op">*</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">loss_given_default</span> <span class="op">*</span></span>
+<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_pd</span></span>
 <span></span>
-<span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
-<span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co"># default method is "zscore" (Basel IRB-aligned, zero-safe via clipping)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_adjustment_bars.html">pipeline_crispy_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="672"></p>
-<div class="section level4">
-<h4 id="internal-el-vs-trisk-adjusted-el">Internal EL vs TRISK-Adjusted EL<a class="anchor" aria-label="anchor" href="#internal-el-vs-trisk-adjusted-el"></a>
-</h4>
-<p>Side-by-side comparison so the integration effect is visible per
-group. EL is negative by package convention (loss as negative number);
-<code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs()</a></code> is applied for display so the bars read as magnitudes
-of expected loss.</p>
-<p><strong>Per sector</strong> — all sectors on one row:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">el_compare_sector</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    `Internal EL`        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">internal_el</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    `TRISK-Adjusted EL`  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">trisk_adjusted_el</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups              <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
-<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Internal EL"</span>, <span class="st">"TRISK-Adjusted EL"</span><span class="op">)</span>,</span>
-<span>    names_to <span class="op">=</span> <span class="st">"el_type"</span>, values_to <span class="op">=</span> <span class="st">"el"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>el_abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">el</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">el_compare_sector</span>,</span>
-<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sector</span>, y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el_abs</span>, fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el_type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>                    width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">1e-6</span>, suffix <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Internal EL` <span class="op">=</span> <span class="st">"#BAB6B5"</span>,</span>
-<span>                                        `TRISK-Adjusted EL` <span class="op">=</span> <span class="st">"#AA2A2B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"|Expected loss| (USD, millions)"</span>,</span>
-<span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
-<span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by sector"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="768"></p>
-<p><strong>Per exposure</strong> — one group of two bars per
-firm/technology:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">el_compare_firm</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>firm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">company_id</span>, <span class="va">.data</span><span class="op">$</span><span class="va">technology</span>, sep <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"firm"</span>, <span class="st">"sector"</span>,</span>
-<span>                `Internal EL` <span class="op">=</span> <span class="st">"internal_el"</span>,</span>
-<span>                `TRISK-Adjusted EL` <span class="op">=</span> <span class="st">"trisk_adjusted_el"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
-<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Internal EL"</span>, <span class="st">"TRISK-Adjusted EL"</span><span class="op">)</span>,</span>
-<span>    names_to <span class="op">=</span> <span class="st">"el_type"</span>, values_to <span class="op">=</span> <span class="st">"el"</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>el_abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">el</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">el_compare_firm</span>,</span>
-<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">firm</span>, y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el_abs</span>, fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el_type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>                    width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">1e-6</span>, suffix <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Internal EL` <span class="op">=</span> <span class="st">"#BAB6B5"</span>,</span>
-<span>                                        `TRISK-Adjusted EL` <span class="op">=</span> <span class="st">"#AA2A2B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">sector</span>, scales <span class="op">=</span> <span class="st">"free_x"</span>, space <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Firm / technology"</span>, y <span class="op">=</span> <span class="st">"|Expected loss| (USD, millions)"</span>,</span>
-<span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
-<span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by exposure"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="1056"></p>
+<span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span></span>
+<span>  <span class="va">analysis_data_el</span>,</span>
+<span>  internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># default method is "zscore": effective-PD probit recombination, zero-safe.</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
-<h3 id="portfolio-level-kpis">13. Portfolio-level KPIs<a class="anchor" aria-label="anchor" href="#portfolio-level-kpis"></a>
+<h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="section level4">
+<h4 id="el-sign-convention-lgd-ead-horizon">EL sign convention, LGD, EAD, horizon<a class="anchor" aria-label="anchor" href="#el-sign-convention-lgd-ead-horizon"></a>
+</h4>
+<ul>
+<li>
+<strong>EL sign convention.</strong> All
+<code>expected_loss_*</code> columns and all three
+<code><a href="../reference/integrate_el.html">integrate_el()</a></code> methods store EL as a <strong>positive
+magnitude</strong>. Direction lives in the <em>adjustment</em>, not the
+level: a <strong>positive</strong> EL adjustment means
+<strong>more</strong> expected loss = worse = rendered
+<strong>red</strong>; a <strong>negative</strong> adjustment means less
+loss = better = <strong>green</strong>. The PD adjustment follows the
+same rule (positive = PD rose = red).</li>
+<li>
+<strong>EAD.</strong> The <code>exposure_at_default</code> column is
+<strong>not</strong> raw exposure.
+<code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> defines it as
+<code>exposure_value_usd * loss_given_default</code> — i.e. LGD is
+already folded in. Every <code>expected_loss_*</code> column is then
+<code>exposure_at_default * pd</code>. The EL zscore method uses this
+<code>exposure_at_default</code> column as its denominator when present,
+otherwise reconstructs it as
+<code>exposure_value_usd * loss_given_default</code>.</li>
+<li>
+<strong>LGD.</strong> <code>loss_given_default</code> is the
+fraction lost on default, in <code>[0, 1]</code>. Because it is already
+baked into <code>exposure_at_default</code>, expected loss is
+<code>EL = exposure_at_default * PD</code> (equivalently
+<code>exposure_value_usd * LGD * PD</code>). The EL zscore method
+back-transforms EL to an effective PD via
+<code>|EL| / exposure_at_default</code>, recombines in probit space,
+then re-scales — so LGD enters only through that denominator.</li>
+<li>
+<strong>Horizon.</strong> TRISK PDs here are
+<strong>term-structured</strong> to the loan <code>term</code>
+(multi-year), not a 12-month point-in-time PD. Treat the integrated
+PD/EL as a <strong>lifetime / multi-year</strong> quantity, closer in
+spirit to an IFRS-9 Stage 2/3 lifetime ECL input than to a 12-month
+regulatory PD. Do not feed it directly into a 12-month-PD slot without
+re-annualising.</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="the-seven-pipeline-artefacts">The seven pipeline artefacts<a class="anchor" aria-label="anchor" href="#the-seven-pipeline-artefacts"></a>
+</h4>
+<p>The pipeline ships seven ready-made plots/tables. Each has a one-line
+“when to use”.</p>
+<p><strong>N1 — PD method comparison.</strong> The three methods
+overlaid: a black tick for the internal PD, a coloured shape per method
+for its adjusted PD. Wide spread means the choice of method moves the
+number a lot. <em>When to use: the methodology choice is on the table
+(committee review, regulator pushback). Tight clustering means picking a
+method is a non-decision.</em></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
+<span>                                     internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
+<p>On sparse portfolios, <code>granularity = "firm"</code> and
+<code>scale = "pseudo_log"</code> open up the per-firm picture when
+sector aggregation or Merton underflow collapses everything against the
+axis:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span></span>
+<span>  <span class="va">analysis_data</span>,</span>
+<span>  internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
+<span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
+<span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="768"></p>
+<p><strong>N2 — PD waterfall.</strong> Per-sector decomposition:
+Internal -&gt; signed Adjustment -&gt; Adjusted. The middle bar flips
+fill on sign (red worsens, green improves), so the “before, change,
+after” reads at a glance. <em>When to use: non-quantitative audiences
+read waterfalls faster than grouped bars; the message is “how much does
+integration move PD”.</em></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="672"></p>
+<p><strong>P1 — PD integration bars.</strong> Four bars per group:
+Internal PD, TRISK Baseline, TRISK Shock, TRISK-Adjusted PD. The gap
+between Internal and Adjusted is the integration effect; Baseline and
+Shock show where the model itself moved. <em>When to use: first plot to
+show a counterparty — “what happens to my PDs if I integrate TRISK?”
+Supports <code>granularity = "firm"</code> /
+<code>scale = "pseudo_log"</code>.</em></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span></span>
+<span>  <span class="va">result_zs</span>,</span>
+<span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
+<span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="768"></p>
+<p><strong>P2 — EL adjustment bars.</strong> Horizontal bars of the
+signed EL delta (Adjusted minus Internal) by sector. Red = integration
+says expect <strong>more</strong> loss than your own model; green =
+less. Levels are not on this plot — only the adjustment. <em>When to
+use: the question is sign and magnitude of EL impact by sector — “where
+does TRISK think you’re under-reserving?”</em></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_adjustment_bars.html">pipeline_crispy_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
+<p><strong>P3a — PD KPI table.</strong> One-row portfolio summary:
+weighted internal PD, weighted adjusted PD, the adjustment in pp, and
+direction. <em>When to use: top of a report or first slide;
+portfolio-level headline only.</em></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_kpi_table.html">pipeline_crispy_pd_kpi_table</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -682,7 +750,12 @@ pp</span>
 </td>
 </tr></tbody>
 </table>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<p><strong>P3b — EL KPI table.</strong> One-row EL summary including the
+<strong>bps metric</strong> (<code>EL / EAD</code>). The bps figure is
+scale-free and travels best across audiences. <em>When to use: same as
+P3a but for EL; the bps delta is the single best headline
+number.</em></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_kpi_table.html">pipeline_crispy_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -707,24 +780,25 @@ Adjusted EL (bps)
 21.06M
 </td>
 <td style="text-align:right;">
--318.1K
+318.1K
 </td>
 <td style="text-align:right;">
 527.8K
 </td>
 <td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">845.8K</span>
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">209.7K</span>
 </td>
 <td style="text-align:right;">
 250.6 bps
 </td>
 </tr></tbody>
 </table>
-</div>
-<div class="section level3">
-<h3 id="sector-breakdown">14. Sector breakdown<a class="anchor" aria-label="anchor" href="#sector-breakdown"></a>
-</h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<p><strong>P4 — EL sector breakdown.</strong> One row per sector:
+exposure, internal EL, adjusted EL, delta, direction arrow, and EL/EAD
+in bps. Sits between P2 (deltas only) and P3b (one number). <em>When to
+use: the reference table for any EL discussion; the bps column makes
+sectors with different exposure magnitudes comparable.</em></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_sector_breakdown_table.html">pipeline_crispy_el_sector_breakdown_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -759,7 +833,7 @@ EL/EAD (bps)
 Coal
 </td>
 <td style="text-align:right;">
-↑
+<ul><li></ul>
 </td>
 <td style="text-align:right;">
 1
@@ -768,13 +842,13 @@ Coal
 6.23M
 </td>
 <td style="text-align:right;">
--174.4K
+174.4K
 </td>
 <td style="text-align:right;">
 174.4K
 </td>
 <td style="text-align:right;">
-348.7K
+0.00
 </td>
 <td style="text-align:right;">
 280.0 bps
@@ -794,13 +868,13 @@ Oil&amp;Gas
 5.57M
 </td>
 <td style="text-align:right;">
--88.1K
+88.1K
 </td>
 <td style="text-align:right;">
 297.8K
 </td>
 <td style="text-align:right;">
-386.0K
+209.7K
 </td>
 <td style="text-align:right;">
 534.9 bps
@@ -811,7 +885,7 @@ Oil&amp;Gas
 Power
 </td>
 <td style="text-align:right;">
-↑
+<ul><li></ul>
 </td>
 <td style="text-align:right;">
 1
@@ -820,13 +894,13 @@ Power
 9.26M
 </td>
 <td style="text-align:right;">
--55.6K
+55.6K
 </td>
 <td style="text-align:right;">
 55.6K
 </td>
 <td style="text-align:right;">
-111.2K
+0.00
 </td>
 <td style="text-align:right;">
 60.0 bps
@@ -834,6 +908,129 @@ Power
 </tr>
 </tbody>
 </table>
+<p><strong>Reading order for a bank-facing report:</strong> P3a + P3b
+(headline), then N2 + P2 (the change story), then P1 + P4 (full
+reference levels), and N1 only if the method choice is being
+questioned.</p>
+</div>
+<div class="section level4">
+<h4 id="custom-views">Custom views<a class="anchor" aria-label="anchor" href="#custom-views"></a>
+</h4>
+<p>The pipeline plots cover the standard story; a couple of custom
+chunks round it out. Expected loss by sector, baseline vs shock:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_by_sector</span> <span class="op">&lt;-</span> <span class="va">analysis_data_el</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">expected_loss_baseline</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    shock    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">expected_loss_shock</span>,    na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    .groups  <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"baseline"</span>, <span class="st">"shock"</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"scenario"</span>, values_to <span class="op">=</span> <span class="st">"el"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">el_by_sector</span>,</span>
+<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sector</span>, y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el</span>, fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
+<span>                    width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">1e-6</span>, suffix <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>baseline <span class="op">=</span> <span class="st">"#5D9324"</span>, shock <span class="op">=</span> <span class="st">"#F53D3F"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"Expected loss (USD, millions)"</span>,</span>
+<span>                fill <span class="op">=</span> <span class="st">"Scenario"</span>,</span>
+<span>                title <span class="op">=</span> <span class="st">"Expected loss by sector: baseline vs shock"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="768"></p>
+<p>Internal EL vs TRISK-Adjusted EL, per sector (both are positive
+magnitudes):</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_compare_sector</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    `Internal EL`        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">internal_el</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    `TRISK-Adjusted EL`  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">trisk_adjusted_el</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    .groups              <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Internal EL"</span>, <span class="st">"TRISK-Adjusted EL"</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="st">"el_type"</span>, values_to <span class="op">=</span> <span class="st">"el"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">el_compare_sector</span>,</span>
+<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sector</span>, y <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el</span>, fill <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">el_type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html" class="external-link">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
+<span>                    width <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_number.html" class="external-link">label_number</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">1e-6</span>, suffix <span class="op">=</span> <span class="st">"M"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Internal EL` <span class="op">=</span> <span class="st">"#BAB6B5"</span>,</span>
+<span>                                        `TRISK-Adjusted EL` <span class="op">=</span> <span class="st">"#AA2A2B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/TRISK_PLOT_THEME_FUNC.html">TRISK_PLOT_THEME_FUNC</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"Expected loss (USD, millions)"</span>,</span>
+<span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
+<span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by sector"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pd-el-integration_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="caveats-limitations">Caveats / Limitations<a class="anchor" aria-label="anchor" href="#caveats-limitations"></a>
+</h3>
+<ul>
+<li>
+<strong>PD level is not portable; only the shift is.</strong>
+TRISK’s Merton PD level is calibration-specific. The integration
+deliberately transports the baseline-to-shock <em>change</em>, not
+TRISK’s absolute PD.</li>
+<li>
+<strong>Zero-baseline rows lose signal under
+<code>relative</code>.</strong> When <code>pd_baseline = 0</code> the
+relative method returns the internal PD unchanged. Use
+<code>absolute</code> or <code>zscore</code> if that matters for your
+book.</li>
+<li>
+<strong>Clipping biases the extreme tails.</strong>
+<code>zscore_floor</code> / <code>zscore_cap</code> bound PDs before
+<code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm()</a></code>. Values that should sit below the floor (or above
+the cap) are pulled in, so the recombination is approximate at the
+extremes.</li>
+<li>
+<strong>Z-score is probit recombination, not Basel IRB.</strong> It
+does not apply the Basel asset-correlation / Vasicek conditional-PD
+capital formula. There is no correlation parameter and no supervisory
+confidence level. Do not present its output as a regulatory capital
+number.</li>
+<li>
+<strong>Horizon mismatch.</strong> Integrated PD/EL is
+term-structured (multi-year), closer to lifetime ECL than to a 12-month
+regulatory PD. Re-annualise before using it in a 12-month slot.</li>
+<li>
+<strong>EL zscore EAD basis must match.</strong> The effective-PD
+round-trip is only correct when the EL columns and the EAD denominator
+are on the same basis. If <code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> has
+scaled EAD by NPV share, supply the matching
+<code>exposure_at_default</code> column rather than relying on the
+<code>exposure_value_usd * loss_given_default</code> fallback.</li>
+<li>
+<strong><code>internal_pd</code> must be in <code>[0, 1]</code> and
+joinable by <code>company_id</code>.</strong> Unmatched
+<code>company_id</code>s fall back to <code>pd_baseline</code> with a
+warning; check the warning before trusting the result.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
+</h3>
+<ul>
+<li>
+<code>getting-started</code> — first run of TRISK end to end.</li>
+<li>
+<code>inputs-and-outputs</code> — the input files and output schema
+in detail.</li>
+<li>
+<code>run-on-a-portfolio</code> — building and running a
+portfolio.</li>
+<li>
+<code>sensitivity-analysis</code> — varying scenarios and
+parameters.</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
