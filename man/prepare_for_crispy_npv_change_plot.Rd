@@ -19,3 +19,4 @@ A dataframe with unified sector categorization, ready for NPV change visualizati
 \description{
 Transforms the analysis dataset for visualization, focusing on NPV percentage changes. It ensures that the data is in the correct format for the plotting function, enhancing clarity and focus in the visual representation of NPV changes.
 }
+\keyword{internal}

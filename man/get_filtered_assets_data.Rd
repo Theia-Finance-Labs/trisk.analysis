@@ -29,3 +29,4 @@ A tibble containing the filtered assets data.
 \description{
 This function filters the assets data based on criteria such as country, sector, technology, and company name.
 }
+\keyword{internal}

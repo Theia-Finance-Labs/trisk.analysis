@@ -7,4 +7,82 @@ repo:
     source: https://github.com/Theia-Finance-Labs/trisk.analysis
 template:
   bootstrap: 5
-  
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - getting-started
+  - inputs-and-outputs
+  - run-on-a-portfolio
+  - pd-el-integration
+  - sensitivity-analysis
+
+reference:
+- title: Run TRISK
+  desc: >
+    Entry points that execute the TRISK model — on raw inputs, on a portfolio,
+    or across a grid of parameter sets for sensitivity analysis.
+  contents:
+  - run_trisk_model
+  - run_trisk_on_portfolio
+  - run_trisk_on_simple_portfolio
+  - run_trisk_sa
+  - run_trisk_agg
+  - run_trisk_from_db
+
+- title: Inputs and parameters
+  desc: Download bundled inputs, list available scenario parameters, and match companies.
+  contents:
+  - download_trisk_inputs
+  - get_available_parameters
+  - fuzzy_match_company_ids
+
+- title: Portfolio metrics and checks
+  desc: Validate a portfolio, join it to TRISK outputs, and compute exposure metrics.
+  contents:
+  - check_portfolio
+  - check_portfolio_simple
+  - compute_analysis_metrics
+  - compute_simple_portfolio_metrics
+  - add_exposure_share_from_npv
+  - join_trisk_outputs_to_portfolio
+  - join_simple_portfolio_to_trisk
+
+- title: Aggregation
+  desc: Roll up firm-level facts to portfolio and sector aggregates.
+  contents:
+  - aggregate_el_integration
+  - aggregate_pd_integration
+  - aggregate_simple_portfolio
+  - aggregate_simple_portfolio_results
+  - aggregate_trajectories_facts
+  - aggregate_trisk_outputs_simple
+
+- title: PD and EL integration
+  desc: Recombine TRISK shock PDs with the bank's internal PDs and translate to expected loss.
+  contents:
+  - integrate_pd
+  - integrate_el
+
+- title: Plots and KPI tables
+  desc: Visualisations and summary tables for PD, EL, NPV, and exposure results.
+  contents:
+  - pipeline_crispy_pd_integration_bars
+  - pipeline_crispy_pd_method_comparison
+  - pipeline_crispy_pd_waterfall
+  - pipeline_crispy_pd_term_plot
+  - pipeline_crispy_pd_kpi_table
+  - pipeline_crispy_el_adjustment_bars
+  - pipeline_crispy_el_kpi_table
+  - pipeline_crispy_el_sector_breakdown_table
+  - pipeline_crispy_expected_loss_plot
+  - pipeline_crispy_exposure_change_plot
+  - pipeline_crispy_npv_change_plot
+  - plot_multi_trajectories
+
+- title: Plot styling
+  desc: Shared theme and palette used across the package plots.
+  contents:
+  - TRISK_PLOT_THEME_FUNC
+  - trisk_palette

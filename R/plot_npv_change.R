@@ -39,6 +39,7 @@ pipeline_crispy_npv_change_plot <- function(
 #' @param y_var NPV change percentage variable.
 #'
 #' @return A dataframe with unified sector categorization, ready for NPV change visualization.
+#' @keywords internal
 prepare_for_crispy_npv_change_plot <- function(analysis_data, x_var, y_var) {
   data_exposure_change <- analysis_data |>
     dplyr::select_at(
@@ -58,6 +59,7 @@ prepare_for_crispy_npv_change_plot <- function(analysis_data, x_var, y_var) {
 #' @param y_var NPV change percentage variable.
 #'
 #' @return A ggplot object depicting NPV changes across sectors, crucial for assessing financial impact and strategic direction.
+#' @keywords internal
 draw_crispy_npv_change_plot <- function(
     data_crispy_npv_change_plot,
     x_var,

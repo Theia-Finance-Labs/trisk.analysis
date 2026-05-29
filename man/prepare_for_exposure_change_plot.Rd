@@ -26,3 +26,4 @@ A simplified dataframe focusing on selected variables for visualization.
 \description{
 Transforms given dataset for visualizing changes in exposure and crispy value losses, selecting only the relevant variables. This step ensures that the visualization is focused and clear, aiding in the analysis of financial risk and impact across sectors or categories.
 }
+\keyword{internal}

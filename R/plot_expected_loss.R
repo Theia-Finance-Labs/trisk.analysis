@@ -39,6 +39,7 @@ pipeline_crispy_expected_loss_plot <- function(
 #' @param facet_var Segmentation variable used to categorize and analyze financial risk across different divisions.
 #'
 #' @return Dataframe optimized for visualizing financial risk, with aggregated metrics for each segment.
+#' @keywords internal
 prepare_for_expected_loss_plot <- function(analysis_data, facet_var) {
   data_expected_loss_plot <- analysis_data |>
     tidyr::pivot_longer(

@@ -17,3 +17,4 @@ Dataframe optimized for visualizing financial risk, with aggregated metrics for 
 \description{
 Prepares dataset for plotting by transforming financial risk data, including expected losses and exposure values, into a format that allows for aggregated analysis across specified segments. Essential for highlighting financial vulnerabilities and focusing risk management efforts.
 }
+\keyword{internal}

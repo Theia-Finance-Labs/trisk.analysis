@@ -15,3 +15,5 @@
 ^\.claude$
 ^\.ruff_cache$
 ^dist$
+^dev$
+\.DS_Store$

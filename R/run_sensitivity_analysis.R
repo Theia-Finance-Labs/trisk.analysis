@@ -100,6 +100,7 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
 #' @param company_name A character vector of company names to filter the assets. Defaults to NULL.
 #'
 #' @return A tibble containing the filtered assets data.
+#' @keywords internal
 get_filtered_assets_data <- function(assets_data,
                                      country_iso2 = NULL,
                                      sector = NULL,

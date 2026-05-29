@@ -45,6 +45,7 @@ plot_multi_trajectories <- function(
 #' @param linecolor Variable for coloring lines by sector.
 #'
 #' @return A dataframe ready for plotting, with production percentages for "production_shock_scenario" for visualization, excluding the last year of each "run_id" group.
+#' @keywords internal
 prepare_for_trisk_line_plot <- function(trajectories_data, facet_var, linecolor) {
   # Filtering for production_shock_scenario only and removing the last year for each run_id group
   data_trisk_line_plot <- trajectories_data |>
@@ -78,6 +79,7 @@ prepare_for_trisk_line_plot <- function(trajectories_data, facet_var, linecolor)
 #' @param y_in_percent plots in percent or absolute
 #'
 #' @return A ggplot object illustrating risk trajectories over time, aiding in the analysis of production risk and scenario planning.
+#' @keywords internal
 draw_trisk_line_plot <- function(
     data_trisk_line_plot,
     x_var,

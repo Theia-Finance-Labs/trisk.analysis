@@ -38,6 +38,7 @@ pipeline_crispy_pd_term_plot <- function(
 #' @param facet_var Faceting variable representing sectors or business units for detailed comparative analysis.
 #'
 #' @return A dataframe in long format, ready for plotting PD values by term and scenario.
+#' @keywords internal
 prepare_for_pd_term_plot <- function(analysis_data, facet_var) {
   data_pd_term <- analysis_data |>
     tidyr::pivot_longer(
@@ -69,6 +70,7 @@ prepare_for_pd_term_plot <- function(analysis_data, facet_var) {
 #' @param facet_var Variable used to segment data into different business units for faceted visualization.
 #'
 #' @return A ggplot object depicting the comparative analysis of PD values by term and scenario, crucial for evaluating financial risk and strategic planning.
+#' @keywords internal
 draw_pd_term_plot <- function(data_pd_term, facet_var) {
   red_hex_color <- TRISK_HEX_RED
   green_hex_color <- TRISK_HEX_GREEN

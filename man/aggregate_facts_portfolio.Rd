@@ -14,3 +14,4 @@ aggregate_facts_portfolio(analysis_data, group_cols)
 \description{
 TODO FIND CLOSEST COMPANY IF group_cols=NULL
 }
+\keyword{internal}

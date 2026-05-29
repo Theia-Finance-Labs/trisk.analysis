@@ -19,3 +19,4 @@ A ggplot object depicting NPV changes across sectors, crucial for assessing fina
 \description{
 Creates the final visualization for NPV percentage changes across sectors using a color gradient to represent increase, decrease, or no change. This function applies a gradient scale to highlight variations in NPV change, facilitating an intuitive understanding of financial performance across sectors.
 }
+\keyword{internal}

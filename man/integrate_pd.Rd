@@ -21,7 +21,8 @@ columns `pd_baseline`, `pd_shock`.}
 (default) in which case `pd_baseline` is used.}
 
 \item{method}{One of "zscore", "absolute", "relative". Default "zscore"
-(Basel IRB-aligned; zero-safe via clipping; recommended for sparse
+(Merton-style probit recombination of default thresholds, not the Basel
+IRB/Vasicek formula; zero-safe via clipping; recommended for sparse
 portfolios where baseline PDs can underflow from Merton inputs).}
 
 \item{zscore_floor}{Lower clip bound for PDs before `qnorm()` in the zscore

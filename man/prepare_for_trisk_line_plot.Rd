@@ -20,3 +20,4 @@ A dataframe ready for plotting, with production percentages for "production_shoc
 Prepares trajectory data for line plot visualization, calculating production percentages of the maximum value for "production_shock_scenario" only,
 and removing the last year of each "run_id" group.
 }
+\keyword{internal}

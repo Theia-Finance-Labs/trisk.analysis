@@ -5,6 +5,7 @@
 #' @param analysis_data analysis_data
 #' @param group_cols group_cols
 #'
+#' @keywords internal
 aggregate_facts_trisk <- function(analysis_data, group_cols) {
   analysis_data <- analysis_data |>
     dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
@@ -25,6 +26,7 @@ aggregate_facts_trisk <- function(analysis_data, group_cols) {
 #' @param analysis_data analysis_data
 #' @param group_cols group_cols
 #'
+#' @keywords internal
 aggregate_facts_portfolio <- function(analysis_data, group_cols) {
   analysis_data <- analysis_data |>
     dplyr::group_by(dplyr::across(dplyr::all_of(group_cols))) |>
@@ -43,6 +45,7 @@ aggregate_facts_portfolio <- function(analysis_data, group_cols) {
 #' @param analysis_data analysis_data
 #' @param group_cols group_cols
 #'
+#' @keywords internal
 aggregate_facts <- function(analysis_data, group_cols) {
   trisk_facts <- analysis_data |>
     aggregate_facts_trisk(group_cols = group_cols)

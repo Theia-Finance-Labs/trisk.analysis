@@ -29,3 +29,4 @@ A ggplot object depicting exposure changes and value losses, crucial for detaile
 \description{
 Constructs the final plot visualizing sector/category-wise changes in financial exposure and value losses, using a combination of bar and tile geoms to represent data points and their positive/negative changes. Faceting can be applied for more detailed analysis. This function integrates aesthetic elements and scales to effectively communicate the financial impact.
 }
+\keyword{internal}

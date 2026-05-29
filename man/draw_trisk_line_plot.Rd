@@ -29,3 +29,4 @@ A ggplot object illustrating risk trajectories over time, aiding in the analysis
 \description{
 Creates a line plot to depict the "production_shock_scenario" risk trajectories as a percentage of the maximum value, offering a visual comparison within business units and sectors.
 }
+\keyword{internal}

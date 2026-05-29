@@ -17,3 +17,4 @@ A ggplot object depicting the comparative analysis of PD values by term and scen
 \description{
 Creates a bar plot to visualize the variation of PD values across different terms, under baseline and shock scenarios, segmented by business unit. Utilizes a color gradient to distinguish between PD value magnitudes, facilitating a clear and intuitive comparison of risk profiles.
 }
+\keyword{internal}

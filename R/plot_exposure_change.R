@@ -50,6 +50,7 @@ pipeline_crispy_exposure_change_plot <- function(
 #' @param y_value_loss_var Crispy value loss metric.
 #'
 #' @return A simplified dataframe focusing on selected variables for visualization.
+#' @keywords internal
 prepare_for_exposure_change_plot <- function(analysis_data, x_var, y_exposure_var, y_value_loss_var) {
   data_exposure_change <- analysis_data |>
     dplyr::select_at(
@@ -70,6 +71,7 @@ prepare_for_exposure_change_plot <- function(analysis_data, x_var, y_exposure_va
 #' @param facet_var Optional; variable to facet the plot by.
 #'
 #' @return A ggplot object depicting exposure changes and value losses, crucial for detailed financial impact analysis.
+#' @keywords internal
 draw_exposure_change_plot <- function(
     data_exposure_change,
     x_var,
