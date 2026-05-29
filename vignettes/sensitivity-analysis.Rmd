@@ -1,8 +1,8 @@
 ---
-title: "5. Sensitivity analysis (bank-impact view)"
+title: "4. Sensitivity analysis (bank-impact view)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{5. Sensitivity analysis (bank-impact view)}
+  %\VignetteIndexEntry{4. Sensitivity analysis (bank-impact view)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -15,8 +15,8 @@ articles:
   - getting-started
   - inputs-and-outputs
   - run-on-a-portfolio
-  - pd-el-integration
   - sensitivity-analysis
+  - pd-el-integration
 
 reference:
 - title: Run TRISK

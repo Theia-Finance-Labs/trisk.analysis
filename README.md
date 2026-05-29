@@ -45,8 +45,8 @@ The documentation is a five-step path, each article building on the previous one
 1. **[Getting started](https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html)** — install the package and run TRISK on the bundled toy portfolio in a few lines.
 2. **[Inputs and outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html)** — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, the Trisk parameter definitions, and how to access the bundled scenarios.
 3. **[Run on a portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html)** — match a portfolio to TRISK, compute PD / NPV / expected loss, and visualise the results.
-4. **[PD & EL integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)** — recombine TRISK shock PDs with your internal PDs and translate the result into expected-loss basis points.
-5. **[Sensitivity analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)** — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.
+4. **[Sensitivity analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)** — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.
+5. **[PD & EL integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)** — recombine TRISK shock PDs with your internal PDs and translate the result into expected-loss basis points.
 
 > **Note** Application of the code requires availability of custom data for assets and financial data. Those inputs need to be pre-processed independantly, following the structure of the mock datasets presented in the vignettes.
 

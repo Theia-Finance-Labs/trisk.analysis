@@ -1,8 +1,8 @@
 ---
-title: "4. PD & EL integration"
+title: "5. PD & EL integration"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4. PD and EL integration}
+  %\VignetteIndexEntry{5. PD and EL integration}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
