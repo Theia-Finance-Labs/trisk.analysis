@@ -1,4 +1,4 @@
-# 5. Sensitivity analysis (bank-impact view)
+# 4. Sensitivity analysis (bank-impact view)
 
 ``` r
 
@@ -88,12 +88,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 45274b46-a45b-45bf-89d0-cdb7a6d5dc32 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 

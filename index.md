@@ -62,14 +62,14 @@ previous one:
     portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html)**
     — match a portfolio to TRISK, compute PD / NPV / expected loss, and
     visualise the results.
-4.  **[PD & EL
-    integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)**
-    — recombine TRISK shock PDs with your internal PDs and translate the
-    result into expected-loss basis points.
-5.  **[Sensitivity
+4.  **[Sensitivity
     analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)**
     — sweep shock year, IAM, and ambition policy, each read through a
     bank-impact lens.
+5.  **[PD & EL
+    integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)**
+    — recombine TRISK shock PDs with your internal PDs and translate the
+    result into expected-loss basis points.
 
 > **Note** Application of the code requires availability of custom data
 > for assets and financial data. Those inputs need to be pre-processed
