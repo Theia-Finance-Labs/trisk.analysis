@@ -33,8 +33,9 @@ reference:
   - run_trisk_from_db
 
 - title: Inputs and parameters
-  desc: Download bundled inputs, list available scenario parameters, and match companies.
+  desc: Scaffold a local input folder, download bundled inputs, list available scenario parameters, and match companies.
   contents:
+  - setup_trisk_inputs
   - download_trisk_inputs
   - get_available_parameters
   - fuzzy_match_company_ids
