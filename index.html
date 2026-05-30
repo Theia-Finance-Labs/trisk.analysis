@@ -36,10 +36,11 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/getting-started.html">1. Getting started</a></li>
-    <li><a class="dropdown-item" href="articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
-    <li><a class="dropdown-item" href="articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
-    <li><a class="dropdown-item" href="articles/sensitivity-analysis.html">4. Sensitivity analysis (bank-impact view)</a></li>
-    <li><a class="dropdown-item" href="articles/pd-el-integration.html">5. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="articles/bank-portfolio-analysis.html">2. Bank portfolio analysis — start here</a></li>
+    <li><a class="dropdown-item" href="articles/inputs-and-outputs.html">3. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="articles/run-on-a-portfolio.html">4. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
+    <li><a class="dropdown-item" href="articles/pd-el-integration.html">6. PD &amp; EL integration</a></li>
   </ul>
 </li>
       </ul>
@@ -105,10 +106,12 @@
 <div class="section level3">
 <h3 id="reading-path">Reading path<a class="anchor" aria-label="anchor" href="#reading-path"></a>
 </h3>
-<p>The documentation is a five-step path, each article building on the previous one:</p>
+<p>The documentation is a six-step path, each article building on the previous one:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html" class="external-link">Getting started</a></strong> — install the package and run TRISK on the bundled toy portfolio in a few lines.</li>
+<li>
+<strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/bank-portfolio-analysis.html" class="external-link">Bank portfolio analysis — start here</a></strong> — the entry point for a bank: the five inputs, how to set up your <code>trisk_inputs/</code> data folder with <code><a href="reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code>, the central <code>portfolio_ids</code> file (names / countries as options), and a first end-to-end run.</li>
 <li>
 <strong><a href="https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html" class="external-link">Inputs and outputs</a></strong> — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, the Trisk parameter definitions, and how to access the bundled scenarios.</li>
 <li>

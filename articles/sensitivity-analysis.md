@@ -1,4 +1,4 @@
-# 4. Sensitivity analysis (bank-impact view)
+# 5. Sensitivity analysis (bank-impact view)
 
 ``` r
 
@@ -13,6 +13,27 @@ analysis in three dimensions (shock year, IAM, ambition policy), each
 read through a bank-impact lens: actual portfolio terms, EAD-weighted
 sector aggregation, and an integrated expected-loss bps callout at the
 end.
+
+> **Input data — where your data goes.** TRISK needs **five inputs**:
+> four that describe the world — **assets**, **scenarios**, **NGFS
+> carbon price** and **financial features** — plus your **portfolio**.
+> The main portfolio file is **`portfolio_ids`** (matched by
+> `company_id`); `portfolio_names` and `portfolio_countries` are
+> options. This workflow uses the `portfolio_ids_internal_pd` variant
+> (the same file plus an `internal_pd` column). **The CSVs loaded below
+> are placeholders** (bundled samples) — replace them with your own
+> files. See [Bank portfolio analysis](bank-portfolio-analysis.md) for
+> [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
+> `trisk_inputs/` folder convention.
+
+**Where your portfolio enters the sensitivity analysis.** The sweep
+itself varies *scenario parameters*, but it is anchored to **your
+portfolio**: the `portfolio_ids_internal_pd` file is read below,
+validated for `internal_pd`, and reduced to `portfolio_terms`
+(`company_id`, `term`, `exposure_value_usd`). Those loan terms and
+exposures are what turn each parameter run into a bank-specific,
+EAD-weighted result — so swapping in your own `portfolio_ids` (with
+`internal_pd`) is what makes every chart below reflect *your* book.
 
 ``` r
 
@@ -88,12 +109,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 7e89ef50-c535-4e88-99c1-95f6b530f925 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| ef5c57e4-8af5-4f81-8551-ddf7dc65206f | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 

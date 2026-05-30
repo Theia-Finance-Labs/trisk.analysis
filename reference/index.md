@@ -19,9 +19,11 @@ portfolio, or across a grid of parameter sets for sensitivity analysis.
 
 ## Inputs and parameters
 
-Download bundled inputs, list available scenario parameters, and match
-companies.
+Scaffold a local input folder, download bundled inputs, list available
+scenario parameters, and match companies.
 
+- [`setup_trisk_inputs()`](setup_trisk_inputs.md) : Scaffold a local
+  TRISK input-data folder
 - [`download_trisk_inputs()`](download_trisk_inputs.md) : Download TRISK
   input data files from a specified endpoint
 - [`get_available_parameters()`](get_available_parameters.md) : Get the

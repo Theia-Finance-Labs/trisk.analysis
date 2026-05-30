@@ -1,4 +1,4 @@
-# 5. PD & EL integration
+# 6. PD & EL integration
 
 ``` r
 
@@ -29,6 +29,18 @@ Audience: an analyst who already knows PD / EL / IFRS-9 but is new to
 TRISK.
 
 ### Inputs
+
+> **Input data — where your data goes.** TRISK needs **five inputs**:
+> four that describe the world — **assets**, **scenarios**, **NGFS
+> carbon price** and **financial features** — plus your **portfolio**.
+> The main portfolio file is **`portfolio_ids`** (matched by
+> `company_id`); `portfolio_names` and `portfolio_countries` are
+> options. This workflow uses the `portfolio_ids_internal_pd` variant
+> (the same file plus an `internal_pd` column). **The CSVs loaded below
+> are placeholders** (bundled samples) — replace them with your own
+> files. See [Bank portfolio analysis](bank-portfolio-analysis.md) for
+> [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
+> `trisk_inputs/` folder convention.
 
 #### Portfolio file schema
 

@@ -45,28 +45,35 @@ package in R.
 
 ### Reading path
 
-The documentation is a five-step path, each article building on the
+The documentation is a six-step path, each article building on the
 previous one:
 
 1.  **[Getting
     started](https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html)**
     — install the package and run TRISK on the bundled toy portfolio in
     a few lines.
-2.  **[Inputs and
+2.  **[Bank portfolio analysis — start
+    here](https://theia-finance-labs.github.io/trisk.analysis/articles/bank-portfolio-analysis.html)**
+    — the entry point for a bank: the five inputs, how to set up your
+    `trisk_inputs/` data folder with
+    [`setup_trisk_inputs()`](reference/setup_trisk_inputs.md), the
+    central `portfolio_ids` file (names / countries as options), and a
+    first end-to-end run.
+3.  **[Inputs and
     outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/inputs-and-outputs.html)**
     — the 4 input datasets (assets, scenarios, financial_features,
     ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results,
     company_trajectories), their column structure, the Trisk parameter
     definitions, and how to access the bundled scenarios.
-3.  **[Run on a
+4.  **[Run on a
     portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/run-on-a-portfolio.html)**
     — match a portfolio to TRISK, compute PD / NPV / expected loss, and
     visualise the results.
-4.  **[Sensitivity
+5.  **[Sensitivity
     analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/sensitivity-analysis.html)**
     — sweep shock year, IAM, and ambition policy, each read through a
     bank-impact lens.
-5.  **[PD & EL
+6.  **[PD & EL
     integration](https://theia-finance-labs.github.io/trisk.analysis/articles/pd-el-integration.html)**
     — recombine TRISK shock PDs with your internal PDs and translate the
     result into expected-loss basis points.

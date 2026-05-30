@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>2. Inputs and outputs • trisk.analysis</title>
+<title>3. Inputs and outputs • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Inputs and outputs">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="3. Inputs and outputs">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,10 +34,11 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">4. Sensitivity analysis (bank-impact view)</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">5. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/bank-portfolio-analysis.html">2. Bank portfolio analysis — start here</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">3. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">4. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">6. PD &amp; EL integration</a></li>
   </ul>
 </li>
       </ul>
@@ -59,7 +60,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>2. Inputs and outputs</h1>
+      <h1>3. Inputs and outputs</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/vignettes/inputs-and-outputs.Rmd" class="external-link"><code>vignettes/inputs-and-outputs.Rmd</code></a></small>
@@ -97,6 +98,20 @@ every output column.</p>
 <div class="section level2">
 <h2 id="inputs">Inputs<a class="anchor" aria-label="anchor" href="#inputs"></a>
 </h2>
+<blockquote>
+<p><strong>Input data — where your data goes.</strong> TRISK needs
+<strong>five inputs</strong>: four that describe the world —
+<strong>assets</strong>, <strong>scenarios</strong>, <strong>NGFS carbon
+price</strong> and <strong>financial features</strong> — plus your
+<strong>portfolio</strong>. The main portfolio file is
+<strong><code>portfolio_ids</code></strong> (matched by
+<code>company_id</code>); <code>portfolio_names</code> and
+<code>portfolio_countries</code> are options. <strong>The CSVs loaded
+below are placeholders</strong> (bundled samples) — replace them with
+your own files. See <a href="bank-portfolio-analysis.html">Bank
+portfolio analysis</a> for <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code> and the
+<code>trisk_inputs/</code> folder convention.</p>
+</blockquote>
 <p>TRISK requires four reference datasets, all shipped as test data
 inside <code>trisk.model</code>. In production you swap these for the
 downloaded inputs (see <em>Obtaining inputs</em> below) and for your own
@@ -3101,9 +3116,13 @@ carbon prices) from the public endpoint:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"</span></span></code></pre></div>
-<p><code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> writes the four CSV files to a
-folder of your choice (skipped here so the vignette has no network
-dependency):</p>
+<p><code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> fetches the production
+<code>scenarios.csv</code> into a folder of your choice (skipped here so
+the vignette has no network dependency). The other three reference
+inputs — <code>assets</code>, <code>financial_features</code> and
+<code>ngfs_carbon_price</code> — you supply yourself, starting from the
+bundled samples (see <a href="bank-portfolio-analysis.html">Bank
+portfolio analysis</a> and <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code>):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="va">is_CRAN</span><span class="op">)</span> <span class="op">{</span></span>
@@ -3388,7 +3407,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 101
@@ -3423,7 +3442,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 102
@@ -3458,7 +3477,7 @@ Coal
 </tr>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 103
@@ -3493,7 +3512,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 104
@@ -3528,7 +3547,7 @@ RenewablesCap
 </tr>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 105
@@ -3563,7 +3582,7 @@ CoalCap
 </tr>
 <tr>
 <td style="text-align:left;">
-8d8094ba-d189-4e6e-9beb-f4fba97acecc
+2ccb8e72-789d-4eaa-9a4f-8602d0721e92
 </td>
 <td style="text-align:left;">
 105
@@ -3678,7 +3697,7 @@ and the relative change.</li>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">npv_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [7 × 12] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...</span></span>
@@ -3733,7 +3752,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -3771,7 +3790,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 102
@@ -3809,7 +3828,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 103
@@ -3847,7 +3866,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 104
@@ -3885,7 +3904,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 105
@@ -3923,7 +3942,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 105
@@ -3985,7 +4004,7 @@ scenario.</li>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pd_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [145 × 7] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id      : chr [1:145] "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" ...</span></span>
+<span><span class="co">#&gt;  $ run_id      : chr [1:145] "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" ...</span></span>
 <span><span class="co">#&gt;  $ company_id  : chr [1:145] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ company_name: chr [1:145] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ sector      : chr [1:145] "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" ...</span></span>
@@ -4020,7 +4039,7 @@ pd_shock
 <tbody>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4043,7 +4062,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4066,7 +4085,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4089,7 +4108,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4112,7 +4131,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4135,7 +4154,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4201,7 +4220,7 @@ profits feeding the NPV.</li>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">company_trajectories</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [210 × 23] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" "2a4f1e22-3476-4011-971c-4c2172652449" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" "56b9fba3-1e1a-45ce-9438-7c1876a3bd08" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...</span></span>
@@ -4300,7 +4319,7 @@ discounted_net_profits_shock_scenario
 <tbody>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4371,7 +4390,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4442,7 +4461,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4513,7 +4532,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4584,7 +4603,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101
@@ -4655,7 +4674,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-2a4f1e22-3476-4011-971c-4c2172652449
+56b9fba3-1e1a-45ce-9438-7c1876a3bd08
 </td>
 <td style="text-align:left;">
 101

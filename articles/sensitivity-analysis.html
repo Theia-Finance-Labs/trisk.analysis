@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>4. Sensitivity analysis (bank-impact view) • trisk.analysis</title>
+<title>5. Sensitivity analysis (bank-impact view) • trisk.analysis</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="4. Sensitivity analysis (bank-impact view)">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="5. Sensitivity analysis (bank-impact view)">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,10 +34,11 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">1. Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">2. Inputs and outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">3. Run on a portfolio</a></li>
-    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">4. Sensitivity analysis (bank-impact view)</a></li>
-    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">5. PD &amp; EL integration</a></li>
+    <li><a class="dropdown-item" href="../articles/bank-portfolio-analysis.html">2. Bank portfolio analysis — start here</a></li>
+    <li><a class="dropdown-item" href="../articles/inputs-and-outputs.html">3. Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/run-on-a-portfolio.html">4. Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
+    <li><a class="dropdown-item" href="../articles/pd-el-integration.html">6. PD &amp; EL integration</a></li>
   </ul>
 </li>
       </ul>
@@ -59,7 +60,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>4. Sensitivity analysis (bank-impact view)</h1>
+      <h1>5. Sensitivity analysis (bank-impact view)</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/Theia-Finance-Labs/trisk.analysis/vignettes/sensitivity-analysis.Rmd" class="external-link"><code>vignettes/sensitivity-analysis.Rmd</code></a></small>
@@ -79,6 +80,33 @@ analysis in three dimensions (shock year, IAM, ambition policy), each
 read through a bank-impact lens: actual portfolio terms, EAD-weighted
 sector aggregation, and an integrated expected-loss bps callout at the
 end.</p>
+<blockquote>
+<p><strong>Input data — where your data goes.</strong> TRISK needs
+<strong>five inputs</strong>: four that describe the world —
+<strong>assets</strong>, <strong>scenarios</strong>, <strong>NGFS carbon
+price</strong> and <strong>financial features</strong> — plus your
+<strong>portfolio</strong>. The main portfolio file is
+<strong><code>portfolio_ids</code></strong> (matched by
+<code>company_id</code>); <code>portfolio_names</code> and
+<code>portfolio_countries</code> are options. This workflow uses the
+<code>portfolio_ids_internal_pd</code> variant (the same file plus an
+<code>internal_pd</code> column). <strong>The CSVs loaded below are
+placeholders</strong> (bundled samples) — replace them with your own
+files. See <a href="bank-portfolio-analysis.html">Bank portfolio
+analysis</a> for <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code> and the
+<code>trisk_inputs/</code> folder convention.</p>
+</blockquote>
+<p><strong>Where your portfolio enters the sensitivity
+analysis.</strong> The sweep itself varies <em>scenario parameters</em>,
+but it is anchored to <strong>your portfolio</strong>: the
+<code>portfolio_ids_internal_pd</code> file is read below, validated for
+<code>internal_pd</code>, and reduced to <code>portfolio_terms</code>
+(<code>company_id</code>, <code>term</code>,
+<code>exposure_value_usd</code>). Those loan terms and exposures are
+what turn each parameter run into a bank-specific, EAD-weighted result —
+so swapping in your own <code>portfolio_ids</code> (with
+<code>internal_pd</code>) is what makes every chart below reflect
+<em>your</em> book.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span>             <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,             package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">scenarios_testdata</span>          <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>,          package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
@@ -168,7 +196,7 @@ model output.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -176,7 +204,7 @@ model output.</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
@@ -184,7 +212,7 @@ model output.</p>
 <td align="right">0.0000214</td>
 </tr>
 <tr class="odd">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
@@ -192,7 +220,7 @@ model output.</p>
 <td align="right">0.0004647</td>
 </tr>
 <tr class="even">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
@@ -200,7 +228,7 @@ model output.</p>
 <td align="right">0.0022474</td>
 </tr>
 <tr class="odd">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
@@ -208,7 +236,7 @@ model output.</p>
 <td align="right">0.0059057</td>
 </tr>
 <tr class="even">
-<td align="left">7e89ef50-c535-4e88-99c1-95f6b530f925</td>
+<td align="left">ef5c57e4-8af5-4f81-8551-ddf7dc65206f</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>

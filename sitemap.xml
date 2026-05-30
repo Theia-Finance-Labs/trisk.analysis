@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/bank-portfolio-analysis.html</loc></url>
 <url><loc>/articles/getting-started.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/inputs-and-outputs.html</loc></url>
@@ -60,6 +61,7 @@
 <url><loc>/reference/run_trisk_on_portfolio.html</loc></url>
 <url><loc>/reference/run_trisk_on_simple_portfolio.html</loc></url>
 <url><loc>/reference/run_trisk_sa.html</loc></url>
+<url><loc>/reference/setup_trisk_inputs.html</loc></url>
 <url><loc>/reference/trisk_palette.html</loc></url>
 </urlset>
 
