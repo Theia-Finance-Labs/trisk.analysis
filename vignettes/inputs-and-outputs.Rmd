@@ -1,8 +1,8 @@
 ---
-title: "2. Inputs and outputs"
+title: "3. Inputs and outputs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2. Inputs and outputs}
+  %\VignetteIndexEntry{3. Inputs and outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -34,6 +34,15 @@ production inputs, run a minimal example on the bundled test data, and explain
 how to read every output column.
 
 ## Inputs
+
+> **Input data — where your data goes.** TRISK needs **five inputs**: four that
+> describe the world — **assets**, **scenarios**, **NGFS carbon price** and
+> **financial features** — plus your **portfolio**. The main portfolio file is
+> **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
+> `portfolio_countries` are options. **The CSVs loaded below are placeholders**
+> (bundled samples) — replace them with your own files. See
+> [Bank portfolio analysis](bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> and the `trisk_inputs/` folder convention.
 
 TRISK requires four reference datasets, all shipped as test data inside
 `trisk.model`. In production you swap these for the downloaded inputs (see
@@ -154,8 +163,11 @@ print(
 )
 ```
 
-`download_trisk_inputs()` writes the four CSV files to a folder of your choice
-(skipped here so the vignette has no network dependency):
+`download_trisk_inputs()` fetches the production `scenarios.csv` into a folder of
+your choice (skipped here so the vignette has no network dependency). The other
+three reference inputs — `assets`, `financial_features` and `ngfs_carbon_price` —
+you supply yourself, starting from the bundled samples (see
+[Bank portfolio analysis](bank-portfolio-analysis.html) and `setup_trisk_inputs()`):
 
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")

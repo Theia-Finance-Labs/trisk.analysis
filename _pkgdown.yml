@@ -13,6 +13,7 @@ articles:
   navbar: ~
   contents:
   - getting-started
+  - bank-portfolio-analysis
   - inputs-and-outputs
   - run-on-a-portfolio
   - sensitivity-analysis

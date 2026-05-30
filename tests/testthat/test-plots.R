@@ -49,7 +49,7 @@ test_that("el_adjustment sign mapping: positive=worse=red, negative=better=green
   # map "worse" -> TRISK_HEX_RED and "better" -> STATUS_GREEN.
   p <- pipeline_crispy_el_adjustment_bars(integration_result)
   fill_scale <- ggplot2::ggplot_build(p)$plot$scales$get_scales("fill")
-  pal <- fill_scale$palette.cache %||% fill_scale$palette(2)
+  pal <- rlang::`%||%`(fill_scale$palette.cache, fill_scale$palette(2))
   # Inspect the named values directly from the scale definition where possible.
   named_values <- fill_scale$palette(2)
   expect_true(

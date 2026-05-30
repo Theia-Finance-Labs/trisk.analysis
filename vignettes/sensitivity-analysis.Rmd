@@ -1,8 +1,8 @@
 ---
-title: "4. Sensitivity analysis (bank-impact view)"
+title: "5. Sensitivity analysis (bank-impact view)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4. Sensitivity analysis (bank-impact view)}
+  %\VignetteIndexEntry{5. Sensitivity analysis (bank-impact view)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,6 +25,25 @@ This vignette uses the bundled testdata to demonstrate sensitivity analysis
 in three dimensions (shock year, IAM, ambition policy), each read through a
 bank-impact lens: actual portfolio terms, EAD-weighted sector aggregation,
 and an integrated expected-loss bps callout at the end.
+
+> **Input data — where your data goes.** TRISK needs **five inputs**: four that
+> describe the world — **assets**, **scenarios**, **NGFS carbon price** and
+> **financial features** — plus your **portfolio**. The main portfolio file is
+> **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
+> `portfolio_countries` are options. This workflow uses the
+> `portfolio_ids_internal_pd` variant (the same file plus an `internal_pd`
+> column). **The CSVs loaded below are placeholders** (bundled samples) — replace
+> them with your own files. See
+> [Bank portfolio analysis](bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> and the `trisk_inputs/` folder convention.
+
+**Where your portfolio enters the sensitivity analysis.** The sweep itself
+varies *scenario parameters*, but it is anchored to **your portfolio**: the
+`portfolio_ids_internal_pd` file is read below, validated for `internal_pd`, and
+reduced to `portfolio_terms` (`company_id`, `term`, `exposure_value_usd`). Those
+loan terms and exposures are what turn each parameter run into a bank-specific,
+EAD-weighted result — so swapping in your own `portfolio_ids` (with `internal_pd`)
+is what makes every chart below reflect *your* book.
 
 ```{r}
 assets_testdata             <- read.csv(system.file("testdata", "assets_testdata.csv",             package = "trisk.model"))

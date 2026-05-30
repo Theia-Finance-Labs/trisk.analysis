@@ -1,8 +1,8 @@
 ---
-title: "5. PD & EL integration"
+title: "6. PD & EL integration"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{5. PD and EL integration}
+  %\VignetteIndexEntry{6. PD and EL integration}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -38,6 +38,17 @@ limitations a credit-risk analyst should keep in mind.
 Audience: an analyst who already knows PD / EL / IFRS-9 but is new to TRISK.
 
 ## Inputs
+
+> **Input data — where your data goes.** TRISK needs **five inputs**: four that
+> describe the world — **assets**, **scenarios**, **NGFS carbon price** and
+> **financial features** — plus your **portfolio**. The main portfolio file is
+> **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
+> `portfolio_countries` are options. This workflow uses the
+> `portfolio_ids_internal_pd` variant (the same file plus an `internal_pd`
+> column). **The CSVs loaded below are placeholders** (bundled samples) — replace
+> them with your own files. See
+> [Bank portfolio analysis](bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> and the `trisk_inputs/` folder convention.
 
 ### Portfolio file schema
 
