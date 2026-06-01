@@ -22,10 +22,10 @@ library(magrittr)
 
 This is the **entry point for a bank** running TRISK on its own loan book. It
 shows the five inputs TRISK needs, where your data goes, and a first end-to-end
-run. The vignettes that follow ([Inputs and outputs](inputs-and-outputs.html),
-[Run on a portfolio](run-on-a-portfolio.html),
-[Sensitivity analysis](sensitivity-analysis.html),
-[PD & EL integration](pd-el-integration.html)) go deeper; start here.
+run. The vignettes that follow ([Inputs and outputs](3_inputs-and-outputs.html),
+[Run on a portfolio](4_run-on-a-portfolio.html),
+[Sensitivity analysis](5_sensitivity-analysis.html),
+[PD & EL integration](6_pd-el-integration.html)) go deeper; start here.
 
 ## The five inputs
 
@@ -97,8 +97,8 @@ available as **options**:
 - **`portfolio_countries.csv`** — match by `country_iso2` only (country-level
   aggregation) when neither id nor name is available.
 
-For the [Sensitivity analysis](sensitivity-analysis.html) and
-[PD & EL integration](pd-el-integration.html) workflows, add an `internal_pd`
+For the [Sensitivity analysis](5_sensitivity-analysis.html) and
+[PD & EL integration](6_pd-el-integration.html) workflows, add an `internal_pd`
 column (your own PD per company, in `[0, 1]`) — that is the
 `portfolio_ids_internal_pd` variant those vignettes use.
 
@@ -149,11 +149,11 @@ knitr::kable(head(analysis_data[, c("company_id", "sector", "technology", "term"
 
 That is a full TRISK run on your portfolio. From here:
 
-- **[Inputs and outputs](inputs-and-outputs.html)** — every input column and
+- **[Inputs and outputs](3_inputs-and-outputs.html)** — every input column and
   every output table, in detail.
-- **[Run on a portfolio](run-on-a-portfolio.html)** — the simple vs full runners,
+- **[Run on a portfolio](4_run-on-a-portfolio.html)** — the simple vs full runners,
   exposure allocation, and the plotting helpers.
-- **[Sensitivity analysis](sensitivity-analysis.html)** — sweep shock year, IAM
+- **[Sensitivity analysis](5_sensitivity-analysis.html)** — sweep shock year, IAM
   and ambition, read through a bank-impact lens.
-- **[PD & EL integration](pd-el-integration.html)** — recombine TRISK PDs with
+- **[PD & EL integration](6_pd-el-integration.html)** — recombine TRISK PDs with
   your internal PDs and translate to expected-loss basis points.

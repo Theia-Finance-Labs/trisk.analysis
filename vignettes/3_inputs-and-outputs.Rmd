@@ -41,7 +41,7 @@ how to read every output column.
 > **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
 > `portfolio_countries` are options. **The CSVs loaded below are placeholders**
 > (bundled samples) — replace them with your own files. See
-> [Bank portfolio analysis](bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> [Bank portfolio analysis](2_bank-portfolio-analysis.html) for `setup_trisk_inputs()`
 > and the `trisk_inputs/` folder convention.
 
 TRISK requires four reference datasets, all shipped as test data inside
@@ -167,7 +167,7 @@ print(
 your choice (skipped here so the vignette has no network dependency). The other
 three reference inputs — `assets`, `financial_features` and `ngfs_carbon_price` —
 you supply yourself, starting from the bundled samples (see
-[Bank portfolio analysis](bank-portfolio-analysis.html) and `setup_trisk_inputs()`):
+[Bank portfolio analysis](2_bank-portfolio-analysis.html) and `setup_trisk_inputs()`):
 
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
