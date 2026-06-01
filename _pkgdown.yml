@@ -12,12 +12,12 @@ articles:
 - title: Articles
   navbar: ~
   contents:
-  - 1_getting-started
-  - 2_bank-portfolio-analysis
-  - 3_inputs-and-outputs
-  - 4_run-on-a-portfolio
-  - 5_sensitivity-analysis
-  - 6_pd-el-integration
+  - v1_getting-started
+  - v2_bank-portfolio-analysis
+  - v3_inputs-and-outputs
+  - v4_run-on-a-portfolio
+  - v5_sensitivity-analysis
+  - v6_pd-el-integration
 
 reference:
 - title: Run TRISK

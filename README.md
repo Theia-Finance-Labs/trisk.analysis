@@ -42,12 +42,12 @@ You can install this package directly from GitHub using the `pak` package in R.
 
 The documentation is a six-step path, each article building on the previous one:
 
-1. **[Getting started](https://theia-finance-labs.github.io/trisk.analysis/articles/1_getting-started.html)** — install the package and run TRISK on the bundled toy portfolio in a few lines.
-2. **[Bank portfolio analysis — start here](https://theia-finance-labs.github.io/trisk.analysis/articles/2_bank-portfolio-analysis.html)** — the entry point for a bank: the five inputs, how to set up your `trisk_inputs/` data folder with `setup_trisk_inputs()`, the central `portfolio_ids` file (names / countries as options), and a first end-to-end run.
-3. **[Inputs and outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/3_inputs-and-outputs.html)** — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, the Trisk parameter definitions, and how to access the bundled scenarios.
-4. **[Run on a portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/4_run-on-a-portfolio.html)** — match a portfolio to TRISK, compute PD / NPV / expected loss, and visualise the results.
-5. **[Sensitivity analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/5_sensitivity-analysis.html)** — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.
-6. **[PD & EL integration](https://theia-finance-labs.github.io/trisk.analysis/articles/6_pd-el-integration.html)** — recombine TRISK shock PDs with your internal PDs and translate the result into expected-loss basis points.
+1. **[Getting started](https://theia-finance-labs.github.io/trisk.analysis/articles/v1_getting-started.html)** — install the package and run TRISK on the bundled toy portfolio in a few lines.
+2. **[Bank portfolio analysis — start here](https://theia-finance-labs.github.io/trisk.analysis/articles/v2_bank-portfolio-analysis.html)** — the entry point for a bank: the five inputs, how to set up your `trisk_inputs/` data folder with `setup_trisk_inputs()`, the central `portfolio_ids` file (names / countries as options), and a first end-to-end run.
+3. **[Inputs and outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/v3_inputs-and-outputs.html)** — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, the Trisk parameter definitions, and how to access the bundled scenarios.
+4. **[Run on a portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/v4_run-on-a-portfolio.html)** — match a portfolio to TRISK, compute PD / NPV / expected loss, and visualise the results.
+5. **[Sensitivity analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/v5_sensitivity-analysis.html)** — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.
+6. **[PD & EL integration](https://theia-finance-labs.github.io/trisk.analysis/articles/v6_pd-el-integration.html)** — recombine TRISK shock PDs with your internal PDs and translate the result into expected-loss basis points.
 
 > **Note** Application of the code requires availability of custom data for assets and financial data. Those inputs need to be pre-processed independantly, following the structure of the mock datasets presented in the vignettes.
 
@@ -57,11 +57,11 @@ An online version of those analyses is available on our apps portal https://apps
 
 ### Portfolio analysis
 A wrapper function called `run_trisk_on_portfolio()` can be used to run Trisk on a subset of the input assets dataframe, based on companies that can be matched between the two. It returns the model's PDs and NPVs alongside the matched exposures; the derived metrics such as expected loss are then computed with `compute_analysis_metrics()` (which the plotting pipelines call for you). Plots to visualize the results are included in the package.
-Example showcased in the [Run on a portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/4_run-on-a-portfolio.html) vignette.
+Example showcased in the [Run on a portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/v4_run-on-a-portfolio.html) vignette.
 
 ### Sensitivity analysis
 A wrapper function called `run_trisk_sa()` is provided if you'd like to generate a set of Trisk runs with different parameters configurations. The results obtained can be plotted using functions included in the package, or integrated in your analysis pipeline.
-Example showcased in the [Sensitivity Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/5_sensitivity-analysis.html) vignette.
+Example showcased in the [Sensitivity Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/v5_sensitivity-analysis.html) vignette.
 
 
 ## Funding
