@@ -17,3 +17,5 @@
 ^dist$
 ^dev$
 \.DS_Store$
+^doc$
+^Meta$

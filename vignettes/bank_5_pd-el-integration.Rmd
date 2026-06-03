@@ -1,5 +1,5 @@
 ---
-title: "Bank workflow 5: PD & EL integration"
+title: "Bank workflow 5: PD and EL integration"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Bank workflow 5: PD and EL integration}
