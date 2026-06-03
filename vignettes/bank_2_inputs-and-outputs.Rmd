@@ -1,8 +1,8 @@
 ---
-title: "3. Inputs and outputs"
+title: "Bank workflow 2: Inputs and outputs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Inputs and outputs}
+  %\VignetteIndexEntry{Bank workflow 2: Inputs and outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -41,7 +41,7 @@ how to read every output column.
 > **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
 > `portfolio_countries` are options. **The CSVs loaded below are placeholders**
 > (bundled samples) — replace them with your own files. See
-> [Bank portfolio analysis](2_bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> [Bank portfolio analysis](bank_1_portfolio-analysis.html) for `setup_trisk_inputs()`
 > and the `trisk_inputs/` folder convention.
 
 TRISK requires four reference datasets, all shipped as test data inside
@@ -167,7 +167,7 @@ print(
 your choice (skipped here so the vignette has no network dependency). The other
 three reference inputs — `assets`, `financial_features` and `ngfs_carbon_price` —
 you supply yourself, starting from the bundled samples (see
-[Bank portfolio analysis](2_bank-portfolio-analysis.html) and `setup_trisk_inputs()`):
+[Bank portfolio analysis](bank_1_portfolio-analysis.html) and `setup_trisk_inputs()`):
 
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
@@ -218,8 +218,8 @@ scenario_geography <- "Global"
 shock_year <- 2030
 
 carbon_price_model <- "no_carbon_tax"
-risk_free_rate <- 0.02
-discount_rate <- 0.07
+risk_free_rate <- 0.045
+discount_rate <- 0.09
 growth_rate <- 0.03
 div_netprofit_prop_coef <- 1
 market_passthrough <- 0

@@ -1,8 +1,8 @@
 ---
-title: "4. Run on a portfolio"
+title: "Bank workflow 3: Run on a portfolio"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4. Run on a portfolio}
+  %\VignetteIndexEntry{Bank workflow 3: Run on a portfolio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -46,7 +46,7 @@ built-in equity- and credit-risk plots.
 > **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
 > `portfolio_countries` are options. **The CSVs loaded below are placeholders**
 > (bundled samples) — replace them with your own files. See
-> [Bank portfolio analysis](2_bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> [Bank portfolio analysis](bank_1_portfolio-analysis.html) for `setup_trisk_inputs()`
 > and the `trisk_inputs/` folder convention.
 
 Both runners need the same four TRISK model inputs, shipped as test data in the

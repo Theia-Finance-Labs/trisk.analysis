@@ -1,8 +1,8 @@
 ---
-title: "6. PD & EL integration"
+title: "Bank workflow 5: PD & EL integration"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{6. PD and EL integration}
+  %\VignetteIndexEntry{Bank workflow 5: PD and EL integration}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -47,7 +47,7 @@ Audience: an analyst who already knows PD / EL / IFRS-9 but is new to TRISK.
 > `portfolio_ids_internal_pd` variant (the same file plus an `internal_pd`
 > column). **The CSVs loaded below are placeholders** (bundled samples) — replace
 > them with your own files. See
-> [Bank portfolio analysis](2_bank-portfolio-analysis.html) for `setup_trisk_inputs()`
+> [Bank portfolio analysis](bank_1_portfolio-analysis.html) for `setup_trisk_inputs()`
 > and the `trisk_inputs/` folder convention.
 
 ### Portfolio file schema

@@ -32,7 +32,19 @@ run_trisk_on_simple_portfolio(
 
 \item{target_scenario}{String specifying the name of the shock scenario.}
 
-\item{...}{Additional arguments passed to \code{\link[trisk.model]{run_trisk_model}}.}
+\item{...}{Additional arguments forwarded to
+\code{\link[trisk.model]{run_trisk_model}}. The forwarded arguments and their
+defaults are:
+\itemize{
+  \item \code{scenario_geography} (default \code{"Global"}): region(s) to compute results for.
+  \item \code{carbon_price_model} (default \code{"no_carbon_tax"}): NGFS carbon-price pathway ("no_carbon_tax" to skip).
+  \item \code{risk_free_rate} (default \code{0.045}): risk-free rate used in the Merton PD model.
+  \item \code{discount_rate} (default \code{0.09}): DCF discount rate on dividends.
+  \item \code{growth_rate} (default \code{0.03}): terminal growth rate of profits.
+  \item \code{div_netprofit_prop_coef} (default \code{1}): dividend pass-through coefficient.
+  \item \code{shock_year} (default \code{2030}): year the policy shock is applied.
+  \item \code{market_passthrough} (default \code{0}): firm's ability to pass the carbon cost to consumers.
+}}
 }
 \value{
 A named list with:

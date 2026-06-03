@@ -9,15 +9,25 @@ template:
   bootstrap: 5
 
 articles:
-- title: Articles
-  navbar: ~
+- title: Get started
+  navbar: Get started
   contents:
   - 1_getting-started
-  - 2_bank-portfolio-analysis
-  - 3_inputs-and-outputs
-  - 4_run-on-a-portfolio
-  - 5_sensitivity-analysis
-  - 6_pd-el-integration
+
+- title: Bank workflow
+  navbar: Bank workflow
+  contents:
+  - bank_1_portfolio-analysis
+  - bank_2_inputs-and-outputs
+  - bank_3_run-on-a-portfolio
+  - bank_4_sensitivity-analysis
+  - bank_5_pd-el-integration
+
+# Future series (e.g. equity analysis) get their own group here:
+# - title: Equity workflow
+#   navbar: Equity workflow
+#   contents:
+#   - equity_1_...
 
 reference:
 - title: Run TRISK
