@@ -428,7 +428,7 @@ full methodology, see [`pd-el-integration`](bank_5_pd-el-integration.html).
 
 # See also
 
-- [`getting-started`](1_getting-started.html) — the reading-path entry point.
+- [`getting-started`](getting-started.html) — the reading-path entry point.
 - [`run-on-a-portfolio`](bank_3_run-on-a-portfolio.html) — how the underlying TRISK
   runs that feed this analysis are produced.
 - [`pd-el-integration`](bank_5_pd-el-integration.html) — the full PD/EL integration
