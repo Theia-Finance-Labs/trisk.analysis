@@ -1,4 +1,4 @@
-# Bank workflow 5: PD & EL integration
+# Bank workflow 5: PD and EL integration
 
 ``` r
 

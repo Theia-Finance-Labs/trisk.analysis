@@ -12,4 +12,4 @@
 - [Bank workflow 3: Run on a portfolio](bank_3_run-on-a-portfolio.md):
 - [Bank workflow 4: Sensitivity analysis (bank-impact
   view)](bank_4_sensitivity-analysis.md):
-- [Bank workflow 5: PD & EL integration](bank_5_pd-el-integration.md):
+- [Bank workflow 5: PD and EL integration](bank_5_pd-el-integration.md):
