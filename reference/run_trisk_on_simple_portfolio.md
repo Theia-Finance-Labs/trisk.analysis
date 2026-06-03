@@ -56,8 +56,30 @@ run_trisk_on_simple_portfolio(
 
 - ...:
 
-  Additional arguments passed to
+  Additional arguments forwarded to
   [`run_trisk_model`](https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html).
+  The forwarded arguments and their defaults are:
+
+  - `scenario_geography` (default `"Global"`): region(s) to compute
+    results for.
+
+  - `carbon_price_model` (default `"no_carbon_tax"`): NGFS carbon-price
+    pathway ("no_carbon_tax" to skip).
+
+  - `risk_free_rate` (default `0.045`): risk-free rate used in the
+    Merton PD model.
+
+  - `discount_rate` (default `0.09`): DCF discount rate on dividends.
+
+  - `growth_rate` (default `0.03`): terminal growth rate of profits.
+
+  - `div_netprofit_prop_coef` (default `1`): dividend pass-through
+    coefficient.
+
+  - `shock_year` (default `2030`): year the policy shock is applied.
+
+  - `market_passthrough` (default `0`): firm's ability to pass the
+    carbon cost to consumers.
 
 ## Value
 

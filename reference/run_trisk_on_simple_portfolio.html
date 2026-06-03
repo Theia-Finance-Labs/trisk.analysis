@@ -28,12 +28,16 @@ with join keys company_id and term."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/1_getting-started.html">1. Getting started</a></li>
-    <li><a class="dropdown-item" href="../articles/2_bank-portfolio-analysis.html">2. Bank portfolio analysis — start here</a></li>
-    <li><a class="dropdown-item" href="../articles/3_inputs-and-outputs.html">3. Inputs and outputs</a></li>
-    <li><a class="dropdown-item" href="../articles/4_run-on-a-portfolio.html">4. Run on a portfolio</a></li>
-    <li><a class="dropdown-item" href="../articles/5_sensitivity-analysis.html">5. Sensitivity analysis (bank-impact view)</a></li>
-    <li><a class="dropdown-item" href="../articles/6_pd-el-integration.html">6. PD &amp; EL integration</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/1_getting-started.html">Getting started</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
+    <li><a class="dropdown-item" href="../articles/bank_1_portfolio-analysis.html">Bank workflow 1: Portfolio analysis — start here</a></li>
+    <li><a class="dropdown-item" href="../articles/bank_2_inputs-and-outputs.html">Bank workflow 2: Inputs and outputs</a></li>
+    <li><a class="dropdown-item" href="../articles/bank_3_run-on-a-portfolio.html">Bank workflow 3: Run on a portfolio</a></li>
+    <li><a class="dropdown-item" href="../articles/bank_4_sensitivity-analysis.html">Bank workflow 4: Sensitivity analysis (bank-impact view)</a></li>
+    <li><a class="dropdown-item" href="../articles/bank_5_pd-el-integration.html">Bank workflow 5: PD &amp; EL integration</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -109,7 +113,17 @@ with join keys <code>company_id</code> and <code>term</code>.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html" class="external-link">run_trisk_model</a></code>.</p></dd>
+<dd><p>Additional arguments forwarded to
+<code><a href="https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html" class="external-link">run_trisk_model</a></code>. The forwarded arguments and their
+defaults are:</p><ul><li><p><code>scenario_geography</code> (default <code>"Global"</code>): region(s) to compute results for.</p></li>
+<li><p><code>carbon_price_model</code> (default <code>"no_carbon_tax"</code>): NGFS carbon-price pathway ("no_carbon_tax" to skip).</p></li>
+<li><p><code>risk_free_rate</code> (default <code>0.045</code>): risk-free rate used in the Merton PD model.</p></li>
+<li><p><code>discount_rate</code> (default <code>0.09</code>): DCF discount rate on dividends.</p></li>
+<li><p><code>growth_rate</code> (default <code>0.03</code>): terminal growth rate of profits.</p></li>
+<li><p><code>div_netprofit_prop_coef</code> (default <code>1</code>): dividend pass-through coefficient.</p></li>
+<li><p><code>shock_year</code> (default <code>2030</code>): year the policy shock is applied.</p></li>
+<li><p><code>market_passthrough</code> (default <code>0</code>): firm's ability to pass the carbon cost to consumers.</p></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">
