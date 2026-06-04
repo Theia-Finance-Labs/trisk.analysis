@@ -801,7 +801,7 @@ DE
 0.7
 </td>
 <td style="text-align:left;">
-06c3b754-bceb-4eca-90b6-d8ac3d1c4282
+d4d1d6c2-5930-4cf0-ac81-14762ff556a4
 </td>
 <td style="text-align:left;">
 101
@@ -854,7 +854,7 @@ DE
 0.7
 </td>
 <td style="text-align:left;">
-06c3b754-bceb-4eca-90b6-d8ac3d1c4282
+d4d1d6c2-5930-4cf0-ac81-14762ff556a4
 </td>
 <td style="text-align:left;">
 102
@@ -907,7 +907,7 @@ DE
 0.5
 </td>
 <td style="text-align:left;">
-06c3b754-bceb-4eca-90b6-d8ac3d1c4282
+d4d1d6c2-5930-4cf0-ac81-14762ff556a4
 </td>
 <td style="text-align:left;">
 103
@@ -960,7 +960,7 @@ DE
 0.4
 </td>
 <td style="text-align:left;">
-06c3b754-bceb-4eca-90b6-d8ac3d1c4282
+d4d1d6c2-5930-4cf0-ac81-14762ff556a4
 </td>
 <td style="text-align:left;">
 104
@@ -998,23 +998,23 @@ helpers.</p>
 <p><strong>Equity risk</strong> — average percentage NPV change per
 technology:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_npv_change_plot.html">pipeline_crispy_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_npv_change_plot.html">pipeline_trisk_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span></code></pre></div>
 <p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="700"></p>
 <p>Resulting portfolio exposure change:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_exposure_change_plot.html">pipeline_crispy_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_exposure_change_plot.html">pipeline_trisk_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span></code></pre></div>
 <p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
 <p><strong>Bonds &amp; loans risk</strong> — average PDs at baseline and
 shock:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_term_plot.html">pipeline_crispy_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_term_plot.html">pipeline_trisk_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, term)`</span></span></code></pre></div>
 <p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="700"></p>
 <p>Resulting portfolio expected loss:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_expected_loss_plot.html">pipeline_crispy_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_expected_loss_plot.html">pipeline_trisk_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector)`</span></span></code></pre></div>
 <p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="700"></p>
 </div>

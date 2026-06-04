@@ -109,19 +109,19 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 
 Every plot below evaluates PD at each firm’s contractual loan term (from
 `portfolio_terms`) and aggregates sector-level numbers as EAD-weighted
 means. This matches the convention used by the integration pipeline
-(`pipeline_crispy_pd_integration_bars` and siblings) and means the PDs
+(`pipeline_trisk_pd_integration_bars` and siblings) and means the PDs
 and EL deltas read here are directly comparable to those in
 [`pd-el-integration`](bank_4_pd-el-integration.md) — no per-section
 translation needed.
@@ -565,7 +565,7 @@ result_el <- integrate_el(analysis_data_el,
 
 ``` r
 
-pipeline_crispy_el_kpi_table(result_el$aggregate)
+pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 | Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |

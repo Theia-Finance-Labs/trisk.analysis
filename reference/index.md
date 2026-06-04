@@ -82,27 +82,27 @@ expected loss.
 
 Visualisations and summary tables for PD, EL, NPV, and exposure results.
 
-- [`pipeline_crispy_pd_integration_bars()`](pipeline_crispy_pd_integration_bars.md)
+- [`pipeline_trisk_pd_integration_bars()`](pipeline_trisk_pd_integration_bars.md)
   : PD integration bar plot (4-bar grouped)
-- [`pipeline_crispy_pd_method_comparison()`](pipeline_crispy_pd_method_comparison.md)
+- [`pipeline_trisk_pd_method_comparison()`](pipeline_trisk_pd_method_comparison.md)
   : PD Integration Method Comparison Plot
-- [`pipeline_crispy_pd_waterfall()`](pipeline_crispy_pd_waterfall.md) :
-  PD waterfall plot
-- [`pipeline_crispy_pd_term_plot()`](pipeline_crispy_pd_term_plot.md) :
+- [`pipeline_trisk_pd_waterfall()`](pipeline_trisk_pd_waterfall.md) : PD
+  waterfall plot
+- [`pipeline_trisk_pd_term_plot()`](pipeline_trisk_pd_term_plot.md) :
   Visualize PD Values by Term and Business Unit
-- [`pipeline_crispy_pd_kpi_table()`](pipeline_crispy_pd_kpi_table.md) :
-  PD Integration KPI Table
-- [`pipeline_crispy_el_adjustment_bars()`](pipeline_crispy_el_adjustment_bars.md)
+- [`pipeline_trisk_pd_kpi_table()`](pipeline_trisk_pd_kpi_table.md) : PD
+  Integration KPI Table
+- [`pipeline_trisk_el_adjustment_bars()`](pipeline_trisk_el_adjustment_bars.md)
   : EL Adjustment Bar Plot (horizontal, sign-filled)
-- [`pipeline_crispy_el_kpi_table()`](pipeline_crispy_el_kpi_table.md) :
-  EL Integration KPI Table
-- [`pipeline_crispy_el_sector_breakdown_table()`](pipeline_crispy_el_sector_breakdown_table.md)
+- [`pipeline_trisk_el_kpi_table()`](pipeline_trisk_el_kpi_table.md) : EL
+  Integration KPI Table
+- [`pipeline_trisk_el_sector_breakdown_table()`](pipeline_trisk_el_sector_breakdown_table.md)
   : EL Sector Breakdown Table
-- [`pipeline_crispy_expected_loss_plot()`](pipeline_crispy_expected_loss_plot.md)
+- [`pipeline_trisk_expected_loss_plot()`](pipeline_trisk_expected_loss_plot.md)
   : Financial Risk Visualization via Expected Loss and Exposure Plot
-- [`pipeline_crispy_exposure_change_plot()`](pipeline_crispy_exposure_change_plot.md)
+- [`pipeline_trisk_exposure_change_plot()`](pipeline_trisk_exposure_change_plot.md)
   : Visualize Exposure and Value Loss Changes
-- [`pipeline_crispy_npv_change_plot()`](pipeline_crispy_npv_change_plot.md)
+- [`pipeline_trisk_npv_change_plot()`](pipeline_trisk_npv_change_plot.md)
   : Visualize Sector-wise NPV Percentage Changes
 - [`plot_multi_trajectories()`](plot_multi_trajectories.md) : Visualize
   Trajectory Risks Over Time by Business Unit and Sector

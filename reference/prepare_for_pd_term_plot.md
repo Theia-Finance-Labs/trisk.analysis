@@ -1,6 +1,6 @@
 # Prepare Data for PD Term Visualization
 
-Prepares the aggregated crispy data for visualization, focusing on PD
+Prepares the aggregated TRISK data for visualization, focusing on PD
 values by term. It transforms the dataset to a long format suitable for
 plotting, allowing for a comparative view of PD values under different
 scenarios.

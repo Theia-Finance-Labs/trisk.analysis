@@ -35,7 +35,7 @@ draw_exposure_change_plot(
 
 - y_value_loss_var:
 
-  Metric for crispy value loss.
+  Metric for TRISK value loss.
 
 - facet_var:
 

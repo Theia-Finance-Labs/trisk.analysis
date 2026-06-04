@@ -2,7 +2,7 @@
 
 Standard ggplot2 theme used across trisk.analysis plots. Exported so
 users can apply it to custom plots (e.g. vignette chunks) for visual
-consistency with the built-in \`pipeline_crispy\_\*\` functions.
+consistency with the built-in \`pipeline_trisk\_\*\` functions.
 
 ## Usage
 

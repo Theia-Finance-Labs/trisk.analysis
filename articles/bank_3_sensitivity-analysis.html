@@ -199,7 +199,7 @@ model output.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -207,7 +207,7 @@ model output.</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
@@ -215,7 +215,7 @@ model output.</p>
 <td align="right">0.0000214</td>
 </tr>
 <tr class="odd">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
@@ -223,7 +223,7 @@ model output.</p>
 <td align="right">0.0004647</td>
 </tr>
 <tr class="even">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
@@ -231,7 +231,7 @@ model output.</p>
 <td align="right">0.0022474</td>
 </tr>
 <tr class="odd">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
@@ -239,7 +239,7 @@ model output.</p>
 <td align="right">0.0059057</td>
 </tr>
 <tr class="even">
-<td align="left">17659a4f-2909-432d-bb9b-c7076fe9d829</td>
+<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>
@@ -255,7 +255,7 @@ model output.</p>
 <p>Every plot below evaluates PD at each firm’s contractual loan term
 (from <code>portfolio_terms</code>) and aggregates sector-level numbers
 as EAD-weighted means. This matches the convention used by the
-integration pipeline (<code>pipeline_crispy_pd_integration_bars</code>
+integration pipeline (<code>pipeline_trisk_pd_integration_bars</code>
 and siblings) and means the PDs and EL deltas read here are directly
 comparable to those in <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>
 — no per-section translation needed.</p>
@@ -668,7 +668,7 @@ EL bps KPI used elsewhere in the package.</p>
 <span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
 <span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_kpi_table.html">pipeline_crispy_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_kpi_table.html">pipeline_trisk_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:right;">

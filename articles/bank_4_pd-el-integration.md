@@ -315,7 +315,7 @@ pushback). Tight clustering means picking a method is a non-decision.*
 
 ``` r
 
-pipeline_crispy_pd_method_comparison(analysis_data,
+pipeline_trisk_pd_method_comparison(analysis_data,
                                      internal_pd = internal_pd_lookup)
 ```
 
@@ -327,7 +327,7 @@ collapses everything against the axis:
 
 ``` r
 
-pipeline_crispy_pd_method_comparison(
+pipeline_trisk_pd_method_comparison(
   analysis_data,
   internal_pd = internal_pd_lookup,
   granularity = "firm",
@@ -345,7 +345,7 @@ bars; the message is “how much does integration move PD”.*
 
 ``` r
 
-pipeline_crispy_pd_waterfall(result_zs)
+pipeline_trisk_pd_waterfall(result_zs)
 ```
 
 ![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png)
@@ -359,14 +359,14 @@ model itself moved. *When to use: first plot to show a counterparty —
 
 ``` r
 
-pipeline_crispy_pd_integration_bars(result_zs)
+pipeline_trisk_pd_integration_bars(result_zs)
 ```
 
 ![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png)
 
 ``` r
 
-pipeline_crispy_pd_integration_bars(
+pipeline_trisk_pd_integration_bars(
   result_zs,
   granularity = "firm",
   scale       = "pseudo_log"
@@ -384,7 +384,7 @@ under-reserving?”*
 
 ``` r
 
-pipeline_crispy_el_adjustment_bars(result_el)
+pipeline_trisk_el_adjustment_bars(result_el)
 ```
 
 ![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png)
@@ -395,7 +395,7 @@ top of a report or first slide; portfolio-level headline only.*
 
 ``` r
 
-pipeline_crispy_pd_kpi_table(result_zs$aggregate)
+pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 ```
 
 | Total Exposure (USD) | Weighted Internal PD | Weighted Adjusted PD | Weighted PD Adjustment (pp) | Adjustment % |
@@ -409,7 +409,7 @@ single best headline number.*
 
 ``` r
 
-pipeline_crispy_el_kpi_table(result_el$aggregate)
+pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 | Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |
@@ -424,7 +424,7 @@ exposure magnitudes comparable.*
 
 ``` r
 
-pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
+pipeline_trisk_el_sector_breakdown_table(result_el$portfolio)
 ```
 
 [TABLE]

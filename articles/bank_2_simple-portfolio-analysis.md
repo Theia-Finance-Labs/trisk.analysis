@@ -287,10 +287,10 @@ Result data frame:
 
 | company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default | run_id | asset_id | asset_name | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change | pd_baseline | pd_shock |
 |:---|:---|:---|:---|:---|---:|---:|---:|:---|:---|:---|---:|---:|---:|---:|---:|---:|
-| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 | 06c3b754-bceb-4eca-90b6-d8ac3d1c4282 | 101 | Company 1 | 51951.82 | 13549.28 | -38402.54 | -0.7391952 | 1.10e-06 | 0.0004647 |
-| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 | 06c3b754-bceb-4eca-90b6-d8ac3d1c4282 | 102 | Company 2 | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 | 0.00e+00 | 0.0000000 |
-| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 | 06c3b754-bceb-4eca-90b6-d8ac3d1c4282 | 103 | Company 3 | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 | 8.09e-05 | 0.0012524 |
-| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 | 06c3b754-bceb-4eca-90b6-d8ac3d1c4282 | 104 | Company 4 | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 | 3.20e-06 | 0.0000003 |
+| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 | d4d1d6c2-5930-4cf0-ac81-14762ff556a4 | 101 | Company 1 | 51951.82 | 13549.28 | -38402.54 | -0.7391952 | 1.10e-06 | 0.0004647 |
+| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 | d4d1d6c2-5930-4cf0-ac81-14762ff556a4 | 102 | Company 2 | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 | 0.00e+00 | 0.0000000 |
+| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 | d4d1d6c2-5930-4cf0-ac81-14762ff556a4 | 103 | Company 3 | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 | 8.09e-05 | 0.0012524 |
+| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 | d4d1d6c2-5930-4cf0-ac81-14762ff556a4 | 104 | Company 4 | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 | 3.20e-06 | 0.0000003 |
 
 ### Plotting the results
 
@@ -301,7 +301,7 @@ helpers.
 
 ``` r
 
-pipeline_crispy_npv_change_plot(analysis_data)
+pipeline_trisk_npv_change_plot(analysis_data)
 #> Joining with `by = join_by(sector, technology)`
 ```
 
@@ -311,7 +311,7 @@ Resulting portfolio exposure change:
 
 ``` r
 
-pipeline_crispy_exposure_change_plot(analysis_data)
+pipeline_trisk_exposure_change_plot(analysis_data)
 #> Joining with `by = join_by(sector, technology)`
 ```
 
@@ -321,7 +321,7 @@ pipeline_crispy_exposure_change_plot(analysis_data)
 
 ``` r
 
-pipeline_crispy_pd_term_plot(analysis_data)
+pipeline_trisk_pd_term_plot(analysis_data)
 #> Joining with `by = join_by(sector, term)`
 ```
 
@@ -331,7 +331,7 @@ Resulting portfolio expected loss:
 
 ``` r
 
-pipeline_crispy_expected_loss_plot(analysis_data)
+pipeline_trisk_expected_loss_plot(analysis_data)
 #> Joining with `by = join_by(sector)`
 ```
 

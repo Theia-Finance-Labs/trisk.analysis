@@ -677,7 +677,7 @@ number a lot. <em>When to use: the methodology choice is on the table
 (committee review, regulator pushback). Tight clustering means picking a
 method is a non-decision.</em></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_method_comparison.html">pipeline_trisk_pd_method_comparison</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                                     internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span><span class="op">)</span></span></code></pre></div>
 <p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
 <p>On sparse portfolios, <code>granularity = "firm"</code> and
@@ -685,7 +685,7 @@ method is a non-decision.</em></p>
 sector aggregation or Merton underflow collapses everything against the
 axis:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_method_comparison.html">pipeline_crispy_pd_method_comparison</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_method_comparison.html">pipeline_trisk_pd_method_comparison</a></span><span class="op">(</span></span>
 <span>  <span class="va">analysis_data</span>,</span>
 <span>  internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
 <span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
@@ -699,7 +699,7 @@ after” reads at a glance. <em>When to use: non-quantitative audiences
 read waterfalls faster than grouped bars; the message is “how much does
 integration move PD”.</em></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_waterfall.html">pipeline_crispy_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_waterfall.html">pipeline_trisk_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
 <p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="672"></p>
 <p><strong>P1 — PD integration bars.</strong> Four bars per group:
 Internal PD, TRISK Baseline, TRISK Shock, TRISK-Adjusted PD. The gap
@@ -709,10 +709,10 @@ show a counterparty — “what happens to my PDs if I integrate TRISK?”
 Supports <code>granularity = "firm"</code> /
 <code>scale = "pseudo_log"</code>.</em></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_integration_bars.html">pipeline_trisk_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
 <p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_integration_bars.html">pipeline_crispy_pd_integration_bars</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_integration_bars.html">pipeline_trisk_pd_integration_bars</a></span><span class="op">(</span></span>
 <span>  <span class="va">result_zs</span>,</span>
 <span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
 <span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
@@ -725,14 +725,14 @@ less. Levels are not on this plot — only the adjustment. <em>When to
 use: the question is sign and magnitude of EL impact by sector — “where
 does TRISK think you’re under-reserving?”</em></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_adjustment_bars.html">pipeline_crispy_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_adjustment_bars.html">pipeline_trisk_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
 <p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
 <p><strong>P3a — PD KPI table.</strong> One-row portfolio summary:
 weighted internal PD, weighted adjusted PD, the adjustment in pp, and
 direction. <em>When to use: top of a report or first slide;
 portfolio-level headline only.</em></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_pd_kpi_table.html">pipeline_crispy_pd_kpi_table</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_kpi_table.html">pipeline_trisk_pd_kpi_table</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:right;">
@@ -776,7 +776,7 @@ scale-free and travels best across audiences. <em>When to use: same as
 P3a but for EL; the bps delta is the single best headline
 number.</em></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_kpi_table.html">pipeline_crispy_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_kpi_table.html">pipeline_trisk_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:right;">
@@ -819,7 +819,7 @@ in bps. Sits between P2 (deltas only) and P3b (one number). <em>When to
 use: the reference table for any EL discussion; the bps column makes
 sectors with different exposure magnitudes comparable.</em></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_crispy_el_sector_breakdown_table.html">pipeline_crispy_el_sector_breakdown_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_sector_breakdown_table.html">pipeline_trisk_el_sector_breakdown_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:right;">

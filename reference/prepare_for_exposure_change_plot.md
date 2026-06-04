@@ -1,6 +1,6 @@
 # Preprocess Data for Exposure and Value Loss Visualization
 
-Transforms given dataset for visualizing changes in exposure and crispy
+Transforms given dataset for visualizing changes in exposure and TRISK
 value losses, selecting only the relevant variables. This step ensures
 that the visualization is focused and clear, aiding in the analysis of
 financial risk and impact across sectors or categories.
@@ -32,7 +32,7 @@ prepare_for_exposure_change_plot(
 
 - y_value_loss_var:
 
-  Crispy value loss metric.
+  TRISK value loss metric.
 
 ## Value
 

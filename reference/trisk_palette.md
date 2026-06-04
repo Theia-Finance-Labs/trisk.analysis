@@ -1,6 +1,6 @@
 # TRISK plot palette constants
 
-Hex colour codes used by the built-in \`pipeline_crispy\_\*\` plot
+Hex colour codes used by the built-in \`pipeline_trisk\_\*\` plot
 functions. Exported so users can match the palette in custom plots and
 vignette chunks.
 
