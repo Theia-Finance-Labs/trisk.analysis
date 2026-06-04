@@ -11,7 +11,7 @@
 #' @param facet_var Column for aggregation. Default "sector".
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_el_adjustment_bars <- function(integration_result,
+pipeline_trisk_el_adjustment_bars <- function(integration_result,
                                                facet_var = "sector") {
   plot_data <- prepare_for_el_adjustment_plot(integration_result, facet_var)
   draw_el_adjustment_plot(plot_data, facet_var)

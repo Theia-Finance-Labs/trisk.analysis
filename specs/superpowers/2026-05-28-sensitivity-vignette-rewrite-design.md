@@ -48,7 +48,7 @@ This vignette rejects that convention. The reasoning:
   book.
 - Sector aggregation under heterogeneous terms must be **EAD-weighted**, not a
   flat mean. This matches what the integration pipeline already does
-  (`pipeline_crispy_pd_integration_bars` and friends) and makes sector-level
+  (`pipeline_trisk_pd_integration_bars` and friends) and makes sector-level
   numbers comparable to those in `pd-el-integration.Rmd`.
 
 The vignette therefore attaches each firm's contractual term once up front via
@@ -118,7 +118,7 @@ Each has identical structure:
   - `compute_analysis_metrics()` to derive EL columns.
   - Build the `internal_el_lookup` from `internal_pd_lookup` × `LGD` × `EAD`.
   - `integrate_el()` (default `"zscore"` method).
-- Show `pipeline_crispy_el_kpi_table(result_el$aggregate)` to surface the EL
+- Show `pipeline_trisk_el_kpi_table(result_el$aggregate)` to surface the EL
   bps delta — same KPI table used in `pd-el-integration.Rmd` §12, so the
   reader sees the metric they already know.
 - One-paragraph commentary connecting the section-6/7/8 PD signal to the EL

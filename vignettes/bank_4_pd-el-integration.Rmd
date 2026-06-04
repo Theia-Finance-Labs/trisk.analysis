@@ -287,7 +287,7 @@ means the choice of method moves the number a lot.
 regulator pushback). Tight clustering means picking a method is a non-decision.*
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_method_comparison(analysis_data,
+pipeline_trisk_pd_method_comparison(analysis_data,
                                      internal_pd = internal_pd_lookup)
 ```
 
@@ -296,7 +296,7 @@ up the per-firm picture when sector aggregation or Merton underflow collapses
 everything against the axis:
 
 ```{r fig.width=8, fig.height=5}
-pipeline_crispy_pd_method_comparison(
+pipeline_trisk_pd_method_comparison(
   analysis_data,
   internal_pd = internal_pd_lookup,
   granularity = "firm",
@@ -311,7 +311,7 @@ so the "before, change, after" reads at a glance.
 bars; the message is "how much does integration move PD".*
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_waterfall(result_zs)
+pipeline_trisk_pd_waterfall(result_zs)
 ```
 
 **P1 — PD integration bars.** Four bars per group: Internal PD, TRISK Baseline,
@@ -321,11 +321,11 @@ integration effect; Baseline and Shock show where the model itself moved.
 integrate TRISK?" Supports `granularity = "firm"` / `scale = "pseudo_log"`.*
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_integration_bars(result_zs)
+pipeline_trisk_pd_integration_bars(result_zs)
 ```
 
 ```{r fig.width=8, fig.height=6}
-pipeline_crispy_pd_integration_bars(
+pipeline_trisk_pd_integration_bars(
   result_zs,
   granularity = "firm",
   scale       = "pseudo_log"
@@ -340,7 +340,7 @@ adjustment.
 "where does TRISK think you're under-reserving?"*
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_el_adjustment_bars(result_el)
+pipeline_trisk_el_adjustment_bars(result_el)
 ```
 
 **P3a — PD KPI table.** One-row portfolio summary: weighted internal PD,
@@ -348,7 +348,7 @@ weighted adjusted PD, the adjustment in pp, and direction.
 *When to use: top of a report or first slide; portfolio-level headline only.*
 
 ```{r}
-pipeline_crispy_pd_kpi_table(result_zs$aggregate)
+pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 ```
 
 **P3b — EL KPI table.** One-row EL summary including the **bps metric**
@@ -357,7 +357,7 @@ pipeline_crispy_pd_kpi_table(result_zs$aggregate)
 number.*
 
 ```{r}
-pipeline_crispy_el_kpi_table(result_el$aggregate)
+pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 **P4 — EL sector breakdown.** One row per sector: exposure, internal EL,
@@ -367,7 +367,7 @@ only) and P3b (one number).
 sectors with different exposure magnitudes comparable.*
 
 ```{r}
-pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
+pipeline_trisk_el_sector_breakdown_table(result_el$portfolio)
 ```
 
 **Reading order for a bank-facing report:** P3a + P3b (headline), then N2 + P2

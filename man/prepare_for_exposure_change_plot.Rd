@@ -18,12 +18,12 @@ prepare_for_exposure_change_plot(
 
 \item{y_exposure_var}{Exposure value metric.}
 
-\item{y_value_loss_var}{Crispy value loss metric.}
+\item{y_value_loss_var}{TRISK value loss metric.}
 }
 \value{
 A simplified dataframe focusing on selected variables for visualization.
 }
 \description{
-Transforms given dataset for visualizing changes in exposure and crispy value losses, selecting only the relevant variables. This step ensures that the visualization is focused and clear, aiding in the analysis of financial risk and impact across sectors or categories.
+Transforms given dataset for visualizing changes in exposure and TRISK value losses, selecting only the relevant variables. This step ensures that the visualization is focused and clear, aiding in the analysis of financial risk and impact across sectors or categories.
 }
 \keyword{internal}

@@ -15,7 +15,7 @@
 #' @param facet_var Column used for facet wrapping. Default `"sector"`.
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_waterfall <- function(integration_result,
+pipeline_trisk_pd_waterfall <- function(integration_result,
                                          facet_var = "sector") {
   agg <- aggregate_pd_integration(integration_result$portfolio,
                                   group_cols = facet_var)

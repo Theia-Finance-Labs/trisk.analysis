@@ -26,7 +26,7 @@
 #' @param scale One of `"pseudo_log"` (default) or `"linear"`.
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_integration_bars <- function(integration_result,
+pipeline_trisk_pd_integration_bars <- function(integration_result,
                                                 facet_var = "sector",
                                                 granularity = c("sector", "firm"),
                                                 scale = c("pseudo_log", "linear")) {

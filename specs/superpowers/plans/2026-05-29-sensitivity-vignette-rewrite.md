@@ -389,7 +389,7 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 Every plot below evaluates PD at each firm's contractual loan term (from
 `portfolio_terms`) and aggregates sector-level numbers as EAD-weighted means.
 This matches the convention used by the integration pipeline
-(`pipeline_crispy_pd_integration_bars` and siblings) and means the PDs and EL
+(`pipeline_trisk_pd_integration_bars` and siblings) and means the PDs and EL
 deltas read here are directly comparable to those in
 [`pd-el-integration.Rmd`](pd-el-integration.html) — no per-section translation
 needed.
@@ -793,7 +793,7 @@ result_el <- integrate_el(analysis_data_el,
 ```
 
 ```{r}
-pipeline_crispy_el_kpi_table(result_el$aggregate)
+pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 Read the `delta_bps` field as the bank-impact summary of this one variant.

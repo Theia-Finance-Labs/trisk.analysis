@@ -26,7 +26,7 @@
 #' @param scale One of `"linear"` or `"pseudo_log"`. Default `"linear"`.
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_method_comparison <- function(analysis_data,
+pipeline_trisk_pd_method_comparison <- function(analysis_data,
                                                  internal_pd = NULL,
                                                  facet_var = "sector",
                                                  granularity = c("sector", "firm"),

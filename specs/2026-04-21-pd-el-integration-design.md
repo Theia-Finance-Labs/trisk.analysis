@@ -37,10 +37,10 @@ This spec ports the methodology into `trisk.analysis` as pure functions, with ag
 trisk.analysis/
 ├── R/
 │   ├── integrate.R                     NEW — integrate_pd, integrate_el, aggregate_pd_integration, aggregate_el_integration
-│   ├── plot_pd_integration.R           NEW — P1: pipeline_crispy_pd_integration_bars
-│   ├── plot_el_adjustment.R            NEW — P2: pipeline_crispy_el_adjustment_bars
-│   ├── plot_integration_kpi_table.R    NEW — P3a/P3b: pipeline_crispy_pd_kpi_table, pipeline_crispy_el_kpi_table, pipeline_crispy_el_sector_breakdown_table (P4)
-│   ├── plot_pd_method_comparison.R     NEW — N1: pipeline_crispy_pd_method_comparison
+│   ├── plot_pd_integration.R           NEW — P1: pipeline_trisk_pd_integration_bars
+│   ├── plot_el_adjustment.R            NEW — P2: pipeline_trisk_el_adjustment_bars
+│   ├── plot_integration_kpi_table.R    NEW — P3a/P3b: pipeline_trisk_pd_kpi_table, pipeline_trisk_el_kpi_table, pipeline_trisk_el_sector_breakdown_table (P4)
+│   ├── plot_pd_method_comparison.R     NEW — N1: pipeline_trisk_pd_method_comparison
 │   ├── plot_pd_waterfall.R             CONDITIONAL (N2) — build iff N1 ships cleanly
 │   └── imports.R                       MODIFIED — add TRISK_HEX_ADJUSTED + STATUS_GREEN constants
 ├── tests/testthat/
@@ -81,7 +81,7 @@ integrate_pd(
 **Returns** a list:
 
 - `$portfolio` — the input `analysis_data` with five columns added: `internal_pd`, `pd_change`, `pd_change_pct`, `trisk_adjusted_pd`, `pd_adjustment`. Row count unchanged.
-- `$portfolio_long` — long-format helper built by pivot-longer on `pd_baseline / pd_shock / internal_pd / trisk_adjusted_pd`. Columns: existing keys + `pd_type` (factor, ordered: `internal`, `baseline`, `shock`, `trisk_adjusted`) + `pd_value`. Used directly by `pipeline_crispy_pd_integration_bars()`.
+- `$portfolio_long` — long-format helper built by pivot-longer on `pd_baseline / pd_shock / internal_pd / trisk_adjusted_pd`. Columns: existing keys + `pd_type` (factor, ordered: `internal`, `baseline`, `shock`, `trisk_adjusted`) + `pd_value`. Used directly by `pipeline_trisk_pd_integration_bars()`.
 - `$aggregate` — one-row tibble from `aggregate_pd_integration()` (see 4.3).
 
 **Method math** (ported line-for-line from `mod_integration.R:170-234`):
@@ -164,17 +164,17 @@ Optional `group_cols` like PD aggregate.
 
 ### 4.5 Visualizations (public)
 
-All five plots follow the existing `pipeline_crispy_*()` → `prepare_for_*_plot()` → `draw_*_plot()` decomposition from `plot_pd_term_plot.R` and `plot_expected_loss.R`. All return ggplot objects. All use `TRISK_PLOT_THEME_FUNC()` and `scales::percent_format(scale = 100)` on PD axes.
+All five plots follow the existing `pipeline_trisk_*()` → `prepare_for_*_plot()` → `draw_*_plot()` decomposition from `plot_pd_term_plot.R` and `plot_expected_loss.R`. All return ggplot objects. All use `TRISK_PLOT_THEME_FUNC()` and `scales::percent_format(scale = 100)` on PD axes.
 
 | Tag | Function | Encoding | Notes |
 |---|---|---|---|
-| P1 | `pipeline_crispy_pd_integration_bars(analysis_data_integrated, facet_var = "sector")` | 4-bar grouped: `TRISK_HEX_GREY` (Internal), `TRISK_HEX_GREEN` (Baseline), `TRISK_HEX_RED` (Shock), `TRISK_HEX_ADJUSTED` (Adjusted); `position = "dodge"`; facet by sector | Extends Shiny `mod_results_summary.R:438-463` pattern from 2 bars to 4 |
-| P2 | `pipeline_crispy_el_adjustment_bars(analysis_data_integrated, facet_var = "sector")` | Horizontal bars; fill by sign: `STATUS_GREEN` (positive / risk improves) vs `TRISK_HEX_RED` (negative / risk worsens); `coord_flip()` | ggplot port of Shiny `mod_integration.R:817-834` |
-| P3a | `pipeline_crispy_pd_kpi_table(pd_aggregate)` | `kableExtra` table, not ggplot; 1 row with PD portfolio KPIs; color-coded via `cell_spec()`: green if `weighted_pd_adjustment < 0`, red if `> 0` | Port of Shiny PD `valueBox` strip `mod_integration.R:321-356`. Takes output of `aggregate_pd_integration()`. |
-| P3b | `pipeline_crispy_el_kpi_table(el_aggregate)` | Same pattern for EL; includes `el_adjusted_bps` column | Port of Shiny EL `valueBox` strip `mod_integration.R:657-704`. Takes output of `aggregate_el_integration()`. |
-| P4 | `pipeline_crispy_el_sector_breakdown_table(analysis_data_integrated)` | `kableExtra` table, sector × {count, exposure, internal EL, adjusted EL, delta, bps}; direction column uses Unicode arrows ↑↓ | Port of Shiny `mod_integration.R:707-786` without Shiny-specific HTML/CSS |
-| N1 | `pipeline_crispy_pd_method_comparison(analysis_data, internal_pd = NULL, facet_var = "sector")` | For each sector, one segment from Internal → Adjusted endpoint, three colored points per sector (one per method); shape differentiates methods (circle/triangle/square) | Novel: relies on the library's ability to compute all three methods in one pass. Inspired by `mod_results_scenarios.R:220-234` lollipop pattern |
-| N2 | `pipeline_crispy_pd_waterfall(analysis_data_integrated, facet_var = "sector")` | Waterfall: Internal bar → signed delta bar → Adjusted bar; delta fill via `scale_fill_manual` on sign | **Conditional**: ship only if N1 lands cleanly and user-reviews show value add |
+| P1 | `pipeline_trisk_pd_integration_bars(analysis_data_integrated, facet_var = "sector")` | 4-bar grouped: `TRISK_HEX_GREY` (Internal), `TRISK_HEX_GREEN` (Baseline), `TRISK_HEX_RED` (Shock), `TRISK_HEX_ADJUSTED` (Adjusted); `position = "dodge"`; facet by sector | Extends Shiny `mod_results_summary.R:438-463` pattern from 2 bars to 4 |
+| P2 | `pipeline_trisk_el_adjustment_bars(analysis_data_integrated, facet_var = "sector")` | Horizontal bars; fill by sign: `STATUS_GREEN` (positive / risk improves) vs `TRISK_HEX_RED` (negative / risk worsens); `coord_flip()` | ggplot port of Shiny `mod_integration.R:817-834` |
+| P3a | `pipeline_trisk_pd_kpi_table(pd_aggregate)` | `kableExtra` table, not ggplot; 1 row with PD portfolio KPIs; color-coded via `cell_spec()`: green if `weighted_pd_adjustment < 0`, red if `> 0` | Port of Shiny PD `valueBox` strip `mod_integration.R:321-356`. Takes output of `aggregate_pd_integration()`. |
+| P3b | `pipeline_trisk_el_kpi_table(el_aggregate)` | Same pattern for EL; includes `el_adjusted_bps` column | Port of Shiny EL `valueBox` strip `mod_integration.R:657-704`. Takes output of `aggregate_el_integration()`. |
+| P4 | `pipeline_trisk_el_sector_breakdown_table(analysis_data_integrated)` | `kableExtra` table, sector × {count, exposure, internal EL, adjusted EL, delta, bps}; direction column uses Unicode arrows ↑↓ | Port of Shiny `mod_integration.R:707-786` without Shiny-specific HTML/CSS |
+| N1 | `pipeline_trisk_pd_method_comparison(analysis_data, internal_pd = NULL, facet_var = "sector")` | For each sector, one segment from Internal → Adjusted endpoint, three colored points per sector (one per method); shape differentiates methods (circle/triangle/square) | Novel: relies on the library's ability to compute all three methods in one pass. Inspired by `mod_results_scenarios.R:220-234` lollipop pattern |
+| N2 | `pipeline_trisk_pd_waterfall(analysis_data_integrated, facet_var = "sector")` | Waterfall: Internal bar → signed delta bar → Adjusted bar; delta fill via `scale_fill_manual` on sign | **Conditional**: ship only if N1 lands cleanly and user-reviews show value add |
 
 ---
 
@@ -200,9 +200,9 @@ analysis_data  ──────┐
      $portfolio_long  (pivot-longer for plots)
      $aggregate   (portfolio-level tibble)
         │
-        ├─► pipeline_crispy_pd_integration_bars()   reads $portfolio_long
-        ├─► pipeline_crispy_pd_method_comparison()   calls integrate_pd() 3x internally
-        ├─► pipeline_crispy_integration_kpi_table()  reads $aggregate
+        ├─► pipeline_trisk_pd_integration_bars()   reads $portfolio_long
+        ├─► pipeline_trisk_pd_method_comparison()   calls integrate_pd() 3x internally
+        ├─► pipeline_trisk_integration_kpi_table()  reads $aggregate
         └─► aggregate_pd_integration(group_cols)     sector-level summaries
 ```
 
@@ -255,7 +255,7 @@ Input validation runs at function entry before any computation, matching the def
 - Dataframe missing `company_id` errors.
 
 **Plots (smoke tests):**
-- Each `pipeline_crispy_*` returns a `ggplot` object (or `knitr_kable` for P3/P4).
+- Each `pipeline_trisk_*` returns a `ggplot` object (or `knitr_kable` for P3/P4).
 - Calling with zero-row input errors cleanly, not cryptically.
 
 ---
@@ -273,10 +273,10 @@ Target length: 150–200 lines. Follows the style of `portfolio-analysis.Rmd`: `
 5. **Method 2 — Relative** — same pattern; call out the zero-baseline quirk in a `note` block.
 6. **Method 3 — Z-score (Basel IRB)** — brief Vasicek explanation (2–3 sentences); show result.
 7. **Supplying your own internal PDs** — construct a vector (e.g., rep(0.03, nrow(analysis_data))) and re-run with `internal_pd = my_pds, method = "zscore"`.
-8. **Visual comparison of methods (N1)** — `pipeline_crispy_pd_method_comparison(analysis_data)`.
-9. **Integration charts (P1, P2)** — `pipeline_crispy_pd_integration_bars()`, `pipeline_crispy_el_adjustment_bars()`.
-10. **Portfolio-level KPI tables (P3a, P3b)** — `pipeline_crispy_pd_kpi_table(result_abs$aggregate)` and (after the EL section) `pipeline_crispy_el_kpi_table(el_result$aggregate)`.
-11. **Sector breakdown (P4)** — `pipeline_crispy_el_sector_breakdown_table()`.
+8. **Visual comparison of methods (N1)** — `pipeline_trisk_pd_method_comparison(analysis_data)`.
+9. **Integration charts (P1, P2)** — `pipeline_trisk_pd_integration_bars()`, `pipeline_trisk_el_adjustment_bars()`.
+10. **Portfolio-level KPI tables (P3a, P3b)** — `pipeline_trisk_pd_kpi_table(result_abs$aggregate)` and (after the EL section) `pipeline_trisk_el_kpi_table(el_result$aggregate)`.
+11. **Sector breakdown (P4)** — `pipeline_trisk_el_sector_breakdown_table()`.
 12. **EL integration** — parallel short section with `integrate_el()` + `aggregate_el_integration()`.
 
 No Khan Bank data, no client data. Only bundled package testdata.
@@ -287,7 +287,7 @@ No Khan Bank data, no client data. Only bundled package testdata.
 
 Matching conventions verified in `trisk.analysis/R/{plot_pd_term_plot,prepare_plot_data,imports,run_trisk_on_portfolio}.R` and `trisk.model/R/{calc_pd_change_overall,run_trisk}.R`:
 
-- snake_case function names with action prefix (`integrate_*`, `aggregate_*`, `prepare_for_*`, `draw_*`, `pipeline_crispy_*`).
+- snake_case function names with action prefix (`integrate_*`, `aggregate_*`, `prepare_for_*`, `draw_*`, `pipeline_trisk_*`).
 - Roxygen2 doc blocks with `@param`, `@return`, `@export` for public functions. Internal helpers unexported.
 - Native pipe `|>` (R 4.1+, matches existing code).
 - `.data$col` pronoun via rlang for tidy evaluation.

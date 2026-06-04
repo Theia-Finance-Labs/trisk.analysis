@@ -230,25 +230,25 @@ The full runner's output plugs directly into the package plotting helpers.
 **Equity risk** — average percentage NPV change per technology:
 
 ```{r}
-pipeline_crispy_npv_change_plot(analysis_data)
+pipeline_trisk_npv_change_plot(analysis_data)
 ```
 
 Resulting portfolio exposure change:
 
 ```{r}
-pipeline_crispy_exposure_change_plot(analysis_data)
+pipeline_trisk_exposure_change_plot(analysis_data)
 ```
 
 **Bonds & loans risk** — average PDs at baseline and shock:
 
 ```{r}
-pipeline_crispy_pd_term_plot(analysis_data)
+pipeline_trisk_pd_term_plot(analysis_data)
 ```
 
 Resulting portfolio expected loss:
 
 ```{r}
-pipeline_crispy_expected_loss_plot(analysis_data)
+pipeline_trisk_expected_loss_plot(analysis_data)
 ```
 
 ## Interpretation

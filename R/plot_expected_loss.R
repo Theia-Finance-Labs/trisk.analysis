@@ -8,7 +8,7 @@
 #'
 #' @return A ggplot object displaying financial risks segmented by `facet_var`, crucial for risk management decisions.
 #' @export
-pipeline_crispy_expected_loss_plot <- function(
+pipeline_trisk_expected_loss_plot <- function(
     analysis_data,
     facet_var = "sector",
     granularity = c("sector")) {

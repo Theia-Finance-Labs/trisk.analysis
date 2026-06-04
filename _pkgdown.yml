@@ -79,17 +79,17 @@ reference:
 - title: Plots and KPI tables
   desc: Visualisations and summary tables for PD, EL, NPV, and exposure results.
   contents:
-  - pipeline_crispy_pd_integration_bars
-  - pipeline_crispy_pd_method_comparison
-  - pipeline_crispy_pd_waterfall
-  - pipeline_crispy_pd_term_plot
-  - pipeline_crispy_pd_kpi_table
-  - pipeline_crispy_el_adjustment_bars
-  - pipeline_crispy_el_kpi_table
-  - pipeline_crispy_el_sector_breakdown_table
-  - pipeline_crispy_expected_loss_plot
-  - pipeline_crispy_exposure_change_plot
-  - pipeline_crispy_npv_change_plot
+  - pipeline_trisk_pd_integration_bars
+  - pipeline_trisk_pd_method_comparison
+  - pipeline_trisk_pd_waterfall
+  - pipeline_trisk_pd_term_plot
+  - pipeline_trisk_pd_kpi_table
+  - pipeline_trisk_el_adjustment_bars
+  - pipeline_trisk_el_kpi_table
+  - pipeline_trisk_el_sector_breakdown_table
+  - pipeline_trisk_expected_loss_plot
+  - pipeline_trisk_exposure_change_plot
+  - pipeline_trisk_npv_change_plot
   - plot_multi_trajectories
 
 - title: Plot styling

@@ -1,21 +1,21 @@
 #' Visualize Exposure and Value Loss Changes
 #'
-#' Creates a visualization of exposure value changes alongside crispy value losses for different sectors or categories. It allows for an adjustable focus through faceting and customization of the exposure and loss variables. This plot is vital for stakeholders to assess the impact of various factors on sectoral financial stability and risk exposure.
+#' Creates a visualization of exposure value changes alongside TRISK value losses for different sectors or categories. It allows for an adjustable focus through faceting and customization of the exposure and loss variables. This plot is vital for stakeholders to assess the impact of various factors on sectoral financial stability and risk exposure.
 #'
 #' @param analysis_data Dataframe with sector/category-wise financial data.
 #' @param x_var Variable on the x-axis, typically sector or category.
 #' @param y_exposure_var Variable for exposure values to be visualized.
-#' @param y_value_loss_var Variable for crispy value loss to be overlayed.
+#' @param y_value_loss_var Variable for TRISK value loss to be overlayed.
 #' @param facet_var Optional; faceting variable to segment data further.
 #' @param granularity Character vector specifying the grouping columns for aggregation.
 #'
 #' @return A ggplot object that shows changes in exposure values and value losses, aiding in risk evaluation and management.
 #' @export
-pipeline_crispy_exposure_change_plot <- function(
+pipeline_trisk_exposure_change_plot <- function(
     analysis_data,
     x_var = "technology",
     y_exposure_var = "exposure_value_usd",
-    y_value_loss_var = "crispy_value_loss",
+    y_value_loss_var = "trisk_value_loss",
     facet_var = NULL,
     granularity = c("sector", "technology")) {
   analysis_data <- analysis_data |>
@@ -42,12 +42,12 @@ pipeline_crispy_exposure_change_plot <- function(
 
 #' Preprocess Data for Exposure and Value Loss Visualization
 #'
-#' Transforms given dataset for visualizing changes in exposure and crispy value losses, selecting only the relevant variables. This step ensures that the visualization is focused and clear, aiding in the analysis of financial risk and impact across sectors or categories.
+#' Transforms given dataset for visualizing changes in exposure and TRISK value losses, selecting only the relevant variables. This step ensures that the visualization is focused and clear, aiding in the analysis of financial risk and impact across sectors or categories.
 #'
 #' @param analysis_data Dataset including financial metrics for exposure and value loss.
 #' @param x_var Category or sector variable.
 #' @param y_exposure_var Exposure value metric.
-#' @param y_value_loss_var Crispy value loss metric.
+#' @param y_value_loss_var TRISK value loss metric.
 #'
 #' @return A simplified dataframe focusing on selected variables for visualization.
 #' @keywords internal
@@ -67,7 +67,7 @@ prepare_for_exposure_change_plot <- function(analysis_data, x_var, y_exposure_va
 #' @param data_exposure_change Prepared dataframe for plotting.
 #' @param x_var Category or sector variable for the x-axis.
 #' @param y_exposure_var Metric for exposure value.
-#' @param y_value_loss_var Metric for crispy value loss.
+#' @param y_value_loss_var Metric for TRISK value loss.
 #' @param facet_var Optional; variable to facet the plot by.
 #'
 #' @return A ggplot object depicting exposure changes and value losses, crucial for detailed financial impact analysis.
@@ -101,7 +101,7 @@ draw_exposure_change_plot <- function(
       width = bar_width
     ) +
     ggplot2::scale_fill_manual(
-      name = "Crispy value change",
+      name = "TRISK value change",
       values = c(plot_color_gradient[1], plot_color_gradient[2]),
       breaks = c("Loss", "Gain")
     ) +

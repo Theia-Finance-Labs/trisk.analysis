@@ -8,7 +8,7 @@
 #'
 #' @return A ggplot object showing PD values by term, differentiated by scenario, across the specified business units, aiding in strategic risk management.
 #' @export
-pipeline_crispy_pd_term_plot <- function(
+pipeline_trisk_pd_term_plot <- function(
     analysis_data,
     facet_var = "sector",
     granularity = c("sector", "term")) {
@@ -32,7 +32,7 @@ pipeline_crispy_pd_term_plot <- function(
 
 #' Prepare Data for PD Term Visualization
 #'
-#' Prepares the aggregated crispy data for visualization, focusing on PD values by term. It transforms the dataset to a long format suitable for plotting, allowing for a comparative view of PD values under different scenarios.
+#' Prepares the aggregated TRISK data for visualization, focusing on PD values by term. It transforms the dataset to a long format suitable for plotting, allowing for a comparative view of PD values under different scenarios.
 #'
 #' @param analysis_data Dataset containing aggregated PD values across terms and scenarios.
 #' @param facet_var Faceting variable representing sectors or business units for detailed comparative analysis.

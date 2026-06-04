@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Port the three PD and two EL integration methods from `trisk.r.docker/app/modules/mod_integration.R` into reusable `trisk.analysis` library functions, add EAD-weighted portfolio aggregates, build static ggplot visualizations following the `pipeline_crispy_*` convention, and ship a workflow vignette using only bundled package testdata.
+**Goal:** Port the three PD and two EL integration methods from `trisk.r.docker/app/modules/mod_integration.R` into reusable `trisk.analysis` library functions, add EAD-weighted portfolio aggregates, build static ggplot visualizations following the `pipeline_trisk_*` convention, and ship a workflow vignette using only bundled package testdata.
 
 **Architecture:** Two new public functions (`integrate_pd`, `integrate_el`) each returning a list (`$portfolio` wide, `$portfolio_long` pivot-longer for plots, `$aggregate` one-row tibble). Two aggregate helpers (`aggregate_pd_integration`, `aggregate_el_integration`). Five visualization functions: four direct ports of Shiny visuals (P1 4-bar PD, P2 horizontal EL sign-bars, P3a/P3b kableExtra KPI tables, P4 kableExtra sector breakdown) plus one novel method-comparison plot (N1). Waterfall (N2) is conditional on N1 shipping cleanly.
 
@@ -21,10 +21,10 @@
 | `R/imports.R` | MODIFY | Add `TRISK_HEX_ADJUSTED`, `STATUS_GREEN` color constants |
 | `DESCRIPTION` | MODIFY | Add `kableExtra` to Imports, add `testthat` to Suggests |
 | `R/integrate.R` | CREATE | `integrate_pd`, `integrate_el`, `resolve_internal_series`, `apply_pd_method`, `apply_el_method`, `aggregate_pd_integration`, `aggregate_el_integration` |
-| `R/plot_pd_integration.R` | CREATE | P1: `pipeline_crispy_pd_integration_bars` + `prepare_for_pd_integration_plot` + `draw_pd_integration_plot` |
-| `R/plot_el_adjustment.R` | CREATE | P2: `pipeline_crispy_el_adjustment_bars` + `prepare_for_el_adjustment_plot` + `draw_el_adjustment_plot` |
-| `R/plot_integration_kpi_table.R` | CREATE | P3a `pipeline_crispy_pd_kpi_table`, P3b `pipeline_crispy_el_kpi_table`, P4 `pipeline_crispy_el_sector_breakdown_table` |
-| `R/plot_pd_method_comparison.R` | CREATE | N1: `pipeline_crispy_pd_method_comparison` + helpers |
+| `R/plot_pd_integration.R` | CREATE | P1: `pipeline_trisk_pd_integration_bars` + `prepare_for_pd_integration_plot` + `draw_pd_integration_plot` |
+| `R/plot_el_adjustment.R` | CREATE | P2: `pipeline_trisk_el_adjustment_bars` + `prepare_for_el_adjustment_plot` + `draw_el_adjustment_plot` |
+| `R/plot_integration_kpi_table.R` | CREATE | P3a `pipeline_trisk_pd_kpi_table`, P3b `pipeline_trisk_el_kpi_table`, P4 `pipeline_trisk_el_sector_breakdown_table` |
+| `R/plot_pd_method_comparison.R` | CREATE | N1: `pipeline_trisk_pd_method_comparison` + helpers |
 | `R/plot_pd_waterfall.R` | CONDITIONAL | N2: only if N1 ships cleanly |
 | `tests/testthat.R` | CREATE | testthat entry point |
 | `tests/testthat/helper-fixtures.R` | CREATE | Synthetic 3-row `analysis_data` fixture used across tests |
@@ -999,7 +999,7 @@ git commit -m "feat: integrate_el and aggregate_el_integration"
 
 ---
 
-## Task 12: Implement P1 — `pipeline_crispy_pd_integration_bars`
+## Task 12: Implement P1 — `pipeline_trisk_pd_integration_bars`
 
 **Files:**
 - Create: `tests/testthat/test-plots.R`
@@ -1009,10 +1009,10 @@ git commit -m "feat: integrate_el and aggregate_el_integration"
 
 Create `tests/testthat/test-plots.R`:
 ```r
-test_that("pipeline_crispy_pd_integration_bars returns a ggplot", {
+test_that("pipeline_trisk_pd_integration_bars returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_integration_bars(integrated)
+  p <- pipeline_trisk_pd_integration_bars(integrated)
   expect_s3_class(p, "ggplot")
 })
 ```
@@ -1039,7 +1039,7 @@ Expected: FAIL.
 #' @param facet_var Column used for facets. Default "sector".
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_integration_bars <- function(integration_result,
+pipeline_trisk_pd_integration_bars <- function(integration_result,
                                                 facet_var = "sector") {
   plot_data <- prepare_for_pd_integration_plot(integration_result, facet_var)
   draw_pd_integration_plot(plot_data, facet_var)
@@ -1089,12 +1089,12 @@ Expected: PASS.
 
 ```bash
 git add R/plot_pd_integration.R tests/testthat/test-plots.R NAMESPACE
-git commit -m "feat: pipeline_crispy_pd_integration_bars (P1)"
+git commit -m "feat: pipeline_trisk_pd_integration_bars (P1)"
 ```
 
 ---
 
-## Task 13: Implement P2 — `pipeline_crispy_el_adjustment_bars`
+## Task 13: Implement P2 — `pipeline_trisk_el_adjustment_bars`
 
 **Files:**
 - Create: `R/plot_el_adjustment.R`
@@ -1103,10 +1103,10 @@ git commit -m "feat: pipeline_crispy_pd_integration_bars (P1)"
 - [ ] **Step 1: Append smoke test**
 
 ```r
-test_that("pipeline_crispy_el_adjustment_bars returns a ggplot", {
+test_that("pipeline_trisk_el_adjustment_bars returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  p <- pipeline_crispy_el_adjustment_bars(integrated)
+  p <- pipeline_trisk_el_adjustment_bars(integrated)
   expect_s3_class(p, "ggplot")
 })
 ```
@@ -1131,7 +1131,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 #' @param facet_var Column for aggregation. Default "sector".
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_el_adjustment_bars <- function(integration_result,
+pipeline_trisk_el_adjustment_bars <- function(integration_result,
                                                facet_var = "sector") {
   plot_data <- prepare_for_el_adjustment_plot(integration_result, facet_var)
   draw_el_adjustment_plot(plot_data, facet_var)
@@ -1175,7 +1175,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 
 ```bash
 git add R/plot_el_adjustment.R tests/testthat/test-plots.R NAMESPACE
-git commit -m "feat: pipeline_crispy_el_adjustment_bars (P2)"
+git commit -m "feat: pipeline_trisk_el_adjustment_bars (P2)"
 ```
 
 ---
@@ -1189,17 +1189,17 @@ git commit -m "feat: pipeline_crispy_el_adjustment_bars (P2)"
 - [ ] **Step 1: Append smoke tests**
 
 ```r
-test_that("pipeline_crispy_pd_kpi_table returns a knitr_kable", {
+test_that("pipeline_trisk_pd_kpi_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  tbl <- pipeline_crispy_pd_kpi_table(integrated$aggregate)
+  tbl <- pipeline_trisk_pd_kpi_table(integrated$aggregate)
   expect_s3_class(tbl, "knitr_kable")
 })
 
-test_that("pipeline_crispy_el_kpi_table returns a knitr_kable", {
+test_that("pipeline_trisk_el_kpi_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  tbl <- pipeline_crispy_el_kpi_table(integrated$aggregate)
+  tbl <- pipeline_trisk_el_kpi_table(integrated$aggregate)
   expect_s3_class(tbl, "knitr_kable")
 })
 ```
@@ -1223,7 +1223,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 #'   output of [aggregate_pd_integration()].
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_pd_kpi_table <- function(pd_aggregate) {
+pipeline_trisk_pd_kpi_table <- function(pd_aggregate) {
   display <- tibble::tibble(
     `Total Exposure (USD)`            = format_big_number(pd_aggregate$total_exposure_usd),
     `Weighted Internal PD`            = format_pct(pd_aggregate$weighted_pd_internal),
@@ -1250,7 +1250,7 @@ pipeline_crispy_pd_kpi_table <- function(pd_aggregate) {
 #' @param el_aggregate The `$aggregate` element from [integrate_el()].
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_el_kpi_table <- function(el_aggregate) {
+pipeline_trisk_el_kpi_table <- function(el_aggregate) {
   display <- tibble::tibble(
     `Total Exposure (USD)` = format_big_number(el_aggregate$total_exposure_usd),
     `Total Internal EL`    = format_big_number(el_aggregate$total_el_internal),
@@ -1333,10 +1333,10 @@ git commit -m "feat: PD and EL KPI tables (P3a, P3b)"
 - [ ] **Step 1: Append smoke test**
 
 ```r
-test_that("pipeline_crispy_el_sector_breakdown_table returns a knitr_kable", {
+test_that("pipeline_trisk_el_sector_breakdown_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  tbl <- pipeline_crispy_el_sector_breakdown_table(integrated$portfolio)
+  tbl <- pipeline_trisk_el_sector_breakdown_table(integrated$portfolio)
   expect_s3_class(tbl, "knitr_kable")
 })
 ```
@@ -1361,10 +1361,10 @@ Rscript -e 'devtools::test(filter = "plots")'
 #' @param group_col Character column to group by. Default "sector".
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
+pipeline_trisk_el_sector_breakdown_table <- function(portfolio_df,
                                                       group_col = "sector") {
   if (!group_col %in% colnames(portfolio_df)) {
-    stop("pipeline_crispy_el_sector_breakdown_table(): column '", group_col,
+    stop("pipeline_trisk_el_sector_breakdown_table(): column '", group_col,
          "' not in portfolio_df")
   }
 
@@ -1433,9 +1433,9 @@ git commit -m "feat: EL sector breakdown table (P4)"
 - [ ] **Step 1: Append smoke test**
 
 ```r
-test_that("pipeline_crispy_pd_method_comparison returns a ggplot", {
+test_that("pipeline_trisk_pd_method_comparison returns a ggplot", {
   df <- make_test_analysis_data()
-  p <- pipeline_crispy_pd_method_comparison(df)
+  p <- pipeline_trisk_pd_method_comparison(df)
   expect_s3_class(p, "ggplot")
 })
 ```
@@ -1466,7 +1466,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 #' @param facet_var Column used for aggregation. Default "sector".
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_method_comparison <- function(analysis_data,
+pipeline_trisk_pd_method_comparison <- function(analysis_data,
                                                  internal_pd = NULL,
                                                  facet_var = "sector") {
   methods <- c("absolute", "relative", "zscore")
@@ -1538,7 +1538,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 
 ```bash
 git add R/plot_pd_method_comparison.R tests/testthat/test-plots.R NAMESPACE
-git commit -m "feat: pipeline_crispy_pd_method_comparison (N1)"
+git commit -m "feat: pipeline_trisk_pd_method_comparison (N1)"
 ```
 
 ---
@@ -1562,7 +1562,7 @@ port   <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package
 ad <- run_trisk_on_portfolio(assets, scen, fin, carb, port,
                              baseline_scenario = "NGFS2023GCAM_CP",
                              target_scenario   = "NGFS2023GCAM_NZ2050")
-p <- pipeline_crispy_pd_method_comparison(ad)
+p <- pipeline_trisk_pd_method_comparison(ad)
 ggplot2::ggsave("specs/plans/artifacts/n1_method_comparison.png",
                 p, width = 8, height = 5, dpi = 120)
 '
@@ -1585,10 +1585,10 @@ ggplot2::ggsave("specs/plans/artifacts/n1_method_comparison.png",
 - [ ] **Step 1: Append smoke test**
 
 ```r
-test_that("pipeline_crispy_pd_waterfall returns a ggplot", {
+test_that("pipeline_trisk_pd_waterfall returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_waterfall(integrated)
+  p <- pipeline_trisk_pd_waterfall(integrated)
   expect_s3_class(p, "ggplot")
 })
 ```
@@ -1613,7 +1613,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 #' @param facet_var Column for aggregation. Default "sector".
 #' @return A ggplot2 object.
 #' @export
-pipeline_crispy_pd_waterfall <- function(integration_result,
+pipeline_trisk_pd_waterfall <- function(integration_result,
                                          facet_var = "sector") {
   agg <- aggregate_pd_integration(integration_result$portfolio,
                                   group_cols = facet_var)
@@ -1672,7 +1672,7 @@ Rscript -e 'devtools::test(filter = "plots")'
 
 ```bash
 git add R/plot_pd_waterfall.R tests/testthat/test-plots.R NAMESPACE
-git commit -m "feat: pipeline_crispy_pd_waterfall (N2)"
+git commit -m "feat: pipeline_trisk_pd_waterfall (N2)"
 ```
 
 ---
@@ -1800,13 +1800,13 @@ result_custom <- integrate_pd(analysis_data,
 ## 8. Method comparison
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_method_comparison(analysis_data)
+pipeline_trisk_pd_method_comparison(analysis_data)
 ```
 
 ## 9. Integration charts
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_pd_integration_bars(result_zs)
+pipeline_trisk_pd_integration_bars(result_zs)
 ```
 
 ## 10. EL integration
@@ -1816,23 +1816,23 @@ result_el <- integrate_el(analysis_data, method = "relative")
 ```
 
 ```{r fig.width=7, fig.height=4}
-pipeline_crispy_el_adjustment_bars(result_el)
+pipeline_trisk_el_adjustment_bars(result_el)
 ```
 
 ## 11. Portfolio-level KPIs
 
 ```{r}
-pipeline_crispy_pd_kpi_table(result_zs$aggregate)
+pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 ```
 
 ```{r}
-pipeline_crispy_el_kpi_table(result_el$aggregate)
+pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 ## 12. Sector breakdown
 
 ```{r}
-pipeline_crispy_el_sector_breakdown_table(result_el$portfolio)
+pipeline_trisk_el_sector_breakdown_table(result_el$portfolio)
 ```
 ````
 

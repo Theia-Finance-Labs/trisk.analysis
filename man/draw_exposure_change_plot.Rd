@@ -19,7 +19,7 @@ draw_exposure_change_plot(
 
 \item{y_exposure_var}{Metric for exposure value.}
 
-\item{y_value_loss_var}{Metric for crispy value loss.}
+\item{y_value_loss_var}{Metric for TRISK value loss.}
 
 \item{facet_var}{Optional; variable to facet the plot by.}
 }

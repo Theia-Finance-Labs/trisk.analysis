@@ -42,7 +42,7 @@ warning each time (expected on this repo).
 1. **`.Rbuildignore` hygiene** — DONE (`bf677c0`). `.claude/`, `.ruff_cache/`,
    `dist/` ignored; 2 of 3 R CMD check NOTEs cleared.
 2. **roxygen2 upgrade** — DONE (`bf677c0`). DESCRIPTION pinned to 7.3.2 (CRAN
-   binary cap on R 4.3); `pipeline_crispy_el_adjustment_bars.Rd` regenerated
+   binary cap on R 4.3); `pipeline_trisk_el_adjustment_bars.Rd` regenerated
    in `0767914` to reflect the EL sign refactor.
 3. **dplyr 2.x migration** — DONE (`bf677c0`). All 8 `group_by_at(cols)`
    call-sites in `R/` migrated to `group_by(across(all_of(cols)))`.

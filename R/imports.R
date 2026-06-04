@@ -18,7 +18,7 @@ TRISK_DATA_S3_PREFIX <- "crispy-public-data/trisk_inputs"
 
 #' TRISK plot palette constants
 #'
-#' Hex colour codes used by the built-in `pipeline_crispy_*` plot functions.
+#' Hex colour codes used by the built-in `pipeline_trisk_*` plot functions.
 #' Exported so users can match the palette in custom plots and vignette chunks.
 #'
 #' \itemize{
@@ -71,7 +71,7 @@ el_to_bps <- function(el, ead) {
 #'
 #' Standard ggplot2 theme used across trisk.analysis plots. Exported so
 #' users can apply it to custom plots (e.g. vignette chunks) for visual
-#' consistency with the built-in `pipeline_crispy_*` functions.
+#' consistency with the built-in `pipeline_trisk_*` functions.
 #'
 #' @param base_size Base font size. Default 12.
 #' @param base_family Base font family. Default "Helvetica".

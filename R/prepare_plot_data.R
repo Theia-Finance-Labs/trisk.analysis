@@ -87,7 +87,7 @@ aggregate_trajectories_facts <- function(multi_trajectories, group_cols) {
 #' Compute Analysis Metrics
 #'
 #' Adds derived financial metrics to a raw `run_trisk_on_portfolio()` output:
-#' `net_present_value_difference`, `crispy_perc_value_change`, `crispy_value_loss`,
+#' `net_present_value_difference`, `trisk_perc_value_change`, `trisk_value_loss`,
 #' `exposure_at_default`, `pd_difference`, `expected_loss_baseline`,
 #' `expected_loss_shock`, `expected_loss_difference`. Call this before passing
 #' data to [integrate_el()], which requires the EL columns.
@@ -100,8 +100,8 @@ compute_analysis_metrics <- function(analysis_data) {
   analysis_data <- analysis_data |>
     dplyr::mutate(
       net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
-      crispy_perc_value_change = .data$net_present_value_difference / .data$net_present_value_baseline,
-      crispy_value_loss = .data$crispy_perc_value_change * .data$exposure_value_usd,
+      trisk_perc_value_change = .data$net_present_value_difference / .data$net_present_value_baseline,
+      trisk_value_loss = .data$trisk_perc_value_change * .data$exposure_value_usd,
       exposure_at_default = .data$exposure_value_usd * .data$loss_given_default,
       # exposure_at_default_baseline = .data$net_present_value_baseline * .data$loss_given_default,
       # exposure_at_default_shock = .data$net_present_value_shock * .data$loss_given_default,

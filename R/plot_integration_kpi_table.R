@@ -7,7 +7,7 @@
 #'   output of [aggregate_pd_integration()].
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_pd_kpi_table <- function(pd_aggregate) {
+pipeline_trisk_pd_kpi_table <- function(pd_aggregate) {
   display <- tibble::tibble(
     `Total Exposure (USD)`            = format_big_number(pd_aggregate$total_exposure_usd),
     `Weighted Internal PD`            = format_pct(pd_aggregate$weighted_pd_internal),
@@ -34,7 +34,7 @@ pipeline_crispy_pd_kpi_table <- function(pd_aggregate) {
 #' @param el_aggregate The `$aggregate` element from [integrate_el()].
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_el_kpi_table <- function(el_aggregate) {
+pipeline_trisk_el_kpi_table <- function(el_aggregate) {
   display <- tibble::tibble(
     `Total Exposure (USD)` = format_big_number(el_aggregate$total_exposure_usd),
     `Total Internal EL`    = format_big_number(el_aggregate$total_el_internal),
@@ -103,10 +103,10 @@ sign_color <- function(x, positive_is = c("red", "green")) {
 #' @param group_col Character column to group by. Default "sector".
 #' @return A `knitr_kable` object.
 #' @export
-pipeline_crispy_el_sector_breakdown_table <- function(portfolio_df,
+pipeline_trisk_el_sector_breakdown_table <- function(portfolio_df,
                                                       group_col = "sector") {
   if (!group_col %in% colnames(portfolio_df)) {
-    stop("pipeline_crispy_el_sector_breakdown_table(): column '", group_col,
+    stop("pipeline_trisk_el_sector_breakdown_table(): column '", group_col,
          "' not in portfolio_df")
   }
 

@@ -34,7 +34,7 @@ TRISK_HEX_ADJUSTED
 STATUS_GREEN
 }
 \description{
-Hex colour codes used by the built-in `pipeline_crispy_*` plot functions.
+Hex colour codes used by the built-in `pipeline_trisk_*` plot functions.
 Exported so users can match the palette in custom plots and vignette chunks.
 }
 \details{

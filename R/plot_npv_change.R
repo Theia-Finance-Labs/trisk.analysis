@@ -4,15 +4,15 @@
 #'
 #' @param analysis_data Dataframe containing sector-wise NPV changes and other financial metrics.
 #' @param x_var Sector variable for categorization, defaulting to "ald_sector".
-#' @param y_var NPV change variable, defaulting to "crispy_perc_value_change".
+#' @param y_var NPV change variable, defaulting to "trisk_perc_value_change".
 #' @param granularity Character vector specifying the grouping columns for aggregation.
 #'
 #' @return A ggplot object illustrating the percentage change in NPV across sectors, essential for financial and strategic planning.
 #' @export
-pipeline_crispy_npv_change_plot <- function(
+pipeline_trisk_npv_change_plot <- function(
     analysis_data,
     x_var = "technology",
-    y_var = "crispy_perc_value_change",
+    y_var = "trisk_perc_value_change",
     granularity = c("sector", "technology")) {
   analysis_data <- analysis_data |>
     aggregate_facts(group_cols = granularity) |>
@@ -20,14 +20,14 @@ pipeline_crispy_npv_change_plot <- function(
 
   x_var <- dplyr::intersect(colnames(analysis_data), x_var)
 
-  data_crispy_npv_change_plot <- prepare_for_crispy_npv_change_plot(analysis_data, x_var, y_var)
+  data_trisk_npv_change_plot <- prepare_for_trisk_npv_change_plot(analysis_data, x_var, y_var)
 
-  crispy_npv_change_plot <- draw_crispy_npv_change_plot(
-    data_crispy_npv_change_plot,
+  trisk_npv_change_plot <- draw_trisk_npv_change_plot(
+    data_trisk_npv_change_plot,
     "x_var", y_var
   )
 
-  return(crispy_npv_change_plot)
+  return(trisk_npv_change_plot)
 }
 
 #' Prepare Data for NPV Change Visualization
@@ -40,7 +40,7 @@ pipeline_crispy_npv_change_plot <- function(
 #'
 #' @return A dataframe with unified sector categorization, ready for NPV change visualization.
 #' @keywords internal
-prepare_for_crispy_npv_change_plot <- function(analysis_data, x_var, y_var) {
+prepare_for_trisk_npv_change_plot <- function(analysis_data, x_var, y_var) {
   data_exposure_change <- analysis_data |>
     dplyr::select_at(
       c(x_var, y_var)
@@ -54,14 +54,14 @@ prepare_for_crispy_npv_change_plot <- function(analysis_data, x_var, y_var) {
 #'
 #' Creates the final visualization for NPV percentage changes across sectors using a color gradient to represent increase, decrease, or no change. This function applies a gradient scale to highlight variations in NPV change, facilitating an intuitive understanding of financial performance across sectors.
 #'
-#' @param data_crispy_npv_change_plot Prepared dataframe for plotting.
+#' @param data_trisk_npv_change_plot Prepared dataframe for plotting.
 #' @param x_var Unified sector categorization variable.
 #' @param y_var NPV change percentage variable.
 #'
 #' @return A ggplot object depicting NPV changes across sectors, crucial for assessing financial impact and strategic direction.
 #' @keywords internal
-draw_crispy_npv_change_plot <- function(
-    data_crispy_npv_change_plot,
+draw_trisk_npv_change_plot <- function(
+    data_trisk_npv_change_plot,
     x_var,
     y_var) {
   # HARDCODED PARAMETERS
@@ -75,8 +75,8 @@ draw_crispy_npv_change_plot <- function(
 
   # PLOTTING
 
-  crispy_npv_change_plot <- ggplot2::ggplot(
-    data_crispy_npv_change_plot,
+  trisk_npv_change_plot <- ggplot2::ggplot(
+    data_trisk_npv_change_plot,
     ggplot2::aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), fill = !!rlang::sym(y_var))
   ) +
     ggplot2::geom_col(width = bar_width) +
@@ -88,7 +88,7 @@ draw_crispy_npv_change_plot <- function(
       labels = scales::percent
     ) +
     ggplot2::scale_y_continuous(labels = scales::percent) +
-    ggplot2::labs(y = "Crispy npv change", x = "") +
+    ggplot2::labs(y = "TRISK npv change", x = "") +
     TRISK_PLOT_THEME_FUNC() +
     ggplot2::theme(
       legend.position = "none",
@@ -96,5 +96,5 @@ draw_crispy_npv_change_plot <- function(
     )
 
 
-  return(crispy_npv_change_plot)
+  return(trisk_npv_change_plot)
 }

@@ -1,14 +1,14 @@
-test_that("pipeline_crispy_pd_integration_bars returns a ggplot", {
+test_that("pipeline_trisk_pd_integration_bars returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_integration_bars(integrated)
+  p <- pipeline_trisk_pd_integration_bars(integrated)
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_el_adjustment_bars returns a ggplot", {
+test_that("pipeline_trisk_el_adjustment_bars returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  p <- pipeline_crispy_el_adjustment_bars(integrated)
+  p <- pipeline_trisk_el_adjustment_bars(integrated)
   expect_s3_class(p, "ggplot")
 })
 
@@ -47,7 +47,7 @@ test_that("el_adjustment sign mapping: positive=worse=red, negative=better=green
 
   # Verify the colour mapping at the plot layer: the fill scale palette must
   # map "worse" -> TRISK_HEX_RED and "better" -> STATUS_GREEN.
-  p <- pipeline_crispy_el_adjustment_bars(integration_result)
+  p <- pipeline_trisk_el_adjustment_bars(integration_result)
   fill_scale <- ggplot2::ggplot_build(p)$plot$scales$get_scales("fill")
   pal <- rlang::`%||%`(fill_scale$palette.cache, fill_scale$palette(2))
   # Inspect the named values directly from the scale definition where possible.
@@ -62,17 +62,17 @@ test_that("el_adjustment sign mapping: positive=worse=red, negative=better=green
   expect_equal(unname(fill_scale$palette(2)["better"]), STATUS_GREEN)
 })
 
-test_that("pipeline_crispy_pd_kpi_table returns a knitr_kable", {
+test_that("pipeline_trisk_pd_kpi_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  tbl <- pipeline_crispy_pd_kpi_table(integrated$aggregate)
+  tbl <- pipeline_trisk_pd_kpi_table(integrated$aggregate)
   expect_s3_class(tbl, "knitr_kable")
 })
 
-test_that("pipeline_crispy_el_kpi_table returns a knitr_kable", {
+test_that("pipeline_trisk_el_kpi_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  tbl <- pipeline_crispy_el_kpi_table(integrated$aggregate)
+  tbl <- pipeline_trisk_el_kpi_table(integrated$aggregate)
   expect_s3_class(tbl, "knitr_kable")
 })
 
@@ -103,7 +103,7 @@ test_that("EL KPI table renders positive el_adjustment in red (regression for C1
     total_el_adjustment   =  500,
     el_adjusted_bps       =   15
   )
-  tbl_html <- as.character(pipeline_crispy_el_kpi_table(fake_aggregate))
+  tbl_html <- as.character(pipeline_trisk_el_kpi_table(fake_aggregate))
   expect_true(grepl(red_rgba, tbl_html, fixed = TRUE),
               info = "Positive el_adjustment must render red in the KPI table.")
   expect_false(grepl(green_rgba, tbl_html, fixed = TRUE),
@@ -111,95 +111,95 @@ test_that("EL KPI table renders positive el_adjustment in red (regression for C1
 
   # Negative adjustment must render green (the inverse direction).
   fake_aggregate$total_el_adjustment <- -500
-  tbl_html_neg <- as.character(pipeline_crispy_el_kpi_table(fake_aggregate))
+  tbl_html_neg <- as.character(pipeline_trisk_el_kpi_table(fake_aggregate))
   expect_true(grepl(green_rgba, tbl_html_neg, fixed = TRUE),
               info = "Negative el_adjustment must render green in the KPI table.")
   expect_false(grepl(red_rgba, tbl_html_neg, fixed = TRUE),
                info = "Negative el_adjustment must not render red.")
 })
 
-test_that("pipeline_crispy_el_sector_breakdown_table returns a knitr_kable", {
+test_that("pipeline_trisk_el_sector_breakdown_table returns a knitr_kable", {
   df <- make_test_analysis_data()
   integrated <- integrate_el(df, method = "absolute")
-  tbl <- pipeline_crispy_el_sector_breakdown_table(integrated$portfolio)
+  tbl <- pipeline_trisk_el_sector_breakdown_table(integrated$portfolio)
   expect_s3_class(tbl, "knitr_kable")
 })
 
-test_that("pipeline_crispy_pd_method_comparison returns a ggplot", {
+test_that("pipeline_trisk_pd_method_comparison returns a ggplot", {
   df <- make_test_analysis_data()
-  p <- pipeline_crispy_pd_method_comparison(df)
+  p <- pipeline_trisk_pd_method_comparison(df)
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_method_comparison firm granularity returns a ggplot", {
+test_that("pipeline_trisk_pd_method_comparison firm granularity returns a ggplot", {
   df <- make_test_analysis_data()
-  p <- pipeline_crispy_pd_method_comparison(df, granularity = "firm")
+  p <- pipeline_trisk_pd_method_comparison(df, granularity = "firm")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_method_comparison pseudo_log scale returns a ggplot", {
+test_that("pipeline_trisk_pd_method_comparison pseudo_log scale returns a ggplot", {
   df <- make_test_analysis_data()
-  p <- pipeline_crispy_pd_method_comparison(df, scale = "pseudo_log")
+  p <- pipeline_trisk_pd_method_comparison(df, scale = "pseudo_log")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_method_comparison firm + pseudo_log returns a ggplot", {
+test_that("pipeline_trisk_pd_method_comparison firm + pseudo_log returns a ggplot", {
   df <- make_test_analysis_data()
-  p <- pipeline_crispy_pd_method_comparison(df, granularity = "firm", scale = "pseudo_log")
+  p <- pipeline_trisk_pd_method_comparison(df, granularity = "firm", scale = "pseudo_log")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_method_comparison errors on invalid granularity", {
+test_that("pipeline_trisk_pd_method_comparison errors on invalid granularity", {
   df <- make_test_analysis_data()
-  expect_error(pipeline_crispy_pd_method_comparison(df, granularity = "bogus"))
+  expect_error(pipeline_trisk_pd_method_comparison(df, granularity = "bogus"))
 })
 
-test_that("pipeline_crispy_pd_method_comparison errors on invalid scale", {
+test_that("pipeline_trisk_pd_method_comparison errors on invalid scale", {
   df <- make_test_analysis_data()
-  expect_error(pipeline_crispy_pd_method_comparison(df, scale = "bogus"))
+  expect_error(pipeline_trisk_pd_method_comparison(df, scale = "bogus"))
 })
 
-test_that("pipeline_crispy_pd_integration_bars firm granularity returns a ggplot", {
+test_that("pipeline_trisk_pd_integration_bars firm granularity returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_integration_bars(integrated, granularity = "firm")
+  p <- pipeline_trisk_pd_integration_bars(integrated, granularity = "firm")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_integration_bars pseudo_log scale returns a ggplot", {
+test_that("pipeline_trisk_pd_integration_bars pseudo_log scale returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_integration_bars(integrated, scale = "pseudo_log")
+  p <- pipeline_trisk_pd_integration_bars(integrated, scale = "pseudo_log")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_integration_bars firm + pseudo_log returns a ggplot", {
+test_that("pipeline_trisk_pd_integration_bars firm + pseudo_log returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_integration_bars(integrated, granularity = "firm", scale = "pseudo_log")
+  p <- pipeline_trisk_pd_integration_bars(integrated, granularity = "firm", scale = "pseudo_log")
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_integration_bars errors on invalid granularity", {
+test_that("pipeline_trisk_pd_integration_bars errors on invalid granularity", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  expect_error(pipeline_crispy_pd_integration_bars(integrated, granularity = "bogus"))
+  expect_error(pipeline_trisk_pd_integration_bars(integrated, granularity = "bogus"))
 })
 
-test_that("pipeline_crispy_pd_integration_bars errors on invalid scale", {
+test_that("pipeline_trisk_pd_integration_bars errors on invalid scale", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  expect_error(pipeline_crispy_pd_integration_bars(integrated, scale = "bogus"))
+  expect_error(pipeline_trisk_pd_integration_bars(integrated, scale = "bogus"))
 })
 
-test_that("pipeline_crispy_pd_waterfall returns a ggplot", {
+test_that("pipeline_trisk_pd_waterfall returns a ggplot", {
   df <- make_test_analysis_data()
   integrated <- integrate_pd(df, method = "absolute")
-  p <- pipeline_crispy_pd_waterfall(integrated)
+  p <- pipeline_trisk_pd_waterfall(integrated)
   expect_s3_class(p, "ggplot")
 })
 
-test_that("pipeline_crispy_pd_waterfall builds true cumulative segments", {
+test_that("pipeline_trisk_pd_waterfall builds true cumulative segments", {
   # Build a one-sector integration_result so we can assert the exact
   # cumulative arithmetic: Internal bar 0->I, Adjustment bar I->A, Adjusted
   # bar 0->A. Where A = I + Adjustment.
@@ -215,7 +215,7 @@ test_that("pipeline_crispy_pd_waterfall builds true cumulative segments", {
   )
   integration_result <- list(portfolio = portfolio)
 
-  p <- pipeline_crispy_pd_waterfall(integration_result)
+  p <- pipeline_trisk_pd_waterfall(integration_result)
   expect_s3_class(p, "ggplot")
 
   built <- ggplot2::ggplot_build(p)
