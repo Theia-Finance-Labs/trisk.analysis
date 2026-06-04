@@ -17,7 +17,7 @@ articles:
 - title: Bank workflow
   navbar: Bank workflow
   contents:
-  - bank_1_portfolio-analysis
+  - bank_1_credit-risk-analysis
   - bank_2_inputs-and-outputs
   - bank_3_run-on-a-portfolio
   - bank_4_sensitivity-analysis

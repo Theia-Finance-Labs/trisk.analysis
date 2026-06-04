@@ -34,7 +34,7 @@ and an integrated expected-loss bps callout at the end.
 > `portfolio_ids_internal_pd` variant (the same file plus an `internal_pd`
 > column). **The CSVs loaded below are placeholders** (bundled samples) — replace
 > them with your own files. See
-> [Bank portfolio analysis](bank_1_portfolio-analysis.html) for `setup_trisk_inputs()`
+> [Bank credit risk analysis](bank_1_credit-risk-analysis.html) for `setup_trisk_inputs()`
 > and the `trisk_inputs/` folder convention.
 
 **Where your portfolio enters the sensitivity analysis.** The sweep itself

@@ -1,8 +1,8 @@
 ---
-title: "Bank workflow 1: Portfolio analysis — start here"
+title: "Bank workflow 1: Bank credit risk analysis — start here"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Bank workflow 1: Portfolio analysis - start here}
+  %\VignetteIndexEntry{Bank workflow 1: Bank credit risk analysis — start here}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
