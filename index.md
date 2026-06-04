@@ -122,4 +122,4 @@ Analysis has received funding from the European Union’s Life programme
 under Grant No. LIFE21-GIC-DE-Stress under the LIFE-2021-SAP-CLIMA
 funding call.
 
-![](inst/LifeLogo2.jpg)
+![](reference/figures/LifeLogo2.jpg)
