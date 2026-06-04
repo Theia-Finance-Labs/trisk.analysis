@@ -188,8 +188,17 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
 #' @export
 #'
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
+  # X1 fix: TRISK NPV output is asset-level, but the portfolio is joined without
+  # asset_id. Without this collapse, a company with multiple assets in one
+  # (sector, technology) fans a single loan into N rows and the full
+  # exposure_value_usd is then applied to each -> N x EAD/EL. Sum NPV across a
+  # company's assets within each (run, company, sector, technology, country) so
+  # every loan matches one row per technology and contributes its exposure once.
+  # Mirrors aggregate_trisk_outputs_simple() in the simple runner.
+  npv_results <- aggregate_npv_across_assets(npv_results)
+
   analysis_data <- dplyr::inner_join(
-    npv_results |> dplyr::select(-"company_name"),
+    npv_results,
     pd_results |> dplyr::select(-"company_name"),
     by = c("run_id", "company_id", "sector"),
     relationship = "many-to-many"
@@ -219,6 +228,25 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   return(full_joined_data)
 }
 
+
+# Internal — collapse asset-level NPV to (run, company, sector, technology,
+# country) grain so a single portfolio loan does not fan out across a company's
+# assets (X1). NPV is summed across assets = the company-technology total. Other
+# columns (asset_id, asset_name, model-derived difference/change) are dropped;
+# net_present_value_difference and value-change metrics are recomputed downstream
+# by compute_analysis_metrics().
+aggregate_npv_across_assets <- function(npv_results) {
+  npv_results |>
+    dplyr::group_by(
+      .data$run_id, .data$company_id, .data$sector,
+      .data$technology, .data$country_iso2
+    ) |>
+    dplyr::summarise(
+      net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
+      net_present_value_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
 
 # Helper function to merge portfolio data based on the presence of term
 merge_portfolio <- function(portfolio, analysis, join_keys) {

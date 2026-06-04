@@ -54,6 +54,10 @@ STATUS_GREEN <- "#3D8B5E"
 # Default for `qnorm()` clip in the z-score effective-PD transform.
 ZSCORE_FLOOR_DEFAULT <- 1e-4
 ZSCORE_CAP_DEFAULT   <- 1 - 1e-4
+# Z1: when more than this fraction of rows have a PD clipped to the floor/cap
+# before qnorm(), the z-score overlay is governed by the clip bound rather than
+# the model, so integrate_pd()/integrate_el() emit a warning.
+ZSCORE_CLIP_WARN_THRESHOLD <- 0.5
 # Default sigma for `scales::pseudo_log_trans()`; small enough that PDs in
 # [0, 0.5] retain near-log spacing without exploding around zero.
 PSEUDO_LOG_SIGMA_DEFAULT <- 1e-5

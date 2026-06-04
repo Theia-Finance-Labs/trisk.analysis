@@ -36,11 +36,16 @@ pipeline_trisk_pd_kpi_table <- function(pd_aggregate) {
 #' @export
 pipeline_trisk_el_kpi_table <- function(el_aggregate) {
   display <- tibble::tibble(
-    `Total Exposure (USD)` = format_big_number(el_aggregate$total_exposure_usd),
-    `Total Internal EL`    = format_big_number(el_aggregate$total_el_internal),
-    `Total Adjusted EL`    = format_big_number(el_aggregate$total_el_adjusted),
-    `EL Adjustment`        = format_big_number(el_aggregate$total_el_adjustment),
-    `Adjusted EL (bps)`    = format_bps(el_aggregate$el_adjusted_bps)
+    `Total Exposure (USD)`     = format_big_number(el_aggregate$total_exposure_usd),
+    `Total Internal EL`        = format_big_number(el_aggregate$total_el_internal),
+    `Total Adjusted EL`        = format_big_number(el_aggregate$total_el_adjusted),
+    `EL Adjustment`            = format_big_number(el_aggregate$total_el_adjustment),
+    # Headline: the adjusted EL *level* as bps of notional exposure — the total
+    # expected-loss rate of the shocked book (baseline credit risk + overlay).
+    `Adjusted EL (bps)`        = format_bps(el_aggregate$el_adjusted_bps),
+    # Secondary: the climate overlay (delta = adjusted - internal) as bps of
+    # exposure — the marginal effect attributable to the transition scenario.
+    `EL/exposure delta (bps)`  = format_bps(el_aggregate$el_adjustment_bps)
   )
 
   # EL levels (Internal/Adjusted) render in default black. Only the adjustment
@@ -96,8 +101,9 @@ sign_color <- function(x, positive_is = c("red", "green")) {
 #' EL Sector Breakdown Table
 #'
 #' Sector-level EL breakdown with direction arrows, exposure, internal vs
-#' adjusted EL, delta, and EL/EAD in bps. Ports the Shiny collapsible breakdown
-#' at `mod_integration.R:707-786` into a printable table.
+#' adjusted EL, the signed delta, and the adjusted EL *level* as a loss rate in
+#' bps of notional exposure. Ports the Shiny collapsible breakdown at
+#' `mod_integration.R:707-786` into a printable table.
 #'
 #' @param portfolio_df The `$portfolio` from [integrate_el()].
 #' @param group_col Character column to group by. Default "sector".
@@ -121,7 +127,11 @@ pipeline_trisk_el_sector_breakdown_table <- function(portfolio_df,
       .groups = "drop"
     ) |>
     dplyr::mutate(
-      `EL_EAD_bps` = el_to_bps(.data$`Adjusted EL`, .data$Exposure),
+      # K1: the adjusted EL *level* as a loss rate in bps of *notional exposure*.
+      # Was labelled "EL/EAD"; the denominator is raw exposure (EL/EAD would be
+      # PD-in-bps, not a loss rate). The per-sector climate delta is the signed
+      # `EL Adjustment` column.
+      `Adjusted_EL_bps` = el_to_bps(.data$`Adjusted EL`, .data$Exposure),
       Direction = dplyr::case_when(
         .data$`EL Adjustment` >  0.01 ~ "\u2191",    # up arrow: loss worse
         .data$`EL Adjustment` < -0.01 ~ "\u2193",    # down arrow: loss better
@@ -138,7 +148,7 @@ pipeline_trisk_el_sector_breakdown_table <- function(portfolio_df,
       `Internal EL` = sapply(.data$`Internal EL`, format_big_number),
       `Adjusted EL` = sapply(.data$`Adjusted EL`, format_big_number),
       `EL Adjustment` = sapply(.data$`EL Adjustment`, format_big_number),
-      `EL/EAD (bps)`  = sapply(.data$EL_EAD_bps, format_bps)
+      `Adjusted EL (bps)` = sapply(.data$Adjusted_EL_bps, format_bps)
     )
 
   display |>

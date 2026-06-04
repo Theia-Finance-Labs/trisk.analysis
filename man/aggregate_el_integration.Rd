@@ -12,7 +12,11 @@ aggregate_el_integration(portfolio_df, group_cols = NULL)
 \item{group_cols}{Character vector or NULL. NULL = portfolio total.}
 }
 \value{
-A one-row tibble (per group) with total ELs + `el_adjusted_bps`.
+A one-row tibble (per group) with total ELs and two bps measures, both
+  as a loss rate over *notional exposure* (EL/EAD would be PD-in-bps, not a
+  loss rate): `el_adjusted_bps` — the adjusted EL *level* (total expected-loss
+  rate of the shocked book), and `el_adjustment_bps` — the climate overlay
+  (delta = adjusted - internal), the marginal transition effect.
 }
 \description{
 Aggregate EL integration results to portfolio level

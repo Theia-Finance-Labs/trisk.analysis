@@ -83,8 +83,9 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 ### K1 — re-base + relabel the headline bps
 - **Code evidence:** `aggregate_el_integration` (`R/integrate.R:405-409`) sets `el_adjusted_bps = el_to_bps(total_el_adjusted, total_exposure_usd)` — the *level* on *raw exposure*, while the table/vignette label it "EL/EAD delta".
 - **Denominator algebra (decisive):** with EAD = exposure×LGD, `EL/EAD = (exp·LGD·PD)/(exp·LGD) = PD in bps` — a PD-like rate, **not** a loss rate. A headline "EL in bps" conventionally means EL / *notional exposure* = (LGD·PD) in bps. So the **correct denominator is raw `total_exposure_usd`**, relabelled **"EL / exposure (bps)"** — not `total_ead`, which would reintroduce the same confusion K1 exists to kill.
-- **Fix:** emit `el_adjustment_bps = el_to_bps(total_el_adjustment, total_exposure_usd)` (the *delta* on *raw exposure*) as headline; keep `el_adjusted_bps` (level) clearly relabelled as a secondary diagnostic row. Update `R/plot_integration_kpi_table.R` and `vignettes/bank_4*` "P3b" so both the label ("EL/exposure delta, bps") and the wording ("delta") match the number. Ties cleanly into N1's exposure/EAD renaming.
-- Pin the chosen denominator + label in test 0.4.
+- **Fix (DONE):** emit **both** bps measures on raw exposure — `el_adjusted_bps` (level) and `el_adjustment_bps` (delta) — and fix the labels. The defect was the *mislabel* (level called "delta"/"EL/EAD"), not showing the level.
+- **Headline decision (Jakub 2026-06-05): LEVEL first.** KPI table (`R/plot_integration_kpi_table.R`) headlines `Adjusted EL (bps)` (level = total expected-loss rate of the shocked book), with `EL/exposure delta (bps)` (climate overlay) as the secondary column; P4 sector breakdown shows the adjusted-level rate. `vignettes/bank_4*` "P3b"/"P4" wording leads with the level and points to the delta for climate attribution. Denominator is raw exposure throughout (EL/EAD would be PD-in-bps).
+- Pinned in `test-el-bps-kpi.R` (delta exists, equals delta/exposure, ≠ level).
 
 ### Z1 — clip diagnostics + guidance
 - **Code evidence:** `apply_pd_method`/`apply_el_method` clip to `[ZSCORE_FLOOR_DEFAULT=1e-4, ZSCORE_CAP_DEFAULT]` before `qnorm` (`R/integrate.R:206-212,360-369`; `R/imports.R:55-56`).

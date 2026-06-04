@@ -90,10 +90,18 @@ integrate_pd <- function(analysis_data,
     ) |>
     dplyr::select(-"pd_type_raw")
 
+  aggregate <- aggregate_pd_integration(portfolio)
+  if (method == "zscore") {
+    clipped <- zscore_clipped_share(list(internal_vec, pd_baseline, pd_shock),
+                                    zscore_floor, zscore_cap)
+    aggregate$zscore_clipped_share <- clipped
+    warn_if_overclipped(clipped, "integrate_pd")
+  }
+
   list(
     portfolio = portfolio,
     portfolio_long = portfolio_long,
-    aggregate = aggregate_pd_integration(portfolio)
+    aggregate = aggregate
   )
 }
 
@@ -192,6 +200,32 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
   }
 
   stop("resolve_internal_series(): user_values must be NULL, numeric vector, or data frame.")
+}
+
+# Internal (Z1) - fraction of rows where any input PD lies outside [floor, cap]
+# and is therefore clamped before qnorm(). A high share means the z-score overlay
+# reflects the clip bound, not the model. NA-safe; ignores all-NA rows.
+zscore_clipped_share <- function(series_list, floor, cap) {
+  clipped <- Reduce(`|`, lapply(series_list, function(x) {
+    !is.na(x) & (x < floor | x > cap)
+  }))
+  if (length(clipped) == 0) return(NA_real_)
+  mean(clipped)
+}
+
+# Internal (Z1) - warn when the clipped share crosses the threshold.
+warn_if_overclipped <- function(share, fn) {
+  if (!is.na(share) && share > ZSCORE_CLIP_WARN_THRESHOLD) {
+    warning(
+      fn, "(): ", round(share * 100), "% of rows have a PD clipped to the ",
+      "z-score floor/cap before qnorm(); the overlay is governed by the clip ",
+      "bound, not the model. Baseline PDs below the floor erase the shock signal. ",
+      "Consider method = \"absolute\" for underflow-prone (e.g. IG / short-horizon) ",
+      "books, or review zscore_floor.",
+      call. = FALSE
+    )
+  }
+  invisible(share)
 }
 
 # Internal - pure vector math for the three PD methods. Shiny-parity.
@@ -333,10 +367,21 @@ integrate_el <- function(analysis_data,
     ) |>
     dplyr::select(-"el_type_raw")
 
+  aggregate <- aggregate_el_integration(portfolio)
+  if (method == "zscore") {
+    eff_pd <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
+    clipped <- zscore_clipped_share(
+      list(eff_pd(internal_vec), eff_pd(el_baseline), eff_pd(el_shock)),
+      zscore_floor, zscore_cap
+    )
+    aggregate$zscore_clipped_share <- clipped
+    warn_if_overclipped(clipped, "integrate_el")
+  }
+
   list(
     portfolio = portfolio,
     portfolio_long = portfolio_long,
-    aggregate = aggregate_el_integration(portfolio)
+    aggregate = aggregate
   )
 }
 
@@ -376,7 +421,11 @@ apply_el_method <- function(internal, baseline, shock, method,
 #'
 #' @param portfolio_df The `$portfolio` element from [integrate_el()].
 #' @param group_cols Character vector or NULL. NULL = portfolio total.
-#' @return A one-row tibble (per group) with total ELs + `el_adjusted_bps`.
+#' @return A one-row tibble (per group) with total ELs and two bps measures, both
+#'   as a loss rate over *notional exposure* (EL/EAD would be PD-in-bps, not a
+#'   loss rate): `el_adjusted_bps` — the adjusted EL *level* (total expected-loss
+#'   rate of the shocked book), and `el_adjustment_bps` — the climate overlay
+#'   (delta = adjusted - internal), the marginal transition effect.
 #' @export
 aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
   required <- c("internal_el", "expected_loss_baseline", "expected_loss_shock",
@@ -404,7 +453,16 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
     ) |>
     dplyr::mutate(
       total_el_adjustment = .data$total_el_adjusted - .data$total_el_internal,
+      # Both bps measures use *notional exposure* as the denominator: EL / exposure
+      # = LGD*PD in bps, a true loss rate. Dividing by EAD (= exposure * LGD) would
+      # instead yield PD-in-bps, not a loss rate (K1).
+      # el_adjusted_bps: the adjusted EL *level* as a loss rate (total expected loss
+      # of the shocked book = baseline credit risk + climate overlay).
       el_adjusted_bps     = el_to_bps(.data$total_el_adjusted,
+                                      .data$total_exposure_usd),
+      # el_adjustment_bps: the climate overlay (delta = adjusted - internal) as a
+      # loss rate — the marginal effect attributable to the transition scenario.
+      el_adjustment_bps   = el_to_bps(.data$total_el_adjustment,
                                       .data$total_exposure_usd)
     )
 

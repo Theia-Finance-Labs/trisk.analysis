@@ -145,6 +145,16 @@ parameters bound the PDs before `qnorm()`, since `qnorm(0) = -Inf` and
 zero only if your internal PDs are reliably calibrated that low; tighten it to
 de-sensitise the tails.
 
+> **Watch the floor on underflow-prone books.** When a baseline (and shock) PD
+> sits **below** `zscore_floor`, both clip to the floor and `qnorm(shock) -
+> qnorm(baseline) = 0` — the shock signal is erased and the overlay reflects the
+> clip bound, not the model. Merton baselines for investment-grade or
+> short-horizon names routinely underflow well below `1e-4`. `integrate_pd()` /
+> `integrate_el()` now report `aggregate$zscore_clipped_share` (the fraction of
+> rows clipped) and emit a warning when most of the book is clipped. If that
+> share is high, prefer `method = "absolute"`, which adds the raw PD shift and is
+> immune to underflow.
+
 ### Worked example: one row through z-score
 
 Take a single Oil&Gas exposure with `internal_pd = 0.025`, and suppose TRISK
@@ -363,18 +373,24 @@ weighted adjusted PD, the adjustment in pp, and direction.
 pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 ```
 
-**P3b — EL KPI table.** One-row EL summary including the **bps metric**
-(`EL / EAD`). The bps figure is scale-free and travels best across audiences.
-*When to use: same as P3a but for EL; the bps delta is the single best headline
-number.*
+**P3b — EL KPI table.** One-row EL summary. The headline bps metric is the
+**adjusted EL level as a loss rate**: `Adjusted EL / exposure` in bps
+(`el_adjusted_bps`) — the total expected-loss rate of the shocked book. The
+**climate overlay (delta)**, `EL adjustment / exposure` (`el_adjustment_bps`), is
+shown as a secondary column: it isolates the marginal effect of the transition
+scenario. Both use *notional* exposure as the denominator, not "EAD": dividing by
+`exposure_at_default` (= exposure × LGD) would yield PD-in-bps, not a loss rate.
+*When to use: same as P3a but for EL; lead with the adjusted EL level, then point
+to the delta to attribute how much of it is climate.*
 
 ```{r}
 pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
 **P4 — EL sector breakdown.** One row per sector: exposure, internal EL,
-adjusted EL, delta, direction arrow, and EL/EAD in bps. Sits between P2 (deltas
-only) and P3b (one number).
+adjusted EL, signed delta, direction arrow, and the adjusted EL level as a loss
+rate (`Adjusted EL / exposure`, bps). Sits between P2 (deltas only) and P3b (one
+number).
 *When to use: the reference table for any EL discussion; the bps column makes
 sectors with different exposure magnitudes comparable.*
 
