@@ -68,7 +68,10 @@ cares about: **when** the shock arrives (`shock_year`), **whose model**
 of the transition you trust (the IAM), and **how ambitious** the target
 scenario is. This vignette sweeps each one and reads the result as a
 change in the bank’s portfolio risk picture, not as an abstract model
-output.
+output. These three are the focus here because they are scenario
+choices, but the same machinery sweeps **any** model parameter —
+including the financial assumptions such as the discount rate (see
+*Sweeping any model parameter* below).
 
 ## Base run
 
@@ -109,12 +112,105 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| b9a8d671-da9b-4b9e-9657-47da45d9e8f6 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+
+## Sweeping any model parameter
+
+The dimensions swept below (`shock_year`, IAM, ambition) are scenario
+choices, but [`run_trisk_sa()`](../reference/run_trisk_sa.md) is not
+limited to them. Each entry in `run_params` is passed straight to
+[`trisk.model::run_trisk_model()`](https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html),
+so you can vary **any** of its arguments and read the sensitivity the
+same way. Beyond the scenario fields, that includes the financial and
+valuation assumptions:
+
+- `discount_rate` — DCF discount rate on dividends
+- `risk_free_rate` — risk-free rate in the Merton PD model
+- `growth_rate` — terminal growth rate of profits
+- `div_netprofit_prop_coef` — dividend pass-through coefficient
+- `carbon_price_model` and `market_passthrough` — carbon-tax pathway and
+  the share of the tax the firm passes to customers
+
+Hold the scenario fixed and vary one knob to isolate its effect. For
+example, sweep the DCF `discount_rate` across three values:
+
+``` r
+
+discount_rate_grid <- c(0.07, 0.09, 0.11)
+
+run_params_discount <- lapply(discount_rate_grid, function(dr) {
+  list(
+    scenario_geography = "Global",
+    baseline_scenario  = "NGFS2023GCAM_CP",
+    target_scenario    = "NGFS2023GCAM_NZ2050",
+    shock_year         = 2030,
+    discount_rate      = dr
+  )
+})
+
+sa_discount <- run_trisk_sa(
+  assets_data    = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data    = ngfs_carbon_price_testdata,
+  run_params     = run_params_discount
+)
+#> [1] "Starting the execution of 3 total runs"
+#> -- Retyping Dataframes. 
+#> -- Processing Assets and Scenarios. 
+#> -- Transforming to Trisk model input. 
+#> -- Calculating baseline, target, and shock trajectories. 
+#> -- Applying zero-trajectory logic to production trajectories. 
+#> -- Calculating net profits.
+#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
+#> -- Calculating market risk. 
+#> -- Calculating credit risk. 
+#> [1] "Done 1 / 3 total runs"
+#> -- Retyping Dataframes. 
+#> -- Processing Assets and Scenarios. 
+#> -- Transforming to Trisk model input. 
+#> -- Calculating baseline, target, and shock trajectories. 
+#> -- Applying zero-trajectory logic to production trajectories. 
+#> -- Calculating net profits.
+#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
+#> -- Calculating market risk. 
+#> -- Calculating credit risk. 
+#> [1] "Done 2 / 3 total runs"
+#> -- Retyping Dataframes. 
+#> -- Processing Assets and Scenarios. 
+#> -- Transforming to Trisk model input. 
+#> -- Calculating baseline, target, and shock trajectories. 
+#> -- Applying zero-trajectory logic to production trajectories. 
+#> -- Calculating net profits.
+#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
+#> -- Calculating market risk. 
+#> -- Calculating credit risk. 
+#> [1] "Done 3 / 3 total runs"
+#> [1] "All runs completed."
+
+# the params table records which discount_rate produced each run_id
+knitr::kable(sa_discount$params[, c("run_id", "discount_rate",
+                                    "baseline_scenario", "target_scenario")])
+```
+
+| run_id | discount_rate | baseline_scenario | target_scenario |
+|:---|---:|:---|:---|
+| 4a290e6d-8244-4692-b9e1-25c4a10da383 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 6ac3bc25-0b27-4208-b280-f7d74ffc92f4 | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| ea98124e-27e2-4a0f-8a00-e4631decb5e2 | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+
+A higher discount rate shrinks the present value of distant cash flows,
+so it lowers both the baseline and the shock NPV. Because the transition
+shock is a *difference* of two DCFs, much of that level effect cancels
+and the shock magnitude moves less than the absolute NPVs — sweeping the
+rate is how you confirm that for your own book. The same pattern applies
+to every parameter above; the rest of this vignette focuses on the three
+scenario dimensions.
 
 ## Convention: actual portfolio terms, EAD-weighted
 
@@ -300,7 +396,7 @@ draw_pd_by_sector(pd_shockyear, portfolio_terms, "shock year",
                                                    c("2026", "2030", "2035")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-7-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-8-1.png)
 
 #### Advanced: per-firm view
 
@@ -311,7 +407,7 @@ draw_pd_by_exposure(pd_shockyear, portfolio_terms, "shock year",
                                                      c("2026", "2030", "2035")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-8-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-9-1.png)
 
 ## IAM (integrated assessment model)
 
@@ -415,7 +511,7 @@ draw_pd_by_sector(pd_iam, portfolio_terms_power, "IAM",
                                                    c("GCAM", "REMIND", "MESSAGE")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-10-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-11-1.png)
 
 #### Advanced: per-firm view
 
@@ -426,7 +522,7 @@ draw_pd_by_exposure(pd_iam, portfolio_terms_power, "IAM",
                                                      c("GCAM", "REMIND", "MESSAGE")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-11-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-12-1.png)
 
 ## Ambition policy
 
@@ -504,7 +600,7 @@ draw_pd_by_sector(pd_ambition, portfolio_terms_power, "ambition policy",
                                                    c("NZ2050", "B2DS", "DT")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-13-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-14-1.png)
 
 #### Advanced: per-firm view
 
@@ -515,7 +611,7 @@ draw_pd_by_exposure(pd_ambition, portfolio_terms_power, "ambition policy",
                                                      c("NZ2050", "B2DS", "DT")))
 ```
 
-![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-14-1.png)
+![](bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-15-1.png)
 
 ## What this means for the bank
 

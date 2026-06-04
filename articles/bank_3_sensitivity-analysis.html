@@ -143,7 +143,10 @@ reader cares about: <strong>when</strong> the shock arrives
 transition you trust (the IAM), and <strong>how ambitious</strong> the
 target scenario is. This vignette sweeps each one and reads the result
 as a change in the bank’s portfolio risk picture, not as an abstract
-model output.</p>
+model output. These three are the focus here because they are scenario
+choices, but the same machinery sweeps <strong>any</strong> model
+parameter — including the financial assumptions such as the discount
+rate (see <em>Sweeping any model parameter</em> below).</p>
 </div>
 <div class="section level2">
 <h2 id="base-run">Base run<a class="anchor" aria-label="anchor" href="#base-run"></a>
@@ -199,7 +202,7 @@ model output.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -207,7 +210,7 @@ model output.</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
@@ -215,7 +218,7 @@ model output.</p>
 <td align="right">0.0000214</td>
 </tr>
 <tr class="odd">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
@@ -223,7 +226,7 @@ model output.</p>
 <td align="right">0.0004647</td>
 </tr>
 <tr class="even">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
@@ -231,7 +234,7 @@ model output.</p>
 <td align="right">0.0022474</td>
 </tr>
 <tr class="odd">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
@@ -239,7 +242,7 @@ model output.</p>
 <td align="right">0.0059057</td>
 </tr>
 <tr class="even">
-<td align="left">b9a8d671-da9b-4b9e-9657-47da45d9e8f6</td>
+<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>
@@ -248,6 +251,133 @@ model output.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level2">
+<h2 id="sweeping-any-model-parameter">Sweeping any model parameter<a class="anchor" aria-label="anchor" href="#sweeping-any-model-parameter"></a>
+</h2>
+<p>The dimensions swept below (<code>shock_year</code>, IAM, ambition)
+are scenario choices, but <code><a href="../reference/run_trisk_sa.html">run_trisk_sa()</a></code> is not limited to
+them. Each entry in <code>run_params</code> is passed straight to
+<code><a href="https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html" class="external-link">trisk.model::run_trisk_model()</a></code>, so you can vary
+<strong>any</strong> of its arguments and read the sensitivity the same
+way. Beyond the scenario fields, that includes the financial and
+valuation assumptions:</p>
+<ul>
+<li>
+<code>discount_rate</code> — DCF discount rate on dividends</li>
+<li>
+<code>risk_free_rate</code> — risk-free rate in the Merton PD
+model</li>
+<li>
+<code>growth_rate</code> — terminal growth rate of profits</li>
+<li>
+<code>div_netprofit_prop_coef</code> — dividend pass-through
+coefficient</li>
+<li>
+<code>carbon_price_model</code> and <code>market_passthrough</code>
+— carbon-tax pathway and the share of the tax the firm passes to
+customers</li>
+</ul>
+<p>Hold the scenario fixed and vary one knob to isolate its effect. For
+example, sweep the DCF <code>discount_rate</code> across three
+values:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">discount_rate_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.07</span>, <span class="fl">0.09</span>, <span class="fl">0.11</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">run_params_discount</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">discount_rate_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">dr</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>    baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>    target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>    shock_year         <span class="op">=</span> <span class="fl">2030</span>,</span>
+<span>    discount_rate      <span class="op">=</span> <span class="va">dr</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_discount</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span>  assets_data    <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
+<span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params_discount</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Starting the execution of 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 1 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 2 / 3 total runs"</span></span>
+<span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
+<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
+<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
+<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
+<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
+<span><span class="co">#&gt; -- Calculating net profits.</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
+<span><span class="co">#&gt; -- Calculating market risk. </span></span>
+<span><span class="co">#&gt; -- Calculating credit risk. </span></span>
+<span><span class="co">#&gt; [1] "Done 3 / 3 total runs"</span></span>
+<span><span class="co">#&gt; [1] "All runs completed."</span></span>
+<span></span>
+<span><span class="co"># the params table records which discount_rate produced each run_id</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sa_discount</span><span class="op">$</span><span class="va">params</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run_id"</span>, <span class="st">"discount_rate"</span>,</span>
+<span>                                    <span class="st">"baseline_scenario"</span>, <span class="st">"target_scenario"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="41%">
+<col width="15%">
+<col width="20%">
+<col width="22%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">run_id</th>
+<th align="right">discount_rate</th>
+<th align="left">baseline_scenario</th>
+<th align="left">target_scenario</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">4a290e6d-8244-4692-b9e1-25c4a10da383</td>
+<td align="right">0.07</td>
+<td align="left">NGFS2023GCAM_CP</td>
+<td align="left">NGFS2023GCAM_NZ2050</td>
+</tr>
+<tr class="even">
+<td align="left">6ac3bc25-0b27-4208-b280-f7d74ffc92f4</td>
+<td align="right">0.09</td>
+<td align="left">NGFS2023GCAM_CP</td>
+<td align="left">NGFS2023GCAM_NZ2050</td>
+</tr>
+<tr class="odd">
+<td align="left">ea98124e-27e2-4a0f-8a00-e4631decb5e2</td>
+<td align="right">0.11</td>
+<td align="left">NGFS2023GCAM_CP</td>
+<td align="left">NGFS2023GCAM_NZ2050</td>
+</tr>
+</tbody>
+</table>
+<p>A higher discount rate shrinks the present value of distant cash
+flows, so it lowers both the baseline and the shock NPV. Because the
+transition shock is a <em>difference</em> of two DCFs, much of that
+level effect cancels and the shock magnitude moves less than the
+absolute NPVs — sweeping the rate is how you confirm that for your own
+book. The same pattern applies to every parameter above; the rest of
+this vignette focuses on the three scenario dimensions.</p>
 </div>
 <div class="section level2">
 <h2 id="convention-actual-portfolio-terms-ead-weighted">Convention: actual portfolio terms, EAD-weighted<a class="anchor" aria-label="anchor" href="#convention-actual-portfolio-terms-ead-weighted"></a>
@@ -275,7 +405,7 @@ exported from the package). Each one takes the long-format PD output of
 <code><a href="../reference/run_trisk_sa.html">run_trisk_sa()</a></code>, attaches the bank’s contractual portfolio
 terms, and produces a comparison plot of PD difference
 (<code>pd_shock - pd_baseline</code>) per variant.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">attach_portfolio_term</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sa_pd</span>, <span class="va">portfolio_terms</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">joined</span> <span class="op">&lt;-</span> <span class="va">sa_pd</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">portfolio_terms</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span><span class="op">)</span><span class="op">)</span></span>
@@ -352,7 +482,7 @@ terms, and produces a comparison plot of PD difference
 <span><span class="op">}</span></span></code></pre></div>
 <p>A small palette shared across the three dimension sections so the
 same variant index gets the same colour everywhere:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">TRAJ_PALETTE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#1b324f"</span>, <span class="st">"#00c082"</span>, <span class="st">"#ff9623"</span><span class="op">)</span>  <span class="co"># matches plot_multi_trajectories()</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -361,7 +491,7 @@ same variant index gets the same colour everywhere:</p>
 <p>What happens to portfolio PD when the policy shock hits earlier or
 later? This section sweeps <code>shock_year</code> across 2026 / 2030 /
 2035, holding the scenario pair fixed at NGFS2023GCAM CP vs NZ2050.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_params_shockyear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
 <span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
@@ -419,19 +549,19 @@ later? This section sweeps <code>shock_year</code> across 2026 / 2030 /
 <span></span>
 <span><span class="va">pd_shockyear</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_shockyear</span>,</span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">shock_year</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2026</span>, <span class="fl">2030</span>, <span class="fl">2035</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_shockyear</span>, <span class="va">portfolio_terms</span>, <span class="st">"shock year"</span>,</span>
 <span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2026"</span>, <span class="st">"2030"</span>, <span class="st">"2035"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="768"></p>
 <div class="section level4">
 <h4 id="advanced-per-firm-view">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_shockyear</span>, <span class="va">portfolio_terms</span>, <span class="st">"shock year"</span>,</span>
 <span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2026"</span>, <span class="st">"2030"</span>, <span class="st">"2035"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="960"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="960"></p>
 </div>
 </div>
 <div class="section level2">
@@ -453,7 +583,7 @@ the portfolio to that window before running these two sections — keeping
 the cross-variant comparison apples-to-apples on the bank’s power
 exposure.</p>
 </blockquote>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># This filter is YEAR scoping only: the scenario-derived analysis window starts</span></span>
 <span><span class="co"># at 2023 for these variants, and the model asserts every asset's production_year</span></span>
 <span><span class="co"># falls inside that window (it errors rather than trimming), so we drop the lone</span></span>
@@ -528,19 +658,19 @@ exposure.</p>
 <span>  <span class="va">iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_([A-Z]+)_.*"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">baseline_scenario</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">iam</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_iam</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"IAM"</span>,</span>
 <span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="768"></p>
 <div class="section level4">
 <h4 id="advanced-per-firm-view-1">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view-1"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_iam</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"IAM"</span>,</span>
 <span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="960"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="960"></p>
 </div>
 </div>
 <div class="section level2">
@@ -549,7 +679,7 @@ exposure.</p>
 <p>Same IAM (GCAM), different target stringency: how does the PD signal
 change across Net Zero 2050, Below 2°C, and Delayed Transition, each
 measured against Current Policies as the baseline?</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_params_ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
 <span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
@@ -609,19 +739,19 @@ measured against Current Policies as the baseline?</p>
 <span>  <span class="va">ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_GCAM_(.*)$"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">target_scenario</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ambition</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_sector</span><span class="op">(</span><span class="va">pd_ambition</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"ambition policy"</span>,</span>
 <span>                  palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="768"></p>
 <div class="section level4">
 <h4 id="advanced-per-firm-view-2">Advanced: per-firm view<a class="anchor" aria-label="anchor" href="#advanced-per-firm-view-2"></a>
 </h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">draw_pd_by_exposure</span><span class="op">(</span><span class="va">pd_ambition</span>, <span class="va">portfolio_terms_power</span>, <span class="st">"ambition policy"</span>,</span>
 <span>                    palette_values <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">TRAJ_PALETTE</span>,</span>
 <span>                                                     <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="960"></p>
+<p><img src="bank_3_sensitivity-analysis_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="960"></p>
 </div>
 </div>
 <div class="section level2">
@@ -633,7 +763,7 @@ expected-loss basis points on the actual portfolio? We pick one variant
 (<code>shock_year = 2030</code>, NGFS2023GCAM CP vs NZ2050, Global — the
 base run) and walk it through the integration pipeline, ending with the
 EL bps KPI used elsewhere in the package.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
 <span>  assets_data       <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data    <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
@@ -667,7 +797,7 @@ EL bps KPI used elsewhere in the package.</p>
 <span></span>
 <span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
 <span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_kpi_table.html">pipeline_trisk_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
