@@ -109,41 +109,45 @@ includes the financial and valuation assumptions:
 - `carbon_price_model` and `market_passthrough` — carbon-tax pathway and the
   share of the tax the firm passes to customers
 
-Hold the scenario fixed and vary one knob to isolate its effect. For example,
-sweep the DCF `discount_rate` across three values:
+Define a fixed scenario once, then vary a single parameter. Only the two lines
+under "vary ONE parameter" change to sweep something else: set `param` to any
+`run_trisk_model()` argument and `values` to the grid you want.
 
 ```{r}
-discount_rate_grid <- c(0.07, 0.09, 0.11)
+# Hold one scenario fixed...
+base_run <- list(
+  scenario_geography = "Global",
+  baseline_scenario  = "NGFS2023GCAM_CP",
+  target_scenario    = "NGFS2023GCAM_NZ2050",
+  shock_year         = 2030
+)
 
-run_params_discount <- lapply(discount_rate_grid, function(dr) {
-  list(
-    scenario_geography = "Global",
-    baseline_scenario  = "NGFS2023GCAM_CP",
-    target_scenario    = "NGFS2023GCAM_NZ2050",
-    shock_year         = 2030,
-    discount_rate      = dr
-  )
-})
+# ...then vary ONE parameter (swap these two lines for risk_free_rate,
+# growth_rate, carbon_price_model, ... and their values):
+param  <- "discount_rate"
+values <- c(0.07, 0.09, 0.11)
 
-sa_discount <- run_trisk_sa(
+run_params <- lapply(values, function(v) modifyList(base_run, setNames(list(v), param)))
+
+sa_param <- run_trisk_sa(
   assets_data    = assets_testdata,
   scenarios_data = scenarios_testdata,
   financial_data = financial_features_testdata,
   carbon_data    = ngfs_carbon_price_testdata,
-  run_params     = run_params_discount
+  run_params     = run_params
 )
 
-# the params table records which discount_rate produced each run_id
-knitr::kable(sa_discount$params[, c("run_id", "discount_rate",
-                                    "baseline_scenario", "target_scenario")])
+# each run_id records the swept value
+knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_scenario")])
 ```
 
 A higher discount rate shrinks the present value of distant cash flows, so it
 lowers both the baseline and the shock NPV. Because the transition shock is a
 *difference* of two DCFs, much of that level effect cancels and the shock
 magnitude moves less than the absolute NPVs — sweeping the rate is how you
-confirm that for your own book. The same pattern applies to every parameter
-above; the rest of this vignette focuses on the three scenario dimensions.
+confirm that for your own book. To sweep a different parameter, change `param`
+and `values` — nothing else moves. The rest of this vignette focuses on the
+three scenario dimensions.
 
 # Convention: actual portfolio terms, EAD-weighted
 
