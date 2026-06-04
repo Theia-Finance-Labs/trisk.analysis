@@ -59,7 +59,7 @@
 
 
 
-<script src="bank_3_sensitivity-analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="bank_3_sensitivity-analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
@@ -80,9 +80,8 @@
 </h2>
 <p>This vignette uses the bundled testdata to demonstrate sensitivity
 analysis in three dimensions (shock year, IAM, ambition policy), each
-read through a bank-impact lens: actual portfolio terms, EAD-weighted
-sector aggregation, and an integrated expected-loss bps callout at the
-end.</p>
+read through a bank-impact lens: actual portfolio terms and EAD-weighted
+sector aggregation.</p>
 <blockquote>
 <p><strong>Input data — where your data goes.</strong> TRISK needs
 <strong>five inputs</strong>: four that describe the world —
@@ -91,48 +90,37 @@ price</strong> and <strong>financial features</strong> — plus your
 <strong>portfolio</strong>. The main portfolio file is
 <strong><code>portfolio_ids</code></strong> (matched by
 <code>company_id</code>); <code>portfolio_names</code> and
-<code>portfolio_countries</code> are options. This workflow uses the
-<code>portfolio_ids_internal_pd</code> variant (the same file plus an
-<code>internal_pd</code> column). <strong>The CSVs loaded below are
-placeholders</strong> (bundled samples) — replace them with your own
-files. See <a href="bank_1_inputs-and-outputs.html">Inputs and
+<code>portfolio_countries</code> are options. <strong>The CSVs loaded
+below are placeholders</strong> (bundled samples) — replace them with
+your own files. See <a href="bank_1_inputs-and-outputs.html">Inputs and
 outputs</a> for <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code> and the
 <code>trisk_inputs/</code> folder convention.</p>
 </blockquote>
 <p><strong>Where your portfolio enters the sensitivity
 analysis.</strong> The sweep itself varies <em>scenario parameters</em>,
 but it is anchored to <strong>your portfolio</strong>: the
-<code>portfolio_ids_internal_pd</code> file is read below, validated for
-<code>internal_pd</code>, and reduced to <code>portfolio_terms</code>
-(<code>company_id</code>, <code>term</code>,
-<code>exposure_value_usd</code>). Those loan terms and exposures are
-what turn each parameter run into a bank-specific, EAD-weighted result —
-so swapping in your own <code>portfolio_ids</code> (with
-<code>internal_pd</code>) is what makes every chart below reflect
-<em>your</em> book.</p>
+<code>portfolio_ids</code> file is read below and reduced to
+<code>portfolio_terms</code> (<code>company_id</code>,
+<code>term</code>, <code>exposure_value_usd</code>). Those loan terms
+and exposures are what turn each parameter run into a bank-specific,
+EAD-weighted result — so swapping in your own <code>portfolio_ids</code>
+is what makes every chart below reflect <em>your</em> book. (No
+<code>internal_pd</code> is needed here; the expected-loss translation
+lives in <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>.)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span>             <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,             package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">scenarios_testdata</span>          <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>,          package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ngfs_carbon_price_testdata</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>,  package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">portfolio_ids_internal_pd</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_ids_internal_pd_testdata.csv"</span>,</span>
+<span><span class="va">portfolio_ids</span>               <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_ids_testdata.csv"</span>,</span>
 <span>                                                    package <span class="op">=</span> <span class="st">"trisk.analysis"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># TRISK echoes company_id back as a character key; read.csv infers integers for</span></span>
 <span><span class="co"># the bundled portfolio file. Coerce once here so every downstream join on</span></span>
 <span><span class="co"># `company_id` matches on type.</span></span>
-<span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span><span class="op">)</span></span>
+<span><span class="va">portfolio_ids</span><span class="op">$</span><span class="va">company_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">portfolio_ids</span><span class="op">$</span><span class="va">company_id</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Portfolio file must include an `internal_pd` column per exposure."</span> <span class="op">=</span></span>
-<span>    <span class="st">"internal_pd"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">)</span>,</span>
-<span>  <span class="st">"`internal_pd` values must be numeric in [0, 1]."</span> <span class="op">=</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span> <span class="op">&gt;=</span> <span class="fl">0</span> <span class="op">&amp;</span></span>
-<span>            <span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">internal_pd</span> <span class="op">&lt;=</span> <span class="fl">1</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">portfolio_terms</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span>, <span class="st">"exposure_value_usd"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">portfolio_terms</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"term"</span>, <span class="st">"exposure_value_usd"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="why-sensitivity">Why sensitivity<a class="anchor" aria-label="anchor" href="#why-sensitivity"></a>
@@ -202,7 +190,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -210,7 +198,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
@@ -218,7 +206,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0000214</td>
 </tr>
 <tr class="odd">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
@@ -226,7 +214,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0004647</td>
 </tr>
 <tr class="even">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
@@ -234,7 +222,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0022474</td>
 </tr>
 <tr class="odd">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
@@ -242,7 +230,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0059057</td>
 </tr>
 <tr class="even">
-<td align="left">dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b</td>
+<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>
@@ -352,19 +340,19 @@ values:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">4a290e6d-8244-4692-b9e1-25c4a10da383</td>
+<td align="left">718701a6-2551-468b-a450-1234075d438d</td>
 <td align="right">0.07</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
 </tr>
 <tr class="even">
-<td align="left">6ac3bc25-0b27-4208-b280-f7d74ffc92f4</td>
+<td align="left">8d0c26fd-043f-40e6-a10e-19aa9a48a7aa</td>
 <td align="right">0.09</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
 </tr>
 <tr class="odd">
-<td align="left">ea98124e-27e2-4a0f-8a00-e4631decb5e2</td>
+<td align="left">a6970ad3-99dd-43cd-8fa5-44bc54acc340</td>
 <td align="right">0.11</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
@@ -596,7 +584,7 @@ exposure.</p>
 <span><span class="co"># Scope the term table to the portfolio's Power exposure so the term-join</span></span>
 <span><span class="co"># warning flags only genuine term-grid drops, not the Coal / Oil &amp; Gas firms</span></span>
 <span><span class="co"># that these Power-only scenarios legitimately exclude.</span></span>
-<span><span class="va">power_ids</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">company_id</span><span class="op">[</span><span class="va">portfolio_ids_internal_pd</span><span class="op">$</span><span class="va">sector</span> <span class="op">==</span> <span class="st">"Power"</span><span class="op">]</span></span>
+<span><span class="va">power_ids</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids</span><span class="op">$</span><span class="va">company_id</span><span class="op">[</span><span class="va">portfolio_ids</span><span class="op">$</span><span class="va">sector</span> <span class="op">==</span> <span class="st">"Power"</span><span class="op">]</span></span>
 <span><span class="va">portfolio_terms_power</span> <span class="op">&lt;-</span> <span class="va">portfolio_terms</span><span class="op">[</span><span class="va">portfolio_terms</span><span class="op">$</span><span class="va">company_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">power_ids</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="va">run_params_iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -757,88 +745,18 @@ measured against Current Policies as the baseline?</p>
 <div class="section level2">
 <h2 id="what-this-means-for-the-bank">What this means for the bank<a class="anchor" aria-label="anchor" href="#what-this-means-for-the-bank"></a>
 </h2>
-<p>The previous sections show how raw PD shifts under different design
-choices. The bank-impact question is: how does that translate into
-expected-loss basis points on the actual portfolio? We pick one variant
-(<code>shock_year = 2030</code>, NGFS2023GCAM CP vs NZ2050, Global — the
-base run) and walk it through the integration pipeline, ending with the
-EL bps KPI used elsewhere in the package.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
-<span>  assets_data       <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
-<span>  scenarios_data    <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
-<span>  financial_data    <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
-<span>  carbon_data       <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
-<span>  portfolio_data    <span class="op">=</span> <span class="va">portfolio_ids_internal_pd</span>,</span>
-<span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario   <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
-<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
-<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
-<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits.</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
-<span><span class="co">#&gt; -- Calculating market risk. </span></span>
-<span><span class="co">#&gt; -- Calculating credit risk.</span></span>
-<span><span class="va">analysis_data_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">internal_pd_lookup</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_pd"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
-<span>  <span class="va">analysis_data_el</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>  <span class="va">internal_pd_lookup</span>,</span>
-<span>  by <span class="op">=</span> <span class="st">"company_id"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_el</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">exposure_value_usd</span> <span class="op">*</span></span>
-<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">loss_given_default</span> <span class="op">*</span></span>
-<span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_pd</span></span>
-<span></span>
-<span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span><span class="va">analysis_data_el</span>,</span>
-<span>                          internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_kpi_table.html">pipeline_trisk_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:right;">
-Total Exposure (USD)
-</th>
-<th style="text-align:right;">
-Total Internal EL
-</th>
-<th style="text-align:right;">
-Total Adjusted EL
-</th>
-<th style="text-align:right;">
-EL Adjustment
-</th>
-<th style="text-align:right;">
-Adjusted EL (bps)
-</th>
-</tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-21.06M
-</td>
-<td style="text-align:right;">
-318.1K
-</td>
-<td style="text-align:right;">
-527.8K
-</td>
-<td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">209.7K</span>
-</td>
-<td style="text-align:right;">
-250.6 bps
-</td>
-</tr></tbody>
-</table>
-<p>Read the EL bps delta as the bank-impact summary of this one variant.
-The sensitivity sections above tell you how that number would move if
-you chose a different shock year, IAM, or ambition tier. For deeper plot
-references and the full methodology, see <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>.</p>
+<p>The sections above show how raw PD shifts under different design
+choices. The bank-impact question — how those shifts translate into
+<strong>expected-loss basis points</strong> on your actual portfolio —
+needs your <code>internal_pd</code> and is answered in <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>,
+which recombines the TRISK shock with your internal PD and reports the
+EL bps KPI (<code>EL / EAD</code>).</p>
+<p>Run that integration on whichever variant you care about here — a
+given shock year, IAM, ambition tier, or model parameter — to get its
+bank-impact summary in basis points. Keeping the integration in one
+place is deliberate: this vignette stays focused on <em>how results
+move</em>, and <code>pd-el-integration</code> owns <em>how that becomes
+expected loss</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
@@ -853,8 +771,8 @@ the reading-path entry point.</li>
 produced.</li>
 <li>
 <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>
-— the full PD/EL integration methodology and the EL bps KPI surfaced in
-the closing section.</li>
+— the full PD/EL integration methodology and the EL bps KPI for any
+variant you sweep here.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

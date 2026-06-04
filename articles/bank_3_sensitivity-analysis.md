@@ -10,30 +10,29 @@ library(magrittr)
 
 This vignette uses the bundled testdata to demonstrate sensitivity
 analysis in three dimensions (shock year, IAM, ambition policy), each
-read through a bank-impact lens: actual portfolio terms, EAD-weighted
-sector aggregation, and an integrated expected-loss bps callout at the
-end.
+read through a bank-impact lens: actual portfolio terms and EAD-weighted
+sector aggregation.
 
 > **Input data — where your data goes.** TRISK needs **five inputs**:
 > four that describe the world — **assets**, **scenarios**, **NGFS
 > carbon price** and **financial features** — plus your **portfolio**.
 > The main portfolio file is **`portfolio_ids`** (matched by
 > `company_id`); `portfolio_names` and `portfolio_countries` are
-> options. This workflow uses the `portfolio_ids_internal_pd` variant
-> (the same file plus an `internal_pd` column). **The CSVs loaded below
-> are placeholders** (bundled samples) — replace them with your own
-> files. See [Inputs and outputs](bank_1_inputs-and-outputs.md) for
+> options. **The CSVs loaded below are placeholders** (bundled samples)
+> — replace them with your own files. See [Inputs and
+> outputs](bank_1_inputs-and-outputs.md) for
 > [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
 > `trisk_inputs/` folder convention.
 
 **Where your portfolio enters the sensitivity analysis.** The sweep
 itself varies *scenario parameters*, but it is anchored to **your
-portfolio**: the `portfolio_ids_internal_pd` file is read below,
-validated for `internal_pd`, and reduced to `portfolio_terms`
-(`company_id`, `term`, `exposure_value_usd`). Those loan terms and
-exposures are what turn each parameter run into a bank-specific,
-EAD-weighted result — so swapping in your own `portfolio_ids` (with
-`internal_pd`) is what makes every chart below reflect *your* book.
+portfolio**: the `portfolio_ids` file is read below and reduced to
+`portfolio_terms` (`company_id`, `term`, `exposure_value_usd`). Those
+loan terms and exposures are what turn each parameter run into a
+bank-specific, EAD-weighted result — so swapping in your own
+`portfolio_ids` is what makes every chart below reflect *your* book. (No
+`internal_pd` is needed here; the expected-loss translation lives in
+[`pd-el-integration`](bank_4_pd-el-integration.md).)
 
 ``` r
 
@@ -41,24 +40,15 @@ assets_testdata             <- read.csv(system.file("testdata", "assets_testdata
 scenarios_testdata          <- read.csv(system.file("testdata", "scenarios_testdata.csv",          package = "trisk.model"))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 ngfs_carbon_price_testdata  <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv",  package = "trisk.model"))
-portfolio_ids_internal_pd   <- read.csv(system.file("testdata", "portfolio_ids_internal_pd_testdata.csv",
+portfolio_ids               <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv",
                                                     package = "trisk.analysis"))
 
 # TRISK echoes company_id back as a character key; read.csv infers integers for
 # the bundled portfolio file. Coerce once here so every downstream join on
 # `company_id` matches on type.
-portfolio_ids_internal_pd$company_id <- as.character(portfolio_ids_internal_pd$company_id)
+portfolio_ids$company_id <- as.character(portfolio_ids$company_id)
 
-stopifnot(
-  "Portfolio file must include an `internal_pd` column per exposure." =
-    "internal_pd" %in% colnames(portfolio_ids_internal_pd),
-  "`internal_pd` values must be numeric in [0, 1]." =
-    is.numeric(portfolio_ids_internal_pd$internal_pd) &&
-      all(portfolio_ids_internal_pd$internal_pd >= 0 &
-            portfolio_ids_internal_pd$internal_pd <= 1, na.rm = TRUE)
-)
-
-portfolio_terms <- portfolio_ids_internal_pd[, c("company_id", "term", "exposure_value_usd")]
+portfolio_terms <- portfolio_ids[, c("company_id", "term", "exposure_value_usd")]
 ```
 
 ## Why sensitivity
@@ -112,12 +102,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| dcaf90ba-225f-4e6b-b86d-e1389a4e0f7b | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Sweeping any model parameter
 
@@ -200,9 +190,9 @@ knitr::kable(sa_discount$params[, c("run_id", "discount_rate",
 
 | run_id | discount_rate | baseline_scenario | target_scenario |
 |:---|---:|:---|:---|
-| 4a290e6d-8244-4692-b9e1-25c4a10da383 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 6ac3bc25-0b27-4208-b280-f7d74ffc92f4 | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| ea98124e-27e2-4a0f-8a00-e4631decb5e2 | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 718701a6-2551-468b-a450-1234075d438d | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 8d0c26fd-043f-40e6-a10e-19aa9a48a7aa | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| a6970ad3-99dd-43cd-8fa5-44bc54acc340 | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
 
 A higher discount rate shrinks the present value of distant cash flows,
 so it lowers both the baseline and the shock NPV. Because the transition
@@ -440,7 +430,7 @@ assets_power <- assets_testdata[assets_testdata$production_year >= 2023, ]
 # Scope the term table to the portfolio's Power exposure so the term-join
 # warning flags only genuine term-grid drops, not the Coal / Oil & Gas firms
 # that these Power-only scenarios legitimately exclude.
-power_ids <- portfolio_ids_internal_pd$company_id[portfolio_ids_internal_pd$sector == "Power"]
+power_ids <- portfolio_ids$company_id[portfolio_ids$sector == "Power"]
 portfolio_terms_power <- portfolio_terms[portfolio_terms$company_id %in% power_ids, ]
 
 run_params_iam <- list(
@@ -615,64 +605,19 @@ draw_pd_by_exposure(pd_ambition, portfolio_terms_power, "ambition policy",
 
 ## What this means for the bank
 
-The previous sections show how raw PD shifts under different design
-choices. The bank-impact question is: how does that translate into
-expected-loss basis points on the actual portfolio? We pick one variant
-(`shock_year = 2030`, NGFS2023GCAM CP vs NZ2050, Global — the base run)
-and walk it through the integration pipeline, ending with the EL bps KPI
-used elsewhere in the package.
+The sections above show how raw PD shifts under different design
+choices. The bank-impact question — how those shifts translate into
+**expected-loss basis points** on your actual portfolio — needs your
+`internal_pd` and is answered in
+[`pd-el-integration`](bank_4_pd-el-integration.md), which recombines the
+TRISK shock with your internal PD and reports the EL bps KPI
+(`EL / EAD`).
 
-``` r
-
-analysis_data <- run_trisk_on_portfolio(
-  assets_data       = assets_testdata,
-  scenarios_data    = scenarios_testdata,
-  financial_data    = financial_features_testdata,
-  carbon_data       = ngfs_carbon_price_testdata,
-  portfolio_data    = portfolio_ids_internal_pd,
-  baseline_scenario = "NGFS2023GCAM_CP",
-  target_scenario   = "NGFS2023GCAM_NZ2050"
-)
-#> -- Start Trisk-- Retyping Dataframes. 
-#> -- Processing Assets and Scenarios. 
-#> -- Transforming to Trisk model input. 
-#> -- Calculating baseline, target, and shock trajectories. 
-#> -- Applying zero-trajectory logic to production trajectories. 
-#> -- Calculating net profits.
-#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
-#> -- Calculating market risk. 
-#> -- Calculating credit risk.
-analysis_data_el <- compute_analysis_metrics(analysis_data)
-
-internal_pd_lookup <- portfolio_ids_internal_pd[, c("company_id", "internal_pd")]
-internal_el_lookup <- merge(
-  analysis_data_el[, c("company_id", "exposure_value_usd", "loss_given_default")],
-  internal_pd_lookup,
-  by = "company_id"
-)
-internal_el_lookup$internal_el <-
-  internal_el_lookup$exposure_value_usd *
-  internal_el_lookup$loss_given_default *
-  internal_el_lookup$internal_pd
-
-result_el <- integrate_el(analysis_data_el,
-                          internal_el = internal_el_lookup[, c("company_id", "internal_el")])
-```
-
-``` r
-
-pipeline_trisk_el_kpi_table(result_el$aggregate)
-```
-
-| Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |
-|---:|---:|---:|---:|---:|
-| 21.06M | 318.1K | 527.8K | 209.7K | 250.6 bps |
-
-Read the EL bps delta as the bank-impact summary of this one variant.
-The sensitivity sections above tell you how that number would move if
-you chose a different shock year, IAM, or ambition tier. For deeper plot
-references and the full methodology, see
-[`pd-el-integration`](bank_4_pd-el-integration.md).
+Run that integration on whichever variant you care about here — a given
+shock year, IAM, ambition tier, or model parameter — to get its
+bank-impact summary in basis points. Keeping the integration in one
+place is deliberate: this vignette stays focused on *how results move*,
+and `pd-el-integration` owns *how that becomes expected loss*.
 
 ## See also
 
@@ -681,5 +626,5 @@ references and the full methodology, see
 - [`simple-portfolio-analysis`](bank_2_simple-portfolio-analysis.md) —
   how the underlying TRISK runs that feed this analysis are produced.
 - [`pd-el-integration`](bank_4_pd-el-integration.md) — the full PD/EL
-  integration methodology and the EL bps KPI surfaced in the closing
-  section.
+  integration methodology and the EL bps KPI for any variant you sweep
+  here.
