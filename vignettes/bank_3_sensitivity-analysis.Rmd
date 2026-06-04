@@ -76,7 +76,10 @@ Climate stress-testing carries three layers of uncertainty a bank reader cares
 about: **when** the shock arrives (`shock_year`), **whose model** of the
 transition you trust (the IAM), and **how ambitious** the target scenario is.
 This vignette sweeps each one and reads the result as a change in the bank's
-portfolio risk picture, not as an abstract model output.
+portfolio risk picture, not as an abstract model output. These three are the
+focus here because they are scenario choices, but the same machinery sweeps
+**any** model parameter — including the financial assumptions such as the
+discount rate (see *Sweeping any model parameter* below).
 
 # Base run
 
@@ -101,6 +104,57 @@ sa_base <- run_trisk_sa(
 knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
                                  "pd_baseline", "pd_shock")]))
 ```
+
+# Sweeping any model parameter
+
+The dimensions swept below (`shock_year`, IAM, ambition) are scenario choices,
+but `run_trisk_sa()` is not limited to them. Each entry in `run_params` is passed
+straight to `trisk.model::run_trisk_model()`, so you can vary **any** of its
+arguments and read the sensitivity the same way. Beyond the scenario fields, that
+includes the financial and valuation assumptions:
+
+- `discount_rate` — DCF discount rate on dividends
+- `risk_free_rate` — risk-free rate in the Merton PD model
+- `growth_rate` — terminal growth rate of profits
+- `div_netprofit_prop_coef` — dividend pass-through coefficient
+- `carbon_price_model` and `market_passthrough` — carbon-tax pathway and the
+  share of the tax the firm passes to customers
+
+Hold the scenario fixed and vary one knob to isolate its effect. For example,
+sweep the DCF `discount_rate` across three values:
+
+```{r}
+discount_rate_grid <- c(0.07, 0.09, 0.11)
+
+run_params_discount <- lapply(discount_rate_grid, function(dr) {
+  list(
+    scenario_geography = "Global",
+    baseline_scenario  = "NGFS2023GCAM_CP",
+    target_scenario    = "NGFS2023GCAM_NZ2050",
+    shock_year         = 2030,
+    discount_rate      = dr
+  )
+})
+
+sa_discount <- run_trisk_sa(
+  assets_data    = assets_testdata,
+  scenarios_data = scenarios_testdata,
+  financial_data = financial_features_testdata,
+  carbon_data    = ngfs_carbon_price_testdata,
+  run_params     = run_params_discount
+)
+
+# the params table records which discount_rate produced each run_id
+knitr::kable(sa_discount$params[, c("run_id", "discount_rate",
+                                    "baseline_scenario", "target_scenario")])
+```
+
+A higher discount rate shrinks the present value of distant cash flows, so it
+lowers both the baseline and the shock NPV. Because the transition shock is a
+*difference* of two DCFs, much of that level effect cancels and the shock
+magnitude moves less than the absolute NPVs — sweeping the rate is how you
+confirm that for your own book. The same pattern applies to every parameter
+above; the rest of this vignette focuses on the three scenario dimensions.
 
 # Convention: actual portfolio terms, EAD-weighted
 
