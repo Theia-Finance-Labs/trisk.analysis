@@ -24,8 +24,10 @@ institution types can adapt the same steps.
 
 ## Reading path
 
-The worked vignettes follow a bank credit-risk workflow. Work through
-them in this order:
+The worked vignettes build up a bank credit-risk analysis end to end —
+from the inputs and outputs, through running TRISK on a portfolio, to
+blending the shocks into your own expected loss. Work through them in
+order:
 
 1.  [`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
     — what TRISK consumes (assets, scenarios, financial features, carbon
