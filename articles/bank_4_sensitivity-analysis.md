@@ -22,9 +22,9 @@ end.
 > options. This workflow uses the `portfolio_ids_internal_pd` variant
 > (the same file plus an `internal_pd` column). **The CSVs loaded below
 > are placeholders** (bundled samples) — replace them with your own
-> files. See [Bank credit risk analysis](bank_1_credit-risk-analysis.md)
-> for [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and
-> the `trisk_inputs/` folder convention.
+> files. See [Credit risk analysis](bank_1_credit-risk-analysis.md) for
+> [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
+> `trisk_inputs/` folder convention.
 
 **Where your portfolio enters the sensitivity analysis.** The sweep
 itself varies *scenario parameters*, but it is anchored to **your
@@ -109,12 +109,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 605cf66c-d079-4565-9da0-9bfb02f01ffd | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 

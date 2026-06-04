@@ -52,7 +52,7 @@ previous one:
     started](https://theia-finance-labs.github.io/trisk.analysis/articles/1_getting-started.html)**
     — install the package and run TRISK on the bundled toy portfolio in
     a few lines.
-2.  **[Bank credit risk analysis — start
+2.  **[Credit risk analysis — start
     here](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_1_credit-risk-analysis.html)**
     — the entry point for a bank: the five inputs, how to set up your
     `trisk_inputs/` data folder with

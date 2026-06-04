@@ -38,9 +38,9 @@ TRISK.
 > options. This workflow uses the `portfolio_ids_internal_pd` variant
 > (the same file plus an `internal_pd` column). **The CSVs loaded below
 > are placeholders** (bundled samples) — replace them with your own
-> files. See [Bank credit risk analysis](bank_1_credit-risk-analysis.md)
-> for [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and
-> the `trisk_inputs/` folder convention.
+> files. See [Credit risk analysis](bank_1_credit-risk-analysis.md) for
+> [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
+> `trisk_inputs/` folder convention.
 
 #### Portfolio file schema
 
