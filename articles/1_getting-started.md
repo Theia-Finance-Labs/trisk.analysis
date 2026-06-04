@@ -27,7 +27,7 @@ institution types can adapt the same steps.
 The worked vignettes follow a bank credit-risk workflow. Work through
 them in this order:
 
-1.  [`vignette("bank_1_portfolio-analysis")`](../articles/bank_1_portfolio-analysis.md)
+1.  [`vignette("bank_1_credit-risk-analysis")`](../articles/bank_1_credit-risk-analysis.md)
     — the bank entry point: the five inputs, setting up your
     `trisk_inputs/` data folder, and a first end-to-end run.
 2.  [`vignette("bank_2_inputs-and-outputs")`](../articles/bank_2_inputs-and-outputs.md)
@@ -138,5 +138,5 @@ for fuller definitions of each parameter.
 ## Where to go next
 
 Start with
-[`vignette("bank_1_portfolio-analysis")`](../articles/bank_1_portfolio-analysis.md)
+[`vignette("bank_1_credit-risk-analysis")`](../articles/bank_1_credit-risk-analysis.md)
 to set up your inputs and run TRISK on your own portfolio.
