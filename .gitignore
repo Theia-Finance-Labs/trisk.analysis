@@ -63,3 +63,5 @@ inst/doc
 docs
 /doc/
 /Meta/
+specs/.codex-review-brief.md
+specs/.codex-review-output.txt
