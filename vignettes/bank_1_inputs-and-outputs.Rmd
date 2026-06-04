@@ -181,9 +181,15 @@ Fill the templates (or copy a `samples/` file and edit it), save each as
 
 ### Obtaining inputs
 
-The test data above is small and fixed. For real analysis, download the full
-production inputs (assets, scenarios, financial features and carbon prices) from
-the public endpoint:
+The test data above is small and fixed. For real analysis you need the full
+production **scenarios** file (`scenarios.csv`); the other three reference inputs
+(`assets`, `financial_features`, `ngfs_carbon_price`) you supply yourself,
+starting from the bundled samples. There are **two ways** to obtain
+`scenarios.csv` — use whichever your environment allows.
+
+**Option 1 — download (requires internet access).** If your machine can reach our
+cloud storage, `download_trisk_inputs()` fetches `scenarios.csv` into a folder of
+your choice. The public endpoint is:
 
 ```{r}
 print(
@@ -191,11 +197,9 @@ print(
 )
 ```
 
-`download_trisk_inputs()` fetches the production `scenarios.csv` into a folder of
-your choice (skipped here so the vignette has no network dependency). The other
-three reference inputs — `assets`, `financial_features` and `ngfs_carbon_price` —
-you supply yourself, starting from the bundled samples (see *Setting up your
-input folder* above and `setup_trisk_inputs()`):
+Run it like this (skipped here so the vignette has no network dependency). It
+saves `scenarios.csv` into the folder you pass — point it at your `trisk_inputs/`
+folder (see *Setting up your input folder* above and `setup_trisk_inputs()`):
 
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
@@ -204,8 +208,16 @@ if (!is_CRAN) {
 }
 ```
 
-Once downloaded you read the CSVs the same way as the test data. The production
-`scenarios.csv` covers many more scenarios than the bundled sample: six
+**Option 2 — offline (no internet access).** Banks often run TRISK on locked-down
+machines that cannot reach external cloud storage. In that case we share
+`scenarios.csv` with you **by email**; save the file you receive into your
+`trisk_inputs/` folder as `trisk_inputs/scenarios.csv` — the same location
+`download_trisk_inputs()` would write to — then read it directly. No download
+step is needed.
+
+Once you have `scenarios.csv` (by either route) you read the CSVs the same way as
+the test data. The production `scenarios.csv` covers many more scenarios than the
+bundled sample: six
 providers (NGFS, WEO, IPR, Oxford, GECO and the Mission Possible Partnership for
 steel), each with one or more data vintages.
 
