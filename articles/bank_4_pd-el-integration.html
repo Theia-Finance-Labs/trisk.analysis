@@ -218,34 +218,48 @@ given exposure. Each method returns an <em>adjusted PD</em>
 <code>[0, 1]</code>.</p>
 <p><strong>Absolute</strong> — add the raw PD shift onto the internal
 PD:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = p_{int} + (p_{shock} - p_{base}) </annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{adj} = p_{int} + (p_{shock} - p_{base})</annotation></semantics></math></p>
+<ul>
+<li>
+<em>When useful:</em> the simplest, most transparent option, and
+safe when baseline PDs can be zero (no division). Trade-off: large
+shifts can push <code>p_adj</code> outside a sensible range, where the
+final <code>[0, 1]</code> clip then bites.</li>
+</ul>
 <p><strong>Relative</strong> — scale the internal PD by the proportional
 shift:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mrow><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo>≠</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = p_{int}\left(1 + \frac{p_{shock} - p_{base}}{p_{base}}\right),
-   \qquad (p_{base} \neq 0) </annotation></semantics></math></p>
-<p>When <code>p_base = 0</code> the relative method returns
-<code>p_int</code> unchanged — the shock signal is lost on zero-baseline
-rows. Prefer <code>absolute</code> or <code>zscore</code> there.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mfrac><mrow><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mrow><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{adj} = p_{int} \times \left( 1 + \frac{p_{shock} - p_{base}}{p_{base}} \right)</annotation></semantics></math></p>
+<ul>
+<li>
+<em>When useful:</em> when the <em>proportional</em> move matters
+more than the absolute one — e.g. across exposures whose internal PD
+levels differ widely. Avoid it on zero-baseline rows: when
+<code>p_base = 0</code> it returns <code>p_int</code> unchanged and the
+shock signal is lost, so prefer <code>absolute</code> or
+<code>zscore</code> there.</li>
+</ul>
 <p><strong>Z-score (default)</strong> — recombine the three PDs in
 normal-quantile (probit) space. With
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
 the standard-normal CDF and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">\Phi^{-1}</annotation></semantics></math>
-its quantile function, and clipping each PD to
-<code>[zscore_floor, zscore_cap]</code> before the quantile:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><mi mathvariant="normal">Φ</mi><mspace width="-0.167em"></mspace><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex"> p_{adj} = \Phi\!\Big(\Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock})
-   - \Phi^{-1}(p_{base})\Big) </annotation></semantics></math></p>
+its quantile function (each PD clipped to
+<code>[zscore_floor, zscore_cap]</code> before the quantile):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>a</mi><mi>d</mi><mi>j</mi></mrow></msub><mo>=</mo><mi mathvariant="normal">Φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>n</mi><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>s</mi><mi>h</mi><mi>o</mi><mi>c</mi><mi>k</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msup><mi mathvariant="normal">Φ</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>p</mi><mrow><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{adj} = \Phi\left( \Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock}) - \Phi^{-1}(p_{base}) \right)</annotation></semantics></math></p>
+<ul>
+<li>
+<em>When useful:</em> the recommended default. It is zero-safe (via
+clipping), preserves the non-linear compression of PDs near the
+distribution tails, and behaves sensibly on sparse portfolios where
+Merton inputs drive some baseline PDs to underflow.</li>
+</ul>
 <p>This is a <strong>probit / Merton-style recombination of default
 thresholds</strong>, not the Basel IRB risk-weight formula. It adds the
 TRISK shock-minus-baseline <em>distance-to-default</em> shift to the
 internal PD’s implied default threshold, then maps back to a
-probability. It is the right default because it is zero-safe (via
-clipping), it preserves the non-linear compression of PDs near the
-distribution tails, and it behaves sensibly on sparse portfolios where
-Merton inputs drive some baseline PDs to underflow. It does
-<strong>not</strong> invoke the Basel asset-correlation / Vasicek
-conditional-PD capital formula — there is no correlation parameter and
-no supervisory confidence level here.</p>
+probability. It does <strong>not</strong> invoke the Basel
+asset-correlation / Vasicek conditional-PD capital formula — there is no
+correlation parameter and no supervisory confidence level here.</p>
 <p>The <code>zscore_floor</code> (default <code>1e-4</code>) and
 <code>zscore_cap</code> (default <code>1 - 1e-4</code>) parameters bound
 the PDs before <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm()</a></code>, since <code>qnorm(0) = -Inf</code>
