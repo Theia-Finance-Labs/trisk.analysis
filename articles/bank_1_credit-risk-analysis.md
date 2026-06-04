@@ -1,4 +1,4 @@
-# Bank workflow 1: Bank credit risk analysis — start here
+# Bank workflow 1: Credit risk analysis — start here
 
 ``` r
 
