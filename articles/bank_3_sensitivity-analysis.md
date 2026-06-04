@@ -109,12 +109,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| e78abf43-6840-4fc6-9a38-f6b43eeeb8c0 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 17659a4f-2909-432d-bb9b-c7076fe9d829 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 

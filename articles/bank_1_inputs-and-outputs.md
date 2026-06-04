@@ -286,9 +286,18 @@ Fill the templates (or copy a `samples/` file and edit it), save each as
 
 ### Obtaining inputs
 
-The test data above is small and fixed. For real analysis, download the
-full production inputs (assets, scenarios, financial features and carbon
-prices) from the public endpoint:
+The test data above is small and fixed. For real analysis you need the
+full production **scenarios** file (`scenarios.csv`); the other three
+reference inputs (`assets`, `financial_features`, `ngfs_carbon_price`)
+you supply yourself, starting from the bundled samples. There are **two
+ways** to obtain `scenarios.csv` — use whichever your environment
+allows.
+
+**Option 1 — download (requires internet access).** If your machine can
+reach our cloud storage,
+[`download_trisk_inputs()`](../reference/download_trisk_inputs.md)
+fetches `scenarios.csv` into a folder of your choice. The public
+endpoint is:
 
 ``` r
 
@@ -298,13 +307,10 @@ print(
 #> [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"
 ```
 
-[`download_trisk_inputs()`](../reference/download_trisk_inputs.md)
-fetches the production `scenarios.csv` into a folder of your choice
-(skipped here so the vignette has no network dependency). The other
-three reference inputs — `assets`, `financial_features` and
-`ngfs_carbon_price` — you supply yourself, starting from the bundled
-samples (see *Setting up your input folder* above and
-[`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md)):
+Run it like this (skipped here so the vignette has no network
+dependency). It saves `scenarios.csv` into the folder you pass — point
+it at your `trisk_inputs/` folder (see *Setting up your input folder*
+above and [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md)):
 
 ``` r
 
@@ -316,10 +322,19 @@ if (!is_CRAN) {
 #> [1] TRUE
 ```
 
-Once downloaded you read the CSVs the same way as the test data. The
-production `scenarios.csv` covers many more scenarios than the bundled
-sample: six providers (NGFS, WEO, IPR, Oxford, GECO and the Mission
-Possible Partnership for steel), each with one or more data vintages.
+**Option 2 — offline (no internet access).** Banks often run TRISK on
+locked-down machines that cannot reach external cloud storage. In that
+case we share `scenarios.csv` with you **by email**; save the file you
+receive into your `trisk_inputs/` folder as `trisk_inputs/scenarios.csv`
+— the same location
+[`download_trisk_inputs()`](../reference/download_trisk_inputs.md) would
+write to — then read it directly. No download step is needed.
+
+Once you have `scenarios.csv` (by either route) you read the CSVs the
+same way as the test data. The production `scenarios.csv` covers many
+more scenarios than the bundled sample: six providers (NGFS, WEO, IPR,
+Oxford, GECO and the Mission Possible Partnership for steel), each with
+one or more data vintages.
 
 Scenario names encode provider, vintage and scenario,
 e.g. `WEO2023_STEPS` is the IEA World Energy Outlook 2023 “Stated
@@ -467,12 +482,12 @@ The aggregated NPV table drops the `country_iso2` column:
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
-| e0f4405a-9a11-4559-a285-d6497768e1b1 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | 51951.82 | 13549.28 | -38402.54 | -0.7391952 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 102 | 102 | Company 2 | Company 2 | Coal | Coal | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | 57418851.27 | 11874146.56 | -45544704.71 | -0.7932013 |
+| 9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d | 105 | 105 | Company 5 | Company 5 | Power | OilCap | 6210907.85 | 1416673.16 | -4794234.69 | -0.7719056 |
 
 ### Adding a carbon tax
 
@@ -546,7 +561,7 @@ is the transition value-at-risk for that asset.
 
 str(npv_results)
 #> tibble [7 × 12] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                      : chr [1:7] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...
+#>  $ run_id                      : chr [1:7] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...
 #>  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...
 #>  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...
 #>  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...
@@ -562,12 +577,12 @@ str(npv_results)
 
 | run_id | company_id | asset_id | company_name | asset_name | sector | technology | country_iso2 | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 31278.13 | 10902.84 | -20375.29 | -0.6514230 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 8453239.83 | 3464740.72 | -4988499.11 | -0.5901287 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 16458526.57 | 8743193.23 | -7715333.34 | -0.4687742 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 83135863.75 | 114031784\.03 | 30895920.28 | 0.3716317 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 35734514.43 | 9800713.32 | -25933801.10 | -0.7257354 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 3678334.00 | 1135854.25 | -2542479.76 | -0.6912042 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | 101 | Company 1 | Company 1 | Oil&Gas | Gas | DE | 31278.13 | 10902.84 | -20375.29 | -0.6514230 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 102 | 102 | Company 2 | Company 2 | Coal | Coal | DE | 8453239.83 | 3464740.72 | -4988499.11 | -0.5901287 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 103 | 103 | Company 3 | Company 3 | Oil&Gas | Gas | DE | 16458526.57 | 8743193.23 | -7715333.34 | -0.4687742 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 104 | 104 | Company 4 | Company 4 | Power | RenewablesCap | DE | 83135863.75 | 114031784\.03 | 30895920.28 | 0.3716317 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 105 | 105 | Company 5 | Company 5 | Power | CoalCap | DE | 35734514.43 | 9800713.32 | -25933801.10 | -0.7257354 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 105 | 105 | Company 5 | Company 5 | Power | OilCap | DE | 3678334.00 | 1135854.25 | -2542479.76 | -0.6912042 |
 
 ### PD results
 
@@ -584,7 +599,7 @@ default risk to feed into credit models.
 
 str(pd_results)
 #> tibble [145 × 7] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id      : chr [1:145] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...
+#>  $ run_id      : chr [1:145] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...
 #>  $ company_id  : chr [1:145] "101" "101" "101" "101" ...
 #>  $ company_name: chr [1:145] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ sector      : chr [1:145] "Oil&Gas" "Oil&Gas" "Oil&Gas" "Oil&Gas" ...
@@ -595,12 +610,12 @@ str(pd_results)
 
 | run_id | company_id | company_name | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|:---|---:|---:|---:|
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000010 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 3 | 0.0000005 | 0.0000472 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 4 | 0.0000102 | 0.0003327 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 5 | 0.0000640 | 0.0010928 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | Oil&Gas | 6 | 0.0002202 | 0.0024408 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 2 | 0.0000000 | 0.0000010 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 3 | 0.0000005 | 0.0000472 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 4 | 0.0000102 | 0.0003327 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 5 | 0.0000640 | 0.0010928 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | Oil&Gas | 6 | 0.0002202 | 0.0024408 |
 
 ### Company trajectories
 
@@ -630,7 +645,7 @@ production collapses while its baseline holds.
 
 str(company_trajectories)
 #> tibble [210 × 23] (S3: tbl_df/tbl/data.frame)
-#>  $ run_id                                  : chr [1:210] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...
+#>  $ run_id                                  : chr [1:210] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...
 #>  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...
 #>  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...
 #>  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...
@@ -657,12 +672,12 @@ str(company_trajectories)
 
 | run_id | asset_id | asset_name | company_id | company_name | country_iso2 | sector | technology | year | production_plan_company_technology | production_baseline_scenario | production_target_scenario | production_shock_scenario | pd | net_profit_margin | debt_equity_ratio | volatility | scenario_price_baseline | price_shock_scenario | net_profits_baseline_scenario | net_profits_shock_scenario | discounted_net_profits_baseline_scenario | discounted_net_profits_shock_scenario |
 |:---|:---|:---|:---|:---|:---|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2240.747 | 2240.747 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2362.806 | 2362.806 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2600.992 | 2600.992 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2508.337 | 2508.337 |
-| 08f82665-08ee-4886-82bc-ac874067cdc3 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2530.292 | 2530.292 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2022 | 5000 | 5000 | 5000.000 | 5000 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.867116 | 5.867116 | 2239.895 | 2239.895 | 2239.895 | 2239.895 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2023 | 5423 | 5423 | 5001.354 | 5423 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.898569 | 5.898569 | 2442.414 | 2442.414 | 2240.747 | 2240.747 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2024 | 6200 | 6200 | 5002.708 | 6200 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.930022 | 5.930022 | 2807.250 | 2807.250 | 2362.806 | 2362.806 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2025 | 7400 | 7400 | 5004.062 | 7400 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.961475 | 5.961475 | 3368.360 | 3368.360 | 2600.992 | 2600.992 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2026 | 7800 | 7800 | 4862.620 | 7800 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.945170 | 5.945170 | 3540.723 | 3540.723 | 2508.337 | 2508.337 |
+| 76872cbe-f328-402e-a045-ec2397fe8513 | 101 | Company 1 | 101 | Company 1 | DE | Oil&Gas | Gas | 2027 | 8600 | 8600 | 4721.178 | 8600 | 0.0056224 | 0.0763542 | 0.1297317 | 0.259323 | 5.928866 | 5.928866 | 3893.168 | 3893.168 | 2530.292 | 2530.292 |
 
 ## Caveats
 

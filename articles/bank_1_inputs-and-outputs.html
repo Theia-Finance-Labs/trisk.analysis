@@ -3137,20 +3137,26 @@ point your reads at those files.</p>
 <div class="section level3">
 <h3 id="obtaining-inputs">Obtaining inputs<a class="anchor" aria-label="anchor" href="#obtaining-inputs"></a>
 </h3>
-<p>The test data above is small and fixed. For real analysis, download
-the full production inputs (assets, scenarios, financial features and
-carbon prices) from the public endpoint:</p>
+<p>The test data above is small and fixed. For real analysis you need
+the full production <strong>scenarios</strong> file
+(<code>scenarios.csv</code>); the other three reference inputs
+(<code>assets</code>, <code>financial_features</code>,
+<code>ngfs_carbon_price</code>) you supply yourself, starting from the
+bundled samples. There are <strong>two ways</strong> to obtain
+<code>scenarios.csv</code> — use whichever your environment allows.</p>
+<p><strong>Option 1 — download (requires internet access).</strong> If
+your machine can reach our cloud storage,
+<code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> fetches <code>scenarios.csv</code>
+into a folder of your choice. The public endpoint is:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_INPUT_ENDPOINT</span>, <span class="st">"/"</span>, <span class="fu">trisk.analysis</span><span class="fu">:::</span><span class="va">TRISK_DATA_S3_PREFIX</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "https://storage.googleapis.com/crispy-public-data/trisk_inputs"</span></span></code></pre></div>
-<p><code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> fetches the production
-<code>scenarios.csv</code> into a folder of your choice (skipped here so
-the vignette has no network dependency). The other three reference
-inputs — <code>assets</code>, <code>financial_features</code> and
-<code>ngfs_carbon_price</code> — you supply yourself, starting from the
-bundled samples (see <em>Setting up your input folder</em> above and
+<p>Run it like this (skipped here so the vignette has no network
+dependency). It saves <code>scenarios.csv</code> into the folder you
+pass — point it at your <code>trisk_inputs/</code> folder (see
+<em>Setting up your input folder</em> above and
 <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code>):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trisk_inputs_folder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="st">"trisk_inputs"</span><span class="op">)</span></span>
@@ -3159,10 +3165,19 @@ bundled samples (see <em>Setting up your input folder</em> above and
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Download completed.</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Once downloaded you read the CSVs the same way as the test data. The
-production <code>scenarios.csv</code> covers many more scenarios than
-the bundled sample: six providers (NGFS, WEO, IPR, Oxford, GECO and the
-Mission Possible Partnership for steel), each with one or more data
+<p><strong>Option 2 — offline (no internet access).</strong> Banks often
+run TRISK on locked-down machines that cannot reach external cloud
+storage. In that case we share <code>scenarios.csv</code> with you
+<strong>by email</strong>; save the file you receive into your
+<code>trisk_inputs/</code> folder as
+<code>trisk_inputs/scenarios.csv</code> — the same location
+<code><a href="../reference/download_trisk_inputs.html">download_trisk_inputs()</a></code> would write to — then read it
+directly. No download step is needed.</p>
+<p>Once you have <code>scenarios.csv</code> (by either route) you read
+the CSVs the same way as the test data. The production
+<code>scenarios.csv</code> covers many more scenarios than the bundled
+sample: six providers (NGFS, WEO, IPR, Oxford, GECO and the Mission
+Possible Partnership for steel), each with one or more data
 vintages.</p>
 <p>Scenario names encode provider, vintage and scenario,
 e.g. <code>WEO2023_STEPS</code> is the IEA World Energy Outlook 2023
@@ -3436,7 +3451,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 101
@@ -3471,7 +3486,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 102
@@ -3506,7 +3521,7 @@ Coal
 </tr>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 103
@@ -3541,7 +3556,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 104
@@ -3576,7 +3591,7 @@ RenewablesCap
 </tr>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 105
@@ -3611,7 +3626,7 @@ CoalCap
 </tr>
 <tr>
 <td style="text-align:left;">
-e0f4405a-9a11-4559-a285-d6497768e1b1
+9274e9ed-d9d6-4b9e-a54c-b33eb7adfd8d
 </td>
 <td style="text-align:left;">
 105
@@ -3726,7 +3741,7 @@ and the relative change.</li>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">npv_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [7 × 12] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                      : chr [1:7] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                  : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                    : chr [1:7] "101" "102" "103" "104" ...</span></span>
 <span><span class="co">#&gt;  $ company_name                : chr [1:7] "Company 1" "Company 2" "Company 3" "Company 4" ...</span></span>
@@ -3781,7 +3796,7 @@ net_present_value_change
 <tbody>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -3819,7 +3834,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 102
@@ -3857,7 +3872,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 103
@@ -3895,7 +3910,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 104
@@ -3933,7 +3948,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 105
@@ -3971,7 +3986,7 @@ DE
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 105
@@ -4033,7 +4048,7 @@ scenario.</li>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">pd_results</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [145 × 7] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id      : chr [1:145] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...</span></span>
+<span><span class="co">#&gt;  $ run_id      : chr [1:145] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...</span></span>
 <span><span class="co">#&gt;  $ company_id  : chr [1:145] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ company_name: chr [1:145] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ sector      : chr [1:145] "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" "Oil&amp;Gas" ...</span></span>
@@ -4068,7 +4083,7 @@ pd_shock
 <tbody>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4091,7 +4106,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4114,7 +4129,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4137,7 +4152,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4160,7 +4175,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4183,7 +4198,7 @@ Oil&amp;Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4249,7 +4264,7 @@ profits feeding the NPV.</li>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">company_trajectories</span><span class="op">)</span></span>
 <span><span class="co">#&gt; tibble [210 × 23] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" "08f82665-08ee-4886-82bc-ac874067cdc3" ...</span></span>
+<span><span class="co">#&gt;  $ run_id                                  : chr [1:210] "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" "76872cbe-f328-402e-a045-ec2397fe8513" ...</span></span>
 <span><span class="co">#&gt;  $ asset_id                                : chr [1:210] "101" "101" "101" "101" ...</span></span>
 <span><span class="co">#&gt;  $ asset_name                              : chr [1:210] "Company 1" "Company 1" "Company 1" "Company 1" ...</span></span>
 <span><span class="co">#&gt;  $ company_id                              : chr [1:210] "101" "101" "101" "101" ...</span></span>
@@ -4348,7 +4363,7 @@ discounted_net_profits_shock_scenario
 <tbody>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4419,7 +4434,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4490,7 +4505,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4561,7 +4576,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4632,7 +4647,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
@@ -4703,7 +4718,7 @@ Gas
 </tr>
 <tr>
 <td style="text-align:left;">
-08f82665-08ee-4886-82bc-ac874067cdc3
+76872cbe-f328-402e-a045-ec2397fe8513
 </td>
 <td style="text-align:left;">
 101
