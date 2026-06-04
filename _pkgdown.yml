@@ -17,11 +17,10 @@ articles:
 - title: Bank workflow
   navbar: Bank workflow
   contents:
-  - bank_1_credit-risk-analysis
-  - bank_2_inputs-and-outputs
-  - bank_3_run-on-a-portfolio
-  - bank_4_sensitivity-analysis
-  - bank_5_pd-el-integration
+  - bank_1_inputs-and-outputs
+  - bank_2_simple-portfolio-analysis
+  - bank_3_sensitivity-analysis
+  - bank_4_pd-el-integration
 
 # Future series (e.g. equity analysis) get their own group here:
 # - title: Equity workflow

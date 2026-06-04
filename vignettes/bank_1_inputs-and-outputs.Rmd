@@ -1,8 +1,8 @@
 ---
-title: "Bank workflow 2: Inputs and outputs"
+title: "Bank workflow 1: Inputs and outputs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Bank workflow 2: Inputs and outputs}
+  %\VignetteIndexEntry{Bank workflow 1: Inputs and outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -40,9 +40,9 @@ how to read every output column.
 > **financial features** — plus your **portfolio**. The main portfolio file is
 > **`portfolio_ids`** (matched by `company_id`); `portfolio_names` and
 > `portfolio_countries` are options. **The CSVs loaded below are placeholders**
-> (bundled samples) — replace them with your own files. See
-> [Credit risk analysis](bank_1_credit-risk-analysis.html) for `setup_trisk_inputs()`
-> and the `trisk_inputs/` folder convention.
+> (bundled samples) — replace them with your own files. Use `setup_trisk_inputs()`
+> to scaffold the `trisk_inputs/` folder with templates and samples (see *Setting
+> up your input folder* below).
 
 TRISK requires four reference datasets, all shipped as test data inside
 `trisk.model`. In production you swap these for the downloaded inputs (see
@@ -151,6 +151,34 @@ knitr::kable(head(ngfs_carbon_price_testdata)) %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
 
+### Setting up your input folder
+
+Run this **once** to create a `trisk_inputs/` folder in your working directory,
+pre-filled with blank templates and filled samples plus a README:
+
+```{r eval=FALSE}
+setup_trisk_inputs()
+```
+
+It creates:
+
+```
+trisk_inputs/
+  README.md           # required files, column schemas, portfolio modes
+  templates/          # blank, header-only CSVs to fill in
+    assets.csv  scenarios.csv  ngfs_carbon_price.csv
+    financial_features.csv  portfolio_ids.csv
+  samples/            # the bundled example data, as a worked reference
+    (same five files, filled)
+```
+
+> The folder lives in **your project directory**, never inside the installed
+> package — the package library is read-only on many systems and is overwritten
+> on every update, so your data must live in your own project.
+
+Fill the templates (or copy a `samples/` file and edit it), save each as
+`trisk_inputs/<input>.csv`, then point your reads at those files.
+
 ### Obtaining inputs
 
 The test data above is small and fixed. For real analysis, download the full
@@ -166,8 +194,8 @@ print(
 `download_trisk_inputs()` fetches the production `scenarios.csv` into a folder of
 your choice (skipped here so the vignette has no network dependency). The other
 three reference inputs — `assets`, `financial_features` and `ngfs_carbon_price` —
-you supply yourself, starting from the bundled samples (see
-[Credit risk analysis](bank_1_credit-risk-analysis.html) and `setup_trisk_inputs()`):
+you supply yourself, starting from the bundled samples (see *Setting up your
+input folder* above and `setup_trisk_inputs()`):
 
 ```{r}
 trisk_inputs_folder <- file.path(".", "trisk_inputs")
@@ -414,6 +442,6 @@ knitr::kable(head(as.data.frame(company_trajectories))) %>%
 ## See also
 
 - `getting-started` — install and run your first stress test.
-- `run-on-a-portfolio` — apply TRISK to a portfolio of counterparties.
+- `simple-portfolio-analysis` — apply TRISK to a portfolio of counterparties.
 - `pd-el-integration` — turn shocked PDs into expected-loss figures.
 - `sensitivity-analysis` — sweep parameters to test result stability.
