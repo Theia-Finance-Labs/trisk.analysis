@@ -102,12 +102,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 8d6235cd-76f4-4285-aac1-d5b9d59312ab | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 7c0fd3aa-57e8-46d8-a931-6068333fe60c | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Sweeping any model parameter
 
@@ -126,29 +126,34 @@ valuation assumptions:
 - `carbon_price_model` and `market_passthrough` — carbon-tax pathway and
   the share of the tax the firm passes to customers
 
-Hold the scenario fixed and vary one knob to isolate its effect. For
-example, sweep the DCF `discount_rate` across three values:
+Define a fixed scenario once, then vary a single parameter. Only the two
+lines under “vary ONE parameter” change to sweep something else: set
+`param` to any [`run_trisk_model()`](../reference/run_trisk_model.md)
+argument and `values` to the grid you want.
 
 ``` r
 
-discount_rate_grid <- c(0.07, 0.09, 0.11)
+# Hold one scenario fixed...
+base_run <- list(
+  scenario_geography = "Global",
+  baseline_scenario  = "NGFS2023GCAM_CP",
+  target_scenario    = "NGFS2023GCAM_NZ2050",
+  shock_year         = 2030
+)
 
-run_params_discount <- lapply(discount_rate_grid, function(dr) {
-  list(
-    scenario_geography = "Global",
-    baseline_scenario  = "NGFS2023GCAM_CP",
-    target_scenario    = "NGFS2023GCAM_NZ2050",
-    shock_year         = 2030,
-    discount_rate      = dr
-  )
-})
+# ...then vary ONE parameter (swap these two lines for risk_free_rate,
+# growth_rate, carbon_price_model, ... and their values):
+param  <- "discount_rate"
+values <- c(0.07, 0.09, 0.11)
 
-sa_discount <- run_trisk_sa(
+run_params <- lapply(values, function(v) modifyList(base_run, setNames(list(v), param)))
+
+sa_param <- run_trisk_sa(
   assets_data    = assets_testdata,
   scenarios_data = scenarios_testdata,
   financial_data = financial_features_testdata,
   carbon_data    = ngfs_carbon_price_testdata,
-  run_params     = run_params_discount
+  run_params     = run_params
 )
 #> [1] "Starting the execution of 3 total runs"
 #> -- Retyping Dataframes. 
@@ -183,24 +188,23 @@ sa_discount <- run_trisk_sa(
 #> [1] "Done 3 / 3 total runs"
 #> [1] "All runs completed."
 
-# the params table records which discount_rate produced each run_id
-knitr::kable(sa_discount$params[, c("run_id", "discount_rate",
-                                    "baseline_scenario", "target_scenario")])
+# each run_id records the swept value
+knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_scenario")])
 ```
 
 | run_id | discount_rate | baseline_scenario | target_scenario |
 |:---|---:|:---|:---|
-| 718701a6-2551-468b-a450-1234075d438d | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 8d0c26fd-043f-40e6-a10e-19aa9a48a7aa | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| a6970ad3-99dd-43cd-8fa5-44bc54acc340 | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| b9ce458f-1930-4532-a7fd-3a45ff9387e6 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 54a19f47-9cac-42a7-b4f1-a408d9e80cd6 | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 124a970a-7b9c-487b-a0fb-67269eb5886e | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
 
 A higher discount rate shrinks the present value of distant cash flows,
 so it lowers both the baseline and the shock NPV. Because the transition
 shock is a *difference* of two DCFs, much of that level effect cancels
 and the shock magnitude moves less than the absolute NPVs — sweeping the
-rate is how you confirm that for your own book. The same pattern applies
-to every parameter above; the rest of this vignette focuses on the three
-scenario dimensions.
+rate is how you confirm that for your own book. To sweep a different
+parameter, change `param` and `values` — nothing else moves. The rest of
+this vignette focuses on the three scenario dimensions.
 
 ## Convention: actual portfolio terms, EAD-weighted
 

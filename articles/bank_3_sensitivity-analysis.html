@@ -190,7 +190,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -198,7 +198,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
@@ -206,7 +206,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0000214</td>
 </tr>
 <tr class="odd">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
@@ -214,7 +214,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0004647</td>
 </tr>
 <tr class="even">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
@@ -222,7 +222,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0022474</td>
 </tr>
 <tr class="odd">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
@@ -230,7 +230,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0059057</td>
 </tr>
 <tr class="even">
-<td align="left">8d6235cd-76f4-4285-aac1-d5b9d59312ab</td>
+<td align="left">7c0fd3aa-57e8-46d8-a931-6068333fe60c</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>
@@ -266,28 +266,32 @@ coefficient</li>
 — carbon-tax pathway and the share of the tax the firm passes to
 customers</li>
 </ul>
-<p>Hold the scenario fixed and vary one knob to isolate its effect. For
-example, sweep the DCF <code>discount_rate</code> across three
-values:</p>
+<p>Define a fixed scenario once, then vary a single parameter. Only the
+two lines under “vary ONE parameter” change to sweep something else: set
+<code>param</code> to any <code><a href="../reference/run_trisk_model.html">run_trisk_model()</a></code> argument and
+<code>values</code> to the grid you want.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">discount_rate_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.07</span>, <span class="fl">0.09</span>, <span class="fl">0.11</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Hold one scenario fixed...</span></span>
+<span><span class="va">base_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
+<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>  shock_year         <span class="op">=</span> <span class="fl">2030</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">run_params_discount</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">discount_rate_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">dr</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>    baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>    target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
-<span>    shock_year         <span class="op">=</span> <span class="fl">2030</span>,</span>
-<span>    discount_rate      <span class="op">=</span> <span class="va">dr</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co"># ...then vary ONE parameter (swap these two lines for risk_free_rate,</span></span>
+<span><span class="co"># growth_rate, carbon_price_model, ... and their values):</span></span>
+<span><span class="va">param</span>  <span class="op">&lt;-</span> <span class="st">"discount_rate"</span></span>
+<span><span class="va">values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.07</span>, <span class="fl">0.09</span>, <span class="fl">0.11</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sa_discount</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
+<span><span class="va">run_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">values</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span><span class="va">base_run</span>, <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>, <span class="va">param</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sa_param</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_sa.html">run_trisk_sa</a></span><span class="op">(</span></span>
 <span>  assets_data    <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
 <span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
 <span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
 <span>  carbon_data    <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
-<span>  run_params     <span class="op">=</span> <span class="va">run_params_discount</span></span>
+<span>  run_params     <span class="op">=</span> <span class="va">run_params</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Starting the execution of 3 total runs"</span></span>
 <span><span class="co">#&gt; -- Retyping Dataframes. </span></span>
@@ -322,9 +326,8 @@ values:</p>
 <span><span class="co">#&gt; [1] "Done 3 / 3 total runs"</span></span>
 <span><span class="co">#&gt; [1] "All runs completed."</span></span>
 <span></span>
-<span><span class="co"># the params table records which discount_rate produced each run_id</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sa_discount</span><span class="op">$</span><span class="va">params</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run_id"</span>, <span class="st">"discount_rate"</span>,</span>
-<span>                                    <span class="st">"baseline_scenario"</span>, <span class="st">"target_scenario"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># each run_id records the swept value</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sa_param</span><span class="op">$</span><span class="va">params</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"run_id"</span>, <span class="va">param</span>, <span class="st">"baseline_scenario"</span>, <span class="st">"target_scenario"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="41%">
@@ -340,19 +343,19 @@ values:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">718701a6-2551-468b-a450-1234075d438d</td>
+<td align="left">b9ce458f-1930-4532-a7fd-3a45ff9387e6</td>
 <td align="right">0.07</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
 </tr>
 <tr class="even">
-<td align="left">8d0c26fd-043f-40e6-a10e-19aa9a48a7aa</td>
+<td align="left">54a19f47-9cac-42a7-b4f1-a408d9e80cd6</td>
 <td align="right">0.09</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
 </tr>
 <tr class="odd">
-<td align="left">a6970ad3-99dd-43cd-8fa5-44bc54acc340</td>
+<td align="left">124a970a-7b9c-487b-a0fb-67269eb5886e</td>
 <td align="right">0.11</td>
 <td align="left">NGFS2023GCAM_CP</td>
 <td align="left">NGFS2023GCAM_NZ2050</td>
@@ -364,8 +367,9 @@ flows, so it lowers both the baseline and the shock NPV. Because the
 transition shock is a <em>difference</em> of two DCFs, much of that
 level effect cancels and the shock magnitude moves less than the
 absolute NPVs — sweeping the rate is how you confirm that for your own
-book. The same pattern applies to every parameter above; the rest of
-this vignette focuses on the three scenario dimensions.</p>
+book. To sweep a different parameter, change <code>param</code> and
+<code>values</code> — nothing else moves. The rest of this vignette
+focuses on the three scenario dimensions.</p>
 </div>
 <div class="section level2">
 <h2 id="convention-actual-portfolio-terms-ead-weighted">Convention: actual portfolio terms, EAD-weighted<a class="anchor" aria-label="anchor" href="#convention-actual-portfolio-terms-ead-weighted"></a>
