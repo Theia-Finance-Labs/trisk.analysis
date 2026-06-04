@@ -94,9 +94,7 @@ an *adjusted PD* `p_adj`, then
 
 **Absolute** — add the raw PD shift onto the internal PD:
 
-``` math
-p_{adj} = p_{int} + (p_{shock} - p_{base})
-```
+    p_adj = p_int + (p_shock - p_base)
 
 - *When useful:* the simplest, most transparent option, and safe when
   baseline PDs can be zero (no division). Trade-off: large shifts can
@@ -105,9 +103,7 @@ p_{adj} = p_{int} + (p_{shock} - p_{base})
 
 **Relative** — scale the internal PD by the proportional shift:
 
-``` math
-p_{adj} = p_{int} \times \left( 1 + \frac{p_{shock} - p_{base}}{p_{base}} \right)
-```
+    p_adj = p_int * (1 + (p_shock - p_base) / p_base)
 
 - *When useful:* when the *proportional* move matters more than the
   absolute one — e.g. across exposures whose internal PD levels differ
@@ -116,13 +112,14 @@ p_{adj} = p_{int} \times \left( 1 + \frac{p_{shock} - p_{base}}{p_{base}} \right
   or `zscore` there.
 
 **Z-score (default)** — recombine the three PDs in normal-quantile
-(probit) space. With $`\Phi`$ the standard-normal CDF and $`\Phi^{-1}`$
-its quantile function (each PD clipped to `[zscore_floor, zscore_cap]`
-before the quantile):
+(probit) space, using R’s
+[`qnorm()`](https://rdrr.io/r/stats/Normal.html) (the standard-normal
+quantile / inverse CDF) and
+[`pnorm()`](https://rdrr.io/r/stats/Normal.html) (the CDF), with each PD
+clipped to `[zscore_floor, zscore_cap]` before
+[`qnorm()`](https://rdrr.io/r/stats/Normal.html):
 
-``` math
-p_{adj} = \Phi\left( \Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock}) - \Phi^{-1}(p_{base}) \right)
-```
+    p_adj = pnorm( qnorm(p_int) + qnorm(p_shock) - qnorm(p_base) )
 
 - *When useful:* the recommended default. It is zero-safe (via
   clipping), preserves the non-linear compression of PDs near the

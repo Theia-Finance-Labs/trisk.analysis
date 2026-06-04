@@ -102,12 +102,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| e919602e-4240-4d2a-b066-678e4682f75e | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Sweeping any model parameter
 
@@ -194,9 +194,9 @@ knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_s
 
 | run_id | discount_rate | baseline_scenario | target_scenario |
 |:---|---:|:---|:---|
-| 5b910ef9-afa0-4866-8324-0c0a7cb7b6bc | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 0fb35d94-92b3-4dc5-9e84-05755e607a0e | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| c47403ca-a3f0-47ea-b7ad-cf94b6c6be48 | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 93c47288-c0c7-4012-8708-927ed301ae36 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| a612993e-a784-44c3-9f0a-9d78acc6b50b | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 076acd7a-3f64-42d6-b980-f117499c774d | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
 
 A higher discount rate shrinks the present value of distant cash flows,
 so it lowers both the baseline and the shock NPV. Because the transition
