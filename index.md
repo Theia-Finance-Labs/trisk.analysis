@@ -49,7 +49,7 @@ The documentation is a six-step path, each article building on the
 previous one:
 
 1.  **[Getting
-    started](https://theia-finance-labs.github.io/trisk.analysis/articles/1_getting-started.html)**
+    started](https://theia-finance-labs.github.io/trisk.analysis/articles/0_getting-started.html)**
     — install the package and run TRISK on the bundled toy portfolio in
     a few lines.
 2.  **[Credit risk analysis — start

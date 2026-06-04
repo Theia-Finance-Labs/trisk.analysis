@@ -2,7 +2,7 @@
 
 ### Get started
 
-- [Getting started](1_getting-started.md):
+- [Getting started](0_getting-started.md):
 
 ### Bank workflow
 

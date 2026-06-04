@@ -109,12 +109,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| d7640e91-9f5e-47fb-8276-67871c9646c4 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
+| 1a8cfdc0-be70-44be-92f0-700c6102ffc9 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
 
 ## Convention: actual portfolio terms, EAD-weighted
 
@@ -580,7 +580,7 @@ references and the full methodology, see
 
 ## See also
 
-- [`getting-started`](1_getting-started.md) — the reading-path entry
+- [`getting-started`](0_getting-started.md) — the reading-path entry
   point.
 - [`run-on-a-portfolio`](bank_3_run-on-a-portfolio.md) — how the
   underlying TRISK runs that feed this analysis are produced.
