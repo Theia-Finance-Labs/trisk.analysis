@@ -45,36 +45,31 @@ package in R.
 
 ### Reading path
 
-The documentation is a six-step path, each article building on the
+The documentation is a five-step path, each article building on the
 previous one:
 
 1.  **[Getting
     started](https://theia-finance-labs.github.io/trisk.analysis/articles/0_getting-started.html)**
     — install the package and run TRISK on the bundled toy portfolio in
     a few lines.
-2.  **[Credit risk analysis — start
-    here](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_1_credit-risk-analysis.html)**
-    — the entry point for a bank: the five inputs, how to set up your
-    `trisk_inputs/` data folder with
-    [`setup_trisk_inputs()`](reference/setup_trisk_inputs.md), the
-    central `portfolio_ids` file (names / countries as options), and a
-    first end-to-end run.
-3.  **[Inputs and
-    outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_2_inputs-and-outputs.html)**
+2.  **[Inputs and
+    outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_1_inputs-and-outputs.html)**
     — the 4 input datasets (assets, scenarios, financial_features,
     ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results,
-    company_trajectories), their column structure, the Trisk parameter
-    definitions, and how to access the bundled scenarios.
-4.  **[Run on a
-    portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_3_run-on-a-portfolio.html)**
-    — match a portfolio to TRISK, compute PD / NPV / expected loss, and
-    visualise the results.
-5.  **[Sensitivity
-    analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_4_sensitivity-analysis.html)**
+    company_trajectories), their column structure, how to set up your
+    `trisk_inputs/` folder with
+    [`setup_trisk_inputs()`](reference/setup_trisk_inputs.md), the Trisk
+    parameter definitions, and how to access the bundled scenarios.
+3.  **[Simple portfolio
+    analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_2_simple-portfolio-analysis.html)**
+    — match a portfolio to TRISK (simple and full runners), compute PD /
+    NPV / expected loss, and visualise the results.
+4.  **[Sensitivity
+    analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_3_sensitivity-analysis.html)**
     — sweep shock year, IAM, and ambition policy, each read through a
     bank-impact lens.
-6.  **[PD & EL
-    integration](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_5_pd-el-integration.html)**
+5.  **[PD & EL
+    integration](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_4_pd-el-integration.html)**
     — recombine TRISK shock PDs with your internal PDs and translate the
     result into expected-loss basis points.
 
@@ -98,8 +93,9 @@ PDs and NPVs alongside the matched exposures; the derived metrics such
 as expected loss are then computed with
 [`compute_analysis_metrics()`](reference/compute_analysis_metrics.md)
 (which the plotting pipelines call for you). Plots to visualize the
-results are included in the package. Example showcased in the [Run on a
-portfolio](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_3_run-on-a-portfolio.html)
+results are included in the package. Example showcased in the [Simple
+portfolio
+analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_2_simple-portfolio-analysis.html)
 vignette.
 
 ### Sensitivity analysis
@@ -109,7 +105,7 @@ is provided if you’d like to generate a set of Trisk runs with different
 parameters configurations. The results obtained can be plotted using
 functions included in the package, or integrated in your analysis
 pipeline. Example showcased in the [Sensitivity
-Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_4_sensitivity-analysis.html)
+Analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_3_sensitivity-analysis.html)
 vignette.
 
 ## Funding
@@ -257,10 +253,9 @@ Shared theme and palette used across the package plots.
 
 ### Bank workflow
 
-- [Bank workflow 1: Credit risk analysis — start
-  here](bank_1_credit-risk-analysis.md):
-- [Bank workflow 2: Inputs and outputs](bank_2_inputs-and-outputs.md):
-- [Bank workflow 3: Run on a portfolio](bank_3_run-on-a-portfolio.md):
-- [Bank workflow 4: Sensitivity analysis (bank-impact
-  view)](bank_4_sensitivity-analysis.md):
-- [Bank workflow 5: PD and EL integration](bank_5_pd-el-integration.md):
+- [Bank workflow 1: Inputs and outputs](bank_1_inputs-and-outputs.md):
+- [Bank workflow 2: Simple portfolio
+  analysis](bank_2_simple-portfolio-analysis.md):
+- [Bank workflow 3: Sensitivity analysis (bank-impact
+  view)](bank_3_sensitivity-analysis.md):
+- [Bank workflow 4: PD and EL integration](bank_4_pd-el-integration.md):

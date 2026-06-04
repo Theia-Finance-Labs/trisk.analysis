@@ -27,18 +27,17 @@ institution types can adapt the same steps.
 The worked vignettes follow a bank credit-risk workflow. Work through
 them in this order:
 
-1.  [`vignette("bank_1_credit-risk-analysis")`](../articles/bank_1_credit-risk-analysis.md)
-    — the bank entry point: the five inputs, setting up your
-    `trisk_inputs/` data folder, and a first end-to-end run.
-2.  [`vignette("bank_2_inputs-and-outputs")`](../articles/bank_2_inputs-and-outputs.md)
+1.  [`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
     — what TRISK consumes (assets, scenarios, financial features, carbon
-    prices) and what it produces (NPV and PD results).
-3.  [`vignette("bank_3_run-on-a-portfolio")`](../articles/bank_3_run-on-a-portfolio.md)
-    — run TRISK on a loan book and map the shocks onto your exposures.
-4.  [`vignette("bank_4_sensitivity-analysis")`](../articles/bank_4_sensitivity-analysis.md)
+    prices), how to set up your `trisk_inputs/` data folder, and what it
+    produces (NPV and PD results).
+2.  [`vignette("bank_2_simple-portfolio-analysis")`](../articles/bank_2_simple-portfolio-analysis.md)
+    — run TRISK on a loan book and map the shocks onto your exposures
+    (the simple and full runners).
+3.  [`vignette("bank_3_sensitivity-analysis")`](../articles/bank_3_sensitivity-analysis.md)
     — sweep scenario assumptions to see how results move across
     baselines and shock scenarios.
-5.  [`vignette("bank_5_pd-el-integration")`](../articles/bank_5_pd-el-integration.md)
+4.  [`vignette("bank_4_pd-el-integration")`](../articles/bank_4_pd-el-integration.md)
     — blend TRISK shocks with your own PD/EL to get climate-adjusted
     expected loss.
 
@@ -132,11 +131,13 @@ results <- run_trisk_on_simple_portfolio(
 ```
 
 See
-[`vignette("bank_2_inputs-and-outputs")`](../articles/bank_2_inputs-and-outputs.md)
+[`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
 for fuller definitions of each parameter.
 
 ## Where to go next
 
 Start with
-[`vignette("bank_1_credit-risk-analysis")`](../articles/bank_1_credit-risk-analysis.md)
-to set up your inputs and run TRISK on your own portfolio.
+[`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
+to set up your inputs and understand the data, then
+[`vignette("bank_2_simple-portfolio-analysis")`](../articles/bank_2_simple-portfolio-analysis.md)
+to run TRISK on your own portfolio.
