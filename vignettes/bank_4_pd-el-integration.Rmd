@@ -99,32 +99,37 @@ Let `p_int` be the internal PD, `p_base` the TRISK baseline PD, and
 
 **Absolute** — add the raw PD shift onto the internal PD:
 
-$$ p_{adj} = p_{int} + (p_{shock} - p_{base}) $$
+$$p_{adj} = p_{int} + (p_{shock} - p_{base})$$
+
+- *When useful:* the simplest, most transparent option, and safe when baseline
+  PDs can be zero (no division). Trade-off: large shifts can push `p_adj` outside
+  a sensible range, where the final `[0, 1]` clip then bites.
 
 **Relative** — scale the internal PD by the proportional shift:
 
-$$ p_{adj} = p_{int}\left(1 + \frac{p_{shock} - p_{base}}{p_{base}}\right),
-   \qquad (p_{base} \neq 0) $$
+$$p_{adj} = p_{int} \times \left( 1 + \frac{p_{shock} - p_{base}}{p_{base}} \right)$$
 
-When `p_base = 0` the relative method returns `p_int` unchanged — the shock
-signal is lost on zero-baseline rows. Prefer `absolute` or `zscore` there.
+- *When useful:* when the *proportional* move matters more than the absolute one
+  — e.g. across exposures whose internal PD levels differ widely. Avoid it on
+  zero-baseline rows: when `p_base = 0` it returns `p_int` unchanged and the shock
+  signal is lost, so prefer `absolute` or `zscore` there.
 
 **Z-score (default)** — recombine the three PDs in normal-quantile (probit)
-space. With $\Phi$ the standard-normal CDF and $\Phi^{-1}$ its quantile
-function, and clipping each PD to `[zscore_floor, zscore_cap]` before the
-quantile:
+space. With $\Phi$ the standard-normal CDF and $\Phi^{-1}$ its quantile function
+(each PD clipped to `[zscore_floor, zscore_cap]` before the quantile):
 
-$$ p_{adj} = \Phi\!\Big(\Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock})
-   - \Phi^{-1}(p_{base})\Big) $$
+$$p_{adj} = \Phi\left( \Phi^{-1}(p_{int}) + \Phi^{-1}(p_{shock}) - \Phi^{-1}(p_{base}) \right)$$
+
+- *When useful:* the recommended default. It is zero-safe (via clipping),
+  preserves the non-linear compression of PDs near the distribution tails, and
+  behaves sensibly on sparse portfolios where Merton inputs drive some baseline
+  PDs to underflow.
 
 This is a **probit / Merton-style recombination of default thresholds**, not
 the Basel IRB risk-weight formula. It adds the TRISK shock-minus-baseline
 *distance-to-default* shift to the internal PD's implied default threshold,
-then maps back to a probability. It is the right default because it is
-zero-safe (via clipping), it preserves the non-linear compression of PDs near
-the distribution tails, and it behaves sensibly on sparse portfolios where
-Merton inputs drive some baseline PDs to underflow. It does **not** invoke the
-Basel asset-correlation / Vasicek conditional-PD capital formula — there is no
+then maps back to a probability. It does **not** invoke the Basel
+asset-correlation / Vasicek conditional-PD capital formula — there is no
 correlation parameter and no supervisory confidence level here.
 
 The `zscore_floor` (default `1e-4`) and `zscore_cap` (default `1 - 1e-4`)
