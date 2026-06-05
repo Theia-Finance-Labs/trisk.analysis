@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_trisk_on_portfolio.R
 \name{run_trisk_on_portfolio}
 \alias{run_trisk_on_portfolio}
-\title{Run TRISK Model on Portfolio (technology-resolved; advanced)}
+\title{Run TRISK Model on Portfolio (technology-resolved; deprecated)}
 \usage{
 run_trisk_on_portfolio(
   assets_data,
@@ -42,6 +42,8 @@ run_trisk_on_portfolio(
 A data frame containing the processed and analyzed portfolio data.
 }
 \description{
+\strong{Deprecated} in favour of [run_trisk_on_simple_portfolio()] - calling
+this function emits a runtime deprecation warning.
 \strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
 A bank loan is exposure to a \emph{company}, not to a technology, and the
 bundled/Asset-Impact inputs are company-technology grain (no true asset-level

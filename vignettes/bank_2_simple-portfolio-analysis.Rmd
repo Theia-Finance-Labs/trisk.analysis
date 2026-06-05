@@ -29,9 +29,11 @@ metadata your portfolio carries:
 - `run_trisk_on_simple_portfolio()` — the **minimal path**. You bring company
   exposures, terms, and loss-given-default; no `country_iso2` column is needed.
   TRISK runs and allocates exposure across each company's technologies for you.
-- `run_trisk_on_portfolio()` — the **fuller path**. You match your portfolio to
-  TRISK assets by country and company (by ID, name, or country aggregate), then
-  run the model on the filtered asset universe.
+- `run_trisk_on_portfolio()` — the **legacy path** (**deprecated**; emits a
+  runtime warning). You match your portfolio to TRISK assets by country and company
+  (by ID, name, or country aggregate), then run the model on the filtered asset
+  universe. Prefer the simple runner unless you genuinely hold technology-resolved
+  exposure.
 
 As a rule of thumb: use the simple runner for a quick, single-company-resolution
 risk read where you already know which counterparties you hold. Use the full
@@ -200,9 +202,10 @@ defined by a unique combination of `company_id`, `sector`, `technology`, and
 portfolio_testdata <- portfolio_ids_testdata
 ```
 
-`run_trisk_on_portfolio()` handles the filtering on portfolio and then runs TRISK:
+`run_trisk_on_portfolio()` (now **deprecated**) handles the filtering, then runs
+TRISK; the deprecation warning is suppressed in this chunk:
 
-```{r}
+```{r, warning=FALSE}
 analysis_data <- run_trisk_on_portfolio(
   assets_data = assets_testdata,
   scenarios_data = scenarios_testdata,

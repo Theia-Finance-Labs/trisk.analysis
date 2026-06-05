@@ -181,7 +181,11 @@ below render red.
 The `internal_pd` column rides along on the standard portfolio schema; we keep
 it as a separate lookup table to feed into `integrate_pd()`.
 
-```{r}
+> **Note:** `run_trisk_on_portfolio()` is **deprecated** in favour of
+> `run_trisk_on_simple_portfolio()`; it is shown here only for the
+> technology-resolved path. Its runtime deprecation warning is suppressed below.
+
+```{r, warning=FALSE}
 analysis_data <- run_trisk_on_portfolio(
   assets_data       = assets_testdata,
   scenarios_data    = scenarios_testdata,

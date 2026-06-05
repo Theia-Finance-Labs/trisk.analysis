@@ -1,6 +1,8 @@
-#' Run TRISK Model on Portfolio (technology-resolved; advanced)
+#' Run TRISK Model on Portfolio (technology-resolved; deprecated)
 #'
 #' @description
+#' \strong{Deprecated} in favour of [run_trisk_on_simple_portfolio()] - calling
+#' this function emits a runtime deprecation warning.
 #' \strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
 #' A bank loan is exposure to a \emph{company}, not to a technology, and the
 #' bundled/Asset-Impact inputs are company-technology grain (no true asset-level
@@ -38,6 +40,19 @@ run_trisk_on_portfolio <- function(assets_data,
                                    threshold = 0.5,
                                    method = "lcs",
                                    ...) {
+  .Deprecated(
+    new = "run_trisk_on_simple_portfolio",
+    package = "trisk.analysis",
+    msg = paste0(
+      "run_trisk_on_portfolio() is deprecated. A bank loan is company-level, but ",
+      "this runner joins the portfolio on `technology` (technology/asset-resolved ",
+      "exposure). For standard credit portfolios use ",
+      "run_trisk_on_simple_portfolio(), which allocates a company loan across ",
+      "technologies by NPV share. This runner is retained for genuinely ",
+      "technology/asset-resolved exposure."
+    )
+  )
+
   # clean coltypes
 
   assets_data <- assets_data |>
