@@ -96,9 +96,9 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 ---
 
 ## Phase 2 — High (own branch)
-- **A1** (TODO) audit trail: attach `$meta` (or `attr`) to both runner outputs — scenario pair, all forwarded `...`, `packageVersion()` of trisk.analysis + trisk.model, `run_id`. Add a reproducibility-recipe section to a vignette.
+- **✅ A1** (DONE): both runners attach a `trisk_run_meta` attribute (scenario pair, `run_id`, forwarded `...`, package versions, timestamp) via `build_trisk_run_meta`. Reproducibility recipe added to bank_4. `test-runner-metadata.R`.
 - **✅ V1 + technology isolation** (DONE): `check_portfolio` (full runner only) now requires `sector` + `technology` and fails fast; `check_portfolio_simple` stays technology-free. Tests in `test-check-portfolio.R`. (Vignette positioning — lead with simple runner — folded into A1/docs pass, still TODO.)
-- **D1** (TODO) term-beyond-grid: promote the bank_3 inline drop-warning into the runners; name dropped `(company_id, term)`.
+- **✅ D1** (DONE): `warn_terms_outside_grid()` in both runners warns and names dropped `(company_id, term)` when a portfolio term is outside the Merton grid. `test-runner-metadata.R`.
 - **✅ S1** (DONE): `run_trisk_from_db()` takes an optional `conn` or reads `TRISK_DB_*` env vars, fails fast if absent, no hardcoded password. `test-run-trisk-from-db.R`.
 - **✅ CX1** (DONE): `resolve_internal_series` now matches on all shared key columns (company_id [+ term/…]) and errors on ambiguous duplicate-key lookups. `test-internal-lookup.R`.
 

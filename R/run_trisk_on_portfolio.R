@@ -97,8 +97,19 @@ run_trisk_on_portfolio <- function(assets_data,
       company_id = as.character(.data$company_id)
     )
 
+  # D1: warn (don't silently drop) when a portfolio term is outside the Merton grid.
+  warn_terms_outside_grid(portfolio_data, pd_results)
+
   analysis_data <- portfolio_data |>
     join_trisk_outputs_to_portfolio(npv_results = npv_results, pd_results = pd_results)
+
+  # A1: attach an audit-trail / reproducibility record for the caller to persist.
+  attr(analysis_data, "trisk_run_meta") <- build_trisk_run_meta(
+    baseline_scenario = baseline_scenario,
+    target_scenario   = target_scenario,
+    run_id            = unique(stats::na.omit(pd_results$run_id)),
+    extra_args        = list(...)
+  )
 
   return(analysis_data)
 }

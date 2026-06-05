@@ -208,6 +208,18 @@ knitr::kable(head(analysis_data[, c("company_id", "sector", "technology", "term"
   kableExtra::scroll_box(width = "100%", height = "300px")
 ```
 
+#### Reproducibility: the run audit trail
+
+Both runners attach a `trisk_run_meta` attribute to their output — the scenario
+pair, `run_id`, every argument forwarded to the TRISK model, and the versions of
+`trisk.analysis` and `trisk.model`. Capture it alongside your results so a run
+can be reproduced and defended in model validation:
+
+```{r}
+run_meta <- attr(analysis_data, "trisk_run_meta")
+str(run_meta)
+```
+
 ### Integrate PD — three methods
 
 ```{r}

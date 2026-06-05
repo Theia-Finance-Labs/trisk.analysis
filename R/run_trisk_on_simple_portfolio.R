@@ -93,6 +93,9 @@ run_trisk_on_simple_portfolio <- function(assets_data,
   pd_results <- st_results$pd_results |>
     dplyr::mutate(company_id = as.character(.data$company_id))
 
+  # D1: warn (don't silently drop) when a portfolio term is outside the Merton grid.
+  warn_terms_outside_grid(portfolio_data, pd_results)
+
   trisk_agg <- aggregate_trisk_outputs_simple(npv_results, pd_results)
   joined_data <- join_simple_portfolio_to_trisk(portfolio_data, trisk_agg)
   joined_data <- add_exposure_share_from_npv(joined_data)
@@ -111,10 +114,19 @@ run_trisk_on_simple_portfolio <- function(assets_data,
   portfolio_results <- portfolio_results |>
     dplyr::select(-".portfolio_index")
 
-  return(list(
+  out <- list(
     portfolio_results_tech_detail = portfolio_results_tech_detail,
     portfolio_results = portfolio_results
-  ))
+  )
+  # A1: attach the audit-trail / reproducibility record (attribute keeps the
+  # documented two-element return shape intact).
+  attr(out, "trisk_run_meta") <- build_trisk_run_meta(
+    baseline_scenario = baseline_scenario,
+    target_scenario   = target_scenario,
+    run_id            = unique(stats::na.omit(pd_results$run_id)),
+    extra_args        = list(...)
+  )
+  return(out)
 }
 
 
