@@ -488,7 +488,16 @@ ggplot2::ggplot(el_compare_sector,
   output as a regulatory capital number.
 - **Horizon mismatch.** Integrated PD/EL is term-structured (multi-year),
   closer to lifetime ECL than to a 12-month regulatory PD. Re-annualise before
-  using it in a 12-month slot.
+  using it in a 12-month slot — `pd_lifetime_to_annual(pd, term)` does this under
+  a constant-hazard assumption (and `pd_annual_to_lifetime()` is its inverse).
+- **Static LGD (L1).** The transition shock moves PD and NPV, but
+  `loss_given_default` is held constant — there is no downturn/stress LGD. EL
+  changes here reflect PD/value effects only; if your framework uses
+  scenario-conditional or downturn LGD, apply it separately.
+- **Geography filtering drops out-of-region assets (G1).** With
+  `scenario_geography` other than `"Global"`, the model keeps only assets in the
+  selected region(s); out-of-region assets are excluded from the run silently.
+  Reconcile your input asset count against the results if you scope by geography.
 - **EL zscore EAD basis must match.** The effective-PD round-trip is only
   correct when the EL columns and the EAD denominator are on the same basis.
   If `compute_analysis_metrics()` has scaled EAD by NPV share, supply the

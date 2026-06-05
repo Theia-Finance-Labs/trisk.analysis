@@ -32,6 +32,33 @@ build_trisk_run_meta <- function(baseline_scenario, target_scenario,
   )
 }
 
+#' Warn when baseline and target scenarios are from different families (NM1)
+#'
+#' Scenario names encode a model/year vintage plus a scenario type, e.g.
+#' `NGFS2023GCAM_CP` (family `NGFS2023GCAM`, type `CP`). Baseline and target
+#' should share the family and differ only in type; mixing families (or the
+#' near-identical `NGFS2023GCAM_*` vs `NGFS2023_GCAM_*`) compares incompatible
+#' vintages/horizons. This surfaces that as a warning.
+#'
+#' @param baseline_scenario,target_scenario Scenario name strings.
+#' @return Invisibly `TRUE` if families match, `FALSE` otherwise.
+#' @keywords internal
+warn_scenario_family_mismatch <- function(baseline_scenario, target_scenario) {
+  family <- function(x) sub("_[^_]*$", "", x)  # strip the trailing _<type> token
+  fb <- family(baseline_scenario)
+  ft <- family(target_scenario)
+  if (!identical(fb, ft)) {
+    warning(
+      "run_trisk: baseline ('", baseline_scenario, "') and target ('",
+      target_scenario, "') are from different scenario families ('", fb, "' vs '",
+      ft, "'). Confirm they share the same model/year vintage and horizon before ",
+      "comparing them.", call. = FALSE
+    )
+    return(invisible(FALSE))
+  }
+  invisible(TRUE)
+}
+
 #' Warn when portfolio terms fall outside the TRISK Merton grid (D1)
 #'
 #' The term join silently drops portfolio rows whose contractual `term` is not in

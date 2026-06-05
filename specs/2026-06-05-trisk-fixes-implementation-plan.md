@@ -113,12 +113,12 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 - Codex re-review verdict: K1 = FIXED; X1/Z1 cores correct, edges now closed.
 
 ## Phase 3 — Medium (own branch; N1 is wide — isolate it)
-- **N1** rename `exposure_at_default` → `lgd_weighted_exposure` everywhere (reserve `exposure_at_default` for pre-LGD); add EL-decomposition banner. **Grep all usages first** (`R/`, `vignettes/`, `tests/`); interacts with the K1 denominator and X1 allocation — do *after* Phase 1 so it renames already-correct columns. Single dedicated commit.
-- **G1/AGG1** report assets-in vs assets-after geography filter; document or switch median PD → exposure-weighted in `aggregate_facts_trisk`.
-- **NM1** disambiguate `NGFS2023GCAM_*` vs `NGFS2023_GCAM_*`; warn when baseline/target come from different families/year-ranges.
-- **L1** document static-LGD limitation.
-- **IF1** `pd_lifetime_to_annual(pd, term)` helper + worked staging example, or explicit "lifetime ECL input only" scope-out.
-- **CX2 (NEW, Codex) — fuzzy match keeps ties.** `fuzzy_match_company_ids` uses `slice_min(order_by, n = 1)` which **keeps tied best matches** (`R/run_trisk_on_portfolio.R:148-173`); a portfolio name tying two asset companies duplicates that loan across both → exposure double-applied before the join. → `slice_min(..., with_ties = FALSE)` (or explicit tie-break) + warn on ties naming the loan. (Medium)
+- **N1 — DEFERRED (decision needed).** Renaming `exposure_at_default` → `lgd_weighted_exposure` is a **breaking change** to the public runner output (used by `compute_analysis_metrics`, `integrate_el`, plots, vignettes, and any bank-side downstream code). Options: (a) additive — add `lgd_weighted_exposure` as the primary, keep `exposure_at_default` as a documented deprecated alias; (b) full rename (breaking, major-version); (c) defer to a versioned release. Not done unilaterally — awaiting Jakub's call.
+- **✅ G1/AGG1** (DONE, doc): G1 geography-drop caveat added to bank_4; AGG1 median-PD choice documented in `aggregate_facts_trisk` (robust central tendency; not exposure-weighted because exposure joins later).
+- **✅ NM1** (DONE): `warn_scenario_family_mismatch()` in both runners warns when baseline/target scenario families differ. `test-runner-metadata.R`.
+- **✅ L1** (DONE, doc): static-LGD limitation documented in bank_4 caveats.
+- **✅ IF1** (DONE): `pd_lifetime_to_annual()` + `pd_annual_to_lifetime()` (constant-hazard) in `R/pd_horizon.R`; bank_4 horizon caveat references them. `test-pd-horizon.R`.
+- **✅ CX2** (DONE): `fuzzy_match_company_ids` warns on tied best matches and keeps one per portfolio row (no exposure-duplicating fan-out); FZ1 docstring default corrected (0.2→0.5). `test-fuzzy-match-ties.R`.
 
 ## Phase 4 — Low (own branch)
 - I1 install chunk; EP1 empty-input guard (`get_available_parameters`); R1 relative no-op warning; SA1 `bind_rows`+`tryCatch` per run in `run_trisk_sa`; FZ1 docstring 0.2→0.5; DL1 input-provenance docs.

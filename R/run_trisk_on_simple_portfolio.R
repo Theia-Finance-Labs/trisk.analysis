@@ -61,6 +61,7 @@ run_trisk_on_simple_portfolio <- function(assets_data,
     )
 
   check_portfolio_simple(portfolio_data)
+  warn_scenario_family_mismatch(baseline_scenario, target_scenario)  # NM1
 
   # Match portfolio companies to assets by company_id (obtain country_iso2 from assets)
   portfolio_matched_companies <- portfolio_data |>

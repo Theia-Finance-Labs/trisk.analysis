@@ -45,6 +45,7 @@ run_trisk_on_portfolio <- function(assets_data,
     dplyr::mutate(company_id = as.character(.data$company_id))
 
   check_portfolio(portfolio_data)
+  warn_scenario_family_mismatch(baseline_scenario, target_scenario)  # NM1
 
   if (any(is.na(portfolio_data$company_id))) {
     if (any(is.na(portfolio_data$company_name))) {
@@ -153,8 +154,8 @@ check_portfolio <- function(portfolio_data) {
 #'
 #' @param portfolio_data Data frame containing portfolio information.
 #' @param assets_data Data frame containing asset information with company IDs.
-#' @param threshold Numeric value for the matching threshold. Default is 0.2.
-#' @param method tring specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
+#' @param threshold Numeric value for the matching threshold. Default is 0.5.
+#' @param method String specifying the method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
 #'
 #' @return A data frame of portfolio data with fuzzy-matched company IDs.
 #' @export
@@ -182,6 +183,28 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
     dplyr::ungroup() |>
     # Filter by the normalized threshold
     dplyr::filter(.data$normalized_distance <= threshold)
+
+  # CX2: slice_min() keeps ties, so a portfolio name equidistant from several
+  # company names would match all of them and duplicate that loan (full exposure
+  # applied to each). Warn naming the affected portfolio names and keep one match
+  # per portfolio row so exposure is not silently inflated.
+  tie_counts <- matched_companies |>
+    dplyr::count(.data$portfolio_index, name = "n_match") |>
+    dplyr::filter(.data$n_match > 1)
+  if (nrow(tie_counts) > 0) {
+    tied_names <- unique(portfolio_data$company_name[tie_counts$portfolio_index])
+    warning(
+      "fuzzy_match_company_ids(): ", nrow(tie_counts),
+      " portfolio name(s) tied across multiple companies at the same distance; ",
+      "keeping the first match each. Disambiguate by supplying company_id. ",
+      "Affected: ", paste(tied_names, collapse = ", "),
+      call. = FALSE
+    )
+    matched_companies <- matched_companies |>
+      dplyr::group_by(.data$portfolio_index) |>
+      dplyr::slice(1) |>
+      dplyr::ungroup()
+  }
 
   # Join the matched company_ids to the portfolio data
   portfolio_data_with_ids <- portfolio_data |>

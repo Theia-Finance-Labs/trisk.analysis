@@ -26,6 +26,19 @@ test_that("D1: no warning when all terms are within the grid", {
   expect_no_warning(warn_terms_outside_grid(pf, pd))
 })
 
+test_that("NM1: warns when baseline and target scenario families differ", {
+  expect_warning(
+    warn_scenario_family_mismatch("NGFS2023GCAM_CP", "NGFS2024REMIND_NZ2050"),
+    "different scenario families"
+  )
+})
+
+test_that("NM1: no warning when scenario families match (same vintage)", {
+  expect_no_warning(
+    warn_scenario_family_mismatch("NGFS2023GCAM_CP", "NGFS2023GCAM_NZ2050")
+  )
+})
+
 test_that("A1: run_trisk_on_portfolio attaches trisk_run_meta to its output", {
   testthat::skip_if_not_installed("trisk.model")
   td <- function(f) read.csv(system.file("testdata", f, package = "trisk.model"))
