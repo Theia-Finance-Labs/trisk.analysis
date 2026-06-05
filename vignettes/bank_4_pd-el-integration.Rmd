@@ -290,19 +290,21 @@ result_el <- integrate_el(
   **more** expected loss = worse = rendered **red**; a **negative** adjustment
   means less loss = better = **green**. The PD adjustment follows the same
   rule (positive = PD rose = red).
-- **EAD.** The `exposure_at_default` column is **not** raw exposure.
-  `compute_analysis_metrics()` defines it as
-  `exposure_value_usd * loss_given_default` — i.e. LGD is already folded in.
-  Every `expected_loss_*` column is then `exposure_at_default * pd`. The EL
-  zscore method uses this `exposure_at_default` column as its denominator when
-  present, otherwise reconstructs it as
+- **EAD.** The `exposure_at_default` column is the Basel **exposure at default**:
+  `compute_analysis_metrics()` defines it as `exposure_value_usd` — the gross
+  exposure, *before* the LGD haircut (LGD is a fraction *of* EAD). The
+  LGD-weighted exposure is a separate column,
+  `lgd_weighted_exposure = exposure_at_default * loss_given_default` (= EAD × LGD).
+  Every `expected_loss_*` column is `exposure_at_default * loss_given_default * pd`
+  (= EAD × LGD × PD). The EL zscore method uses `lgd_weighted_exposure` as its
+  denominator when present, otherwise reconstructs it as
   `exposure_value_usd * loss_given_default`.
-- **LGD.** `loss_given_default` is the fraction lost on default, in `[0, 1]`.
-  Because it is already baked into `exposure_at_default`, expected loss is
-  `EL = exposure_at_default * PD` (equivalently
-  `exposure_value_usd * LGD * PD`). The EL zscore method back-transforms EL to
-  an effective PD via `|EL| / exposure_at_default`, recombines in probit space,
-  then re-scales — so LGD enters only through that denominator.
+- **LGD.** `loss_given_default` is the fraction lost on default, in `[0, 1]`, and
+  is a fraction *of* EAD. Expected loss is the Basel product
+  `EL = EAD × LGD × PD` (= `exposure_at_default * loss_given_default * pd`). The EL
+  zscore method back-transforms EL to an effective PD via
+  `|EL| / lgd_weighted_exposure` (= `|EL| / (EAD × LGD)`), recombines in probit
+  space, then re-scales — so LGD enters through that denominator.
 - **Horizon.** TRISK PDs here are **term-structured** to the loan `term`
   (multi-year), not a 12-month point-in-time PD. Treat the integrated PD/EL as
   a **lifetime / multi-year** quantity, closer in spirit to an IFRS-9 Stage 2/3
@@ -390,8 +392,8 @@ pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 (`el_adjusted_bps`) — the total expected-loss rate of the shocked book. The
 **climate overlay (delta)**, `EL adjustment / exposure` (`el_adjustment_bps`), is
 shown as a secondary column: it isolates the marginal effect of the transition
-scenario. Both use *notional* exposure as the denominator, not "EAD": dividing by
-`exposure_at_default` (= exposure × LGD) would yield PD-in-bps, not a loss rate.
+scenario. Both use *notional* exposure (EAD) as the denominator: dividing by
+`lgd_weighted_exposure` (= EAD × LGD) would instead yield PD-in-bps, not a loss rate.
 *When to use: same as P3a but for EL; lead with the adjusted EL level, then point
 to the delta to attribute how much of it is climate.*
 
@@ -498,10 +500,10 @@ ggplot2::ggplot(el_compare_sector,
   `scenario_geography` other than `"Global"`, the model keeps only assets in the
   selected region(s); out-of-region assets are excluded from the run silently.
   Reconcile your input asset count against the results if you scope by geography.
-- **EL zscore EAD basis must match.** The effective-PD round-trip is only
-  correct when the EL columns and the EAD denominator are on the same basis.
+- **EL zscore normalizer basis must match.** The effective-PD round-trip is only
+  correct when the EL columns and the EAD×LGD denominator are on the same basis.
   If `compute_analysis_metrics()` has scaled EAD by NPV share, supply the
-  matching `exposure_at_default` column rather than relying on the
+  matching `lgd_weighted_exposure` column rather than relying on the
   `exposure_value_usd * loss_given_default` fallback.
 - **`internal_pd` must be in `[0, 1]` and joinable by `company_id`.** Unmatched
   `company_id`s fall back to `pd_baseline` with a warning; check the warning
