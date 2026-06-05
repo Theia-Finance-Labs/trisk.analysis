@@ -177,19 +177,42 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
   }
 
   if (is.data.frame(user_values)) {
-    val_col <- setdiff(colnames(user_values), "company_id")
-    if (!"company_id" %in% colnames(user_values) || length(val_col) == 0) {
-      stop("resolve_internal_series(): dataframe must have 'company_id' and one value column.")
+    if (!"company_id" %in% colnames(user_values)) {
+      stop("resolve_internal_series(): dataframe must have 'company_id' and one value column.",
+           call. = FALSE)
     }
-    val_col <- val_col[1]
+    # The value column is the one column NOT shared with analysis_data; the key
+    # columns are those shared (company_id, and optionally term/sector/etc).
+    # Matching on ALL shared keys (CX1) prevents a per-(company, term) lookup from
+    # silently collapsing onto the first company_id match.
+    val_cols <- setdiff(colnames(user_values), colnames(analysis_data))
+    if (length(val_cols) != 1) {
+      stop("resolve_internal_series(): user_values must have exactly one value ",
+           "column not present in analysis_data (found: ",
+           paste(val_cols, collapse = ", "), ").", call. = FALSE)
+    }
+    val_col <- val_cols[1]
+    key_cols <- setdiff(colnames(user_values), val_col)
+    # Ambiguity guard: duplicate keys would apply the first match to every
+    # analysis row sharing that key. Force the caller to disambiguate.
+    if (anyDuplicated(user_values[key_cols]) > 0L) {
+      stop("resolve_internal_series(): user_values has duplicate rows for key(s) (",
+           paste(key_cols, collapse = ", "),
+           "); include a disambiguating column (e.g. 'term') so each row maps to a ",
+           "unique value, or supply one row per company_id.", call. = FALSE)
+    }
+    # Composite key match across all key columns (character-coerced for type-safe
+    # joins; \r separator avoids collisions between concatenated key parts).
+    make_key <- function(df) {
+      do.call(paste, c(lapply(key_cols, function(k) as.character(df[[k]])), sep = "\r"))
+    }
     out <- default_vec
-    idx <- match(as.character(analysis_data$company_id),
-                 as.character(user_values$company_id))
+    idx <- match(make_key(analysis_data), make_key(user_values))
     unmatched_ids <- unique(as.character(analysis_data$company_id)[is.na(idx)])
     if (length(unmatched_ids) > 0) {
       warning(
         "resolve_internal_series(): ", length(unmatched_ids),
-        " company_id(s) in analysis_data not present in user_values; ",
+        " company_id(s) in analysis_data not matched in user_values; ",
         "falling back to '", default_col, "' for those rows. Unmatched: ",
         paste(unmatched_ids, collapse = ", "),
         call. = FALSE
