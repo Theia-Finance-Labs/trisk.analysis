@@ -305,13 +305,14 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #' Vasicek recombination by transforming EL to an effective PD
 #' (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
 #' space, and converting back. All three methods return EL as a positive
-#' magnitude (post 59571f3 package-wide convention). The zscore method requires
-#' `exposure_value_usd` and `loss_given_default` columns in `analysis_data`.
+#' magnitude (post 59571f3 package-wide convention). The zscore method needs the
+#' EL normalizer EAD*LGD: a `lgd_weighted_exposure` column, or
+#' `exposure_value_usd` + `loss_given_default` to reconstruct it.
 #'
 #' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
 #'   columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
-#'   additionally needs an EAD denominator: it uses an `exposure_at_default`
-#'   column when present (the canonical contract, written by
+#'   additionally needs the EL normalizer EAD*LGD (`lgd_weighted_exposure`): it
+#'   uses that column when present (the canonical contract, written by
 #'   [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and
 #'   otherwise reconstructs it as `exposure_value_usd * loss_given_default`.
 #' @param internal_el Numeric vector of length `nrow(analysis_data)`, or a data
@@ -349,13 +350,14 @@ integrate_el <- function(analysis_data,
          paste(missing_cols, collapse = ", "))
   }
   if (method == "zscore") {
-    # Need EAD: either an explicit exposure_at_default column, or the
-    # ingredients (exposure_value_usd + loss_given_default) to reconstruct it.
-    has_ead     <- "exposure_at_default" %in% colnames(analysis_data)
+    # zscore backs PD out of EL via PD = |EL| / (EAD*LGD), so it needs the
+    # LGD-weighted exposure: either an explicit `lgd_weighted_exposure` column,
+    # or the ingredients (exposure_value_usd + loss_given_default) to rebuild it.
+    has_lwe     <- "lgd_weighted_exposure" %in% colnames(analysis_data)
     has_product <- all(c("exposure_value_usd", "loss_given_default")
                        %in% colnames(analysis_data))
-    if (!has_ead && !has_product) {
-      stop("integrate_el(): zscore method needs either `exposure_at_default` ",
+    if (!has_lwe && !has_product) {
+      stop("integrate_el(): zscore method needs either `lgd_weighted_exposure` ",
            "or both `exposure_value_usd` + `loss_given_default` in analysis_data.")
     }
   }
@@ -381,24 +383,25 @@ integrate_el <- function(analysis_data,
     }
   }
 
-  # zscore needs an EAD denominator. Prefer an explicit exposure_at_default
-  # column when the caller has supplied one (e.g. via compute_analysis_metrics
-  # or run_trisk_on_simple_portfolio, which scale EAD by NPV share). Falling
-  # back to exposure_value_usd * loss_given_default is correct only when the
-  # EL columns are on that same unscaled basis; otherwise the effective-PD
-  # round-trip recovers a scaled PD and the z-score result is wrong.
-  ead <- if (method == "zscore") {
-    if ("exposure_at_default" %in% colnames(analysis_data)) {
-      analysis_data$exposure_at_default
+  # zscore needs the EL normalizer EAD*LGD (since EL = EAD*LGD*PD, so
+  # PD = |EL| / (EAD*LGD)). Prefer an explicit `lgd_weighted_exposure` column
+  # when supplied (e.g. via compute_analysis_metrics or
+  # run_trisk_on_simple_portfolio, which scale EAD by NPV share). Falling back to
+  # exposure_value_usd * loss_given_default is correct only when the EL columns
+  # are on that same unscaled basis; otherwise the effective-PD round-trip
+  # recovers a scaled PD and the z-score result is wrong.
+  lgd_weighted_exp <- if (method == "zscore") {
+    if ("lgd_weighted_exposure" %in% colnames(analysis_data)) {
+      analysis_data$lgd_weighted_exposure
     } else {
       analysis_data$exposure_value_usd * analysis_data$loss_given_default
     }
   } else NULL
 
   adjusted <- apply_el_method(internal_vec, el_baseline, el_shock, method,
-                              ead          = ead,
-                              zscore_floor = zscore_floor,
-                              zscore_cap   = zscore_cap)
+                              lgd_weighted_exp = lgd_weighted_exp,
+                              zscore_floor     = zscore_floor,
+                              zscore_cap       = zscore_cap)
 
   portfolio <- analysis_data |>
     dplyr::mutate(
@@ -431,10 +434,12 @@ integrate_el <- function(analysis_data,
 
   aggregate <- aggregate_el_integration(portfolio)
   if (method == "zscore") {
-    # Effective PD = |EL| / EAD, matching apply_el_method(). Rows with EAD <= 0
-    # carry no loss and contribute 0 EL; map them to NA so they are excluded from
-    # the clip-share denominator rather than counting as clipped (warning misfire).
-    eff_pd <- function(x) ifelse(!is.na(ead) & ead > 0, abs(x) / ead, NA_real_)
+    # Effective PD = |EL| / (EAD*LGD), matching apply_el_method(). Rows with a
+    # non-positive normalizer carry no loss and contribute 0 EL; map them to NA so
+    # they are excluded from the clip-share denominator rather than counting as
+    # clipped (warning misfire).
+    eff_pd <- function(x) ifelse(!is.na(lgd_weighted_exp) & lgd_weighted_exp > 0,
+                                 abs(x) / lgd_weighted_exp, NA_real_)
     clipped <- zscore_clipped_share(
       list(eff_pd(internal_vec), eff_pd(el_baseline), eff_pd(el_shock)),
       zscore_floor, zscore_cap
@@ -451,7 +456,7 @@ integrate_el <- function(analysis_data,
 }
 
 apply_el_method <- function(internal, baseline, shock, method,
-                            ead = NULL,
+                            lgd_weighted_exp = NULL,
                             zscore_floor = ZSCORE_FLOOR_DEFAULT,
                             zscore_cap = ZSCORE_CAP_DEFAULT) {
   switch(method,
@@ -461,14 +466,14 @@ apply_el_method <- function(internal, baseline, shock, method,
       internal * (1 + change_pct)
     },
     zscore = {
-      # Basel IRB style recombination, applied to EL via the
-      # effective-PD transform: EL = EAD * PD  -->  PD_eff = |EL| / EAD,
-      # where `ead` is exposure_value_usd * loss_given_default. After z-score
-      # recombination in normal-quantile space, convert back via EAD * PD_adj.
-      # Returns a positive magnitude, matching the package's positive-EL
-      # convention (see 59571f3).
+      # Basel IRB style recombination, applied to EL via the effective-PD
+      # transform: EL = EAD * LGD * PD  -->  PD_eff = |EL| / (EAD*LGD), where
+      # `lgd_weighted_exp` is the LGD-weighted exposure (EAD*LGD). After z-score
+      # recombination in normal-quantile space, convert back via
+      # (EAD*LGD) * PD_adj. Returns a positive magnitude, matching the package's
+      # positive-EL convention (see 59571f3).
       clip <- function(x) pmin(pmax(x, zscore_floor), zscore_cap)
-      safe_div <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
+      safe_div <- function(x) ifelse(lgd_weighted_exp > 0, abs(x) / lgd_weighted_exp, 0)
       pd_internal <- clip(safe_div(internal))
       pd_baseline <- clip(safe_div(baseline))
       pd_shock    <- clip(safe_div(shock))
@@ -477,7 +482,7 @@ apply_el_method <- function(internal, baseline, shock, method,
         stats::qnorm(pd_shock) -
         stats::qnorm(pd_baseline)
       )
-      ead * adjusted_pd
+      lgd_weighted_exp * adjusted_pd
     }
   )
 }
@@ -518,9 +523,9 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
     ) |>
     dplyr::mutate(
       total_el_adjustment = .data$total_el_adjusted - .data$total_el_internal,
-      # Both bps measures use *notional exposure* as the denominator: EL / exposure
-      # = LGD*PD in bps, a true loss rate. Dividing by EAD (= exposure * LGD) would
-      # instead yield PD-in-bps, not a loss rate (K1).
+      # Both bps measures use *notional exposure* (EAD) as the denominator:
+      # EL / EAD = LGD*PD in bps, a true loss rate. Dividing by EAD*LGD
+      # (lgd_weighted_exposure) would instead yield PD-in-bps, not a loss rate (K1).
       # el_adjusted_bps: the adjusted EL *level* as a loss rate (total expected loss
       # of the shocked book = baseline credit risk + climate overlay).
       el_adjusted_bps     = el_to_bps(.data$total_el_adjusted,

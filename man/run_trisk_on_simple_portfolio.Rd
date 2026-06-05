@@ -26,7 +26,10 @@ run_trisk_on_simple_portfolio(
 
 \item{portfolio_data}{Data frame with columns \code{company_id}, \code{company_name},
 \code{exposure_value_usd}, \code{term}, \code{loss_given_default} (see
-\code{\link{check_portfolio_simple}}).}
+\code{\link{check_portfolio_simple}}). Basel mapping:
+\code{exposure_value_usd} = EAD (exposure at default; equals the drawn amount
+as no undrawn/CCF is modelled), \code{loss_given_default} = LGD,
+\code{term} = effective maturity M (years), used as the PD-lookup horizon.}
 
 \item{baseline_scenario}{String specifying the name of the baseline scenario.}
 
@@ -49,7 +52,10 @@ defaults are:
 \value{
 A named list with:
 \itemize{
-  \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level details.
+  \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level
+    details. Basel-aligned columns: \code{exposure_at_default} (EAD, the
+    NPV-share allocated exposure), \code{lgd_weighted_exposure} (EAD*LGD), and
+    \code{expected_loss_*} (EL = EAD*LGD*PD).
   \item \code{portfolio_results}: portfolio-level results re-aggregated to input-row shape.
 }
 }

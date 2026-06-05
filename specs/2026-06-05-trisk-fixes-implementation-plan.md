@@ -147,6 +147,18 @@ Confirmed from model output: `asset_id` is effectively the **company** (1 row pe
 - **Full runner soft-deprecated (docs).** `run_trisk_on_portfolio` roxygen now states a loan is company-level and prefers `run_trisk_on_simple_portfolio` (no technology column); the technology-keyed join is for technology/asset-resolved use only. Machinery retained for post-summer asset-level data. (Not runtime-deprecated/removed — pending decision.)
 - **IF1 re-documented honestly.** The package cannot know an internal PD's horizon; `pd_lifetime_to_annual` is grounded on TRISK's cumulative term-PD; `pd_annual_to_lifetime` is a generic inverse (caller asserts the input is annual). Added a "Choosing a direction" guidance section and a horizon-consistency note to `integrate_pd`/`integrate_el` (`internal_pd` must be on a horizon comparable to the TRISK `term`; convert first if it's a 12-month figure).
 
+## EAD1 — Basel EAD/EL naming fix (2026-06-05)
+**Finding:** the computed column `exposure_at_default` held `exposure_value_usd × loss_given_default` = **EAD × LGD**, not EAD. Per Basel (BIS *Explanatory Note on the IRB Risk Weight Functions* §4.3–4.4: *"EL of a loan (expressed as percentage figure of EAD)"*, EL = average PD × downturn LGD), **EAD is the gross exposure before the LGD haircut; LGD is a fraction of EAD; EL = EAD × LGD × PD**. The EL number was always correct (`(EAD×LGD)×PD`); only the column was mislabelled.
+
+**Input CSV (decision: keep + document):** `exposure_value_usd` = EAD (drawn amount; no undrawn/CCF modelled), `loss_given_default` = LGD, `term` = effective maturity M, `internal_pd` = PD. No renames — Basel mapping documented in roxygen.
+
+**Output fix (decision: now, this PR):**
+- `exposure_at_default` now = `exposure_value_usd` (true EAD); simple runner uses the NPV-share-allocated `exposure_value_usd_share`.
+- New column `lgd_weighted_exposure` = EAD × LGD (the old `exposure_at_default` value).
+- `expected_loss_* = exposure_at_default × loss_given_default × pd_*` (reads as Basel EAD×LGD×PD; numerically identical).
+- `integrate_el()` zscore normalizer now reads `lgd_weighted_exposure` (fallback: `exposure_value_usd × loss_given_default`); local var + `apply_el_method` param renamed `ead → lgd_weighted_exp`. `aggregate_el_integration` unaffected (divides EL by **notional** exposure for the bps loss-rate).
+- Touched: `run_trisk_on_simple_portfolio.R`, `prepare_plot_data.R`, `integrate.R`, tests `test-exposure-fanout.R` / `test-integrate-el.R`. Added Basel-identity regression (`EL == EAD×LGD×PD`). 219 pass / 0 fail.
+
 ## Dependency & ordering notes
 - **Phase 1 = X1 + K1 + Z1** (X1 re-elevated after Codex cross-model confirmation).
 - X1, K1, Z1 are independent code defects — fixable in any order.

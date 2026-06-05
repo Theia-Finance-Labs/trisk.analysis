@@ -48,7 +48,9 @@ test_that("X1: a single loan to a multi-asset company does not inflate EAD", {
   # One loan must contribute its exposure exactly once, regardless of asset count.
   # RED today: the loan fans out to 2 rows and EAD doubles to 8,718,310.
   expect_equal(nrow(full), 1L)
-  expect_equal(sum(metrics$exposure_at_default, na.rm = TRUE), exposure * lgd)
+  # Basel: exposure_at_default = EAD (the notional), lgd_weighted_exposure = EAD*LGD.
+  expect_equal(sum(metrics$exposure_at_default, na.rm = TRUE), exposure)
+  expect_equal(sum(metrics$lgd_weighted_exposure, na.rm = TRUE), exposure * lgd)
 })
 
 test_that("X1: aggregate_npv_across_assets preserves NA for an all-NA company", {
@@ -92,5 +94,16 @@ test_that("X1: single-asset (bundled) company already reconciles (guard against 
   metrics <- compute_analysis_metrics(full)
 
   # GREEN now and must stay GREEN after the fix.
-  expect_equal(sum(metrics$exposure_at_default, na.rm = TRUE), exposure * lgd)
+  expect_equal(sum(metrics$exposure_at_default, na.rm = TRUE), exposure)
+  expect_equal(sum(metrics$lgd_weighted_exposure, na.rm = TRUE), exposure * lgd)
+
+  # Basel identity must hold: EL = EAD * LGD * PD (numerics unchanged by rename).
+  expect_equal(
+    metrics$expected_loss_baseline,
+    metrics$exposure_at_default * metrics$loss_given_default * metrics$pd_baseline
+  )
+  expect_equal(
+    metrics$expected_loss_shock,
+    metrics$exposure_at_default * metrics$loss_given_default * metrics$pd_shock
+  )
 })

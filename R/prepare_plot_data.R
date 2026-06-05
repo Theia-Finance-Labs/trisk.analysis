@@ -94,9 +94,10 @@ aggregate_trajectories_facts <- function(multi_trajectories, group_cols) {
 #'
 #' Adds derived financial metrics to a raw `run_trisk_on_portfolio()` output:
 #' `net_present_value_difference`, `trisk_perc_value_change`, `trisk_value_loss`,
-#' `exposure_at_default`, `pd_difference`, `expected_loss_baseline`,
-#' `expected_loss_shock`, `expected_loss_difference`. Call this before passing
-#' data to [integrate_el()], which requires the EL columns.
+#' `exposure_at_default` (Basel EAD = `exposure_value_usd`),
+#' `lgd_weighted_exposure` (EAD*LGD), `pd_difference`, `expected_loss_baseline`,
+#' `expected_loss_shock`, `expected_loss_difference` (EL = EAD*LGD*PD). Call this
+#' before passing data to [integrate_el()], which requires the EL columns.
 #'
 #' @param analysis_data Data frame produced by [run_trisk_on_portfolio()].
 #'
@@ -108,14 +109,15 @@ compute_analysis_metrics <- function(analysis_data) {
       net_present_value_difference = .data$net_present_value_shock - .data$net_present_value_baseline,
       trisk_perc_value_change = .data$net_present_value_difference / .data$net_present_value_baseline,
       trisk_value_loss = .data$trisk_perc_value_change * .data$exposure_value_usd,
-      exposure_at_default = .data$exposure_value_usd * .data$loss_given_default,
-      # exposure_at_default_baseline = .data$net_present_value_baseline * .data$loss_given_default,
-      # exposure_at_default_shock = .data$net_present_value_shock * .data$loss_given_default,
-
+      # Basel decomposition: EAD (exposure at default) is the gross exposure BEFORE
+      # the LGD haircut; LGD is a fraction OF EAD. lgd_weighted_exposure = EAD*LGD,
+      # and EL = EAD * LGD * PD. (Previously exposure_at_default held EAD*LGD.)
+      exposure_at_default = .data$exposure_value_usd,
+      lgd_weighted_exposure = .data$exposure_at_default * .data$loss_given_default,
       pd_difference = .data$pd_shock - .data$pd_baseline,
-      expected_loss_baseline = .data$exposure_at_default * .data$pd_baseline,
-      expected_loss_shock = .data$exposure_at_default * .data$pd_shock,
-      expected_loss_difference = .data$exposure_at_default * .data$pd_difference
+      expected_loss_baseline = .data$exposure_at_default * .data$loss_given_default * .data$pd_baseline,
+      expected_loss_shock = .data$exposure_at_default * .data$loss_given_default * .data$pd_shock,
+      expected_loss_difference = .data$exposure_at_default * .data$loss_given_default * .data$pd_difference
     )
 
 

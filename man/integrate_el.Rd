@@ -15,8 +15,8 @@ integrate_el(
 \arguments{
 \item{analysis_data}{Data frame from [run_trisk_on_portfolio()]; must contain
 columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
-additionally needs an EAD denominator: it uses an `exposure_at_default`
-column when present (the canonical contract, written by
+additionally needs the EL normalizer EAD*LGD (`lgd_weighted_exposure`): it
+uses that column when present (the canonical contract, written by
 [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and
 otherwise reconstructs it as `exposure_value_usd * loss_given_default`.}
 
@@ -43,6 +43,7 @@ mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
 Vasicek recombination by transforming EL to an effective PD
 (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
 space, and converting back. All three methods return EL as a positive
-magnitude (post 59571f3 package-wide convention). The zscore method requires
-`exposure_value_usd` and `loss_given_default` columns in `analysis_data`.
+magnitude (post 59571f3 package-wide convention). The zscore method needs the
+EL normalizer EAD*LGD: a `lgd_weighted_exposure` column, or
+`exposure_value_usd` + `loss_given_default` to reconstruct it.
 }

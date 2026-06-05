@@ -14,7 +14,10 @@
 #' @param carbon_data Data frame containing carbon price information.
 #' @param portfolio_data Data frame with columns \code{company_id}, \code{company_name},
 #'   \code{exposure_value_usd}, \code{term}, \code{loss_given_default} (see
-#'   \code{\link{check_portfolio_simple}}).
+#'   \code{\link{check_portfolio_simple}}). Basel mapping:
+#'   \code{exposure_value_usd} = EAD (exposure at default; equals the drawn amount
+#'   as no undrawn/CCF is modelled), \code{loss_given_default} = LGD,
+#'   \code{term} = effective maturity M (years), used as the PD-lookup horizon.
 #' @param baseline_scenario String specifying the name of the baseline scenario.
 #' @param target_scenario String specifying the name of the shock scenario.
 #' @param ... Additional arguments forwarded to
@@ -33,7 +36,10 @@
 #'
 #' @return A named list with:
 #' \itemize{
-#'   \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level details.
+#'   \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level
+#'     details. Basel-aligned columns: \code{exposure_at_default} (EAD, the
+#'     NPV-share allocated exposure), \code{lgd_weighted_exposure} (EAD*LGD), and
+#'     \code{expected_loss_*} (EL = EAD*LGD*PD).
 #'   \item \code{portfolio_results}: portfolio-level results re-aggregated to input-row shape.
 #' }
 #' @export
@@ -331,11 +337,16 @@ compute_simple_portfolio_metrics <- function(analysis_data) {
         .data$net_present_value_difference / .data$net_present_value_baseline
       ),
       exposure_share_loss_usd = .data$net_present_value_change * .data$exposure_value_usd_share,
-      exposure_at_default = .data$exposure_value_usd_share * .data$loss_given_default,
+      # Basel decomposition: EAD (exposure at default) is the gross allocated
+      # exposure BEFORE the LGD haircut; LGD is a fraction OF EAD. So the
+      # loss-given-default amount is EAD * LGD (lgd_weighted_exposure), and
+      # EL = EAD * LGD * PD. (Previously this column held EAD*LGD, mislabelled.)
+      exposure_at_default = .data$exposure_value_usd_share,
+      lgd_weighted_exposure = .data$exposure_at_default * .data$loss_given_default,
       pd_difference = .data$pd_shock - .data$pd_baseline,
-      expected_loss_baseline = .data$exposure_at_default * .data$pd_baseline,
-      expected_loss_shock = .data$exposure_at_default * .data$pd_shock,
-      expected_loss_difference = .data$exposure_at_default * .data$pd_difference
+      expected_loss_baseline = .data$exposure_at_default * .data$loss_given_default * .data$pd_baseline,
+      expected_loss_shock = .data$exposure_at_default * .data$loss_given_default * .data$pd_shock,
+      expected_loss_difference = .data$exposure_at_default * .data$loss_given_default * .data$pd_difference
     )
 }
 
