@@ -4,8 +4,9 @@
 #' change into the bank's own internal PD scale. Mirrors the logic in the
 #' trisk.r.docker Shiny integration module.
 #'
-#' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
-#'   columns `pd_baseline`, `pd_shock`.
+#' @param analysis_data Data frame from a TRISK runner
+#'   ([run_trisk_on_simple_portfolio()] or [run_trisk_on_portfolio()]); must
+#'   contain columns `pd_baseline`, `pd_shock`.
 #' @param internal_pd Either (a) a numeric vector of length `nrow(analysis_data)`,
 #'   (b) a data frame with `company_id` (+ optional `term`/keys) and a value
 #'   column, or (c) NULL (default) in which case `pd_baseline` is used.
@@ -328,8 +329,9 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #' EL normalizer EAD*LGD: a `lgd_weighted_exposure` column, or
 #' `exposure_value_usd` + `loss_given_default` to reconstruct it.
 #'
-#' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
-#'   columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
+#' @param analysis_data Data frame from a TRISK runner
+#'   ([run_trisk_on_simple_portfolio()] or [run_trisk_on_portfolio()]); must
+#'   contain columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
 #'   additionally needs the EL normalizer EAD*LGD (`lgd_weighted_exposure`): it
 #'   uses that column when present (the canonical contract, written by
 #'   [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and

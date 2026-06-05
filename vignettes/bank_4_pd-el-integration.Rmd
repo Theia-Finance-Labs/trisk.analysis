@@ -179,23 +179,26 @@ below render red.
 ### Run TRISK on the portfolio
 
 The `internal_pd` column rides along on the standard portfolio schema; we keep
-it as a separate lookup table to feed into `integrate_pd()`.
+it as a separate lookup table to feed into `integrate_pd()`. We run the bank
+entry point — `run_trisk_on_simple_portfolio()` — on the company-level loan book
+and use its per-technology detail as the analysis frame:
 
-> **Note:** `run_trisk_on_portfolio()` is **deprecated** in favour of
-> `run_trisk_on_simple_portfolio()`; it is shown here only for the
-> technology-resolved path. Its runtime deprecation warning is suppressed below.
+```{r}
+portfolio_simple <- portfolio_ids_internal_pd[, c(
+  "company_id", "company_name", "exposure_value_usd", "term", "loss_given_default"
+)]
 
-```{r, warning=FALSE}
-analysis_data <- run_trisk_on_portfolio(
-  assets_data       = assets_testdata,
-  scenarios_data    = scenarios_testdata,
-  financial_data    = fin_testdata,
-  carbon_data       = carbon_testdata,
-  portfolio_data    = portfolio_ids_internal_pd,
-  baseline_scenario = "NGFS2023GCAM_CP",
-  target_scenario   = "NGFS2023GCAM_NZ2050",
+simple_results <- run_trisk_on_simple_portfolio(
+  assets_data        = assets_testdata,
+  scenarios_data     = scenarios_testdata,
+  financial_data     = fin_testdata,
+  carbon_data        = carbon_testdata,
+  portfolio_data     = portfolio_simple,
+  baseline_scenario  = "NGFS2023GCAM_CP",
+  target_scenario    = "NGFS2023GCAM_NZ2050",
   scenario_geography = "Global"
 )
+analysis_data <- simple_results$portfolio_results_tech_detail
 
 # The internal_pd lookup used throughout the rest of the vignette. TRISK returns
 # company_id as character, so coerce the lookup key to match and keep the join
@@ -214,13 +217,13 @@ knitr::kable(head(analysis_data[, c("company_id", "sector", "technology", "term"
 
 #### Reproducibility: the run audit trail
 
-Both runners attach a `trisk_run_meta` attribute to their output — the scenario
+The runner attaches a `trisk_run_meta` attribute to its output — the scenario
 pair, `run_id`, every argument forwarded to the TRISK model, and the versions of
 `trisk.analysis` and `trisk.model`. Capture it alongside your results so a run
 can be reproduced and defended in model validation:
 
 ```{r}
-run_meta <- attr(analysis_data, "trisk_run_meta")
+run_meta <- attr(simple_results, "trisk_run_meta")
 str(run_meta)
 ```
 
@@ -259,18 +262,17 @@ result_custom <- integrate_pd(analysis_data,
 
 ### Integrate EL
 
-`integrate_el()` needs `expected_loss_baseline` / `expected_loss_shock`, which
-`run_trisk_on_portfolio()` does not emit on its own — call
-`compute_analysis_metrics()` first to derive them as `EAD * PD`. For the bank's
-internal EL we use the same identity: `internal_el = EAD * LGD * internal_pd`.
+`integrate_el()` needs `expected_loss_baseline` / `expected_loss_shock`, which the
+simple runner already emits in its per-technology detail (`EAD * LGD * PD`). For
+the bank's internal EL we use the same identity on the company-level loan book:
+`internal_el = EAD * LGD * internal_pd`.
 
 ```{r}
-analysis_data_el <- compute_analysis_metrics(analysis_data)
-internal_el_lookup <- merge(
-  analysis_data_el[, c("company_id", "exposure_value_usd", "loss_given_default")],
-  internal_pd_lookup,
-  by = "company_id"
-)
+internal_el_lookup <- portfolio_ids_internal_pd[, c(
+  "company_id", "exposure_value_usd", "loss_given_default"
+)]
+internal_el_lookup$company_id <- as.character(internal_el_lookup$company_id)
+internal_el_lookup <- merge(internal_el_lookup, internal_pd_lookup, by = "company_id")
 # Positive magnitude, matching the package-wide EL convention.
 internal_el_lookup$internal_el <-
   internal_el_lookup$exposure_value_usd *
@@ -278,7 +280,7 @@ internal_el_lookup$internal_el <-
   internal_el_lookup$internal_pd
 
 result_el <- integrate_el(
-  analysis_data_el,
+  analysis_data,
   internal_el = internal_el_lookup[, c("company_id", "internal_el")]
 )
 # default method is "zscore": effective-PD probit recombination, zero-safe.
@@ -295,8 +297,8 @@ result_el <- integrate_el(
   means less loss = better = **green**. The PD adjustment follows the same
   rule (positive = PD rose = red).
 - **EAD.** The `exposure_at_default` column is the Basel **exposure at default**:
-  `compute_analysis_metrics()` defines it as `exposure_value_usd` — the gross
-  exposure, *before* the LGD haircut (LGD is a fraction *of* EAD). The
+  the simple runner sets it to each loan's NPV-share-allocated exposure — the
+  gross exposure *before* the LGD haircut (LGD is a fraction *of* EAD). The
   LGD-weighted exposure is a separate column,
   `lgd_weighted_exposure = exposure_at_default * loss_given_default` (= EAD × LGD).
   Every `expected_loss_*` column is `exposure_at_default * loss_given_default * pd`

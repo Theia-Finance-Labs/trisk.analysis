@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_trisk_on_portfolio.R
 \name{run_trisk_on_portfolio}
 \alias{run_trisk_on_portfolio}
-\title{Run TRISK Model on Portfolio (technology-resolved; deprecated)}
+\title{Run TRISK Model on Portfolio (technology-resolved)}
 \usage{
 run_trisk_on_portfolio(
   assets_data,
@@ -42,18 +42,13 @@ run_trisk_on_portfolio(
 A data frame containing the processed and analyzed portfolio data.
 }
 \description{
-\strong{Deprecated} in favour of [run_trisk_on_simple_portfolio()] - calling
-this function emits a runtime deprecation warning.
-\strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
-A bank loan is exposure to a \emph{company}, not to a technology, and the
-bundled/Asset-Impact inputs are company-technology grain (no true asset-level
-resolution). This runner joins the portfolio on \code{technology}, so it is
-only appropriate when you genuinely hold \emph{technology-resolved} exposure
-(e.g. project finance against a specific technology line, or future
-asset-level/spatial data). For a company-level loan book it forces a
-single-technology assignment or duplicate per-technology rows (which inflates
-EL/EAD) - the simple runner instead allocates a company loan's exposure across
-technologies by NPV share. Kept for technology/asset-resolved use cases.
+Runs the TRISK model on a portfolio resolved to the
+\code{(company, sector, technology, country)} grain, joining the portfolio to
+TRISK asset outputs on \code{technology}. Use this for \emph{technology-resolved}
+analysis - e.g. exposure held against a specific technology line, or
+NPV-per-technology views. For a standard company-level loan book, use
+[run_trisk_on_simple_portfolio()], which takes company-level loans and
+allocates each loan's exposure across the company's technologies by NPV share.
 
-Runs the TRISK model on a portfolio and returns analysis results for plots.
+Returns analysis results suitable for the package plotting helpers.
 }

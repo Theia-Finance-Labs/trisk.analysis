@@ -13,7 +13,8 @@ pipeline_trisk_pd_method_comparison(
 )
 }
 \arguments{
-\item{analysis_data}{Raw output of [run_trisk_on_portfolio()].}
+\item{analysis_data}{Per-(company, technology) output of a TRISK runner
+(e.g. [run_trisk_on_simple_portfolio()]).}
 
 \item{internal_pd}{Optional; forwarded to [integrate_pd()].}
 
