@@ -198,7 +198,11 @@ simple_results <- run_trisk_on_simple_portfolio(
   target_scenario    = "NGFS2023GCAM_NZ2050",
   scenario_geography = "Global"
 )
-analysis_data <- simple_results$portfolio_results_tech_detail
+# Expose the NPV-share-allocated exposure as `exposure_value_usd` so the
+# EAD-weighted plots and aggregates can use it (the simple runner stores the
+# allocated exposure as `exposure_at_default`).
+analysis_data <- simple_results$portfolio_results_tech_detail |>
+  dplyr::mutate(exposure_value_usd = exposure_at_default)
 
 # The internal_pd lookup used throughout the rest of the vignette. TRISK returns
 # company_id as character, so coerce the lookup key to match and keep the join
@@ -428,7 +432,7 @@ The pipeline plots cover the standard story; a couple of custom chunks round it
 out. Expected loss by sector, baseline vs shock:
 
 ```{r fig.width=8, fig.height=4}
-el_by_sector <- analysis_data_el %>%
+el_by_sector <- analysis_data %>%
   dplyr::group_by(sector) %>%
   dplyr::summarise(
     baseline = sum(.data$expected_loss_baseline, na.rm = TRUE),
@@ -508,8 +512,8 @@ ggplot2::ggplot(el_compare_sector,
   Reconcile your input asset count against the results if you scope by geography.
 - **EL zscore normalizer basis must match.** The effective-PD round-trip is only
   correct when the EL columns and the EAD×LGD denominator are on the same basis.
-  If `compute_analysis_metrics()` has scaled EAD by NPV share, supply the
-  matching `lgd_weighted_exposure` column rather than relying on the
+  When EAD is NPV-share-allocated (as the simple runner does), supply the matching
+  `lgd_weighted_exposure` column rather than relying on the
   `exposure_value_usd * loss_given_default` fallback.
 - **`internal_pd` must be in `[0, 1]` and joinable by `company_id`.** Unmatched
   `company_id`s fall back to `pd_baseline` with a warning; check the warning
