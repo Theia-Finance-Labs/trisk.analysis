@@ -102,6 +102,10 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 - **✅ S1** (DONE): `run_trisk_from_db()` takes an optional `conn` or reads `TRISK_DB_*` env vars, fails fast if absent, no hardcoded password. `test-run-trisk-from-db.R`.
 - **✅ CX1** (DONE): `resolve_internal_series` now matches on all shared key columns (company_id [+ term/…]) and errors on ambiguous duplicate-key lookups. `test-internal-lookup.R`.
 
+### Phase 2 Codex re-review (2026-06-05): V1/A1/D1 = FIXED; CX1 regression + S1 nits → fixed
+- **CX1 regression (Codex):** value detection by "absent from analysis_data" broke the bank_4 path (the portfolio's `internal_pd` rides along into analysis_data). Fixed: keys identified by a known ID set (`company_id, term, sector, technology, country_iso2, run_id`), value = remainder. Regression test added (analysis_data carrying `internal_pd`).
+- **S1 (Codex):** added `TRISK_DB_PORT` positive-integer validation before connecting; removed the password literal from the test (constructed dynamically). Caller-supplied `conn` correctly left open.
+
 ### Phase 1 hardening (from Codex re-review 2026-06-05)
 - **✅ X1 edge:** `aggregate_npv_across_assets` preserves NA for all-NA-NPV groups (no collapse-to-0 → no NaN/Inf downstream).
 - **✅ Z1 edges:** `zscore_clipped_share` excludes all-NA rows from the denominator; `integrate_el` maps zero/NA-EAD rows to NA (no warning misfire). Edge tests added.

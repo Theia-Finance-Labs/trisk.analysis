@@ -181,18 +181,23 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
       stop("resolve_internal_series(): dataframe must have 'company_id' and one value column.",
            call. = FALSE)
     }
-    # The value column is the one column NOT shared with analysis_data; the key
-    # columns are those shared (company_id, and optionally term/sector/etc).
-    # Matching on ALL shared keys (CX1) prevents a per-(company, term) lookup from
-    # silently collapsing onto the first company_id match.
-    val_cols <- setdiff(colnames(user_values), colnames(analysis_data))
+    # Identify join keys by a known identifier set (NOT by "absent from
+    # analysis_data" — the value column name, e.g. internal_pd, can ride along in
+    # analysis_data from the portfolio input). The value column is whatever
+    # remains. Matching on ALL shared keys (CX1) prevents a per-(company, term)
+    # lookup from collapsing onto the first company_id match.
+    id_candidates <- c("company_id", "term", "sector", "technology",
+                       "country_iso2", "run_id")
+    key_cols <- intersect(colnames(user_values), id_candidates)
+    val_cols <- setdiff(colnames(user_values), key_cols)
     if (length(val_cols) != 1) {
       stop("resolve_internal_series(): user_values must have exactly one value ",
-           "column not present in analysis_data (found: ",
-           paste(val_cols, collapse = ", "), ").", call. = FALSE)
+           "(non-key) column; found: ", paste(val_cols, collapse = ", "), ".",
+           call. = FALSE)
     }
     val_col <- val_cols[1]
-    key_cols <- setdiff(colnames(user_values), val_col)
+    # Join only on keys that actually exist in analysis_data.
+    key_cols <- intersect(key_cols, colnames(analysis_data))
     # Ambiguity guard: duplicate keys would apply the first match to every
     # analysis row sharing that key. Force the caller to disambiguate.
     if (anyDuplicated(user_values[key_cols]) > 0L) {

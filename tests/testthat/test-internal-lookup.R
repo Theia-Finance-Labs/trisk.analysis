@@ -44,6 +44,16 @@ test_that("CX1: ambiguous company-only lookup with duplicate company_id errors",
   )
 })
 
+test_that("CX1: lookup works when analysis_data already carries an internal_pd column", {
+  # bank_4 case: the portfolio's internal_pd column rides along into analysis_data
+  # via the join. The lookup value must still win, not error on value detection.
+  ad <- make_two_term_company()
+  ad$internal_pd <- c(0.99, 0.99)   # ride-along from portfolio input
+  lookup <- tibble::tibble(company_id = "X", internal_pd = 0.07)
+  res <- integrate_pd(ad, internal_pd = lookup, method = "absolute")
+  expect_equal(res$portfolio$internal_pd, c(0.07, 0.07))
+})
+
 test_that("CX1: plain company_id lookup (one row per company) still works", {
   ad <- make_two_term_company()
   lookup <- tibble::tibble(company_id = "X", internal_pd = 0.07)

@@ -85,9 +85,15 @@ connect_trisk_db_from_env <- function() {
     )
   }
 
+  port_int <- suppressWarnings(as.integer(port))
+  if (is.na(port_int) || port_int <= 0L) {
+    stop("run_trisk_from_db(): TRISK_DB_PORT must be a positive integer (got '",
+         port, "').", call. = FALSE)
+  }
+
   DBI::dbConnect(
     RPostgres::Postgres(),
-    dbname = dbname, host = host, port = as.integer(port),
+    dbname = dbname, host = host, port = port_int,
     user = user, password = password
   )
 }
