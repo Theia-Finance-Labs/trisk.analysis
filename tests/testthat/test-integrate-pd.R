@@ -187,3 +187,22 @@ test_that("resolve_internal_series does not warn when all company_ids match", {
     integrate_pd(df, internal_pd = user_lookup, method = "absolute")
   )
 })
+
+test_that("integrate_pd/el work on simple-runner output (exposure_at_default, no exposure_value_usd)", {
+  # Regression (found via BPI analyst smoke test): the simple runner's tech-detail
+  # drops `exposure_value_usd` (each row is an NPV-share) and exposes
+  # `exposure_at_default` instead. Before the fix, aggregate_*_integration
+  # hard-required `exposure_value_usd` and errored on the recommended workflow.
+  df <- make_test_analysis_data()
+  df$exposure_at_default   <- df$exposure_value_usd            # simple runner: EAD = allocated share
+  df$lgd_weighted_exposure <- df$exposure_at_default * df$loss_given_default
+  df$exposure_value_usd    <- NULL                             # simple runner drops this column
+
+  ipd <- integrate_pd(df, internal_pd = c(0.01, 0.02, 0.015), method = "absolute")
+  expect_true(all(is.finite(ipd$portfolio$trisk_adjusted_pd)))
+  expect_equal(ipd$aggregate$total_exposure_usd, sum(df$exposure_at_default))
+
+  iel <- integrate_el(df, method = "absolute")
+  expect_true(all(c("el_adjusted_bps", "el_adjustment_bps") %in% names(iel$aggregate)))
+  expect_equal(iel$aggregate$total_exposure_usd, sum(df$exposure_at_default))
+})

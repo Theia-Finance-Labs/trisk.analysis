@@ -444,7 +444,7 @@ becomes expected loss*.
 
 # See also
 
-- [`getting-started`](0_getting-started.html) — the reading-path entry point.
+- [`getting-started`](getting-started.html) — the reading-path entry point.
 - [`simple-portfolio-analysis`](bank_2_simple-portfolio-analysis.html) — how the underlying TRISK
   runs that feed this analysis are produced.
 - [`pd-el-integration`](bank_4_pd-el-integration.html) — the full PD/EL integration

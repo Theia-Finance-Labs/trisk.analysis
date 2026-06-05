@@ -16,9 +16,9 @@ fuzzy_match_company_ids(
 
 \item{assets_data}{Data frame containing asset information with company IDs.}
 
-\item{threshold}{Numeric value for the matching threshold. Default is 0.2.}
+\item{threshold}{Numeric value for the matching threshold. Default is 0.5.}
 
-\item{method}{tring specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.}
+\item{method}{String specifying the method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.}
 }
 \value{
 A data frame of portfolio data with fuzzy-matched company IDs.

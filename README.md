@@ -42,7 +42,7 @@ You can install this package directly from GitHub using the `pak` package in R.
 
 The documentation is a five-step path, each article building on the previous one:
 
-1. **[Getting started](https://theia-finance-labs.github.io/trisk.analysis/articles/0_getting-started.html)** — install the package and run TRISK on the bundled toy portfolio in a few lines.
+1. **[Getting started](https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html)** — install the package and run TRISK on the bundled toy portfolio in a few lines.
 2. **[Inputs and outputs](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_1_inputs-and-outputs.html)** — the 4 input datasets (assets, scenarios, financial_features, ngfs_carbon_prices) and 3 output datasets (npv_results, pd_results, company_trajectories), their column structure, how to set up your `trisk_inputs/` folder with `setup_trisk_inputs()`, the Trisk parameter definitions, and how to access the bundled scenarios.
 3. **[Simple portfolio analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_2_simple-portfolio-analysis.html)** — match a portfolio to TRISK (simple and full runners), compute PD / NPV / expected loss, and visualise the results.
 4. **[Sensitivity analysis](https://theia-finance-labs.github.io/trisk.analysis/articles/bank_3_sensitivity-analysis.html)** — sweep shock year, IAM, and ambition policy, each read through a bank-impact lens.

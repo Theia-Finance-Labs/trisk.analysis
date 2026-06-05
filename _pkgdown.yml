@@ -12,7 +12,7 @@ articles:
 - title: Get started
   navbar: Get started
   contents:
-  - 0_getting-started
+  - getting-started
 
 - title: Bank workflow
   navbar: Bank workflow
@@ -71,10 +71,15 @@ reference:
   - aggregate_trisk_outputs_simple
 
 - title: PD and EL integration
-  desc: Recombine TRISK shock PDs with the bank's internal PDs and translate to expected loss.
+  desc: >
+    Recombine TRISK shock PDs with the bank's internal PDs and translate to
+    expected loss, and convert PDs between cumulative-lifetime and 12-month
+    horizons for IFRS-9 staging.
   contents:
   - integrate_pd
   - integrate_el
+  - pd_lifetime_to_annual
+  - pd_annual_to_lifetime
 
 - title: Plots and KPI tables
   desc: Visualisations and summary tables for PD, EL, NPV, and exposure results.

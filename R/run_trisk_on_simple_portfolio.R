@@ -14,7 +14,10 @@
 #' @param carbon_data Data frame containing carbon price information.
 #' @param portfolio_data Data frame with columns \code{company_id}, \code{company_name},
 #'   \code{exposure_value_usd}, \code{term}, \code{loss_given_default} (see
-#'   \code{\link{check_portfolio_simple}}).
+#'   \code{\link{check_portfolio_simple}}). Basel mapping:
+#'   \code{exposure_value_usd} = EAD (exposure at default; equals the drawn amount
+#'   as no undrawn/CCF is modelled), \code{loss_given_default} = LGD,
+#'   \code{term} = effective maturity M (years), used as the PD-lookup horizon.
 #' @param baseline_scenario String specifying the name of the baseline scenario.
 #' @param target_scenario String specifying the name of the shock scenario.
 #' @param ... Additional arguments forwarded to
@@ -33,7 +36,10 @@
 #'
 #' @return A named list with:
 #' \itemize{
-#'   \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level details.
+#'   \item \code{portfolio_results_tech_detail}: company/term/sector/technology-level
+#'     details. Basel-aligned columns: \code{exposure_at_default} (EAD, the
+#'     NPV-share allocated exposure), \code{lgd_weighted_exposure} (EAD*LGD), and
+#'     \code{expected_loss_*} (EL = EAD*LGD*PD).
 #'   \item \code{portfolio_results}: portfolio-level results re-aggregated to input-row shape.
 #' }
 #' @export
@@ -61,6 +67,7 @@ run_trisk_on_simple_portfolio <- function(assets_data,
     )
 
   check_portfolio_simple(portfolio_data)
+  warn_scenario_family_mismatch(baseline_scenario, target_scenario)  # NM1
 
   # Match portfolio companies to assets by company_id (obtain country_iso2 from assets)
   portfolio_matched_companies <- portfolio_data |>
@@ -93,6 +100,9 @@ run_trisk_on_simple_portfolio <- function(assets_data,
   pd_results <- st_results$pd_results |>
     dplyr::mutate(company_id = as.character(.data$company_id))
 
+  # D1: warn (don't silently drop) when a portfolio term is outside the Merton grid.
+  warn_terms_outside_grid(portfolio_data, pd_results)
+
   trisk_agg <- aggregate_trisk_outputs_simple(npv_results, pd_results)
   joined_data <- join_simple_portfolio_to_trisk(portfolio_data, trisk_agg)
   joined_data <- add_exposure_share_from_npv(joined_data)
@@ -111,10 +121,19 @@ run_trisk_on_simple_portfolio <- function(assets_data,
   portfolio_results <- portfolio_results |>
     dplyr::select(-".portfolio_index")
 
-  return(list(
+  out <- list(
     portfolio_results_tech_detail = portfolio_results_tech_detail,
     portfolio_results = portfolio_results
-  ))
+  )
+  # A1: attach the audit-trail / reproducibility record (attribute keeps the
+  # documented two-element return shape intact).
+  attr(out, "trisk_run_meta") <- build_trisk_run_meta(
+    baseline_scenario = baseline_scenario,
+    target_scenario   = target_scenario,
+    run_id            = unique(stats::na.omit(pd_results$run_id)),
+    extra_args        = list(...)
+  )
+  return(out)
 }
 
 
@@ -253,8 +272,18 @@ aggregate_trisk_outputs_simple <- function(npv_results, pd_results) {
   npv_agg <- npv_results |>
     dplyr::group_by(.data$run_id, .data$company_id, .data$sector, .data$technology) |>
     dplyr::summarise(
-      net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
-      net_present_value_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+      # Preserve NA for all-NA groups (symmetry with the full runner's X1 helper);
+      # collapsing to 0 would turn missing model output into a real zero NPV.
+      net_present_value_baseline = if (all(is.na(.data$net_present_value_baseline))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_baseline, na.rm = TRUE)
+      },
+      net_present_value_shock = if (all(is.na(.data$net_present_value_shock))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_shock, na.rm = TRUE)
+      },
       .groups = "drop"
     )
 
@@ -308,11 +337,16 @@ compute_simple_portfolio_metrics <- function(analysis_data) {
         .data$net_present_value_difference / .data$net_present_value_baseline
       ),
       exposure_share_loss_usd = .data$net_present_value_change * .data$exposure_value_usd_share,
-      exposure_at_default = .data$exposure_value_usd_share * .data$loss_given_default,
+      # Basel decomposition: EAD (exposure at default) is the gross allocated
+      # exposure BEFORE the LGD haircut; LGD is a fraction OF EAD. So the
+      # loss-given-default amount is EAD * LGD (lgd_weighted_exposure), and
+      # EL = EAD * LGD * PD. (Previously this column held EAD*LGD, mislabelled.)
+      exposure_at_default = .data$exposure_value_usd_share,
+      lgd_weighted_exposure = .data$exposure_at_default * .data$loss_given_default,
       pd_difference = .data$pd_shock - .data$pd_baseline,
-      expected_loss_baseline = .data$exposure_at_default * .data$pd_baseline,
-      expected_loss_shock = .data$exposure_at_default * .data$pd_shock,
-      expected_loss_difference = .data$exposure_at_default * .data$pd_difference
+      expected_loss_baseline = .data$exposure_at_default * .data$loss_given_default * .data$pd_baseline,
+      expected_loss_shock = .data$exposure_at_default * .data$loss_given_default * .data$pd_shock,
+      expected_loss_difference = .data$exposure_at_default * .data$loss_given_default * .data$pd_difference
     )
 }
 

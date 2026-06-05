@@ -40,7 +40,7 @@ TRISK takes five inputs. Four describe the world; the fifth is your portfolio:
   \item{ngfs_carbon_price}{Carbon-price trajectories. A sample is bundled.}
   \item{financial_features}{Per-company financials (PD, margins, leverage,
     volatility). You supply this.}
-  \item{portfolio_ids}{**Your loan book**, keyed by `company_id` — the main,
+  \item{portfolio_ids}{**Your loan book**, keyed by `company_id` - the main,
     recommended portfolio input. You can instead match by company name
     (`portfolio_names`) or by country only (`portfolio_countries`); both are
     options. Add an `internal_pd` column for the PD/EL-integration workflows.}

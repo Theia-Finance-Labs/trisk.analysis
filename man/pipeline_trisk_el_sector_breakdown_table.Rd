@@ -16,6 +16,7 @@ A `knitr_kable` object.
 }
 \description{
 Sector-level EL breakdown with direction arrows, exposure, internal vs
-adjusted EL, delta, and EL/EAD in bps. Ports the Shiny collapsible breakdown
-at `mod_integration.R:707-786` into a printable table.
+adjusted EL, the signed delta, and the adjusted EL *level* as a loss rate in
+bps of notional exposure. Ports the Shiny collapsible breakdown at
+`mod_integration.R:707-786` into a printable table.
 }

@@ -23,7 +23,7 @@
 #'   \item{ngfs_carbon_price}{Carbon-price trajectories. A sample is bundled.}
 #'   \item{financial_features}{Per-company financials (PD, margins, leverage,
 #'     volatility). You supply this.}
-#'   \item{portfolio_ids}{**Your loan book**, keyed by `company_id` — the main,
+#'   \item{portfolio_ids}{**Your loan book**, keyed by `company_id` - the main,
 #'     recommended portfolio input. You can instead match by company name
 #'     (`portfolio_names`) or by country only (`portfolio_countries`); both are
 #'     options. Add an `internal_pd` column for the PD/EL-integration workflows.}
@@ -123,19 +123,19 @@ trisk_inputs_readme <- function() {
     "`company_id` and carries, per loan:",
     "",
     "- `company_id`, `company_name`, `sector`, `technology`, `country_iso2`",
-    "- `exposure_value_usd` — exposure of the loan",
-    "- `term` — loan term in years",
-    "- `loss_given_default` — LGD in [0, 1]",
+    "- `exposure_value_usd` - exposure of the loan",
+    "- `term` - loan term in years",
+    "- `loss_given_default` - LGD in [0, 1]",
     "",
     "Two alternative matching modes are available as **options**:",
     "",
-    "- `portfolio_names.csv` — same columns, but companies are fuzzy-matched by",
+    "- `portfolio_names.csv` - same columns, but companies are fuzzy-matched by",
     "  `company_name` when `company_id` is unknown.",
-    "- `portfolio_countries.csv` — match by `country_iso2` only (country-level",
+    "- `portfolio_countries.csv` - match by `country_iso2` only (country-level",
     "  aggregation) when neither id nor name is available.",
     "",
     "For the PD/EL-integration and sensitivity workflows, add an `internal_pd`",
-    "column (your own PD per company, in [0, 1]) — this is the",
+    "column (your own PD per company, in [0, 1]) - this is the",
     "`portfolio_ids_internal_pd` variant used in those vignettes.",
     "",
     "## Getting the full scenario set",

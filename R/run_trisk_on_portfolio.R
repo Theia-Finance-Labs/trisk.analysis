@@ -1,9 +1,20 @@
-#' Run TRISK Model on Portfolio
+#' Run TRISK Model on Portfolio (technology-resolved; deprecated)
 #'
 #' @description
-#' This function runs the TRISK model on a given portfolio, processing various input data
-#' and returning analysis results. It's designed to be the primary data processing function
-#' for generating plots.
+#' \strong{Deprecated} in favour of [run_trisk_on_simple_portfolio()] - calling
+#' this function emits a runtime deprecation warning.
+#' \strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
+#' A bank loan is exposure to a \emph{company}, not to a technology, and the
+#' bundled/Asset-Impact inputs are company-technology grain (no true asset-level
+#' resolution). This runner joins the portfolio on \code{technology}, so it is
+#' only appropriate when you genuinely hold \emph{technology-resolved} exposure
+#' (e.g. project finance against a specific technology line, or future
+#' asset-level/spatial data). For a company-level loan book it forces a
+#' single-technology assignment or duplicate per-technology rows (which inflates
+#' EL/EAD) - the simple runner instead allocates a company loan's exposure across
+#' technologies by NPV share. Kept for technology/asset-resolved use cases.
+#'
+#' Runs the TRISK model on a portfolio and returns analysis results for plots.
 #'
 #' @param assets_data Data frame containing asset information.
 #' @param scenarios_data Data frame containing scenario information.
@@ -29,6 +40,19 @@ run_trisk_on_portfolio <- function(assets_data,
                                    threshold = 0.5,
                                    method = "lcs",
                                    ...) {
+  .Deprecated(
+    new = "run_trisk_on_simple_portfolio",
+    package = "trisk.analysis",
+    msg = paste0(
+      "run_trisk_on_portfolio() is deprecated. A bank loan is company-level, but ",
+      "this runner joins the portfolio on `technology` (technology/asset-resolved ",
+      "exposure). For standard credit portfolios use ",
+      "run_trisk_on_simple_portfolio(), which allocates a company loan across ",
+      "technologies by NPV share. This runner is retained for genuinely ",
+      "technology/asset-resolved exposure."
+    )
+  )
+
   # clean coltypes
 
   assets_data <- assets_data |>
@@ -45,6 +69,8 @@ run_trisk_on_portfolio <- function(assets_data,
     dplyr::mutate(company_id = as.character(.data$company_id))
 
   check_portfolio(portfolio_data)
+  warn_scenario_family_mismatch(baseline_scenario, target_scenario)  # NM1
+  warn_duplicate_company_term_exposure(portfolio_data)  # X1 duplicate-entry guard
 
   if (any(is.na(portfolio_data$company_id))) {
     if (any(is.na(portfolio_data$company_name))) {
@@ -97,8 +123,19 @@ run_trisk_on_portfolio <- function(assets_data,
       company_id = as.character(.data$company_id)
     )
 
+  # D1: warn (don't silently drop) when a portfolio term is outside the Merton grid.
+  warn_terms_outside_grid(portfolio_data, pd_results)
+
   analysis_data <- portfolio_data |>
     join_trisk_outputs_to_portfolio(npv_results = npv_results, pd_results = pd_results)
+
+  # A1: attach an audit-trail / reproducibility record for the caller to persist.
+  attr(analysis_data, "trisk_run_meta") <- build_trisk_run_meta(
+    baseline_scenario = baseline_scenario,
+    target_scenario   = target_scenario,
+    run_id            = unique(stats::na.omit(pd_results$run_id)),
+    extra_args        = list(...)
+  )
 
   return(analysis_data)
 }
@@ -114,8 +151,16 @@ run_trisk_on_portfolio <- function(assets_data,
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
 check_portfolio <- function(portfolio_data) {
-  # List of required columns
-  required_portfolio_columns <- c("company_id", "company_name", "country_iso2", "exposure_value_usd", "term", "loss_given_default")
+  # Required columns for the FULL runner. sector + technology are mandatory here
+  # (V1): the runner joins TRISK outputs to the portfolio on them, so omitting
+  # them previously produced an opaque dplyr join error only after a full model
+  # run. They are deliberately NOT required by the simple runner
+  # (check_portfolio_simple), which allocates exposure across technologies by NPV
+  # share and needs no technology column on the input.
+  required_portfolio_columns <- c(
+    "company_id", "company_name", "country_iso2", "exposure_value_usd",
+    "term", "loss_given_default", "sector", "technology"
+  )
 
   # Check if all required columns are present
   if (!all(required_portfolio_columns %in% colnames(portfolio_data))) {
@@ -134,8 +179,8 @@ check_portfolio <- function(portfolio_data) {
 #'
 #' @param portfolio_data Data frame containing portfolio information.
 #' @param assets_data Data frame containing asset information with company IDs.
-#' @param threshold Numeric value for the matching threshold. Default is 0.2.
-#' @param method tring specifying method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
+#' @param threshold Numeric value for the matching threshold. Default is 0.5.
+#' @param method String specifying the method to use for fuzzy matching. See help of stringdist::stringdistmatrix for possible values.
 #'
 #' @return A data frame of portfolio data with fuzzy-matched company IDs.
 #' @export
@@ -164,6 +209,28 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
     # Filter by the normalized threshold
     dplyr::filter(.data$normalized_distance <= threshold)
 
+  # CX2: slice_min() keeps ties, so a portfolio name equidistant from several
+  # company names would match all of them and duplicate that loan (full exposure
+  # applied to each). Warn naming the affected portfolio names and keep one match
+  # per portfolio row so exposure is not silently inflated.
+  tie_counts <- matched_companies |>
+    dplyr::count(.data$portfolio_index, name = "n_match") |>
+    dplyr::filter(.data$n_match > 1)
+  if (nrow(tie_counts) > 0) {
+    tied_names <- unique(portfolio_data$company_name[tie_counts$portfolio_index])
+    warning(
+      "fuzzy_match_company_ids(): ", nrow(tie_counts),
+      " portfolio name(s) tied across multiple companies at the same distance; ",
+      "keeping the first match each. Disambiguate by supplying company_id. ",
+      "Affected: ", paste(tied_names, collapse = ", "),
+      call. = FALSE
+    )
+    matched_companies <- matched_companies |>
+      dplyr::group_by(.data$portfolio_index) |>
+      dplyr::slice(1) |>
+      dplyr::ungroup()
+  }
+
   # Join the matched company_ids to the portfolio data
   portfolio_data_with_ids <- portfolio_data |>
     dplyr::mutate(portfolio_index = dplyr::row_number()) |>
@@ -188,8 +255,17 @@ fuzzy_match_company_ids <- function(portfolio_data, assets_data, threshold = 0.5
 #' @export
 #'
 join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_results) {
+  # X1 fix: TRISK NPV output is asset-level, but the portfolio is joined without
+  # asset_id. Without this collapse, a company with multiple assets in one
+  # (sector, technology) fans a single loan into N rows and the full
+  # exposure_value_usd is then applied to each -> N x EAD/EL. Sum NPV across a
+  # company's assets within each (run, company, sector, technology, country) so
+  # every loan matches one row per technology and contributes its exposure once.
+  # Mirrors aggregate_trisk_outputs_simple() in the simple runner.
+  npv_results <- aggregate_npv_across_assets(npv_results)
+
   analysis_data <- dplyr::inner_join(
-    npv_results |> dplyr::select(-"company_name"),
+    npv_results,
     pd_results |> dplyr::select(-"company_name"),
     by = c("run_id", "company_id", "sector"),
     relationship = "many-to-many"
@@ -219,6 +295,36 @@ join_trisk_outputs_to_portfolio <- function(portfolio_data, npv_results, pd_resu
   return(full_joined_data)
 }
 
+
+# Internal — collapse asset-level NPV to (run, company, sector, technology,
+# country) grain so a single portfolio loan does not fan out across a company's
+# assets (X1). NPV is summed across assets = the company-technology total. Other
+# columns (asset_id, asset_name, model-derived difference/change) are dropped;
+# net_present_value_difference and value-change metrics are recomputed downstream
+# by compute_analysis_metrics().
+aggregate_npv_across_assets <- function(npv_results) {
+  npv_results |>
+    dplyr::group_by(
+      .data$run_id, .data$company_id, .data$sector,
+      .data$technology, .data$country_iso2
+    ) |>
+    dplyr::summarise(
+      # Preserve NA for an all-NA group instead of collapsing to 0 (which would
+      # later divide into NaN/Inf in compute_analysis_metrics). Mirrors the
+      # all-NA guards in the simple runner's aggregation.
+      net_present_value_baseline = if (all(is.na(.data$net_present_value_baseline))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_baseline, na.rm = TRUE)
+      },
+      net_present_value_shock = if (all(is.na(.data$net_present_value_shock))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_shock, na.rm = TRUE)
+      },
+      .groups = "drop"
+    )
+}
 
 # Helper function to merge portfolio data based on the presence of term
 merge_portfolio <- function(portfolio, analysis, join_keys) {

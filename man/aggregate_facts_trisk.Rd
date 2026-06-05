@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_plot_data.R
 \name{aggregate_facts_trisk}
 \alias{aggregate_facts_trisk}
-\title{Title}
+\title{Aggregate TRISK facts to a grouping (country-aggregate path)}
 \usage{
 aggregate_facts_trisk(analysis_data, group_cols)
 }
@@ -12,6 +12,12 @@ aggregate_facts_trisk(analysis_data, group_cols)
 \item{group_cols}{group_cols}
 }
 \description{
-TODO FIND CLOSEST COMPANY IF group_cols=NULL
+AGG1: PD is aggregated with `median()` across the counterparties in each group
+— a deliberate robust central-tendency choice for the country/aggregate path,
+where group members are heterogeneous and a few extreme Merton PDs would
+dominate an unweighted mean. It is **not** exposure-weighted (exposure is not
+available at this stage — it is joined afterwards in `merge_portfolio()`), so
+the aggregated PD is representative, not portfolio-weighted; weight by exposure
+downstream if a portfolio-weighted PD is required. NPV is summed.
 }
 \keyword{internal}

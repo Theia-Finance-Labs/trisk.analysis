@@ -30,14 +30,13 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
   pd_results_list <- list()
   company_trajectories_list <- list()
   params_df_list <- list()
+  failures <- list()  # SA1: collect per-run failures instead of aborting the sweep
 
   assets_data_filtered <- get_filtered_assets_data(assets_data, ...)
 
   # Loop over each set of parameters in run_params
   for (i in seq_along(run_params)) {
-    a_run_params <- run_params[[i]]
-    run_id <- uuid::UUIDgenerate()
-    a_run_params <- c(a_run_params, list(run_id = run_id))
+    a_run_params <- c(run_params[[i]], list(run_id = uuid::UUIDgenerate()))
 
     # Merge the fixed input data with the current run parameters
     trisk_run_params <- c(
@@ -50,38 +49,57 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
       a_run_params
     )
 
-    # Execute the TRISK model with the combined parameters
-    result_tibbles <- do.call(
-      trisk.model::run_trisk_model,
-      trisk_run_params
+    # SA1: isolate each run so one bad parameter set does not abort the sweep.
+    one <- tryCatch(
+      {
+        result_tibbles <- do.call(trisk.model::run_trisk_model, trisk_run_params)
+        trisk_params <- do.call(
+          trisk.model::process_params,
+          c(list(fun = trisk.model::run_trisk_model), a_run_params)
+        )
+        list(
+          npv = result_tibbles$npv_results,
+          pd = result_tibbles$pd_results,
+          trajectories = result_tibbles$company_trajectories,
+          params = tibble::as_tibble(trisk_params)
+        )
+      },
+      error = function(e) {
+        failures[[length(failures) + 1L]] <<- list(
+          run = i, run_id = a_run_params$run_id, message = conditionMessage(e)
+        )
+        NULL
+      }
     )
 
-    # Process the parameters used in the run
-    trisk_params <- do.call(trisk.model::process_params, c(list(fun = trisk.model::run_trisk_model), a_run_params))
-    params_df <- tibble::as_tibble(trisk_params)
-
-    npv_result <- result_tibbles$npv
-    pd_result <- result_tibbles$pd
-    trajectories_result <- result_tibbles$company_trajectories
-
-    # Prepare and stack the results
-    npv_results_list[[length(npv_results_list) + 1]] <- npv_result
-    pd_results_list[[length(pd_results_list) + 1]] <- pd_result
-    company_trajectories_list[[length(company_trajectories_list) + 1]] <- trajectories_result
-    params_df_list[[length(params_df_list) + 1]] <- params_df
-
-    n_completed_runs <- n_completed_runs + 1
-    print(paste("Done", n_completed_runs, "/", length(run_params), "total runs"))
+    if (!is.null(one)) {
+      npv_results_list[[length(npv_results_list) + 1]] <- one$npv
+      pd_results_list[[length(pd_results_list) + 1]] <- one$pd
+      company_trajectories_list[[length(company_trajectories_list) + 1]] <- one$trajectories
+      params_df_list[[length(params_df_list) + 1]] <- one$params
+      n_completed_runs <- n_completed_runs + 1
+      print(paste("Done", n_completed_runs, "/", length(run_params), "total runs"))
+    }
   }
 
-  print("All runs completed.")
+  if (length(failures) > 0) {
+    warning(
+      "run_trisk_sa(): ", length(failures), " of ", length(run_params),
+      " run(s) failed and were skipped: ",
+      paste(vapply(failures, function(f) sprintf("run %d (%s)", f$run, f$message),
+                   character(1)), collapse = "; "),
+      call. = FALSE
+    )
+  }
+  print(paste("All runs completed:", n_completed_runs, "succeeded,",
+              length(failures), "failed."))
 
-  # Combine the stacked results into tibbles
+  # Combine the stacked results (bind_rows tolerates differing columns / empties).
   result_tibbles <- list(
-    npv = tibble::as_tibble(do.call(rbind, npv_results_list)),
-    pd = tibble::as_tibble(do.call(rbind, pd_results_list)),
-    trajectories = tibble::as_tibble(do.call(rbind, company_trajectories_list)),
-    params = tibble::as_tibble(do.call(rbind, params_df_list))
+    npv = dplyr::bind_rows(npv_results_list),
+    pd = dplyr::bind_rows(pd_results_list),
+    trajectories = dplyr::bind_rows(company_trajectories_list),
+    params = dplyr::bind_rows(params_df_list)
   )
 
   # Return the list of tibbles

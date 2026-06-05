@@ -10,7 +10,9 @@ get_available_parameters <- function(scenarios) {
     .data$scenario, .data$scenario_type, .data$scenario_geography, .data$scenario_provider
   )
 
-  combinations <- list()
+  # EP1: initialise so the empty-input case returns an empty tibble instead of
+  # erroring on an unassigned `possible_combinations`.
+  possible_combinations <- tibble::tibble()
 
   if (nrow(scenarios_df) > 0) {
     # Separate baseline and target scenarios
