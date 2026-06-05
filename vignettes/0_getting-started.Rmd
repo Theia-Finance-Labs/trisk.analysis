@@ -14,6 +14,15 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Installation
+
+Install the development version from GitHub:
+
+```{r, eval=FALSE}
+# install.packages("pak")
+pak::pak("Theia-Finance-Labs/trisk.analysis")
+```
+
 # What is trisk.analysis
 
 `trisk.analysis` measures **climate transition risk** at the level of individual

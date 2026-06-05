@@ -58,6 +58,17 @@ integrate_pd <- function(analysis_data,
   pd_change <- pd_shock - pd_baseline
   pd_change_pct <- ifelse(pd_baseline != 0, pd_change / pd_baseline, NA_real_)
 
+  # R1: the relative method no-ops on zero-baseline rows (change_pct forced to 0),
+  # silently dropping the shock signal. Surface it.
+  if (method == "relative") {
+    n_zero <- sum(pd_baseline == 0, na.rm = TRUE)
+    if (n_zero > 0) {
+      warning("integrate_pd(): method 'relative' leaves ", n_zero,
+              " row(s) with pd_baseline == 0 unchanged (shock signal dropped); ",
+              "use 'absolute' or 'zscore' for those.", call. = FALSE)
+    }
+  }
+
   adjusted <- apply_pd_method(internal_vec, pd_baseline, pd_shock,
                               method, zscore_floor, zscore_cap)
   adjusted <- pmin(pmax(adjusted, 0), 1)
@@ -350,6 +361,16 @@ integrate_el <- function(analysis_data,
   el_shock <- analysis_data$expected_loss_shock
   el_change <- el_shock - el_baseline
   el_change_pct <- ifelse(el_baseline != 0, el_change / el_baseline, NA_real_)
+
+  # R1: the relative method no-ops on zero-baseline rows. Surface it.
+  if (method == "relative") {
+    n_zero <- sum(el_baseline == 0, na.rm = TRUE)
+    if (n_zero > 0) {
+      warning("integrate_el(): method 'relative' leaves ", n_zero,
+              " row(s) with expected_loss_baseline == 0 unchanged (shock signal ",
+              "dropped); use 'absolute' or 'zscore' for those.", call. = FALSE)
+    }
+  }
 
   # zscore needs an EAD denominator. Prefer an explicit exposure_at_default
   # column when the caller has supplied one (e.g. via compute_analysis_metrics

@@ -28,3 +28,13 @@ This function downloads TRISK input data files from a specified endpoint URL and
 It ensures that the local folder exists before downloading the files. If the folder does not exist, it is created.
 Package-level variables for `endpoint` and `s3_prefix` are used if not provided as parameters.
 }
+\section{Provenance (DL1)}{
+
+This fetches the public reference **scenarios** dataset only. The other model
+inputs - `assets`, `financial_features`, and `ngfs_carbon_prices` - are **not**
+downloaded here; they are institution-specific and must be supplied by the user
+in the documented schema. Use [setup_trisk_inputs()] to scaffold a folder with
+the required files, column schemas, and filled samples for every input, and see
+the "Inputs and outputs" vignette for the expected formats.
+}
+

@@ -120,8 +120,15 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 - **✅ IF1** (DONE): `pd_lifetime_to_annual()` + `pd_annual_to_lifetime()` (constant-hazard) in `R/pd_horizon.R`; bank_4 horizon caveat references them. `test-pd-horizon.R`.
 - **✅ CX2** (DONE): `fuzzy_match_company_ids` warns on tied best matches and keeps one per portfolio row (no exposure-duplicating fan-out); FZ1 docstring default corrected (0.2→0.5). `test-fuzzy-match-ties.R`.
 
-## Phase 4 — Low (own branch)
-- I1 install chunk; EP1 empty-input guard (`get_available_parameters`); R1 relative no-op warning; SA1 `bind_rows`+`tryCatch` per run in `run_trisk_sa`; FZ1 docstring 0.2→0.5; DL1 input-provenance docs.
+## Phase 4 — Low (DONE)
+- **✅ I1** install chunk (`pak::pak(...)`, eval=FALSE) added to `0_getting-started.Rmd`.
+- **✅ EP1** `get_available_parameters` initialises `possible_combinations <- tibble()` (empty input → empty tibble, no error); dead `combinations <- list()` removed.
+- **✅ R1** `integrate_pd`/`integrate_el` warn (naming the count) when `method="relative"` no-ops on zero-baseline rows.
+- **✅ SA1** `run_trisk_sa` isolates each run in `tryCatch` (one bad set no longer aborts the sweep), reports failures, and combines with `dplyr::bind_rows`.
+- **✅ FZ1** `fuzzy_match_company_ids` docstring default corrected (0.2→0.5) (done in Phase 3 commit).
+- **✅ DL1** `download_trisk_inputs` roxygen documents provenance (fetches scenarios only; assets/financials/carbon are user-supplied → `setup_trisk_inputs()`).
+- **✅ non-ASCII** em-dashes in `setup_trisk_inputs.R` replaced with ASCII hyphens → R CMD check WARNING cleared.
+- Tests: `test-low-fixes.R` (EP1, R1).
 
 ## Phase 5 — Re-review
 - Re-run Santa dual review **with Codex as the cross-model second agent** (separate session, per user) on changed code + vignettes. Both must PASS before declaring bank-engagement-ready. Re-verify X1/Z1/K1 numbers independently.
