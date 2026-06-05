@@ -36,7 +36,7 @@ run_trisk_agg <- function(assets_data,
   )
 
   # Aggregate NPV results by removing `country_iso2` and summing relevant values, then recreate `net_present_value_difference` and `net_present_value_change`
-  npv_agg <- results$npv %>%
+  npv_agg <- results$npv_results %>%
     dplyr::select(-.data$country_iso2) %>%
     dplyr::group_by(
       .data$run_id, .data$company_id, .data$asset_id, .data$company_name,
@@ -53,7 +53,7 @@ run_trisk_agg <- function(assets_data,
     )
 
   # Aggregate PD results by removing `country_iso2` and averaging where appropriate
-  pd_agg <- results$pd
+  pd_agg <- results$pd_results
 
   # Aggregate company trajectories by removing `country_iso2`
   company_trajectories_agg <- results$company_trajectories %>%

@@ -518,7 +518,10 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
                                       .data$total_exposure_usd),
       # el_adjustment_bps: the climate overlay (delta = adjusted - internal) as a
       # loss rate — the marginal effect attributable to the transition scenario.
-      el_adjustment_bps   = el_to_bps(.data$total_el_adjustment,
+      # Signed (el_to_bps returns a magnitude): positive = more loss, negative =
+      # less loss, so the direction of the delta is preserved.
+      el_adjustment_bps   = sign(.data$total_el_adjustment) *
+                            el_to_bps(.data$total_el_adjustment,
                                       .data$total_exposure_usd)
     )
 

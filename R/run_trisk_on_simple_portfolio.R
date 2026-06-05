@@ -266,8 +266,18 @@ aggregate_trisk_outputs_simple <- function(npv_results, pd_results) {
   npv_agg <- npv_results |>
     dplyr::group_by(.data$run_id, .data$company_id, .data$sector, .data$technology) |>
     dplyr::summarise(
-      net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
-      net_present_value_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+      # Preserve NA for all-NA groups (symmetry with the full runner's X1 helper);
+      # collapsing to 0 would turn missing model output into a real zero NPV.
+      net_present_value_baseline = if (all(is.na(.data$net_present_value_baseline))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_baseline, na.rm = TRUE)
+      },
+      net_present_value_shock = if (all(is.na(.data$net_present_value_shock))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_shock, na.rm = TRUE)
+      },
       .groups = "drop"
     )
 

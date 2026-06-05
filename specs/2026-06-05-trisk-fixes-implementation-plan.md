@@ -130,8 +130,13 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 - **✅ non-ASCII** em-dashes in `setup_trisk_inputs.R` replaced with ASCII hyphens → R CMD check WARNING cleared.
 - Tests: `test-low-fixes.R` (EP1, R1).
 
-## Phase 5 — Re-review
-- Re-run Santa dual review **with Codex as the cross-model second agent** (separate session, per user) on changed code + vignettes. Both must PASS before declaring bank-engagement-ready. Re-verify X1/Z1/K1 numbers independently.
+## Phase 5 — Re-review (DONE — 4 Codex cross-model passes)
+- Codex cross-model review run 4× over the branch: (1) Criticals, (2) Phase-1 fixes, (3) Phase-2 High, (4) final holistic. Every flagged item closed with a regression test:
+  - Round 1: confirmed X1 (re-elevated — multi-asset fan-out), K1, Z1.
+  - Round 2: X1/Z1 edge hardening (NA preservation, clip-share denominator, zero-EAD).
+  - Round 3: CX1 regression + S1 nits (port validation, test literal).
+  - Round 4 (final): 11/12 areas CONFIRMED. Two "blocking" findings (run_trisk_sa / run_trisk_agg reading `$npv`/`$pd`) were **false alarms** — empirically both return populated results via R's `$` partial matching (run_trisk_agg → 7 npv / 145 pd rows; run_trisk_sa likewise). Fixed anyway for robustness: exact names `$npv_results`/`$pd_results` + contract test (`test-runner-contracts.R`). Two genuine minors fixed: `el_adjustment_bps` now signed; simple-runner NPV aggregation preserves all-NA groups (symmetry with X1).
+- Status: R CMD check 0 errors / 0 warnings; 213 tests pass. N1 remains the only acknowledged deferral (breaking rename, awaiting decision).
 
 ---
 

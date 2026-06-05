@@ -58,8 +58,8 @@ run_trisk_sa <- function(assets_data, scenarios_data, financial_data, carbon_dat
           c(list(fun = trisk.model::run_trisk_model), a_run_params)
         )
         list(
-          npv = result_tibbles$npv,
-          pd = result_tibbles$pd,
+          npv = result_tibbles$npv_results,
+          pd = result_tibbles$pd_results,
           trajectories = result_tibbles$company_trajectories,
           params = tibble::as_tibble(trisk_params)
         )

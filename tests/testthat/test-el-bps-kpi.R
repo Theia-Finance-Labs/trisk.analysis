@@ -11,10 +11,12 @@ test_that("K1: aggregate exposes the EL *delta* in bps on raw exposure", {
   df  <- make_test_analysis_data()
   agg <- integrate_el(df, method = "absolute")$aggregate
 
-  # Headline KPI must exist and equal the DELTA over RAW exposure.
+  # Headline KPI must exist and equal the SIGNED DELTA over RAW exposure
+  # (el_to_bps returns a magnitude; the delta carries direction).
   expect_true("el_adjustment_bps" %in% names(agg))
   expect_equal(agg$el_adjustment_bps,
-               el_to_bps(agg$total_el_adjustment, agg$total_exposure_usd))
+               sign(agg$total_el_adjustment) *
+                 el_to_bps(agg$total_el_adjustment, agg$total_exposure_usd))
 })
 
 test_that("K1: headline delta is materially smaller than the adjusted level", {
