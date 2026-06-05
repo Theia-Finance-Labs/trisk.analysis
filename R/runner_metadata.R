@@ -32,6 +32,43 @@ build_trisk_run_meta <- function(baseline_scenario, target_scenario,
   )
 }
 
+#' Warn on likely duplicate per-technology entry of one company loan (X1 guard)
+#'
+#' A loan is exposure to a company, but the full runner joins on \code{technology}.
+#' A user capturing a whole company therefore sometimes enters the same loan once
+#' per technology, each carrying the \emph{full} exposure - which the runner sums
+#' into inflated EL/EAD. The signature is the same \code{(company_id, term)} with
+#' an identical \code{exposure_value_usd} repeated across rows. This surfaces it
+#' and points to the simple runner (which allocates a company loan across
+#' technologies by NPV share). It does not modify the data.
+#'
+#' @param portfolio_data Portfolio data frame.
+#' @return Invisibly, the duplicated `(company_id, term, exposure)` groups.
+#' @keywords internal
+warn_duplicate_company_term_exposure <- function(portfolio_data) {
+  needed <- c("company_id", "term", "exposure_value_usd")
+  if (!all(needed %in% colnames(portfolio_data))) {
+    return(invisible(NULL))
+  }
+  dup <- portfolio_data |>
+    dplyr::filter(!is.na(.data$company_id)) |>
+    dplyr::group_by(.data$company_id, .data$term, .data$exposure_value_usd) |>
+    dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+    dplyr::filter(.data$n > 1)
+  if (nrow(dup) > 0) {
+    pairs <- paste(dup$company_id, dup$term, sep = "/term=", collapse = ", ")
+    warning(
+      "run_trisk_on_portfolio(): ", nrow(dup), " (company_id, term) group(s) repeat the ",
+      "same exposure across multiple rows - this looks like one company-level loan split ",
+      "per technology with full exposure on each, which inflates EL/EAD. A loan is ",
+      "company-level: use run_trisk_on_simple_portfolio() (no technology column; it ",
+      "allocates the loan across technologies by NPV share). Affected (company_id/term): ",
+      pairs, call. = FALSE
+    )
+  }
+  invisible(dup)
+}
+
 #' Warn when baseline and target scenarios are from different families (NM1)
 #'
 #' Scenario names encode a model/year vintage plus a scenario type, e.g.

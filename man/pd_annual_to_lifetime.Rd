@@ -16,7 +16,11 @@ Numeric vector of cumulative lifetime PDs in `[0, 1]`.
 }
 \description{
 Inverse of [pd_lifetime_to_annual()] under the same constant-hazard
-assumption: \eqn{1 - (1 - pd\_annual)^{term}}.
+assumption: \eqn{1 - (1 - pd\_annual)^{term}}. The caller is responsible for
+asserting that the input is genuinely an annual PD — the package does not (and
+cannot) infer the horizon of an internal PD. Typical use: lift a 12-month
+internal PD onto TRISK's `term` horizon so the two are comparable before
+integration (see "Choosing a direction" in [pd_lifetime_to_annual()]).
 }
 \examples{
 pd_annual_to_lifetime(0.02, term = 5)   # ~0.0961

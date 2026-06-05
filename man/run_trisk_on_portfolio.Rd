@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_trisk_on_portfolio.R
 \name{run_trisk_on_portfolio}
 \alias{run_trisk_on_portfolio}
-\title{Run TRISK Model on Portfolio}
+\title{Run TRISK Model on Portfolio (technology-resolved; advanced)}
 \usage{
 run_trisk_on_portfolio(
   assets_data,
@@ -42,7 +42,16 @@ run_trisk_on_portfolio(
 A data frame containing the processed and analyzed portfolio data.
 }
 \description{
-This function runs the TRISK model on a given portfolio, processing various input data
-and returning analysis results. It's designed to be the primary data processing function
-for generating plots.
+\strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
+A bank loan is exposure to a \emph{company}, not to a technology, and the
+bundled/Asset-Impact inputs are company-technology grain (no true asset-level
+resolution). This runner joins the portfolio on \code{technology}, so it is
+only appropriate when you genuinely hold \emph{technology-resolved} exposure
+(e.g. project finance against a specific technology line, or future
+asset-level/spatial data). For a company-level loan book it forces a
+single-technology assignment or duplicate per-technology rows (which inflates
+EL/EAD) - the simple runner instead allocates a company loan's exposure across
+technologies by NPV share. Kept for technology/asset-resolved use cases.
+
+Runs the TRISK model on a portfolio and returns analysis results for plots.
 }

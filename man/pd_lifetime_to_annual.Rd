@@ -21,6 +21,24 @@ of default `pd` over `term` years implies a per-year PD of
 \eqn{1 - (1 - pd)^{1/term}}. Use this to place a TRISK term-structured PD into
 a 12-month IFRS-9 Stage 1 slot.
 }
+\section{Choosing a direction (what to do based on your internal PD)}{
+
+TRISK's `pd_baseline` / `pd_shock` are **cumulative over the loan `term`**.
+The package cannot know the horizon of a user-supplied `internal_pd`, so you
+must reconcile horizons yourself before [integrate_pd()] / [integrate_el()]:
+\itemize{
+  \item **Internal PD is a 12-month (IFRS-9 Stage 1) PD** and you want to
+    integrate it with TRISK's term PD: lift it to the term horizon first with
+    `pd_annual_to_lifetime(internal_pd, term)`.
+  \item **Internal PD is already a lifetime/term PD** on the same horizon as
+    the TRISK `term`: no conversion needed.
+  \item **You need a 12-month figure out of TRISK's term PD** (Stage 1
+    reporting): use `pd_lifetime_to_annual(pd, term)`.
+}
+Both directions assume a constant hazard, so the converted figure is an
+approximation (TRISK's curve is not flat).
+}
+
 \examples{
 pd_lifetime_to_annual(0.10, term = 5)   # ~0.0209
 }

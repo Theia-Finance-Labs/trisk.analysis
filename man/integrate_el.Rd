@@ -21,8 +21,10 @@ column when present (the canonical contract, written by
 otherwise reconstructs it as `exposure_value_usd * loss_given_default`.}
 
 \item{internal_el}{Numeric vector of length `nrow(analysis_data)`, or a data
-frame with `company_id` + `internal_el` columns, or NULL (default) which
-uses `expected_loss_baseline`.}
+frame with `company_id` (+ optional keys) and a value column, or NULL
+(default) which uses `expected_loss_baseline`. The PD embedded in an internal
+EL should be on a horizon comparable to the TRISK `term` (no conversion is
+applied here); see the horizon note in [integrate_pd()].}
 
 \item{method}{One of "zscore", "absolute", "relative". Default "zscore".}
 

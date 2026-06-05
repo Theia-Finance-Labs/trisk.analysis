@@ -26,6 +26,22 @@ test_that("D1: no warning when all terms are within the grid", {
   expect_no_warning(warn_terms_outside_grid(pf, pd))
 })
 
+test_that("X1 guard: duplicate per-technology entry of one company loan warns", {
+  pf <- tibble::tibble(
+    company_id = c("X", "X"), term = c(3L, 3L),
+    technology = c("CoalCap", "OilCap"), exposure_value_usd = c(10, 10)
+  )
+  expect_warning(warn_duplicate_company_term_exposure(pf), "company-level")
+})
+
+test_that("X1 guard: distinct exposures (genuine sub-loans) do not warn", {
+  pf <- tibble::tibble(
+    company_id = c("X", "X"), term = c(3L, 5L),
+    technology = c("CoalCap", "OilCap"), exposure_value_usd = c(10, 20)
+  )
+  expect_no_warning(warn_duplicate_company_term_exposure(pf))
+})
+
 test_that("NM1: warns when baseline and target scenario families differ", {
   expect_warning(
     warn_scenario_family_mismatch("NGFS2023GCAM_CP", "NGFS2024REMIND_NZ2050"),

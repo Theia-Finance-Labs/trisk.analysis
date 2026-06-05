@@ -7,8 +7,15 @@
 #' @param analysis_data Data frame from [run_trisk_on_portfolio()]; must contain
 #'   columns `pd_baseline`, `pd_shock`.
 #' @param internal_pd Either (a) a numeric vector of length `nrow(analysis_data)`,
-#'   (b) a data frame with `company_id` and `internal_pd` columns, or (c) NULL
-#'   (default) in which case `pd_baseline` is used.
+#'   (b) a data frame with `company_id` (+ optional `term`/keys) and a value
+#'   column, or (c) NULL (default) in which case `pd_baseline` is used.
+#'
+#'   \strong{Horizon consistency:} TRISK's `pd_baseline`/`pd_shock` are cumulative
+#'   over the loan `term`. This function does not know your `internal_pd`'s
+#'   horizon and applies no conversion, so supply an `internal_pd` on a comparable
+#'   horizon. If your internal PD is a 12-month (IFRS-9 Stage 1) figure, lift it
+#'   to the term horizon first with [pd_annual_to_lifetime()]; see "Choosing a
+#'   direction" in [pd_lifetime_to_annual()].
 #' @param method One of "zscore", "absolute", "relative". Default "zscore"
 #'   (Merton-style probit recombination of default thresholds, not the Basel
 #'   IRB/Vasicek formula; zero-safe via clipping; recommended for sparse
@@ -308,8 +315,10 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #'   [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and
 #'   otherwise reconstructs it as `exposure_value_usd * loss_given_default`.
 #' @param internal_el Numeric vector of length `nrow(analysis_data)`, or a data
-#'   frame with `company_id` + `internal_el` columns, or NULL (default) which
-#'   uses `expected_loss_baseline`.
+#'   frame with `company_id` (+ optional keys) and a value column, or NULL
+#'   (default) which uses `expected_loss_baseline`. The PD embedded in an internal
+#'   EL should be on a horizon comparable to the TRISK `term` (no conversion is
+#'   applied here); see the horizon note in [integrate_pd()].
 #' @param method One of "zscore", "absolute", "relative". Default "zscore".
 #' @param zscore_floor Lower clip bound for effective PDs before `qnorm()`.
 #'   Default 1e-4.

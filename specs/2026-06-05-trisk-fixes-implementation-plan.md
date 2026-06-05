@@ -140,6 +140,13 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 
 ---
 
+## Post-review refinements (2026-06-05, Jakub domain clarification)
+Confirmed from model output: `asset_id` is effectively the **company** (1 row per company-technology; company 105 shares asset_id across its 3 technologies), and PD is company-level cumulative-over-term. So the real grain is **company > company-technology**; true asset-level only arrives with 1in1000 Spatial data (post-summer). Implications acted on:
+- **X1 reframed as defensive.** `aggregate_npv_across_assets` is a no-op on current (Asset-Impact) data; it only bites on future asset-resolved inputs. Kept as a safety net.
+- **X1 duplicate-entry guard added** (`warn_duplicate_company_term_exposure`): warns when one company loan is split per technology with repeated full exposure (the real 3× footgun) and steers to the simple runner.
+- **Full runner soft-deprecated (docs).** `run_trisk_on_portfolio` roxygen now states a loan is company-level and prefers `run_trisk_on_simple_portfolio` (no technology column); the technology-keyed join is for technology/asset-resolved use only. Machinery retained for post-summer asset-level data. (Not runtime-deprecated/removed — pending decision.)
+- **IF1 re-documented honestly.** The package cannot know an internal PD's horizon; `pd_lifetime_to_annual` is grounded on TRISK's cumulative term-PD; `pd_annual_to_lifetime` is a generic inverse (caller asserts the input is annual). Added a "Choosing a direction" guidance section and a horizon-consistency note to `integrate_pd`/`integrate_el` (`internal_pd` must be on a horizon comparable to the TRISK `term`; convert first if it's a 12-month figure).
+
 ## Dependency & ordering notes
 - **Phase 1 = X1 + K1 + Z1** (X1 re-elevated after Codex cross-model confirmation).
 - X1, K1, Z1 are independent code defects — fixable in any order.

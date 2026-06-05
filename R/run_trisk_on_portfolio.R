@@ -1,9 +1,18 @@
-#' Run TRISK Model on Portfolio
+#' Run TRISK Model on Portfolio (technology-resolved; advanced)
 #'
 #' @description
-#' This function runs the TRISK model on a given portfolio, processing various input data
-#' and returning analysis results. It's designed to be the primary data processing function
-#' for generating plots.
+#' \strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
+#' A bank loan is exposure to a \emph{company}, not to a technology, and the
+#' bundled/Asset-Impact inputs are company-technology grain (no true asset-level
+#' resolution). This runner joins the portfolio on \code{technology}, so it is
+#' only appropriate when you genuinely hold \emph{technology-resolved} exposure
+#' (e.g. project finance against a specific technology line, or future
+#' asset-level/spatial data). For a company-level loan book it forces a
+#' single-technology assignment or duplicate per-technology rows (which inflates
+#' EL/EAD) - the simple runner instead allocates a company loan's exposure across
+#' technologies by NPV share. Kept for technology/asset-resolved use cases.
+#'
+#' Runs the TRISK model on a portfolio and returns analysis results for plots.
 #'
 #' @param assets_data Data frame containing asset information.
 #' @param scenarios_data Data frame containing scenario information.
@@ -46,6 +55,7 @@ run_trisk_on_portfolio <- function(assets_data,
 
   check_portfolio(portfolio_data)
   warn_scenario_family_mismatch(baseline_scenario, target_scenario)  # NM1
+  warn_duplicate_company_term_exposure(portfolio_data)  # X1 duplicate-entry guard
 
   if (any(is.na(portfolio_data$company_id))) {
     if (any(is.na(portfolio_data$company_name))) {
