@@ -1,10 +1,11 @@
-# Phase 0 (K1) — failing tests pinning the EL bps headline KPI.
-# Decision (2026-06-05): the headline must be the EL *delta* (adjusted - internal),
-# divided by *raw exposure* (a true loss rate, LGD*PD in bps), relabelled
-# "EL/exposure (bps)". The current code emits only `el_adjusted_bps`, which is the
-# adjusted *level* (internal credit risk + climate overlay) -> overstates the
-# climate signal ~10x. These tests are RED until the Phase 1 K1 fix adds
-# `el_adjustment_bps`.
+# Phase 0/1 (K1) — pin the EL bps KPI contract.
+# Decision (2026-06-05): the aggregate emits BOTH bps measures over *raw exposure*
+# (a true loss rate, LGD*PD in bps; EL/EAD would be PD-in-bps): `el_adjusted_bps`
+# (the adjusted EL level) and `el_adjustment_bps` (the climate overlay/delta =
+# adjusted - internal). Presentation headlines the LEVEL with the delta secondary
+# (Jakub's call); these tests assert both exist and that the delta is computed
+# correctly and is distinct from the level. The original defect was the *mislabel*
+# (level presented as the delta), not the presence of the level.
 
 test_that("K1: aggregate exposes the EL *delta* in bps on raw exposure", {
   df  <- make_test_analysis_data()

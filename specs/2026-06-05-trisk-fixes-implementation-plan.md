@@ -96,14 +96,17 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 ---
 
 ## Phase 2 — High (own branch)
-- **A1** audit trail: attach `$meta` (or `attr`) to both runner outputs — scenario pair, all forwarded `...`, `packageVersion()` of trisk.analysis + trisk.model, `run_id`. Add a reproducibility-recipe section to a vignette.
-- **V1 + technology isolation** (reframed per Jakub 2026-06-05): the technology requirement should be **isolated to the full runner**, not pushed onto all inputs.
-  - **Positioning:** make `run_trisk_on_simple_portfolio()` the **recommended default** — it needs no `sector`/`technology`, allocates each company's exposure across technologies by NPV share, and avoids the X1 duplicate-entry footgun. The full runner is the **specialist path** for banks that genuinely hold technology-level exposure.
-  - **V1 fail-fast:** in the *full* runner only, require `sector` + `technology` and error clearly if absent (today `check_portfolio` omits them → opaque join crash). The simple runner must never require them.
-  - **Docs:** lead every bank vignette with the simple runner; present the full runner as opt-in for technology-targeted analysis. This is the input-side simplification — most portfolios never need a technology column.
-- **D1** term-beyond-grid: promote the bank_3 inline drop-warning into the runners; name dropped `(company_id, term)`.
-- **S1** de-hardcode DB creds in `R/run_trisk_from_db.R`: take a DBI connection or env-var secrets (`Sys.getenv`), error if absent, never embed a password.
-- **CX1 (NEW, Codex) — internal PD/EL lookup keyed only by `company_id`.** `resolve_internal_series` (`R/integrate.R:171-190`) matches a `company_id`+value data frame by `company_id` alone, so a company with multiple loans (different terms/exposures) silently reuses the first internal value. → Match on `(company_id, term)` (or the full key), or error on multi-row companies when a per-company lookup is given. Add a test with a company holding two different-term loans. (High)
+- **A1** (TODO) audit trail: attach `$meta` (or `attr`) to both runner outputs — scenario pair, all forwarded `...`, `packageVersion()` of trisk.analysis + trisk.model, `run_id`. Add a reproducibility-recipe section to a vignette.
+- **✅ V1 + technology isolation** (DONE): `check_portfolio` (full runner only) now requires `sector` + `technology` and fails fast; `check_portfolio_simple` stays technology-free. Tests in `test-check-portfolio.R`. (Vignette positioning — lead with simple runner — folded into A1/docs pass, still TODO.)
+- **D1** (TODO) term-beyond-grid: promote the bank_3 inline drop-warning into the runners; name dropped `(company_id, term)`.
+- **✅ S1** (DONE): `run_trisk_from_db()` takes an optional `conn` or reads `TRISK_DB_*` env vars, fails fast if absent, no hardcoded password. `test-run-trisk-from-db.R`.
+- **✅ CX1** (DONE): `resolve_internal_series` now matches on all shared key columns (company_id [+ term/…]) and errors on ambiguous duplicate-key lookups. `test-internal-lookup.R`.
+
+### Phase 1 hardening (from Codex re-review 2026-06-05)
+- **✅ X1 edge:** `aggregate_npv_across_assets` preserves NA for all-NA-NPV groups (no collapse-to-0 → no NaN/Inf downstream).
+- **✅ Z1 edges:** `zscore_clipped_share` excludes all-NA rows from the denominator; `integrate_el` maps zero/NA-EAD rows to NA (no warning misfire). Edge tests added.
+- **✅ K1 test comment** corrected to the level-first decision.
+- Codex re-review verdict: K1 = FIXED; X1/Z1 cores correct, edges now closed.
 
 ## Phase 3 — Medium (own branch; N1 is wide — isolate it)
 - **N1** rename `exposure_at_default` → `lgd_weighted_exposure` everywhere (reserve `exposure_at_default` for pre-LGD); add EL-decomposition banner. **Grep all usages first** (`R/`, `vignettes/`, `tests/`); interacts with the K1 denominator and X1 allocation — do *after* Phase 1 so it renames already-correct columns. Single dedicated commit.

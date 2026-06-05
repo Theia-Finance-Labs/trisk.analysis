@@ -114,8 +114,16 @@ run_trisk_on_portfolio <- function(assets_data,
 #' @return A data frame of portfolio data with matched company IDs.
 #' @export
 check_portfolio <- function(portfolio_data) {
-  # List of required columns
-  required_portfolio_columns <- c("company_id", "company_name", "country_iso2", "exposure_value_usd", "term", "loss_given_default")
+  # Required columns for the FULL runner. sector + technology are mandatory here
+  # (V1): the runner joins TRISK outputs to the portfolio on them, so omitting
+  # them previously produced an opaque dplyr join error only after a full model
+  # run. They are deliberately NOT required by the simple runner
+  # (check_portfolio_simple), which allocates exposure across technologies by NPV
+  # share and needs no technology column on the input.
+  required_portfolio_columns <- c(
+    "company_id", "company_name", "country_iso2", "exposure_value_usd",
+    "term", "loss_given_default", "sector", "technology"
+  )
 
   # Check if all required columns are present
   if (!all(required_portfolio_columns %in% colnames(portfolio_data))) {
@@ -242,8 +250,19 @@ aggregate_npv_across_assets <- function(npv_results) {
       .data$technology, .data$country_iso2
     ) |>
     dplyr::summarise(
-      net_present_value_baseline = sum(.data$net_present_value_baseline, na.rm = TRUE),
-      net_present_value_shock = sum(.data$net_present_value_shock, na.rm = TRUE),
+      # Preserve NA for an all-NA group instead of collapsing to 0 (which would
+      # later divide into NaN/Inf in compute_analysis_metrics). Mirrors the
+      # all-NA guards in the simple runner's aggregation.
+      net_present_value_baseline = if (all(is.na(.data$net_present_value_baseline))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_baseline, na.rm = TRUE)
+      },
+      net_present_value_shock = if (all(is.na(.data$net_present_value_shock))) {
+        NA_real_
+      } else {
+        sum(.data$net_present_value_shock, na.rm = TRUE)
+      },
       .groups = "drop"
     )
 }

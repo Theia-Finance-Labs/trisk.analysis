@@ -51,6 +51,24 @@ test_that("X1: a single loan to a multi-asset company does not inflate EAD", {
   expect_equal(sum(metrics$exposure_at_default, na.rm = TRUE), exposure * lgd)
 })
 
+test_that("X1: aggregate_npv_across_assets preserves NA for an all-NA company", {
+  # Codex re-review edge: an all-NA NPV group must stay NA, not collapse to 0
+  # (which would later divide into NaN/Inf in compute_analysis_metrics).
+  npv <- tibble::tibble(
+    run_id = "r1",
+    company_id = c("A", "A", "B"),
+    sector = "Power", technology = "CoalCap", country_iso2 = "DE",
+    net_present_value_baseline = c(NA_real_, NA_real_, 100),
+    net_present_value_shock    = c(NA_real_, NA_real_, 80)
+  )
+  agg <- trisk.analysis:::aggregate_npv_across_assets(npv)
+  a <- agg[agg$company_id == "A", ]
+  b <- agg[agg$company_id == "B", ]
+  expect_true(is.na(a$net_present_value_baseline))   # preserved, not 0
+  expect_true(is.na(a$net_present_value_shock))
+  expect_equal(b$net_present_value_baseline, 100)    # normal sum still works
+})
+
 test_that("X1: single-asset (bundled) company already reconciles (guard against over-correction)", {
   assets <- trisk_model_testdata("assets_testdata.csv")
   scen   <- trisk_model_testdata("scenarios_testdata.csv")

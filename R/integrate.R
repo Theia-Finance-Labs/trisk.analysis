@@ -227,13 +227,17 @@ resolve_internal_series <- function(analysis_data, user_values, default_col) {
 
 # Internal (Z1) - fraction of rows where any input PD lies outside [floor, cap]
 # and is therefore clamped before qnorm(). A high share means the z-score overlay
-# reflects the clip bound, not the model. NA-safe; ignores all-NA rows.
+# reflects the clip bound, not the model. Rows that are all-NA across the series
+# are excluded from the denominator (they carry no model signal to clip).
 zscore_clipped_share <- function(series_list, floor, cap) {
+  if (length(series_list) == 0 || length(series_list[[1]]) == 0) return(NA_real_)
+  all_na  <- Reduce(`&`, lapply(series_list, is.na))
   clipped <- Reduce(`|`, lapply(series_list, function(x) {
     !is.na(x) & (x < floor | x > cap)
   }))
-  if (length(clipped) == 0) return(NA_real_)
-  mean(clipped)
+  valid <- !all_na
+  if (!any(valid)) return(NA_real_)
+  mean(clipped[valid])
 }
 
 # Internal (Z1) - warn when the clipped share crosses the threshold.
@@ -392,7 +396,10 @@ integrate_el <- function(analysis_data,
 
   aggregate <- aggregate_el_integration(portfolio)
   if (method == "zscore") {
-    eff_pd <- function(x) ifelse(ead > 0, abs(x) / ead, 0)
+    # Effective PD = |EL| / EAD, matching apply_el_method(). Rows with EAD <= 0
+    # carry no loss and contribute 0 EL; map them to NA so they are excluded from
+    # the clip-share denominator rather than counting as clipped (warning misfire).
+    eff_pd <- function(x) ifelse(!is.na(ead) & ead > 0, abs(x) / ead, NA_real_)
     clipped <- zscore_clipped_share(
       list(eff_pd(internal_vec), eff_pd(el_baseline), eff_pd(el_shock)),
       zscore_floor, zscore_cap

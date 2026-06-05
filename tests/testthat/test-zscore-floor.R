@@ -31,6 +31,33 @@ test_that("Z1: integrate_pd zscore reports the share of rows hitting the clip bo
   expect_gt(res$aggregate$zscore_clipped_share, 0)
 })
 
+test_that("Z1: all-NA rows are excluded from the clip share (not counted as unclipped)", {
+  # A row with NA PDs carries no model signal; it must not dilute the share.
+  ad <- make_subfloor_analysis_data()
+  ad$pd_baseline[3] <- NA_real_
+  ad$pd_shock[3]    <- NA_real_
+  res <- integrate_pd(ad, method = "zscore")
+  # Rows 1-2 are sub-floor (clipped); row 3 is all-NA and excluded -> share = 1.
+  expect_equal(res$aggregate$zscore_clipped_share, 1)
+})
+
+test_that("Z1: integrate_el zero-EAD rows do not inflate the clip share", {
+  ad <- tibble::tibble(
+    company_id = c("A", "B"), company_name = c("a", "b"),
+    sector = c("Power", "Power"), technology = c("CoalCap", "CoalCap"),
+    country_iso2 = c("DE", "DE"), term = c(1L, 1L),
+    exposure_value_usd = c(1e6, 1e6),
+    loss_given_default = c(0.4, 0),            # row B has zero EAD
+    expected_loss_baseline = c(80, 0),
+    expected_loss_shock = c(120, 0)
+  )
+  res <- integrate_el(ad, method = "zscore")
+  # Row B (EAD = 0) is excluded; only row A counts. Share is finite, not inflated
+  # by the zero-EAD row mapping to effective PD 0.
+  expect_false(is.na(res$aggregate$zscore_clipped_share))
+  expect_lte(res$aggregate$zscore_clipped_share, 1)
+})
+
 test_that("Z1: sub-floor shocks collapse to the same adjusted PD (the artifact)", {
   # Two scenarios identical except row A's shock (both below the 1e-4 floor).
   # Because qnorm() sees the clipped floor in both cases, the adjusted PD is
