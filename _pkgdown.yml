@@ -12,7 +12,7 @@ articles:
 - title: Get started
   navbar: Get started
   contents:
-  - 0_getting-started
+  - getting-started
 
 - title: Bank workflow
   navbar: Bank workflow

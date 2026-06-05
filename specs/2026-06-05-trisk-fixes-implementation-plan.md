@@ -121,7 +121,7 @@ expect_false(isTRUE(all.equal(agg$el_adjustment_bps, agg$el_adjusted_bps)))  # d
 - **✅ CX2** (DONE): `fuzzy_match_company_ids` warns on tied best matches and keeps one per portfolio row (no exposure-duplicating fan-out); FZ1 docstring default corrected (0.2→0.5). `test-fuzzy-match-ties.R`.
 
 ## Phase 4 — Low (DONE)
-- **✅ I1** install chunk (`pak::pak(...)`, eval=FALSE) added to `0_getting-started.Rmd`.
+- **✅ I1** install chunk (`pak::pak(...)`, eval=FALSE) added to `getting-started.Rmd` (renamed from `0_getting-started.Rmd`: R CMD check rejects `inst/doc` files that start with a digit under `--as-cran`).
 - **✅ EP1** `get_available_parameters` initialises `possible_combinations <- tibble()` (empty input → empty tibble, no error); dead `combinations <- list()` removed.
 - **✅ R1** `integrate_pd`/`integrate_el` warn (naming the count) when `method="relative"` no-ops on zero-baseline rows.
 - **✅ SA1** `run_trisk_sa` isolates each run in `tryCatch` (one bad set no longer aborts the sweep), reports failures, and combines with `dplyr::bind_rows`.
