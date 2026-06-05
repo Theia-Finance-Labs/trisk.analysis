@@ -159,6 +159,10 @@ Confirmed from model output: `asset_id` is effectively the **company** (1 row pe
 - `integrate_el()` zscore normalizer now reads `lgd_weighted_exposure` (fallback: `exposure_value_usd × loss_given_default`); local var + `apply_el_method` param renamed `ead → lgd_weighted_exp`. `aggregate_el_integration` unaffected (divides EL by **notional** exposure for the bps loss-rate).
 - Touched: `run_trisk_on_simple_portfolio.R`, `prepare_plot_data.R`, `integrate.R`, tests `test-exposure-fanout.R` / `test-integrate-el.R`. Added Basel-identity regression (`EL == EAD×LGD×PD`). 219 pass / 0 fail.
 
+## EAD2 — integration aggregates now consume simple-runner output (2026-06-05)
+**Found via the BPI analyst end-to-end smoke test** (public API only): the *recommended* workflow `run_trisk_on_simple_portfolio()` → `integrate_pd()`/`integrate_el()` **errored** — `aggregate_pd_integration`/`aggregate_el_integration` hard-required `exposure_value_usd`, but the simple runner's tech-detail drops it (each row is an NPV-share) and exposes `exposure_at_default` (= the allocated share) instead. The integration path had only ever been exercised on full-runner output.
+**Fix:** added internal `resolve_notional_exposure()` — prefers `exposure_at_default` (canonical EAD, present on both runners post-EAD1 and equal to `exposure_value_usd` on the full runner), falls back to `exposure_value_usd` (raw full-runner / user frames). Both aggregates now EAD-weight via this resolver; full-runner numbers unchanged (fallback/identity), simple-runner path now works. Added a regression test (`integrate_pd/el work on simple-runner output`). Smoke test: total EAD reconciles to the loan sum; Z1 clip-share warning correctly fires on the underflow-prone testdata (recommends `method="absolute"`). 220 tests pass.
+
 ## Dependency & ordering notes
 - **Phase 1 = X1 + K1 + Z1** (X1 re-elevated after Codex cross-model confirmation).
 - X1, K1, Z1 are independent code defects — fixable in any order.

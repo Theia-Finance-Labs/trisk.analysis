@@ -8,8 +8,8 @@ aggregate_pd_integration(portfolio_df, group_cols = NULL)
 }
 \arguments{
 \item{portfolio_df}{The `$portfolio` element from [integrate_pd()], containing
-`internal_pd`, `pd_baseline`, `pd_shock`, `trisk_adjusted_pd`,
-`exposure_value_usd`.}
+`internal_pd`, `pd_baseline`, `pd_shock`, `trisk_adjusted_pd`, and a notional
+EAD column (`exposure_at_default` or `exposure_value_usd`).}
 
 \item{group_cols}{Character vector of columns to group by. NULL (default) produces
 a single-row portfolio total. Pass e.g. "sector" for a sector rollup.}

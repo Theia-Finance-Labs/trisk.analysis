@@ -123,24 +123,43 @@ integrate_pd <- function(analysis_data,
   )
 }
 
+# Internal - resolve the per-row notional EAD for exposure-weighting in the
+# aggregates. Prefer `exposure_at_default` (canonical EAD: present on BOTH the
+# simple and full runners post-EAD1, and equal to exposure_value_usd on the full
+# runner), falling back to `exposure_value_usd` for raw run_trisk_on_portfolio
+# output or user-supplied frames. The simple runner's tech-detail intentionally
+# drops `exposure_value_usd` (each row is an NPV-share), so it only carries
+# `exposure_at_default` (= the allocated share) - hence the preference order.
+resolve_notional_exposure <- function(df, fn) {
+  if ("exposure_at_default" %in% colnames(df)) {
+    df$exposure_at_default
+  } else if ("exposure_value_usd" %in% colnames(df)) {
+    df$exposure_value_usd
+  } else {
+    stop(fn, "(): need `exposure_at_default` or `exposure_value_usd` for EAD-weighting.",
+         call. = FALSE)
+  }
+}
+
 #' Aggregate PD integration results to EAD-weighted portfolio level
 #'
 #' @param portfolio_df The `$portfolio` element from [integrate_pd()], containing
-#'   `internal_pd`, `pd_baseline`, `pd_shock`, `trisk_adjusted_pd`,
-#'   `exposure_value_usd`.
+#'   `internal_pd`, `pd_baseline`, `pd_shock`, `trisk_adjusted_pd`, and a notional
+#'   EAD column (`exposure_at_default` or `exposure_value_usd`).
 #' @param group_cols Character vector of columns to group by. NULL (default) produces
 #'   a single-row portfolio total. Pass e.g. "sector" for a sector rollup.
 #'
 #' @return A one-row tibble (per group) with EAD-weighted PD metrics.
 #' @export
 aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
-  required <- c("internal_pd", "pd_baseline", "pd_shock",
-                "trisk_adjusted_pd", "exposure_value_usd")
+  required <- c("internal_pd", "pd_baseline", "pd_shock", "trisk_adjusted_pd")
   missing_cols <- setdiff(required, colnames(portfolio_df))
   if (length(missing_cols) > 0) {
     stop("aggregate_pd_integration(): missing required columns: ",
          paste(missing_cols, collapse = ", "))
   }
+  # EAD weight: exposure_at_default (canonical) or exposure_value_usd (fallback).
+  portfolio_df$.notional <- resolve_notional_exposure(portfolio_df, "aggregate_pd_integration")
 
   grouped <- if (is.null(group_cols)) {
     portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
@@ -150,11 +169,11 @@ aggregate_pd_integration <- function(portfolio_df, group_cols = NULL) {
 
   agg <- grouped |>
     dplyr::summarise(
-      total_exposure_usd   = sum(.data$exposure_value_usd, na.rm = TRUE),
-      weighted_pd_internal = sum(.data$internal_pd       * .data$exposure_value_usd, na.rm = TRUE),
-      weighted_pd_baseline = sum(.data$pd_baseline       * .data$exposure_value_usd, na.rm = TRUE),
-      weighted_pd_shock    = sum(.data$pd_shock          * .data$exposure_value_usd, na.rm = TRUE),
-      weighted_pd_adjusted = sum(.data$trisk_adjusted_pd * .data$exposure_value_usd, na.rm = TRUE),
+      total_exposure_usd   = sum(.data$.notional, na.rm = TRUE),
+      weighted_pd_internal = sum(.data$internal_pd       * .data$.notional, na.rm = TRUE),
+      weighted_pd_baseline = sum(.data$pd_baseline       * .data$.notional, na.rm = TRUE),
+      weighted_pd_shock    = sum(.data$pd_shock          * .data$.notional, na.rm = TRUE),
+      weighted_pd_adjusted = sum(.data$trisk_adjusted_pd * .data$.notional, na.rm = TRUE),
       .groups = "drop"
     ) |>
     dplyr::mutate(
@@ -499,12 +518,15 @@ apply_el_method <- function(internal, baseline, shock, method,
 #' @export
 aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
   required <- c("internal_el", "expected_loss_baseline", "expected_loss_shock",
-                "trisk_adjusted_el", "exposure_value_usd")
+                "trisk_adjusted_el")
   missing_cols <- setdiff(required, colnames(portfolio_df))
   if (length(missing_cols) > 0) {
     stop("aggregate_el_integration(): missing required columns: ",
          paste(missing_cols, collapse = ", "))
   }
+  # EAD denominator for the bps loss-rate: exposure_at_default (canonical) or
+  # exposure_value_usd (fallback). Both are notional EAD (pre-LGD).
+  portfolio_df$.notional <- resolve_notional_exposure(portfolio_df, "aggregate_el_integration")
 
   grouped <- if (is.null(group_cols)) {
     portfolio_df |> dplyr::mutate(.dummy = 1L) |> dplyr::group_by(.data$.dummy)
@@ -514,7 +536,7 @@ aggregate_el_integration <- function(portfolio_df, group_cols = NULL) {
 
   agg <- grouped |>
     dplyr::summarise(
-      total_exposure_usd = sum(.data$exposure_value_usd, na.rm = TRUE),
+      total_exposure_usd = sum(.data$.notional, na.rm = TRUE),
       total_el_internal  = sum(.data$internal_el, na.rm = TRUE),
       total_el_baseline  = sum(.data$expected_loss_baseline, na.rm = TRUE),
       total_el_shock     = sum(.data$expected_loss_shock, na.rm = TRUE),
