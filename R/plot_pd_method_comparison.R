@@ -16,7 +16,8 @@
 #' of magnitude including zero, which is common when Merton inputs drive
 #' some firms' baseline PDs to double-precision underflow.
 #'
-#' @param analysis_data Raw output of [run_trisk_on_portfolio()].
+#' @param analysis_data Per-(company, technology) output of a TRISK runner
+#'   (e.g. [run_trisk_on_simple_portfolio()]).
 #' @param internal_pd Optional; forwarded to [integrate_pd()].
 #' @param facet_var Column used for sector-level aggregation (ignored when
 #'   `granularity = "firm"`). Default `"sector"`.

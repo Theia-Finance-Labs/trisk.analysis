@@ -58,7 +58,7 @@ test_that("NM1: no warning when scenario families match (same vintage)", {
 test_that("A1: run_trisk_on_portfolio attaches trisk_run_meta to its output", {
   testthat::skip_if_not_installed("trisk.model")
   td <- function(f) read.csv(system.file("testdata", f, package = "trisk.model"))
-  ad <- suppressWarnings(run_trisk_on_portfolio(  # deprecated runner; testing the meta attribute, not the warning
+  ad <- run_trisk_on_portfolio(
     assets_data = td("assets_testdata.csv"),
     scenarios_data = td("scenarios_testdata.csv"),
     financial_data = td("financial_features_testdata.csv"),
@@ -71,7 +71,7 @@ test_that("A1: run_trisk_on_portfolio attaches trisk_run_meta to its output", {
     baseline_scenario = "NGFS2023GCAM_CP",
     target_scenario = "NGFS2023GCAM_NZ2050",
     scenario_geography = "Global"
-  ))
+  )
   meta <- attr(ad, "trisk_run_meta")
   expect_false(is.null(meta))
   expect_equal(meta$baseline_scenario, "NGFS2023GCAM_CP")

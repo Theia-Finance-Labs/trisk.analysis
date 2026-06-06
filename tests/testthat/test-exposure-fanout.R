@@ -37,14 +37,11 @@ test_that("X1: a single loan to a multi-asset company does not inflate EAD", {
     loss_given_default = lgd
   )
 
-  expect_warning(
-    full <- run_trisk_on_portfolio(
-      assets_data = assets_multi, scenarios_data = scen, financial_data = fin,
-      carbon_data = carbon, portfolio_data = port,
-      baseline_scenario = "NGFS2023GCAM_CP", target_scenario = "NGFS2023GCAM_NZ2050",
-      scenario_geography = "Global"
-    ),
-    "deprecated"  # full runner is runtime-deprecated; this also asserts the warning fires
+  full <- run_trisk_on_portfolio(
+    assets_data = assets_multi, scenarios_data = scen, financial_data = fin,
+    carbon_data = carbon, portfolio_data = port,
+    baseline_scenario = "NGFS2023GCAM_CP", target_scenario = "NGFS2023GCAM_NZ2050",
+    scenario_geography = "Global"
   )
   metrics <- compute_analysis_metrics(full)
 
@@ -88,12 +85,12 @@ test_that("X1: single-asset (bundled) company already reconciles (guard against 
     loss_given_default = lgd
   )
 
-  full <- suppressWarnings(run_trisk_on_portfolio(  # deprecated runner; warning not under test here
+  full <- run_trisk_on_portfolio(
     assets_data = assets, scenarios_data = scen, financial_data = fin,
     carbon_data = carbon, portfolio_data = port,
     baseline_scenario = "NGFS2023GCAM_CP", target_scenario = "NGFS2023GCAM_NZ2050",
     scenario_geography = "Global"
-  ))
+  )
   metrics <- compute_analysis_metrics(full)
 
   # GREEN now and must stay GREEN after the fix.

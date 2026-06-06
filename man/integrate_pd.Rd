@@ -13,8 +13,9 @@ integrate_pd(
 )
 }
 \arguments{
-\item{analysis_data}{Data frame from [run_trisk_on_portfolio()]; must contain
-columns `pd_baseline`, `pd_shock`.}
+\item{analysis_data}{Data frame from a TRISK runner
+([run_trisk_on_simple_portfolio()] or [run_trisk_on_portfolio()]); must
+contain columns `pd_baseline`, `pd_shock`.}
 
 \item{internal_pd}{Either (a) a numeric vector of length `nrow(analysis_data)`,
   (b) a data frame with `company_id` (+ optional `term`/keys) and a value

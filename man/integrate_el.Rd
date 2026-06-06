@@ -13,8 +13,9 @@ integrate_el(
 )
 }
 \arguments{
-\item{analysis_data}{Data frame from [run_trisk_on_portfolio()]; must contain
-columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
+\item{analysis_data}{Data frame from a TRISK runner
+([run_trisk_on_simple_portfolio()] or [run_trisk_on_portfolio()]); must
+contain columns `expected_loss_baseline`, `expected_loss_shock`. The zscore method
 additionally needs the EL normalizer EAD*LGD (`lgd_weighted_exposure`): it
 uses that column when present (the canonical contract, written by
 [compute_analysis_metrics()] and [run_trisk_on_simple_portfolio()]) and

@@ -1,20 +1,15 @@
-#' Run TRISK Model on Portfolio (technology-resolved; deprecated)
+#' Run TRISK Model on Portfolio (technology-resolved)
 #'
 #' @description
-#' \strong{Deprecated} in favour of [run_trisk_on_simple_portfolio()] - calling
-#' this function emits a runtime deprecation warning.
-#' \strong{For standard credit portfolios, prefer [run_trisk_on_simple_portfolio()].}
-#' A bank loan is exposure to a \emph{company}, not to a technology, and the
-#' bundled/Asset-Impact inputs are company-technology grain (no true asset-level
-#' resolution). This runner joins the portfolio on \code{technology}, so it is
-#' only appropriate when you genuinely hold \emph{technology-resolved} exposure
-#' (e.g. project finance against a specific technology line, or future
-#' asset-level/spatial data). For a company-level loan book it forces a
-#' single-technology assignment or duplicate per-technology rows (which inflates
-#' EL/EAD) - the simple runner instead allocates a company loan's exposure across
-#' technologies by NPV share. Kept for technology/asset-resolved use cases.
+#' Runs the TRISK model on a portfolio resolved to the
+#' \code{(company, sector, technology, country)} grain, joining the portfolio to
+#' TRISK asset outputs on \code{technology}. Use this for \emph{technology-resolved}
+#' analysis - e.g. exposure held against a specific technology line, or
+#' NPV-per-technology views. For a standard company-level loan book, use
+#' [run_trisk_on_simple_portfolio()], which takes company-level loans and
+#' allocates each loan's exposure across the company's technologies by NPV share.
 #'
-#' Runs the TRISK model on a portfolio and returns analysis results for plots.
+#' Returns analysis results suitable for the package plotting helpers.
 #'
 #' @param assets_data Data frame containing asset information.
 #' @param scenarios_data Data frame containing scenario information.
@@ -40,19 +35,6 @@ run_trisk_on_portfolio <- function(assets_data,
                                    threshold = 0.5,
                                    method = "lcs",
                                    ...) {
-  .Deprecated(
-    new = "run_trisk_on_simple_portfolio",
-    package = "trisk.analysis",
-    msg = paste0(
-      "run_trisk_on_portfolio() is deprecated. A bank loan is company-level, but ",
-      "this runner joins the portfolio on `technology` (technology/asset-resolved ",
-      "exposure). For standard credit portfolios use ",
-      "run_trisk_on_simple_portfolio(), which allocates a company loan across ",
-      "technologies by NPV share. This runner is retained for genuinely ",
-      "technology/asset-resolved exposure."
-    )
-  )
-
   # clean coltypes
 
   assets_data <- assets_data |>
