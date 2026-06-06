@@ -30,7 +30,7 @@ with join keys company_id and term."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -100,7 +100,10 @@ with join keys <code>company_id</code> and <code>term</code>.</p>
 <dt id="arg-portfolio-data">portfolio_data<a class="anchor" aria-label="anchor" href="#arg-portfolio-data"></a></dt>
 <dd><p>Data frame with columns <code>company_id</code>, <code>company_name</code>,
 <code>exposure_value_usd</code>, <code>term</code>, <code>loss_given_default</code> (see
-<code><a href="check_portfolio_simple.html">check_portfolio_simple</a></code>).</p></dd>
+<code><a href="check_portfolio_simple.html">check_portfolio_simple</a></code>). Basel mapping:
+<code>exposure_value_usd</code> = EAD (exposure at default; equals the drawn amount
+as no undrawn/CCF is modelled), <code>loss_given_default</code> = LGD,
+<code>term</code> = effective maturity M (years), used as the PD-lookup horizon.</p></dd>
 
 
 <dt id="arg-baseline-scenario">baseline_scenario<a class="anchor" aria-label="anchor" href="#arg-baseline-scenario"></a></dt>
@@ -127,7 +130,10 @@ defaults are:</p><ul><li><p><code>scenario_geography</code> (default <code>"Glob
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with:</p><ul><li><p><code>portfolio_results_tech_detail</code>: company/term/sector/technology-level details.</p></li>
+    <p>A named list with:</p><ul><li><p><code>portfolio_results_tech_detail</code>: company/term/sector/technology-level
+    details. Basel-aligned columns: <code>exposure_at_default</code> (EAD, the
+    NPV-share allocated exposure), <code>lgd_weighted_exposure</code> (EAD*LGD), and
+    <code>expected_loss_*</code> (EL = EAD*LGD*PD).</p></li>
 <li><p><code>portfolio_results</code>: portfolio-level results re-aggregated to input-row shape.</p></li>
 </ul></div>
 

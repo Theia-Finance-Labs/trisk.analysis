@@ -94,7 +94,7 @@ sa_base <- run_trisk_sa(
 #> -- Calculating market risk. 
 #> -- Calculating credit risk. 
 #> [1] "Done 1 / 1 total runs"
-#> [1] "All runs completed."
+#> [1] "All runs completed: 1 succeeded, 0 failed."
 
 knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
                                  "pd_baseline", "pd_shock")]))
@@ -102,12 +102,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000214 |
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 3 | 0.0000011 | 0.0004647 |
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 4 | 0.0000237 | 0.0022474 |
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 5 | 0.0001502 | 0.0059057 |
-| 653982e1-5a9f-4cb1-9156-7cbdf3f7be25 | 101 | Oil&Gas | 6 | 0.0005218 | 0.0113956 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000010 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 3 | 0.0000005 | 0.0000472 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 4 | 0.0000102 | 0.0003327 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 5 | 0.0000640 | 0.0010928 |
+| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 6 | 0.0002202 | 0.0024408 |
 
 ## Sweeping any model parameter
 
@@ -186,7 +186,7 @@ sa_param <- run_trisk_sa(
 #> -- Calculating market risk. 
 #> -- Calculating credit risk. 
 #> [1] "Done 3 / 3 total runs"
-#> [1] "All runs completed."
+#> [1] "All runs completed: 3 succeeded, 0 failed."
 
 # each run_id records the swept value
 knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_scenario")])
@@ -194,9 +194,9 @@ knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_s
 
 | run_id | discount_rate | baseline_scenario | target_scenario |
 |:---|---:|:---|:---|
-| 93c47288-c0c7-4012-8708-927ed301ae36 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| a612993e-a784-44c3-9f0a-9d78acc6b50b | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 076acd7a-3f64-42d6-b980-f117499c774d | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 04404a29-4830-4b35-b7a9-1be5fa345c67 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 530c995d-cf54-4961-bc4c-30c317d0417b | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 69ed43b9-6bf8-429e-8d70-2f815641426e | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
 
 A higher discount rate shrinks the present value of distant cash flows,
 so it lowers both the baseline and the shock NPV. Because the transition
@@ -377,7 +377,7 @@ sa_shockyear <- run_trisk_sa(
 #> -- Calculating market risk. 
 #> -- Calculating credit risk. 
 #> [1] "Done 3 / 3 total runs"
-#> [1] "All runs completed."
+#> [1] "All runs completed: 3 succeeded, 0 failed."
 
 pd_shockyear <- label_by_variant(sa_shockyear,
   function(d) factor(d$shock_year, levels = c(2026, 2030, 2035)))
@@ -490,7 +490,7 @@ sa_iam <- run_trisk_sa(
 #> -- Calculating market risk. 
 #> -- Calculating credit risk. 
 #> [1] "Done 3 / 3 total runs"
-#> [1] "All runs completed."
+#> [1] "All runs completed: 3 succeeded, 0 failed."
 
 pd_iam <- label_by_variant(sa_iam, function(d) {
   iam <- sub("^NGFS2023_([A-Z]+)_.*", "\\1", d$baseline_scenario)
@@ -579,7 +579,7 @@ sa_ambition <- run_trisk_sa(
 #> -- Calculating market risk. 
 #> -- Calculating credit risk. 
 #> [1] "Done 3 / 3 total runs"
-#> [1] "All runs completed."
+#> [1] "All runs completed: 3 succeeded, 0 failed."
 
 pd_ambition <- label_by_variant(sa_ambition, function(d) {
   ambition <- sub("^NGFS2023_GCAM_(.*)$", "\\1", d$target_scenario)
@@ -625,7 +625,7 @@ and `pd-el-integration` owns *how that becomes expected loss*.
 
 ## See also
 
-- [`getting-started`](0_getting-started.md) — the reading-path entry
+- [`getting-started`](getting-started.md) — the reading-path entry
   point.
 - [`simple-portfolio-analysis`](bank_2_simple-portfolio-analysis.md) —
   how the underlying TRISK runs that feed this analysis are produced.

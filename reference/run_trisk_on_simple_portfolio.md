@@ -44,7 +44,10 @@ run_trisk_on_simple_portfolio(
 
   Data frame with columns `company_id`, `company_name`,
   `exposure_value_usd`, `term`, `loss_given_default` (see
-  [`check_portfolio_simple`](check_portfolio_simple.md)).
+  [`check_portfolio_simple`](check_portfolio_simple.md)). Basel mapping:
+  `exposure_value_usd` = EAD (exposure at default; equals the drawn
+  amount as no undrawn/CCF is modelled), `loss_given_default` = LGD,
+  `term` = effective maturity M (years), used as the PD-lookup horizon.
 
 - baseline_scenario:
 
@@ -86,7 +89,9 @@ run_trisk_on_simple_portfolio(
 A named list with:
 
 - `portfolio_results_tech_detail`: company/term/sector/technology-level
-  details.
+  details. Basel-aligned columns: `exposure_at_default` (EAD, the
+  NPV-share allocated exposure), `lgd_weighted_exposure` (EAD\*LGD), and
+  `expected_loss_*` (EL = EAD\*LGD\*PD).
 
 - `portfolio_results`: portfolio-level results re-aggregated to
   input-row shape.

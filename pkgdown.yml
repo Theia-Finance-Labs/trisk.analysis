@@ -2,9 +2,9 @@ pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  0_getting-started: 0_getting-started.html
   bank_1_inputs-and-outputs: bank_1_inputs-and-outputs.html
   bank_2_simple-portfolio-analysis: bank_2_simple-portfolio-analysis.html
   bank_3_sensitivity-analysis: bank_3_sensitivity-analysis.html
   bank_4_pd-el-integration: bank_4_pd-el-integration.html
-last_built: 2026-06-04T20:35Z
+  getting-started: getting-started.html
+last_built: 2026-06-06T07:49Z

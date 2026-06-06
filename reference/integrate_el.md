@@ -7,8 +7,8 @@ Vasicek recombination by transforming EL to an effective PD (\|EL\| /
 (EAD \* LGD)), applying the z-score combination in normal-quantile
 space, and converting back. All three methods return EL as a positive
 magnitude (post 59571f3 package-wide convention). The zscore method
-requires \`exposure_value_usd\` and \`loss_given_default\` columns in
-\`analysis_data\`.
+needs the EL normalizer EAD\*LGD: a \`lgd_weighted_exposure\` column, or
+\`exposure_value_usd\` + \`loss_given_default\` to reconstruct it.
 
 ## Usage
 
@@ -26,19 +26,23 @@ integrate_el(
 
 - analysis_data:
 
-  Data frame from \[run_trisk_on_portfolio()\]; must contain columns
+  Data frame from a TRISK runner (\[run_trisk_on_simple_portfolio()\] or
+  \[run_trisk_on_portfolio()\]); must contain columns
   \`expected_loss_baseline\`, \`expected_loss_shock\`. The zscore method
-  additionally needs an EAD denominator: it uses an
-  \`exposure_at_default\` column when present (the canonical contract,
-  written by \[compute_analysis_metrics()\] and
+  additionally needs the EL normalizer EAD\*LGD
+  (\`lgd_weighted_exposure\`): it uses that column when present (the
+  canonical contract, written by \[compute_analysis_metrics()\] and
   \[run_trisk_on_simple_portfolio()\]) and otherwise reconstructs it as
   \`exposure_value_usd \* loss_given_default\`.
 
 - internal_el:
 
   Numeric vector of length \`nrow(analysis_data)\`, or a data frame with
-  \`company_id\` + \`internal_el\` columns, or NULL (default) which uses
-  \`expected_loss_baseline\`.
+  \`company_id\` (+ optional keys) and a value column, or NULL (default)
+  which uses \`expected_loss_baseline\`. The PD embedded in an internal
+  EL should be on a horizon comparable to the TRISK \`term\` (no
+  conversion is applied here); see the horizon note in
+  \[integrate_pd()\].
 
 - method:
 

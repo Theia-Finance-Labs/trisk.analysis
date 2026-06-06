@@ -1,36 +1,59 @@
-# 1. Getting started
+# Getting started
+
+## Installation
+
+Install the development version from GitHub:
+
+``` r
+
+# install.packages("pak")
+pak::pak("Theia-Finance-Labs/trisk.analysis")
+```
 
 ## What is trisk.analysis
 
-`trisk.analysis` helps a bank credit-risk analyst measure **climate
-transition risk** on a loan book. The underlying TRISK engine
-(`trisk.model`) re-prices the companies you lend to under different
-climate scenarios: as carbon prices rise and demand shifts away from
-high-carbon technologies, some borrowers lose value and become more
-likely to default. TRISK turns those scenario assumptions into shocked
-**net present values (NPVs)** and **probabilities of default (PDs)**.
+`trisk.analysis` measures **climate transition risk** at the level of
+individual companies and the portfolios built from them — wherever
+transition risk has to be placed on a book of exposures, whether by
+banks, central banks and supervisors, or asset managers.
+
+The underlying TRISK engine (`trisk.model`) is an asset-level
+transition-risk stress test: it feeds climate scenarios into a
+microeconomic model of the firm and uses company- and asset-level data
+to value how scenario-driven declines in high-carbon production and
+stranded-asset exposure adjust a company’s value relative to a
+business-as-usual baseline. TRISK turns those scenario assumptions into
+shocked **net present values (NPVs)** and **probabilities of default
+(PDs)**.
+
 This package wraps that engine so you can run it directly on a
-portfolio, allocate the shocks to your exposures, and blend them with
-your own internal PD/EL estimates.
+portfolio, allocate the shocks onto your own exposures — loans or equity
+holdings — and blend them with your internal PD/EL estimates. The worked
+vignettes below follow a **bank** credit-risk workflow; other
+institution types can adapt the same steps.
 
 ## Reading path
 
-Work through the vignettes in this order:
+The worked vignettes build up a bank credit-risk analysis end to end —
+from the inputs and outputs, through running TRISK on a portfolio, to
+blending the shocks into your own expected loss. Work through them in
+order:
 
-1.  [`vignette("inputs-and-outputs")`](../articles/inputs-and-outputs.md)
+1.  [`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
     — what TRISK consumes (assets, scenarios, financial features, carbon
-    prices) and what it produces (NPV and PD results).
-2.  [`vignette("run-on-a-portfolio")`](../articles/run-on-a-portfolio.md)
-    — run TRISK on a bank loan book and map the shocks onto your
-    exposures.
-3.  [`vignette("pd-el-integration")`](../articles/pd-el-integration.md)
-    — blend TRISK shocks with the bank’s own PD/EL to get
-    climate-adjusted expected loss.
-4.  [`vignette("sensitivity-analysis")`](../articles/sensitivity-analysis.md)
+    prices), how to set up your `trisk_inputs/` data folder, and what it
+    produces (NPV and PD results).
+2.  [`vignette("bank_2_simple-portfolio-analysis")`](../articles/bank_2_simple-portfolio-analysis.md)
+    — run TRISK on a loan book and map the shocks onto your exposures
+    (the simple and full runners).
+3.  [`vignette("bank_3_sensitivity-analysis")`](../articles/bank_3_sensitivity-analysis.md)
     — sweep scenario assumptions to see how results move across
     baselines and shock scenarios.
+4.  [`vignette("bank_4_pd-el-integration")`](../articles/bank_4_pd-el-integration.md)
+    — blend TRISK shocks with your own PD/EL to get climate-adjusted
+    expected loss.
 
-## Hello world
+## A first run
 
 The smallest end-to-end run: load the four bundled `trisk.model` inputs
 and a bundled portfolio, then call
@@ -88,8 +111,45 @@ head(results$portfolio_results)
 Each input row comes back with its climate-shocked exposure loss and
 expected loss alongside the original exposure.
 
+### All model parameters
+
+[`run_trisk_on_simple_portfolio()`](../reference/run_trisk_on_simple_portfolio.md)
+forwards any extra arguments to the TRISK engine
+([`trisk.model::run_trisk_model()`](https://rdrr.io/pkg/trisk.model/man/run_trisk_model.html)).
+Only the scenarios above are required; every other argument has a
+default, shown here with its meaning. Set them to match your own
+cost-of-capital assumptions and the prevailing market curve at your
+analysis date.
+
+``` r
+
+results <- run_trisk_on_simple_portfolio(
+  assets_data        = assets,
+  scenarios_data     = scenarios,
+  financial_data     = financial_features,
+  carbon_data        = ngfs_carbon_price,
+  portfolio_data     = portfolio,
+  baseline_scenario  = "NGFS2023GCAM_CP",       # business-as-usual scenario
+  target_scenario    = "NGFS2023GCAM_NZ2050",   # shock (policy) scenario
+  scenario_geography = "Global",                # region(s) to compute results for
+  carbon_price_model = "no_carbon_tax",         # NGFS carbon-price pathway ("no_carbon_tax" to skip)
+  risk_free_rate     = 0.045,                   # risk-free rate (Merton PD model)
+  discount_rate      = 0.09,                    # DCF discount rate on dividends
+  growth_rate        = 0.03,                    # terminal growth rate of profits
+  div_netprofit_prop_coef = 1,                  # dividend pass-through coefficient
+  shock_year         = 2030,                    # year the policy shock is applied
+  market_passthrough = 0                        # firm's ability to pass carbon cost to consumers
+)
+```
+
+See
+[`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
+for fuller definitions of each parameter.
+
 ## Where to go next
 
 Start with
-[`vignette("inputs-and-outputs")`](../articles/inputs-and-outputs.md) to
-understand the data TRISK needs before running it on your own portfolio.
+[`vignette("bank_1_inputs-and-outputs")`](../articles/bank_1_inputs-and-outputs.md)
+to set up your inputs and understand the data, then
+[`vignette("bank_2_simple-portfolio-analysis")`](../articles/bank_2_simple-portfolio-analysis.md)
+to run TRISK on your own portfolio.

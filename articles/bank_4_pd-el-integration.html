@@ -35,7 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -264,6 +264,20 @@ the PDs before <code><a href="https://rdrr.io/r/stats/Normal.html" class="extern
 and <code>qnorm(1) = +Inf</code> would otherwise propagate infinities.
 Widen the floor toward zero only if your internal PDs are reliably
 calibrated that low; tighten it to de-sensitise the tails.</p>
+<blockquote>
+<p><strong>Watch the floor on underflow-prone books.</strong> When a
+baseline (and shock) PD sits <strong>below</strong>
+<code>zscore_floor</code>, both clip to the floor and
+<code>qnorm(shock) - qnorm(baseline) = 0</code> — the shock signal is
+erased and the overlay reflects the clip bound, not the model. Merton
+baselines for investment-grade or short-horizon names routinely
+underflow well below <code>1e-4</code>. <code><a href="../reference/integrate_pd.html">integrate_pd()</a></code> /
+<code><a href="../reference/integrate_el.html">integrate_el()</a></code> now report
+<code>aggregate$zscore_clipped_share</code> (the fraction of rows
+clipped) and emit a warning when most of the book is clipped. If that
+share is high, prefer <code>method = "absolute"</code>, which adds the
+raw PD shift and is immune to underflow.</p>
+</blockquote>
 </div>
 <div class="section level4">
 <h4 id="worked-example-one-row-through-z-score">Worked example: one row through z-score<a class="anchor" aria-label="anchor" href="#worked-example-one-row-through-z-score"></a>
@@ -294,16 +308,22 @@ worsening, which the plots below render red.</p>
 </h4>
 <p>The <code>internal_pd</code> column rides along on the standard
 portfolio schema; we keep it as a separate lookup table to feed into
-<code><a href="../reference/integrate_pd.html">integrate_pd()</a></code>.</p>
+<code><a href="../reference/integrate_pd.html">integrate_pd()</a></code>. We run the bank entry point —
+<code><a href="../reference/run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code> — on the company-level loan
+book and use its per-technology detail as the analysis frame:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
-<span>  assets_data       <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
-<span>  scenarios_data    <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
-<span>  financial_data    <span class="op">=</span> <span class="va">fin_testdata</span>,</span>
-<span>  carbon_data       <span class="op">=</span> <span class="va">carbon_testdata</span>,</span>
-<span>  portfolio_data    <span class="op">=</span> <span class="va">portfolio_ids_internal_pd</span>,</span>
-<span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario   <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<code class="sourceCode R"><span><span class="va">portfolio_simple</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"company_id"</span>, <span class="st">"company_name"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"term"</span>, <span class="st">"loss_given_default"</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">simple_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio</a></span><span class="op">(</span></span>
+<span>  assets_data        <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
+<span>  scenarios_data     <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
+<span>  financial_data     <span class="op">=</span> <span class="va">fin_testdata</span>,</span>
+<span>  carbon_data        <span class="op">=</span> <span class="va">carbon_testdata</span>,</span>
+<span>  portfolio_data     <span class="op">=</span> <span class="va">portfolio_simple</span>,</span>
+<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
+<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
@@ -315,6 +335,11 @@ portfolio schema; we keep it as a separate lookup table to feed into
 <span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
 <span><span class="co">#&gt; -- Calculating market risk. </span></span>
 <span><span class="co">#&gt; -- Calculating credit risk.</span></span>
+<span><span class="co"># Expose the NPV-share-allocated exposure as `exposure_value_usd` so the</span></span>
+<span><span class="co"># EAD-weighted plots and aggregates can use it (the simple runner stores the</span></span>
+<span><span class="co"># allocated exposure as `exposure_at_default`).</span></span>
+<span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="va">simple_results</span><span class="op">$</span><span class="va">portfolio_results_tech_detail</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>exposure_value_usd <span class="op">=</span> <span class="va">exposure_at_default</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The internal_pd lookup used throughout the rest of the vignette. TRISK returns</span></span>
 <span><span class="co"># company_id as character, so coerce the lookup key to match and keep the join</span></span>
@@ -364,16 +389,16 @@ Gas
 3
 </td>
 <td style="text-align:right;">
-1.10e-06
+5.00e-07
 </td>
 <td style="text-align:right;">
-0.0004647
+0.0000472
 </td>
 <td style="text-align:right;">
-51951.82
+31278.13
 </td>
 <td style="text-align:right;">
-13549.28
+10902.84
 </td>
 </tr>
 <tr>
@@ -396,10 +421,10 @@ Coal
 0.0000000
 </td>
 <td style="text-align:right;">
-13648160.57
+8453239.83
 </td>
 <td style="text-align:right;">
-4317747.56
+3464740.72
 </td>
 </tr>
 <tr>
@@ -416,16 +441,16 @@ Gas
 5
 </td>
 <td style="text-align:right;">
-8.09e-05
+3.24e-05
 </td>
 <td style="text-align:right;">
-0.0012524
+0.0002445
 </td>
 <td style="text-align:right;">
-27724344.25
+16458526.57
 </td>
 <td style="text-align:right;">
-12420187.12
+8743193.23
 </td>
 </tr>
 <tr>
@@ -442,26 +467,48 @@ RenewablesCap
 4
 </td>
 <td style="text-align:right;">
-3.20e-06
+1.20e-06
 </td>
 <td style="text-align:right;">
-0.0000003
+0.0000002
 </td>
 <td style="text-align:right;">
-141635910.26
+83135863.75
 </td>
 <td style="text-align:right;">
-202554984.40
+114031784.03
 </td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="section level5">
+<h5 id="reproducibility-the-run-audit-trail">Reproducibility: the run audit trail<a class="anchor" aria-label="anchor" href="#reproducibility-the-run-audit-trail"></a>
+</h5>
+<p>The runner attaches a <code>trisk_run_meta</code> attribute to its
+output — the scenario pair, <code>run_id</code>, every argument
+forwarded to the TRISK model, and the versions of
+<code>trisk.analysis</code> and <code>trisk.model</code>. Capture it
+alongside your results so a run can be reproduced and defended in model
+validation:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">run_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">simple_results</span>, <span class="st">"trisk_run_meta"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">run_meta</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 6</span></span>
+<span><span class="co">#&gt;  $ baseline_scenario: chr "NGFS2023GCAM_CP"</span></span>
+<span><span class="co">#&gt;  $ target_scenario  : chr "NGFS2023GCAM_NZ2050"</span></span>
+<span><span class="co">#&gt;  $ run_id           : chr "b99dc692-da8d-49cf-826a-afa93a8d2950"</span></span>
+<span><span class="co">#&gt;  $ trisk_args       :List of 1</span></span>
+<span><span class="co">#&gt;   ..$ scenario_geography: chr "Global"</span></span>
+<span><span class="co">#&gt;  $ package_versions : Named chr [1:2] "1.2.3" "2.6.1"</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "trisk.analysis" "trisk.model"</span></span>
+<span><span class="co">#&gt;  $ created_at       : POSIXct[1:1], format: "2026-06-06 07:49:52"</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level4">
 <h4 id="integrate-pd-three-methods">Integrate PD — three methods<a class="anchor" aria-label="anchor" href="#integrate-pd-three-methods"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result_abs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
 <span>                           method      <span class="op">=</span> <span class="st">"absolute"</span><span class="op">)</span></span>
@@ -471,7 +518,12 @@ RenewablesCap
 <span><span class="co"># zscore is the default; explicit here for clarity.</span></span>
 <span><span class="va">result_zs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                           internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
-<span>                           method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span></code></pre></div>
+<span>                           method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score</span></span>
+<span><span class="co">#&gt; floor/cap before qnorm(); the overlay is governed by the clip bound, not the</span></span>
+<span><span class="co">#&gt; model. Baseline PDs below the floor erase the shock signal. Consider method =</span></span>
+<span><span class="co">#&gt; "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review</span></span>
+<span><span class="co">#&gt; zscore_floor.</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -509,16 +561,16 @@ Oil&amp;Gas
 0.025
 </td>
 <td style="text-align:right;">
-1.10e-06
+5.00e-07
 </td>
 <td style="text-align:right;">
-0.0004647
+0.0000472
 </td>
 <td style="text-align:right;">
-0.0603323
+0.0250000
 </td>
 <td style="text-align:right;">
-0.0353323
+0.0000000
 </td>
 </tr>
 <tr>
@@ -555,16 +607,16 @@ Oil&amp;Gas
 0.030
 </td>
 <td style="text-align:right;">
-8.09e-05
+3.24e-05
 </td>
 <td style="text-align:right;">
-0.0012524
+0.0002445
 </td>
 <td style="text-align:right;">
-0.1181008
+0.0496256
 </td>
 <td style="text-align:right;">
-0.0881008
+0.0196256
 </td>
 </tr>
 <tr>
@@ -578,10 +630,10 @@ Power
 0.015
 </td>
 <td style="text-align:right;">
-3.20e-06
+1.20e-06
 </td>
 <td style="text-align:right;">
-0.0000003
+0.0000002
 </td>
 <td style="text-align:right;">
 0.0150000
@@ -596,28 +648,31 @@ Power
 <p>You can also override internal PDs on the fly — pass a numeric vector
 of length <code>nrow(analysis_data)</code> (or an alternate lookup) for
 a sanity-check stress:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">flat_internal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.03</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">result_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_pd.html">integrate_pd</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
 <span>                              internal_pd <span class="op">=</span> <span class="va">flat_internal</span>,</span>
-<span>                              method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span></code></pre></div>
+<span>                              method      <span class="op">=</span> <span class="st">"zscore"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score</span></span>
+<span><span class="co">#&gt; floor/cap before qnorm(); the overlay is governed by the clip bound, not the</span></span>
+<span><span class="co">#&gt; model. Baseline PDs below the floor erase the shock signal. Consider method =</span></span>
+<span><span class="co">#&gt; "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review</span></span>
+<span><span class="co">#&gt; zscore_floor.</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="integrate-el">Integrate EL<a class="anchor" aria-label="anchor" href="#integrate-el"></a>
 </h4>
 <p><code><a href="../reference/integrate_el.html">integrate_el()</a></code> needs <code>expected_loss_baseline</code>
-/ <code>expected_loss_shock</code>, which
-<code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> does not emit on its own — call
-<code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> first to derive them as
-<code>EAD * PD</code>. For the bank’s internal EL we use the same
-identity: <code>internal_el = EAD * LGD * internal_pd</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">analysis_data_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
-<span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span></span>
-<span>  <span class="va">analysis_data_el</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>  <span class="va">internal_pd_lookup</span>,</span>
-<span>  by <span class="op">=</span> <span class="st">"company_id"</span></span>
-<span><span class="op">)</span></span>
+/ <code>expected_loss_shock</code>, which the simple runner already
+emits in its per-technology detail (<code>EAD * LGD * PD</code>). For
+the bank’s internal EL we use the same identity on the company-level
+loan book: <code>internal_el = EAD * LGD * internal_pd</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_internal_pd</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"company_id"</span>, <span class="st">"exposure_value_usd"</span>, <span class="st">"loss_given_default"</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">company_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">company_id</span><span class="op">)</span></span>
+<span><span class="va">internal_el_lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">internal_el_lookup</span>, <span class="va">internal_pd_lookup</span>, by <span class="op">=</span> <span class="st">"company_id"</span><span class="op">)</span></span>
 <span><span class="co"># Positive magnitude, matching the package-wide EL convention.</span></span>
 <span><span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_el</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">exposure_value_usd</span> <span class="op">*</span></span>
@@ -625,9 +680,14 @@ identity: <code>internal_el = EAD * LGD * internal_pd</code>.</p>
 <span>  <span class="va">internal_el_lookup</span><span class="op">$</span><span class="va">internal_pd</span></span>
 <span></span>
 <span><span class="va">result_el</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/integrate_el.html">integrate_el</a></span><span class="op">(</span></span>
-<span>  <span class="va">analysis_data_el</span>,</span>
+<span>  <span class="va">analysis_data</span>,</span>
 <span>  internal_el <span class="op">=</span> <span class="va">internal_el_lookup</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company_id"</span>, <span class="st">"internal_el"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: integrate_el(): 100% of rows have a PD clipped to the z-score</span></span>
+<span><span class="co">#&gt; floor/cap before qnorm(); the overlay is governed by the clip bound, not the</span></span>
+<span><span class="co">#&gt; model. Baseline PDs below the floor erase the shock signal. Consider method =</span></span>
+<span><span class="co">#&gt; "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review</span></span>
+<span><span class="co">#&gt; zscore_floor.</span></span>
 <span><span class="co"># default method is "zscore": effective-PD probit recombination, zero-safe.</span></span></code></pre></div>
 </div>
 </div>
@@ -650,23 +710,26 @@ loss = better = <strong>green</strong>. The PD adjustment follows the
 same rule (positive = PD rose = red).</li>
 <li>
 <strong>EAD.</strong> The <code>exposure_at_default</code> column is
-<strong>not</strong> raw exposure.
-<code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> defines it as
-<code>exposure_value_usd * loss_given_default</code> — i.e. LGD is
-already folded in. Every <code>expected_loss_*</code> column is then
-<code>exposure_at_default * pd</code>. The EL zscore method uses this
-<code>exposure_at_default</code> column as its denominator when present,
-otherwise reconstructs it as
+the Basel <strong>exposure at default</strong>: the simple runner sets
+it to each loan’s NPV-share-allocated exposure — the gross exposure
+<em>before</em> the LGD haircut (LGD is a fraction <em>of</em> EAD). The
+LGD-weighted exposure is a separate column,
+<code>lgd_weighted_exposure = exposure_at_default * loss_given_default</code>
+(= EAD × LGD). Every <code>expected_loss_*</code> column is
+<code>exposure_at_default * loss_given_default * pd</code> (= EAD × LGD
+× PD). The EL zscore method uses <code>lgd_weighted_exposure</code> as
+its denominator when present, otherwise reconstructs it as
 <code>exposure_value_usd * loss_given_default</code>.</li>
 <li>
 <strong>LGD.</strong> <code>loss_given_default</code> is the
-fraction lost on default, in <code>[0, 1]</code>. Because it is already
-baked into <code>exposure_at_default</code>, expected loss is
-<code>EL = exposure_at_default * PD</code> (equivalently
-<code>exposure_value_usd * LGD * PD</code>). The EL zscore method
-back-transforms EL to an effective PD via
-<code>|EL| / exposure_at_default</code>, recombines in probit space,
-then re-scales — so LGD enters only through that denominator.</li>
+fraction lost on default, in <code>[0, 1]</code>, and is a fraction
+<em>of</em> EAD. Expected loss is the Basel product
+<code>EL = EAD × LGD × PD</code> (=
+<code>exposure_at_default * loss_given_default * pd</code>). The EL
+zscore method back-transforms EL to an effective PD via
+<code>|EL| / lgd_weighted_exposure</code> (=
+<code>|EL| / (EAD × LGD)</code>), recombines in probit space, then
+re-scales — so LGD enters through that denominator.</li>
 <li>
 <strong>Horizon.</strong> TRISK PDs here are
 <strong>term-structured</strong> to the loan <code>term</code>
@@ -688,31 +751,41 @@ for its adjusted PD. Wide spread means the choice of method moves the
 number a lot. <em>When to use: the methodology choice is on the table
 (committee review, regulator pushback). Tight clustering means picking a
 method is a non-decision.</em></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_method_comparison.html">pipeline_trisk_pd_method_comparison</a></span><span class="op">(</span><span class="va">analysis_data</span>,</span>
-<span>                                     internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
+<span>                                     internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score</span></span>
+<span><span class="co">#&gt; floor/cap before qnorm(); the overlay is governed by the clip bound, not the</span></span>
+<span><span class="co">#&gt; model. Baseline PDs below the floor erase the shock signal. Consider method =</span></span>
+<span><span class="co">#&gt; "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review</span></span>
+<span><span class="co">#&gt; zscore_floor.</span></span></code></pre></div>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="672"></p>
 <p>On sparse portfolios, <code>granularity = "firm"</code> and
 <code>scale = "pseudo_log"</code> open up the per-firm picture when
 sector aggregation or Merton underflow collapses everything against the
 axis:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_method_comparison.html">pipeline_trisk_pd_method_comparison</a></span><span class="op">(</span></span>
 <span>  <span class="va">analysis_data</span>,</span>
 <span>  internal_pd <span class="op">=</span> <span class="va">internal_pd_lookup</span>,</span>
 <span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
 <span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="768"></p>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score</span></span>
+<span><span class="co">#&gt; floor/cap before qnorm(); the overlay is governed by the clip bound, not the</span></span>
+<span><span class="co">#&gt; model. Baseline PDs below the floor erase the shock signal. Consider method =</span></span>
+<span><span class="co">#&gt; "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review</span></span>
+<span><span class="co">#&gt; zscore_floor.</span></span></code></pre></div>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="768"></p>
 <p><strong>N2 — PD waterfall.</strong> Per-sector decomposition:
 Internal -&gt; signed Adjustment -&gt; Adjusted. The middle bar flips
 fill on sign (red worsens, green improves), so the “before, change,
 after” reads at a glance. <em>When to use: non-quantitative audiences
 read waterfalls faster than grouped bars; the message is “how much does
 integration move PD”.</em></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_waterfall.html">pipeline_trisk_pd_waterfall</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
 <p><strong>P1 — PD integration bars.</strong> Four bars per group:
 Internal PD, TRISK Baseline, TRISK Shock, TRISK-Adjusted PD. The gap
 between Internal and Adjusted is the integration effect; Baseline and
@@ -720,30 +793,30 @@ Shock show where the model itself moved. <em>When to use: first plot to
 show a counterparty — “what happens to my PDs if I integrate TRISK?”
 Supports <code>granularity = "firm"</code> /
 <code>scale = "pseudo_log"</code>.</em></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_integration_bars.html">pipeline_trisk_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_integration_bars.html">pipeline_trisk_pd_integration_bars</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">)</span></span></code></pre></div>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="672"></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_integration_bars.html">pipeline_trisk_pd_integration_bars</a></span><span class="op">(</span></span>
 <span>  <span class="va">result_zs</span>,</span>
 <span>  granularity <span class="op">=</span> <span class="st">"firm"</span>,</span>
 <span>  scale       <span class="op">=</span> <span class="st">"pseudo_log"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="768"></p>
 <p><strong>P2 — EL adjustment bars.</strong> Horizontal bars of the
 signed EL delta (Adjusted minus Internal) by sector. Red = integration
 says expect <strong>more</strong> loss than your own model; green =
 less. Levels are not on this plot — only the adjustment. <em>When to
 use: the question is sign and magnitude of EL impact by sector — “where
 does TRISK think you’re under-reserving?”</em></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_adjustment_bars.html">pipeline_trisk_el_adjustment_bars</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="672"></p>
 <p><strong>P3a — PD KPI table.</strong> One-row portfolio summary:
 weighted internal PD, weighted adjusted PD, the adjustment in pp, and
 direction. <em>When to use: top of a report or first slide;
 portfolio-level headline only.</em></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_kpi_table.html">pipeline_trisk_pd_kpi_table</a></span><span class="op">(</span><span class="va">result_zs</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -771,23 +844,30 @@ Adjustment %
 2.592%
 </td>
 <td style="text-align:right;">
-4.461%
+2.940%
 </td>
 <td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">+1.868
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">+0.347
 pp</span>
 </td>
 <td style="text-align:right;">
-72.077%
+13.404%
 </td>
 </tr></tbody>
 </table>
-<p><strong>P3b — EL KPI table.</strong> One-row EL summary including the
-<strong>bps metric</strong> (<code>EL / EAD</code>). The bps figure is
-scale-free and travels best across audiences. <em>When to use: same as
-P3a but for EL; the bps delta is the single best headline
-number.</em></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p><strong>P3b — EL KPI table.</strong> One-row EL summary. The headline
+bps metric is the <strong>adjusted EL level as a loss rate</strong>:
+<code>Adjusted EL / exposure</code> in bps
+(<code>el_adjusted_bps</code>) — the total expected-loss rate of the
+shocked book. The <strong>climate overlay (delta)</strong>,
+<code>EL adjustment / exposure</code> (<code>el_adjustment_bps</code>),
+is shown as a secondary column: it isolates the marginal effect of the
+transition scenario. Both use <em>notional</em> exposure (EAD) as the
+denominator: dividing by <code>lgd_weighted_exposure</code> (= EAD ×
+LGD) would instead yield PD-in-bps, not a loss rate. <em>When to use:
+same as P3a but for EL; lead with the adjusted EL level, then point to
+the delta to attribute how much of it is climate.</em></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_kpi_table.html">pipeline_trisk_el_kpi_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">aggregate</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -806,6 +886,9 @@ EL Adjustment
 <th style="text-align:right;">
 Adjusted EL (bps)
 </th>
+<th style="text-align:right;">
+EL/exposure delta (bps)
+</th>
 </tr></thead>
 <tbody><tr>
 <td style="text-align:right;">
@@ -815,22 +898,27 @@ Adjusted EL (bps)
 318.1K
 </td>
 <td style="text-align:right;">
-527.8K
+354.6K
 </td>
 <td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">209.7K</span>
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">36.6K</span>
 </td>
 <td style="text-align:right;">
-250.6 bps
+168.4 bps
+</td>
+<td style="text-align:right;">
+17.4 bps
 </td>
 </tr></tbody>
 </table>
 <p><strong>P4 — EL sector breakdown.</strong> One row per sector:
-exposure, internal EL, adjusted EL, delta, direction arrow, and EL/EAD
-in bps. Sits between P2 (deltas only) and P3b (one number). <em>When to
-use: the reference table for any EL discussion; the bps column makes
-sectors with different exposure magnitudes comparable.</em></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+exposure, internal EL, adjusted EL, signed delta, direction arrow, and
+the adjusted EL level as a loss rate
+(<code>Adjusted EL / exposure</code>, bps). Sits between P2 (deltas
+only) and P3b (one number). <em>When to use: the reference table for any
+EL discussion; the bps column makes sectors with different exposure
+magnitudes comparable.</em></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_el_sector_breakdown_table.html">pipeline_trisk_el_sector_breakdown_table</a></span><span class="op">(</span><span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -856,7 +944,7 @@ Adjusted EL
 EL Adjustment
 </th>
 <th style="text-align:right;">
-EL/EAD (bps)
+Adjusted EL (bps)
 </th>
 </tr></thead>
 <tbody>
@@ -903,13 +991,13 @@ Oil&amp;Gas
 88.1K
 </td>
 <td style="text-align:right;">
-297.8K
+124.7K
 </td>
 <td style="text-align:right;">
-209.7K
+36.6K
 </td>
 <td style="text-align:right;">
-534.9 bps
+224.0 bps
 </td>
 </tr>
 <tr>
@@ -950,8 +1038,8 @@ questioned.</p>
 </h4>
 <p>The pipeline plots cover the standard story; a couple of custom
 chunks round it out. Expected loss by sector, baseline vs shock:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">el_by_sector</span> <span class="op">&lt;-</span> <span class="va">analysis_data_el</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">el_by_sector</span> <span class="op">&lt;-</span> <span class="va">analysis_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">expected_loss_baseline</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
@@ -972,10 +1060,10 @@ chunks round it out. Expected loss by sector, baseline vs shock:</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"Expected loss (USD, millions)"</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">"Scenario"</span>,</span>
 <span>                title <span class="op">=</span> <span class="st">"Expected loss by sector: baseline vs shock"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="768"></p>
 <p>Internal EL vs TRISK-Adjusted EL, per sector (both are positive
 magnitudes):</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">el_compare_sector</span> <span class="op">&lt;-</span> <span class="va">result_el</span><span class="op">$</span><span class="va">portfolio</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">sector</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -999,7 +1087,7 @@ magnitudes):</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Sector"</span>, y <span class="op">=</span> <span class="st">"Expected loss (USD, millions)"</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                title <span class="op">=</span> <span class="st">"Internal EL vs TRISK-Adjusted EL by sector"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="bank_4_pd-el-integration_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 </div>
 <div class="section level3">
@@ -1032,13 +1120,29 @@ number.</li>
 <li>
 <strong>Horizon mismatch.</strong> Integrated PD/EL is
 term-structured (multi-year), closer to lifetime ECL than to a 12-month
-regulatory PD. Re-annualise before using it in a 12-month slot.</li>
+regulatory PD. Re-annualise before using it in a 12-month slot —
+<code>pd_lifetime_to_annual(pd, term)</code> does this under a
+constant-hazard assumption (and <code><a href="../reference/pd_annual_to_lifetime.html">pd_annual_to_lifetime()</a></code> is
+its inverse).</li>
 <li>
-<strong>EL zscore EAD basis must match.</strong> The effective-PD
-round-trip is only correct when the EL columns and the EAD denominator
-are on the same basis. If <code><a href="../reference/compute_analysis_metrics.html">compute_analysis_metrics()</a></code> has
-scaled EAD by NPV share, supply the matching
-<code>exposure_at_default</code> column rather than relying on the
+<strong>Static LGD (L1).</strong> The transition shock moves PD and
+NPV, but <code>loss_given_default</code> is held constant — there is no
+downturn/stress LGD. EL changes here reflect PD/value effects only; if
+your framework uses scenario-conditional or downturn LGD, apply it
+separately.</li>
+<li>
+<strong>Geography filtering drops out-of-region assets
+(G1).</strong> With <code>scenario_geography</code> other than
+<code>"Global"</code>, the model keeps only assets in the selected
+region(s); out-of-region assets are excluded from the run silently.
+Reconcile your input asset count against the results if you scope by
+geography.</li>
+<li>
+<strong>EL zscore normalizer basis must match.</strong> The
+effective-PD round-trip is only correct when the EL columns and the
+EAD×LGD denominator are on the same basis. When EAD is
+NPV-share-allocated (as the simple runner does), supply the matching
+<code>lgd_weighted_exposure</code> column rather than relying on the
 <code>exposure_value_usd * loss_given_default</code> fallback.</li>
 <li>
 <strong><code>internal_pd</code> must be in <code>[0, 1]</code> and

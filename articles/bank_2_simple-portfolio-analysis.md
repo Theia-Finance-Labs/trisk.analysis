@@ -17,24 +17,13 @@ library(magrittr)
 
 ## Overview
 
-This vignette walks through running TRISK on a bank loan book. The
-package exposes two entry points, and the right one depends on how much
-company metadata your portfolio carries:
-
-- [`run_trisk_on_simple_portfolio()`](../reference/run_trisk_on_simple_portfolio.md)
-  — the **minimal path**. You bring company exposures, terms, and
-  loss-given-default; no `country_iso2` column is needed. TRISK runs and
-  allocates exposure across each company’s technologies for you.
-- [`run_trisk_on_portfolio()`](../reference/run_trisk_on_portfolio.md) —
-  the **fuller path**. You match your portfolio to TRISK assets by
-  country and company (by ID, name, or country aggregate), then run the
-  model on the filtered asset universe.
-
-As a rule of thumb: use the simple runner for a quick,
-single-company-resolution risk read where you already know which
-counterparties you hold. Use the full runner when you need country-level
-matching, fuzzy name matching, or the built-in equity- and credit-risk
-plots.
+This vignette walks through running TRISK on a bank loan book with
+[`run_trisk_on_simple_portfolio()`](../reference/run_trisk_on_simple_portfolio.md)
+— the bank entry point. You bring company exposures, terms, and
+loss-given-default (no `country_iso2` column needed), and TRISK runs and
+allocates each loan’s exposure across the company’s technologies for
+you. The per-technology results feed the equity- (NPV, exposure) and
+credit-risk (PD, expected-loss) plots directly.
 
 ## Inputs
 
@@ -49,8 +38,8 @@ plots.
 > [`setup_trisk_inputs()`](../reference/setup_trisk_inputs.md) and the
 > `trisk_inputs/` folder convention.
 
-Both runners need the same four TRISK model inputs, shipped as test data
-in the `trisk.model` package:
+The simple runner needs the four TRISK model inputs, shipped as test
+data in the `trisk.model` package:
 
 ``` r
 
@@ -70,8 +59,7 @@ target_scenario <- "NGFS2023GCAM_NZ2050"
 scenario_geography <- "Global"
 ```
 
-The two runners differ only in the **portfolio schema** they expect,
-covered in each example below.
+The portfolio schema is covered in the example below.
 
 ## Minimal example
 
@@ -159,12 +147,12 @@ portfolio_results_tech_detail |>
 #> 5        103    5 Oil&Gas           Gas                  3728364
 #> 6        104    4   Power RenewablesCap                  9263702
 #>   net_present_value_baseline
-#> 1                   51951.82
-#> 2                   51951.82
-#> 3                   51951.82
-#> 4                13648160.57
-#> 5                27724344.25
-#> 6               141635910.26
+#> 1                   31278.13
+#> 2                   31278.13
+#> 3                   31278.13
+#> 4                 8453239.83
+#> 5                16458526.57
+#> 6                83135863.75
 ```
 
 Because `exposure_value_usd_share` is computed after dropping `run_id`,
@@ -204,138 +192,59 @@ The `gap` column should be close to zero (floating-point tolerance) —
 confirming allocated exposure reconciles back to the original loan
 amounts.
 
-## Full portfolio with country matching
+## Plotting the per-technology results
 
-When your portfolio carries country information,
-[`run_trisk_on_portfolio()`](../reference/run_trisk_on_portfolio.md)
-filters TRISK assets to your holdings before running, and gives you
-matching flexibility. There are three valid portfolio input structures:
-
-``` r
-
-portfolio_countries_testdata <- read.csv(system.file("testdata", "portfolio_countries_testdata.csv", package = "trisk.analysis"))
-portfolio_ids_testdata <- read.csv(system.file("testdata", "portfolio_ids_testdata.csv", package = "trisk.analysis"))
-portfolio_names_testdata <- read.csv(system.file("testdata", "portfolio_names_testdata.csv", package = "trisk.analysis"))
-```
-
-Leaving `company_id` and `company_name` empty aggregates TRISK results
-per country and technology, matched on those columns:
-
-| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
-|:---|:---|:---|:---|:---|---:|---:|---:|
-| NA | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
-| NA | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 |
-| NA | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
-| NA | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
-
-Filling in `company_name` triggers fuzzy string matching between company
-names:
-
-| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
-|:---|:---|:---|:---|:---|---:|---:|---:|
-| NA | Company 1 | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
-| NA | Comany 2 | Coal | Coal | DE | 6227364 | 1 | 0.7 |
-| NA | Corony 3 | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
-| NA | Compan 4 | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
-
-Filling in `company_id` triggers an exact match between companies:
-
-| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default |
-|---:|:---|:---|:---|:---|---:|---:|---:|
-| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 |
-| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 |
-| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 |
-| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 |
-
-Using company IDs is the recommended match. In the asset data, a unique
-asset is defined by a unique combination of `company_id`, `sector`,
-`technology`, and `country`. Those columns drive the join between the
-portfolio and TRISK outputs:
+The simple runner’s `portfolio_results_tech_detail` carries
+per-technology NPV, PD, and expected-loss columns — exactly what the
+package plotting helpers need. Expose the NPV-share-allocated exposure
+(`exposure_at_default`) as `exposure_value_usd` so the plots can
+aggregate it, then pass the frame in:
 
 ``` r
 
-portfolio_testdata <- portfolio_ids_testdata
+npv_analysis <- portfolio_results_tech_detail |>
+  dplyr::mutate(exposure_value_usd = exposure_at_default)
 ```
-
-[`run_trisk_on_portfolio()`](../reference/run_trisk_on_portfolio.md)
-handles the filtering on portfolio and then runs TRISK:
-
-``` r
-
-analysis_data <- run_trisk_on_portfolio(
-  assets_data = assets_testdata,
-  scenarios_data = scenarios_testdata,
-  financial_data = financial_features_testdata,
-  carbon_data = ngfs_carbon_price_testdata,
-  portfolio_data = portfolio_testdata,
-  baseline_scenario = baseline_scenario,
-  target_scenario = target_scenario,
-  scenario_geography = scenario_geography
-)
-#> -- Start Trisk-- Retyping Dataframes. 
-#> -- Processing Assets and Scenarios. 
-#> -- Transforming to Trisk model input. 
-#> -- Calculating baseline, target, and shock trajectories. 
-#> -- Applying zero-trajectory logic to production trajectories. 
-#> -- Calculating net profits.
-#> Joining with `by = join_by(asset_id, company_id, sector, technology)`
-#> -- Calculating market risk. 
-#> -- Calculating credit risk.
-```
-
-Result data frame:
-
-| company_id | company_name | sector | technology | country_iso2 | exposure_value_usd | term | loss_given_default | run_id | asset_id | asset_name | net_present_value_baseline | net_present_value_shock | net_present_value_difference | net_present_value_change | pd_baseline | pd_shock |
-|:---|:---|:---|:---|:---|---:|---:|---:|:---|:---|:---|---:|---:|---:|---:|---:|---:|
-| 101 | NA | Oil&Gas | Gas | DE | 1839267 | 3 | 0.7 | 12109480-ac7c-4532-af08-80a132306c45 | 101 | Company 1 | 51951.82 | 13549.28 | -38402.54 | -0.7391952 | 1.10e-06 | 0.0004647 |
-| 102 | NA | Coal | Coal | DE | 6227364 | 1 | 0.7 | 12109480-ac7c-4532-af08-80a132306c45 | 102 | Company 2 | 13648160.57 | 4317747.56 | -9330413.02 | -0.6836389 | 0.00e+00 | 0.0000000 |
-| 103 | NA | Oil&Gas | Gas | DE | 3728364 | 5 | 0.5 | 12109480-ac7c-4532-af08-80a132306c45 | 103 | Company 3 | 27724344.25 | 12420187.12 | -15304157.13 | -0.5520115 | 8.09e-05 | 0.0012524 |
-| 104 | NA | Power | RenewablesCap | DE | 9263702 | 4 | 0.4 | 12109480-ac7c-4532-af08-80a132306c45 | 104 | Company 4 | 141635910\.26 | 202554984\.40 | 60919074.14 | 0.4301104 | 3.20e-06 | 0.0000003 |
-
-### Plotting the results
-
-The full runner’s output plugs directly into the package plotting
-helpers.
 
 **Equity risk** — average percentage NPV change per technology:
 
 ``` r
 
-pipeline_trisk_npv_change_plot(analysis_data)
+pipeline_trisk_npv_change_plot(npv_analysis)
 #> Joining with `by = join_by(sector, technology)`
 ```
 
-![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-15-1.png)
+![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-9-1.png)
 
 Resulting portfolio exposure change:
 
 ``` r
 
-pipeline_trisk_exposure_change_plot(analysis_data)
+pipeline_trisk_exposure_change_plot(npv_analysis)
 #> Joining with `by = join_by(sector, technology)`
 ```
 
-![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-16-1.png)
+![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-10-1.png)
 
 **Bonds & loans risk** — average PDs at baseline and shock:
 
 ``` r
 
-pipeline_trisk_pd_term_plot(analysis_data)
+pipeline_trisk_pd_term_plot(npv_analysis)
 #> Joining with `by = join_by(sector, term)`
 ```
 
-![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-17-1.png)
+![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-11-1.png)
 
 Resulting portfolio expected loss:
 
 ``` r
 
-pipeline_trisk_expected_loss_plot(analysis_data)
+pipeline_trisk_expected_loss_plot(npv_analysis)
 #> Joining with `by = join_by(sector)`
 ```
 
-![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-18-1.png)
+![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-12-1.png)
 
 ## Interpretation
 
@@ -344,21 +253,12 @@ pipeline_trisk_expected_loss_plot(analysis_data)
   you see how each loan’s exposure spreads across a company’s
   technologies, so you can spot which technology mix drives a
   counterparty’s risk.
-- The **full runner** is the right tool when matching is non-trivial —
-  you only have country-level exposures, or you need to reconcile messy
-  company names — and when you want the equity (NPV change, exposure
-  change) and credit (PD term, expected loss) views straight out of the
-  box.
 - A negative NPV change and a rising shock PD on the same technology
   flag where the transition both erodes asset value and lifts default
   probability — the positions to scrutinise first.
 
 ## Caveats
 
-- The country-aggregate and fuzzy-name matching modes trade precision
-  for coverage. Prefer `company_id` exact matching whenever IDs are
-  available; fall back to name or country matching only when they are
-  not.
 - Exposure allocation in the simple runner is NPV-share based and
   reconciles to the original totals only up to floating-point tolerance
   — confirm the `gap` before relying on allocated figures.

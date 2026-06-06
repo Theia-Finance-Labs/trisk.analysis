@@ -40,3 +40,13 @@ download_trisk_inputs(
 ## Value
 
 TRUE if all files are downloaded successfully, FALSE otherwise.
+
+## Provenance (DL1)
+
+This fetches the public reference \*\*scenarios\*\* dataset only. The
+other model inputs - \`assets\`, \`financial_features\`, and
+\`ngfs_carbon_prices\` - are \*\*not\*\* downloaded here; they are
+institution-specific and must be supplied by the user in the documented
+schema. Use \[setup_trisk_inputs()\] to scaffold a folder with the
+required files, column schemas, and filled samples for every input, and
+see the "Inputs and outputs" vignette for the expected formats.

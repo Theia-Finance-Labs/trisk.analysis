@@ -20,7 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -67,7 +67,11 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A one-row tibble (per group) with total ELs + `el_adjusted_bps`.</p>
+    <p>A one-row tibble (per group) with total ELs and two bps measures, both
+  as a loss rate over *notional exposure* (EL/EAD would be PD-in-bps, not a
+  loss rate): `el_adjusted_bps` — the adjusted EL *level* (total expected-loss
+  rate of the shocked book), and `el_adjustment_bps` — the climate overlay
+  (delta = adjusted - internal), the marginal transition effect.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -26,11 +26,11 @@ fuzzy_match_company_ids(
 
 - threshold:
 
-  Numeric value for the matching threshold. Default is 0.2.
+  Numeric value for the matching threshold. Default is 0.5.
 
 - method:
 
-  tring specifying method to use for fuzzy matching. See help of
+  String specifying the method to use for fuzzy matching. See help of
   stringdist::stringdistmatrix for possible values.
 
 ## Value

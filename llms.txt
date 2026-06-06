@@ -49,7 +49,7 @@ The documentation is a five-step path, each article building on the
 previous one:
 
 1.  **[Getting
-    started](https://theia-finance-labs.github.io/trisk.analysis/articles/0_getting-started.html)**
+    started](https://theia-finance-labs.github.io/trisk.analysis/articles/getting-started.html)**
     — install the package and run TRISK on the bundled toy portfolio in
     a few lines.
 2.  **[Inputs and
@@ -133,7 +133,7 @@ portfolio, or across a grid of parameter sets for sensitivity analysis.
 
 - [`run_trisk_model`](run_trisk_model.md) : run_trisk_model
 - [`run_trisk_on_portfolio()`](run_trisk_on_portfolio.md) : Run TRISK
-  Model on Portfolio
+  Model on Portfolio (technology-resolved)
 - [`run_trisk_on_simple_portfolio()`](run_trisk_on_simple_portfolio.md)
   : Run TRISK Model on Simple Portfolio
 - [`run_trisk_sa()`](run_trisk_sa.md) : Run TRISK sensitivity analysis
@@ -197,12 +197,17 @@ Roll up firm-level facts to portfolio and sector aggregates.
 ## PD and EL integration
 
 Recombine TRISK shock PDs with the bank’s internal PDs and translate to
-expected loss.
+expected loss, and convert PDs between cumulative-lifetime and 12-month
+horizons for IFRS-9 staging.
 
 - [`integrate_pd()`](integrate_pd.md) : Integrate TRISK PD shift into an
   internal PD estimate
 - [`integrate_el()`](integrate_el.md) : Integrate TRISK EL shift into an
   internal EL estimate
+- [`pd_lifetime_to_annual()`](pd_lifetime_to_annual.md) : Convert a
+  cumulative lifetime PD to an equivalent annual PD
+- [`pd_annual_to_lifetime()`](pd_annual_to_lifetime.md) : Convert an
+  annual PD to a cumulative lifetime PD over a horizon
 
 ## Plots and KPI tables
 
@@ -249,7 +254,7 @@ Shared theme and palette used across the package plots.
 
 ### Get started
 
-- [Getting started](0_getting-started.md):
+- [Getting started](getting-started.md):
 
 ### Bank workflow
 

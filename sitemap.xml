@@ -1,11 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
-<url><loc>/articles/0_getting-started.html</loc></url>
 <url><loc>/articles/bank_1_inputs-and-outputs.html</loc></url>
 <url><loc>/articles/bank_2_simple-portfolio-analysis.html</loc></url>
 <url><loc>/articles/bank_3_sensitivity-analysis.html</loc></url>
 <url><loc>/articles/bank_4_pd-el-integration.html</loc></url>
+<url><loc>/articles/getting-started.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
@@ -20,6 +20,7 @@
 <url><loc>/reference/aggregate_simple_portfolio_results.html</loc></url>
 <url><loc>/reference/aggregate_trajectories_facts.html</loc></url>
 <url><loc>/reference/aggregate_trisk_outputs_simple.html</loc></url>
+<url><loc>/reference/build_trisk_run_meta.html</loc></url>
 <url><loc>/reference/check_portfolio.html</loc></url>
 <url><loc>/reference/check_portfolio_simple.html</loc></url>
 <url><loc>/reference/compute_analysis_metrics.html</loc></url>
@@ -37,6 +38,8 @@
 <url><loc>/reference/integrate_pd.html</loc></url>
 <url><loc>/reference/join_simple_portfolio_to_trisk.html</loc></url>
 <url><loc>/reference/join_trisk_outputs_to_portfolio.html</loc></url>
+<url><loc>/reference/pd_annual_to_lifetime.html</loc></url>
+<url><loc>/reference/pd_lifetime_to_annual.html</loc></url>
 <url><loc>/reference/pipeline_trisk_el_adjustment_bars.html</loc></url>
 <url><loc>/reference/pipeline_trisk_el_kpi_table.html</loc></url>
 <url><loc>/reference/pipeline_trisk_el_sector_breakdown_table.html</loc></url>
@@ -62,5 +65,8 @@
 <url><loc>/reference/run_trisk_sa.html</loc></url>
 <url><loc>/reference/setup_trisk_inputs.html</loc></url>
 <url><loc>/reference/trisk_palette.html</loc></url>
+<url><loc>/reference/warn_duplicate_company_term_exposure.html</loc></url>
+<url><loc>/reference/warn_scenario_family_mismatch.html</loc></url>
+<url><loc>/reference/warn_terms_outside_grid.html</loc></url>
 </urlset>
 

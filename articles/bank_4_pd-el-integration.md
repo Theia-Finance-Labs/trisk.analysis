@@ -141,6 +141,18 @@ The `zscore_floor` (default `1e-4`) and `zscore_cap` (default
 infinities. Widen the floor toward zero only if your internal PDs are
 reliably calibrated that low; tighten it to de-sensitise the tails.
 
+> **Watch the floor on underflow-prone books.** When a baseline (and
+> shock) PD sits **below** `zscore_floor`, both clip to the floor and
+> `qnorm(shock) - qnorm(baseline) = 0` — the shock signal is erased and
+> the overlay reflects the clip bound, not the model. Merton baselines
+> for investment-grade or short-horizon names routinely underflow well
+> below `1e-4`. [`integrate_pd()`](../reference/integrate_pd.md) /
+> [`integrate_el()`](../reference/integrate_el.md) now report
+> `aggregate$zscore_clipped_share` (the fraction of rows clipped) and
+> emit a warning when most of the book is clipped. If that share is
+> high, prefer `method = "absolute"`, which adds the raw PD shift and is
+> immune to underflow.
+
 #### Worked example: one row through z-score
 
 Take a single Oil&Gas exposure with `internal_pd = 0.025`, and suppose
@@ -169,18 +181,26 @@ which the plots below render red.
 
 The `internal_pd` column rides along on the standard portfolio schema;
 we keep it as a separate lookup table to feed into
-[`integrate_pd()`](../reference/integrate_pd.md).
+[`integrate_pd()`](../reference/integrate_pd.md). We run the bank entry
+point —
+[`run_trisk_on_simple_portfolio()`](../reference/run_trisk_on_simple_portfolio.md)
+— on the company-level loan book and use its per-technology detail as
+the analysis frame:
 
 ``` r
 
-analysis_data <- run_trisk_on_portfolio(
-  assets_data       = assets_testdata,
-  scenarios_data    = scenarios_testdata,
-  financial_data    = fin_testdata,
-  carbon_data       = carbon_testdata,
-  portfolio_data    = portfolio_ids_internal_pd,
-  baseline_scenario = "NGFS2023GCAM_CP",
-  target_scenario   = "NGFS2023GCAM_NZ2050",
+portfolio_simple <- portfolio_ids_internal_pd[, c(
+  "company_id", "company_name", "exposure_value_usd", "term", "loss_given_default"
+)]
+
+simple_results <- run_trisk_on_simple_portfolio(
+  assets_data        = assets_testdata,
+  scenarios_data     = scenarios_testdata,
+  financial_data     = fin_testdata,
+  carbon_data        = carbon_testdata,
+  portfolio_data     = portfolio_simple,
+  baseline_scenario  = "NGFS2023GCAM_CP",
+  target_scenario    = "NGFS2023GCAM_NZ2050",
   scenario_geography = "Global"
 )
 #> -- Start Trisk-- Retyping Dataframes. 
@@ -192,6 +212,11 @@ analysis_data <- run_trisk_on_portfolio(
 #> Joining with `by = join_by(asset_id, company_id, sector, technology)`
 #> -- Calculating market risk. 
 #> -- Calculating credit risk.
+# Expose the NPV-share-allocated exposure as `exposure_value_usd` so the
+# EAD-weighted plots and aggregates can use it (the simple runner stores the
+# allocated exposure as `exposure_at_default`).
+analysis_data <- simple_results$portfolio_results_tech_detail |>
+  dplyr::mutate(exposure_value_usd = exposure_at_default)
 
 # The internal_pd lookup used throughout the rest of the vignette. TRISK returns
 # company_id as character, so coerce the lookup key to match and keep the join
@@ -202,10 +227,33 @@ internal_pd_lookup$company_id <- as.character(internal_pd_lookup$company_id)
 
 | company_id | sector | technology | term | pd_baseline | pd_shock | net_present_value_baseline | net_present_value_shock |
 |:---|:---|:---|---:|---:|---:|---:|---:|
-| 101 | Oil&Gas | Gas | 3 | 1.10e-06 | 0.0004647 | 51951.82 | 13549.28 |
-| 102 | Coal | Coal | 1 | 0.00e+00 | 0.0000000 | 13648160.57 | 4317747.56 |
-| 103 | Oil&Gas | Gas | 5 | 8.09e-05 | 0.0012524 | 27724344.25 | 12420187.12 |
-| 104 | Power | RenewablesCap | 4 | 3.20e-06 | 0.0000003 | 141635910\.26 | 202554984\.40 |
+| 101 | Oil&Gas | Gas | 3 | 5.00e-07 | 0.0000472 | 31278.13 | 10902.84 |
+| 102 | Coal | Coal | 1 | 0.00e+00 | 0.0000000 | 8453239.83 | 3464740.72 |
+| 103 | Oil&Gas | Gas | 5 | 3.24e-05 | 0.0002445 | 16458526.57 | 8743193.23 |
+| 104 | Power | RenewablesCap | 4 | 1.20e-06 | 0.0000002 | 83135863.75 | 114031784\.03 |
+
+##### Reproducibility: the run audit trail
+
+The runner attaches a `trisk_run_meta` attribute to its output — the
+scenario pair, `run_id`, every argument forwarded to the TRISK model,
+and the versions of `trisk.analysis` and `trisk.model`. Capture it
+alongside your results so a run can be reproduced and defended in model
+validation:
+
+``` r
+
+run_meta <- attr(simple_results, "trisk_run_meta")
+str(run_meta)
+#> List of 6
+#>  $ baseline_scenario: chr "NGFS2023GCAM_CP"
+#>  $ target_scenario  : chr "NGFS2023GCAM_NZ2050"
+#>  $ run_id           : chr "b99dc692-da8d-49cf-826a-afa93a8d2950"
+#>  $ trisk_args       :List of 1
+#>   ..$ scenario_geography: chr "Global"
+#>  $ package_versions : Named chr [1:2] "1.2.3" "2.6.1"
+#>   ..- attr(*, "names")= chr [1:2] "trisk.analysis" "trisk.model"
+#>  $ created_at       : POSIXct[1:1], format: "2026-06-06 07:49:52"
+```
 
 #### Integrate PD — three methods
 
@@ -221,14 +269,19 @@ result_rel <- integrate_pd(analysis_data,
 result_zs  <- integrate_pd(analysis_data,
                            internal_pd = internal_pd_lookup,
                            method      = "zscore")
+#> Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score
+#> floor/cap before qnorm(); the overlay is governed by the clip bound, not the
+#> model. Baseline PDs below the floor erase the shock signal. Consider method =
+#> "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review
+#> zscore_floor.
 ```
 
 | company_id | sector | internal_pd | pd_baseline | pd_shock | trisk_adjusted_pd | pd_adjustment |
 |:---|:---|---:|---:|---:|---:|---:|
-| 101 | Oil&Gas | 0.025 | 1.10e-06 | 0.0004647 | 0.0603323 | 0.0353323 |
+| 101 | Oil&Gas | 0.025 | 5.00e-07 | 0.0000472 | 0.0250000 | 0.0000000 |
 | 102 | Coal | 0.040 | 0.00e+00 | 0.0000000 | 0.0400000 | 0.0000000 |
-| 103 | Oil&Gas | 0.030 | 8.09e-05 | 0.0012524 | 0.1181008 | 0.0881008 |
-| 104 | Power | 0.015 | 3.20e-06 | 0.0000003 | 0.0150000 | 0.0000000 |
+| 103 | Oil&Gas | 0.030 | 3.24e-05 | 0.0002445 | 0.0496256 | 0.0196256 |
+| 104 | Power | 0.015 | 1.20e-06 | 0.0000002 | 0.0150000 | 0.0000000 |
 
 You can also override internal PDs on the fly — pass a numeric vector of
 length `nrow(analysis_data)` (or an alternate lookup) for a sanity-check
@@ -240,26 +293,28 @@ flat_internal <- rep(0.03, nrow(analysis_data))
 result_custom <- integrate_pd(analysis_data,
                               internal_pd = flat_internal,
                               method      = "zscore")
+#> Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score
+#> floor/cap before qnorm(); the overlay is governed by the clip bound, not the
+#> model. Baseline PDs below the floor erase the shock signal. Consider method =
+#> "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review
+#> zscore_floor.
 ```
 
 #### Integrate EL
 
 [`integrate_el()`](../reference/integrate_el.md) needs
-`expected_loss_baseline` / `expected_loss_shock`, which
-[`run_trisk_on_portfolio()`](../reference/run_trisk_on_portfolio.md)
-does not emit on its own — call
-[`compute_analysis_metrics()`](../reference/compute_analysis_metrics.md)
-first to derive them as `EAD * PD`. For the bank’s internal EL we use
-the same identity: `internal_el = EAD * LGD * internal_pd`.
+`expected_loss_baseline` / `expected_loss_shock`, which the simple
+runner already emits in its per-technology detail (`EAD * LGD * PD`).
+For the bank’s internal EL we use the same identity on the company-level
+loan book: `internal_el = EAD * LGD * internal_pd`.
 
 ``` r
 
-analysis_data_el <- compute_analysis_metrics(analysis_data)
-internal_el_lookup <- merge(
-  analysis_data_el[, c("company_id", "exposure_value_usd", "loss_given_default")],
-  internal_pd_lookup,
-  by = "company_id"
-)
+internal_el_lookup <- portfolio_ids_internal_pd[, c(
+  "company_id", "exposure_value_usd", "loss_given_default"
+)]
+internal_el_lookup$company_id <- as.character(internal_el_lookup$company_id)
+internal_el_lookup <- merge(internal_el_lookup, internal_pd_lookup, by = "company_id")
 # Positive magnitude, matching the package-wide EL convention.
 internal_el_lookup$internal_el <-
   internal_el_lookup$exposure_value_usd *
@@ -267,9 +322,14 @@ internal_el_lookup$internal_el <-
   internal_el_lookup$internal_pd
 
 result_el <- integrate_el(
-  analysis_data_el,
+  analysis_data,
   internal_el = internal_el_lookup[, c("company_id", "internal_el")]
 )
+#> Warning: integrate_el(): 100% of rows have a PD clipped to the z-score
+#> floor/cap before qnorm(); the overlay is governed by the clip bound, not the
+#> model. Baseline PDs below the floor erase the shock signal. Consider method =
+#> "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review
+#> zscore_floor.
 # default method is "zscore": effective-PD probit recombination, zero-safe.
 ```
 
@@ -284,21 +344,24 @@ result_el <- integrate_el(
   worse = rendered **red**; a **negative** adjustment means less loss =
   better = **green**. The PD adjustment follows the same rule (positive
   = PD rose = red).
-- **EAD.** The `exposure_at_default` column is **not** raw exposure.
-  [`compute_analysis_metrics()`](../reference/compute_analysis_metrics.md)
-  defines it as `exposure_value_usd * loss_given_default` — i.e. LGD is
-  already folded in. Every `expected_loss_*` column is then
-  `exposure_at_default * pd`. The EL zscore method uses this
-  `exposure_at_default` column as its denominator when present,
-  otherwise reconstructs it as
+- **EAD.** The `exposure_at_default` column is the Basel **exposure at
+  default**: the simple runner sets it to each loan’s
+  NPV-share-allocated exposure — the gross exposure *before* the LGD
+  haircut (LGD is a fraction *of* EAD). The LGD-weighted exposure is a
+  separate column,
+  `lgd_weighted_exposure = exposure_at_default * loss_given_default` (=
+  EAD × LGD). Every `expected_loss_*` column is
+  `exposure_at_default * loss_given_default * pd` (= EAD × LGD × PD).
+  The EL zscore method uses `lgd_weighted_exposure` as its denominator
+  when present, otherwise reconstructs it as
   `exposure_value_usd * loss_given_default`.
 - **LGD.** `loss_given_default` is the fraction lost on default, in
-  `[0, 1]`. Because it is already baked into `exposure_at_default`,
-  expected loss is `EL = exposure_at_default * PD` (equivalently
-  `exposure_value_usd * LGD * PD`). The EL zscore method back-transforms
-  EL to an effective PD via `|EL| / exposure_at_default`, recombines in
-  probit space, then re-scales — so LGD enters only through that
-  denominator.
+  `[0, 1]`, and is a fraction *of* EAD. Expected loss is the Basel
+  product `EL = EAD × LGD × PD` (=
+  `exposure_at_default * loss_given_default * pd`). The EL zscore method
+  back-transforms EL to an effective PD via
+  `|EL| / lgd_weighted_exposure` (= `|EL| / (EAD × LGD)`), recombines in
+  probit space, then re-scales — so LGD enters through that denominator.
 - **Horizon.** TRISK PDs here are **term-structured** to the loan `term`
   (multi-year), not a 12-month point-in-time PD. Treat the integrated
   PD/EL as a **lifetime / multi-year** quantity, closer in spirit to an
@@ -321,9 +384,14 @@ pushback). Tight clustering means picking a method is a non-decision.*
 
 pipeline_trisk_pd_method_comparison(analysis_data,
                                      internal_pd = internal_pd_lookup)
+#> Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score
+#> floor/cap before qnorm(); the overlay is governed by the clip bound, not the
+#> model. Baseline PDs below the floor erase the shock signal. Consider method =
+#> "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review
+#> zscore_floor.
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-10-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-11-1.png)
 
 On sparse portfolios, `granularity = "firm"` and `scale = "pseudo_log"`
 open up the per-firm picture when sector aggregation or Merton underflow
@@ -337,9 +405,14 @@ pipeline_trisk_pd_method_comparison(
   granularity = "firm",
   scale       = "pseudo_log"
 )
+#> Warning: integrate_pd(): 100% of rows have a PD clipped to the z-score
+#> floor/cap before qnorm(); the overlay is governed by the clip bound, not the
+#> model. Baseline PDs below the floor erase the shock signal. Consider method =
+#> "absolute" for underflow-prone (e.g. IG / short-horizon) books, or review
+#> zscore_floor.
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-11-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png)
 
 **N2 — PD waterfall.** Per-sector decomposition: Internal -\> signed
 Adjustment -\> Adjusted. The middle bar flips fill on sign (red worsens,
@@ -352,7 +425,7 @@ bars; the message is “how much does integration move PD”.*
 pipeline_trisk_pd_waterfall(result_zs)
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-12-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png)
 
 **P1 — PD integration bars.** Four bars per group: Internal PD, TRISK
 Baseline, TRISK Shock, TRISK-Adjusted PD. The gap between Internal and
@@ -366,7 +439,7 @@ model itself moved. *When to use: first plot to show a counterparty —
 pipeline_trisk_pd_integration_bars(result_zs)
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-13-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-14-1.png)
 
 ``` r
 
@@ -377,7 +450,7 @@ pipeline_trisk_pd_integration_bars(
 )
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-14-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png)
 
 **P2 — EL adjustment bars.** Horizontal bars of the signed EL delta
 (Adjusted minus Internal) by sector. Red = integration says expect
@@ -391,7 +464,7 @@ under-reserving?”*
 pipeline_trisk_el_adjustment_bars(result_el)
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-15-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-16-1.png)
 
 **P3a — PD KPI table.** One-row portfolio summary: weighted internal PD,
 weighted adjusted PD, the adjustment in pp, and direction. *When to use:
@@ -404,27 +477,34 @@ pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 
 | Total Exposure (USD) | Weighted Internal PD | Weighted Adjusted PD | Weighted PD Adjustment (pp) | Adjustment % |
 |---:|---:|---:|---:|---:|
-| 21.06M | 2.592% | 4.461% | +1.868 pp | 72.077% |
+| 21.06M | 2.592% | 2.940% | +0.347 pp | 13.404% |
 
-**P3b — EL KPI table.** One-row EL summary including the **bps metric**
-(`EL / EAD`). The bps figure is scale-free and travels best across
-audiences. *When to use: same as P3a but for EL; the bps delta is the
-single best headline number.*
+**P3b — EL KPI table.** One-row EL summary. The headline bps metric is
+the **adjusted EL level as a loss rate**: `Adjusted EL / exposure` in
+bps (`el_adjusted_bps`) — the total expected-loss rate of the shocked
+book. The **climate overlay (delta)**, `EL adjustment / exposure`
+(`el_adjustment_bps`), is shown as a secondary column: it isolates the
+marginal effect of the transition scenario. Both use *notional* exposure
+(EAD) as the denominator: dividing by `lgd_weighted_exposure` (= EAD ×
+LGD) would instead yield PD-in-bps, not a loss rate. *When to use: same
+as P3a but for EL; lead with the adjusted EL level, then point to the
+delta to attribute how much of it is climate.*
 
 ``` r
 
 pipeline_trisk_el_kpi_table(result_el$aggregate)
 ```
 
-| Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) |
-|---:|---:|---:|---:|---:|
-| 21.06M | 318.1K | 527.8K | 209.7K | 250.6 bps |
+| Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) | EL/exposure delta (bps) |
+|---:|---:|---:|---:|---:|---:|
+| 21.06M | 318.1K | 354.6K | 36.6K | 168.4 bps | 17.4 bps |
 
 **P4 — EL sector breakdown.** One row per sector: exposure, internal EL,
-adjusted EL, delta, direction arrow, and EL/EAD in bps. Sits between P2
-(deltas only) and P3b (one number). *When to use: the reference table
-for any EL discussion; the bps column makes sectors with different
-exposure magnitudes comparable.*
+adjusted EL, signed delta, direction arrow, and the adjusted EL level as
+a loss rate (`Adjusted EL / exposure`, bps). Sits between P2 (deltas
+only) and P3b (one number). *When to use: the reference table for any EL
+discussion; the bps column makes sectors with different exposure
+magnitudes comparable.*
 
 ``` r
 
@@ -444,7 +524,7 @@ round it out. Expected loss by sector, baseline vs shock:
 
 ``` r
 
-el_by_sector <- analysis_data_el %>%
+el_by_sector <- analysis_data %>%
   dplyr::group_by(sector) %>%
   dplyr::summarise(
     baseline = sum(.data$expected_loss_baseline, na.rm = TRUE),
@@ -467,7 +547,7 @@ ggplot2::ggplot(el_by_sector,
                 title = "Expected loss by sector: baseline vs shock")
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-19-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-20-1.png)
 
 Internal EL vs TRISK-Adjusted EL, per sector (both are positive
 magnitudes):
@@ -499,7 +579,7 @@ ggplot2::ggplot(el_compare_sector,
                 title = "Internal EL vs TRISK-Adjusted EL by sector")
 ```
 
-![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-20-1.png)
+![](bank_4_pd-el-integration_files/figure-html/unnamed-chunk-21-1.png)
 
 ### Caveats / Limitations
 
@@ -519,14 +599,25 @@ ggplot2::ggplot(el_compare_sector,
   Do not present its output as a regulatory capital number.
 - **Horizon mismatch.** Integrated PD/EL is term-structured
   (multi-year), closer to lifetime ECL than to a 12-month regulatory PD.
-  Re-annualise before using it in a 12-month slot.
-- **EL zscore EAD basis must match.** The effective-PD round-trip is
-  only correct when the EL columns and the EAD denominator are on the
-  same basis. If
-  [`compute_analysis_metrics()`](../reference/compute_analysis_metrics.md)
-  has scaled EAD by NPV share, supply the matching `exposure_at_default`
-  column rather than relying on the
-  `exposure_value_usd * loss_given_default` fallback.
+  Re-annualise before using it in a 12-month slot —
+  `pd_lifetime_to_annual(pd, term)` does this under a constant-hazard
+  assumption (and
+  [`pd_annual_to_lifetime()`](../reference/pd_annual_to_lifetime.md) is
+  its inverse).
+- **Static LGD (L1).** The transition shock moves PD and NPV, but
+  `loss_given_default` is held constant — there is no downturn/stress
+  LGD. EL changes here reflect PD/value effects only; if your framework
+  uses scenario-conditional or downturn LGD, apply it separately.
+- **Geography filtering drops out-of-region assets (G1).** With
+  `scenario_geography` other than `"Global"`, the model keeps only
+  assets in the selected region(s); out-of-region assets are excluded
+  from the run silently. Reconcile your input asset count against the
+  results if you scope by geography.
+- **EL zscore normalizer basis must match.** The effective-PD round-trip
+  is only correct when the EL columns and the EAD×LGD denominator are on
+  the same basis. When EAD is NPV-share-allocated (as the simple runner
+  does), supply the matching `lgd_weighted_exposure` column rather than
+  relying on the `exposure_value_usd * loss_given_default` fallback.
 - **`internal_pd` must be in `[0, 1]` and joinable by `company_id`.**
   Unmatched `company_id`s fall back to `pd_baseline` with a warning;
   check the warning before trusting the result.

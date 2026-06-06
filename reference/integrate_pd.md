@@ -20,14 +20,23 @@ integrate_pd(
 
 - analysis_data:
 
-  Data frame from \[run_trisk_on_portfolio()\]; must contain columns
-  \`pd_baseline\`, \`pd_shock\`.
+  Data frame from a TRISK runner (\[run_trisk_on_simple_portfolio()\] or
+  \[run_trisk_on_portfolio()\]); must contain columns \`pd_baseline\`,
+  \`pd_shock\`.
 
 - internal_pd:
 
   Either (a) a numeric vector of length \`nrow(analysis_data)\`, (b) a
-  data frame with \`company_id\` and \`internal_pd\` columns, or (c)
-  NULL (default) in which case \`pd_baseline\` is used.
+  data frame with \`company_id\` (+ optional \`term\`/keys) and a value
+  column, or (c) NULL (default) in which case \`pd_baseline\` is used.
+
+  **Horizon consistency:** TRISK's \`pd_baseline\`/\`pd_shock\` are
+  cumulative over the loan \`term\`. This function does not know your
+  \`internal_pd\`'s horizon and applies no conversion, so supply an
+  \`internal_pd\` on a comparable horizon. If your internal PD is a
+  12-month (IFRS-9 Stage 1) figure, lift it to the term horizon first
+  with \[pd_annual_to_lifetime()\]; see "Choosing a direction" in
+  \[pd_lifetime_to_annual()\].
 
 - method:
 

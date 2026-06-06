@@ -14,7 +14,8 @@ aggregate_pd_integration(portfolio_df, group_cols = NULL)
 
   The \`\$portfolio\` element from \[integrate_pd()\], containing
   \`internal_pd\`, \`pd_baseline\`, \`pd_shock\`, \`trisk_adjusted_pd\`,
-  \`exposure_value_usd\`.
+  and a notional EAD column (\`exposure_at_default\` or
+  \`exposure_value_usd\`).
 
 - group_cols:
 

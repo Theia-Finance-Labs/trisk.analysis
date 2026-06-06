@@ -24,7 +24,7 @@ trisk.r.docker Shiny integration module."></head><body>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -70,14 +70,21 @@ trisk.r.docker Shiny integration module.</p>
 
 
 <dl><dt id="arg-analysis-data">analysis_data<a class="anchor" aria-label="anchor" href="#arg-analysis-data"></a></dt>
-<dd><p>Data frame from [run_trisk_on_portfolio()]; must contain
-columns `pd_baseline`, `pd_shock`.</p></dd>
+<dd><p>Data frame from a TRISK runner
+([run_trisk_on_simple_portfolio()] or [run_trisk_on_portfolio()]); must
+contain columns `pd_baseline`, `pd_shock`.</p></dd>
 
 
 <dt id="arg-internal-pd">internal_pd<a class="anchor" aria-label="anchor" href="#arg-internal-pd"></a></dt>
 <dd><p>Either (a) a numeric vector of length `nrow(analysis_data)`,
-(b) a data frame with `company_id` and `internal_pd` columns, or (c) NULL
-(default) in which case `pd_baseline` is used.</p></dd>
+  (b) a data frame with `company_id` (+ optional `term`/keys) and a value
+  column, or (c) NULL (default) in which case `pd_baseline` is used.</p>
+<p><strong>Horizon consistency:</strong> TRISK's `pd_baseline`/`pd_shock` are cumulative
+  over the loan `term`. This function does not know your `internal_pd`'s
+  horizon and applies no conversion, so supply an `internal_pd` on a comparable
+  horizon. If your internal PD is a 12-month (IFRS-9 Stage 1) figure, lift it
+  to the term horizon first with [pd_annual_to_lifetime()]; see "Choosing a
+  direction" in [pd_lifetime_to_annual()].</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>

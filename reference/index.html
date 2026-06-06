@@ -20,7 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -64,7 +64,7 @@
           <code><a href="run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code>
 
         </dt>
-        <dd>Run TRISK Model on Portfolio</dd>
+        <dd>Run TRISK Model on Portfolio (technology-resolved)</dd>
 
         <dt>
 
@@ -242,7 +242,7 @@
       </dl></div><div class="section level2">
       <h2 id="pd-and-el-integration">PD and EL integration<a class="anchor" aria-label="anchor" href="#pd-and-el-integration"></a></h2>
 
-      <div class="section-desc"><p>Recombine TRISK shock PDs with the bank’s internal PDs and translate to expected loss.</p></div>
+      <div class="section-desc"><p>Recombine TRISK shock PDs with the bank’s internal PDs and translate to expected loss, and convert PDs between cumulative-lifetime and 12-month horizons for IFRS-9 staging.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -262,6 +262,20 @@
 
         </dt>
         <dd>Integrate TRISK EL shift into an internal EL estimate</dd>
+
+        <dt>
+
+          <code><a href="pd_lifetime_to_annual.html">pd_lifetime_to_annual()</a></code>
+
+        </dt>
+        <dd>Convert a cumulative lifetime PD to an equivalent annual PD</dd>
+
+        <dt>
+
+          <code><a href="pd_annual_to_lifetime.html">pd_annual_to_lifetime()</a></code>
+
+        </dt>
+        <dd>Convert an annual PD to a cumulative lifetime PD over a horizon</dd>
       </dl></div><div class="section level2">
       <h2 id="plots-and-kpi-tables">Plots and KPI tables<a class="anchor" aria-label="anchor" href="#plots-and-kpi-tables"></a></h2>
 

@@ -1,8 +1,15 @@
-# Run TRISK Model on Portfolio
+# Run TRISK Model on Portfolio (technology-resolved)
 
-This function runs the TRISK model on a given portfolio, processing
-various input data and returning analysis results. It's designed to be
-the primary data processing function for generating plots.
+Runs the TRISK model on a portfolio resolved to the
+`(company, sector, technology, country)` grain, joining the portfolio to
+TRISK asset outputs on `technology`. Use this for *technology-resolved*
+analysis - e.g. exposure held against a specific technology line, or
+NPV-per-technology views. For a standard company-level loan book, use
+\[run_trisk_on_simple_portfolio()\], which takes company-level loans and
+allocates each loan's exposure across the company's technologies by NPV
+share.
+
+Returns analysis results suitable for the package plotting helpers.
 
 ## Usage
 

@@ -35,7 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -59,7 +59,7 @@
 
 
 
-<script src="bank_2_simple-portfolio-analysis_files/kePrint-0.0.1/kePrint.js"></script><link href="bank_2_simple-portfolio-analysis_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
@@ -87,27 +87,13 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This vignette walks through running TRISK on a bank loan book. The
-package exposes two entry points, and the right one depends on how much
-company metadata your portfolio carries:</p>
-<ul>
-<li>
-<code><a href="../reference/run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code> — the <strong>minimal
-path</strong>. You bring company exposures, terms, and
-loss-given-default; no <code>country_iso2</code> column is needed. TRISK
-runs and allocates exposure across each company’s technologies for
-you.</li>
-<li>
-<code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> — the <strong>fuller
-path</strong>. You match your portfolio to TRISK assets by country and
-company (by ID, name, or country aggregate), then run the model on the
-filtered asset universe.</li>
-</ul>
-<p>As a rule of thumb: use the simple runner for a quick,
-single-company-resolution risk read where you already know which
-counterparties you hold. Use the full runner when you need country-level
-matching, fuzzy name matching, or the built-in equity- and credit-risk
-plots.</p>
+<p>This vignette walks through running TRISK on a bank loan book with
+<code><a href="../reference/run_trisk_on_simple_portfolio.html">run_trisk_on_simple_portfolio()</a></code> — the bank entry point. You
+bring company exposures, terms, and loss-given-default (no
+<code>country_iso2</code> column needed), and TRISK runs and allocates
+each loan’s exposure across the company’s technologies for you. The
+per-technology results feed the equity- (NPV, exposure) and credit-risk
+(PD, expected-loss) plots directly.</p>
 </div>
 <div class="section level2">
 <h2 id="inputs">Inputs<a class="anchor" aria-label="anchor" href="#inputs"></a>
@@ -126,7 +112,7 @@ your own files. See <a href="bank_1_inputs-and-outputs.html">Inputs and
 outputs</a> for <code><a href="../reference/setup_trisk_inputs.html">setup_trisk_inputs()</a></code> and the
 <code>trisk_inputs/</code> folder convention.</p>
 </blockquote>
-<p>Both runners need the same four TRISK model inputs, shipped as test
+<p>The simple runner needs the four TRISK model inputs, shipped as test
 data in the <code>trisk.model</code> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
@@ -139,8 +125,7 @@ scenario, plus the geography to evaluate:</p>
 <code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_CP"</span></span>
 <span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
 <span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"Global"</span></span></code></pre></div>
-<p>The two runners differ only in the <strong>portfolio schema</strong>
-they expect, covered in each example below.</p>
+<p>The portfolio schema is covered in the example below.</p>
 </div>
 <div class="section level2">
 <h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
@@ -223,12 +208,12 @@ exposure.</li>
 <span><span class="co">#&gt; 5        103    5 Oil&amp;Gas           Gas                  3728364</span></span>
 <span><span class="co">#&gt; 6        104    4   Power RenewablesCap                  9263702</span></span>
 <span><span class="co">#&gt;   net_present_value_baseline</span></span>
-<span><span class="co">#&gt; 1                   51951.82</span></span>
-<span><span class="co">#&gt; 2                   51951.82</span></span>
-<span><span class="co">#&gt; 3                   51951.82</span></span>
-<span><span class="co">#&gt; 4                13648160.57</span></span>
-<span><span class="co">#&gt; 5                27724344.25</span></span>
-<span><span class="co">#&gt; 6               141635910.26</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                   31278.13</span></span>
+<span><span class="co">#&gt; 2                   31278.13</span></span>
+<span><span class="co">#&gt; 3                   31278.13</span></span>
+<span><span class="co">#&gt; 4                 8453239.83</span></span>
+<span><span class="co">#&gt; 5                16458526.57</span></span>
+<span><span class="co">#&gt; 6                83135863.75</span></span></code></pre></div>
 <p>Because <code>exposure_value_usd_share</code> is computed after
 dropping <code>run_id</code>, it is constant across runs for a given
 <code>(company_id, term, sector, technology)</code>.</p>
@@ -264,760 +249,39 @@ original loan amounts.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="full-portfolio-with-country-matching">Full portfolio with country matching<a class="anchor" aria-label="anchor" href="#full-portfolio-with-country-matching"></a>
+<h2 id="plotting-the-per-technology-results">Plotting the per-technology results<a class="anchor" aria-label="anchor" href="#plotting-the-per-technology-results"></a>
 </h2>
-<p>When your portfolio carries country information,
-<code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> filters TRISK assets to your
-holdings before running, and gives you matching flexibility. There are
-three valid portfolio input structures:</p>
+<p>The simple runner’s <code>portfolio_results_tech_detail</code>
+carries per-technology NPV, PD, and expected-loss columns — exactly what
+the package plotting helpers need. Expose the NPV-share-allocated
+exposure (<code>exposure_at_default</code>) as
+<code>exposure_value_usd</code> so the plots can aggregate it, then pass
+the frame in:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">portfolio_countries_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_countries_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.analysis"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">portfolio_ids_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_ids_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.analysis"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">portfolio_names_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"portfolio_names_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.analysis"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Leaving <code>company_id</code> and <code>company_name</code> empty
-aggregates TRISK results per country and technology, matched on those
-columns:</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-exposure_value_usd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-term
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-loss_given_default
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-1839267
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-6227364
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-3728364
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-RenewablesCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-9263702
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Filling in <code>company_name</code> triggers fuzzy string matching
-between company names:</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-exposure_value_usd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-term
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-loss_given_default
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-1839267
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Comany 2
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-6227364
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Corony 3
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-3728364
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Compan 4
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-RenewablesCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-9263702
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Filling in <code>company_id</code> triggers an exact match between
-companies:</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-exposure_value_usd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-term
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-loss_given_default
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-101
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-1839267
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-102
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-6227364
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-103
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-3728364
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-104
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-RenewablesCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-9263702
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Using company IDs is the recommended match. In the asset data, a
-unique asset is defined by a unique combination of
-<code>company_id</code>, <code>sector</code>, <code>technology</code>,
-and <code>country</code>. Those columns drive the join between the
-portfolio and TRISK outputs:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">portfolio_testdata</span> <span class="op">&lt;-</span> <span class="va">portfolio_ids_testdata</span></span></code></pre></div>
-<p><code><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio()</a></code> handles the filtering on
-portfolio and then runs TRISK:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">analysis_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_trisk_on_portfolio.html">run_trisk_on_portfolio</a></span><span class="op">(</span></span>
-<span>  assets_data <span class="op">=</span> <span class="va">assets_testdata</span>,</span>
-<span>  scenarios_data <span class="op">=</span> <span class="va">scenarios_testdata</span>,</span>
-<span>  financial_data <span class="op">=</span> <span class="va">financial_features_testdata</span>,</span>
-<span>  carbon_data <span class="op">=</span> <span class="va">ngfs_carbon_price_testdata</span>,</span>
-<span>  portfolio_data <span class="op">=</span> <span class="va">portfolio_testdata</span>,</span>
-<span>  baseline_scenario <span class="op">=</span> <span class="va">baseline_scenario</span>,</span>
-<span>  target_scenario <span class="op">=</span> <span class="va">target_scenario</span>,</span>
-<span>  scenario_geography <span class="op">=</span> <span class="va">scenario_geography</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
-<span><span class="co">#&gt; -- Processing Assets and Scenarios. </span></span>
-<span><span class="co">#&gt; -- Transforming to Trisk model input. </span></span>
-<span><span class="co">#&gt; -- Calculating baseline, target, and shock trajectories. </span></span>
-<span><span class="co">#&gt; -- Applying zero-trajectory logic to production trajectories. </span></span>
-<span><span class="co">#&gt; -- Calculating net profits.</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(asset_id, company_id, sector, technology)`</span></span>
-<span><span class="co">#&gt; -- Calculating market risk. </span></span>
-<span><span class="co">#&gt; -- Calculating credit risk.</span></span></code></pre></div>
-<p>Result data frame:</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:200%; ">
-<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-company_name
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-sector
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-technology
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-country_iso2
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-exposure_value_usd
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-term
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-loss_given_default
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-run_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_id
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-asset_name
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_shock
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_difference
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-net_present_value_change
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_baseline
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-pd_shock
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-1839267
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-<td style="text-align:left;">
-12109480-ac7c-4532-af08-80a132306c45
-</td>
-<td style="text-align:left;">
-101
-</td>
-<td style="text-align:left;">
-Company 1
-</td>
-<td style="text-align:right;">
-51951.82
-</td>
-<td style="text-align:right;">
-13549.28
-</td>
-<td style="text-align:right;">
--38402.54
-</td>
-<td style="text-align:right;">
--0.7391952
-</td>
-<td style="text-align:right;">
-1.10e-06
-</td>
-<td style="text-align:right;">
-0.0004647
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-102
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-Coal
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-6227364
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-<td style="text-align:left;">
-12109480-ac7c-4532-af08-80a132306c45
-</td>
-<td style="text-align:left;">
-102
-</td>
-<td style="text-align:left;">
-Company 2
-</td>
-<td style="text-align:right;">
-13648160.57
-</td>
-<td style="text-align:right;">
-4317747.56
-</td>
-<td style="text-align:right;">
--9330413.02
-</td>
-<td style="text-align:right;">
--0.6836389
-</td>
-<td style="text-align:right;">
-0.00e+00
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-103
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Oil&amp;Gas
-</td>
-<td style="text-align:left;">
-Gas
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-3728364
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-<td style="text-align:left;">
-12109480-ac7c-4532-af08-80a132306c45
-</td>
-<td style="text-align:left;">
-103
-</td>
-<td style="text-align:left;">
-Company 3
-</td>
-<td style="text-align:right;">
-27724344.25
-</td>
-<td style="text-align:right;">
-12420187.12
-</td>
-<td style="text-align:right;">
--15304157.13
-</td>
-<td style="text-align:right;">
--0.5520115
-</td>
-<td style="text-align:right;">
-8.09e-05
-</td>
-<td style="text-align:right;">
-0.0012524
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-104
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Power
-</td>
-<td style="text-align:left;">
-RenewablesCap
-</td>
-<td style="text-align:left;">
-DE
-</td>
-<td style="text-align:right;">
-9263702
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-<td style="text-align:left;">
-12109480-ac7c-4532-af08-80a132306c45
-</td>
-<td style="text-align:left;">
-104
-</td>
-<td style="text-align:left;">
-Company 4
-</td>
-<td style="text-align:right;">
-141635910.26
-</td>
-<td style="text-align:right;">
-202554984.40
-</td>
-<td style="text-align:right;">
-60919074.14
-</td>
-<td style="text-align:right;">
-0.4301104
-</td>
-<td style="text-align:right;">
-3.20e-06
-</td>
-<td style="text-align:right;">
-0.0000003
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level3">
-<h3 id="plotting-the-results">Plotting the results<a class="anchor" aria-label="anchor" href="#plotting-the-results"></a>
-</h3>
-<p>The full runner’s output plugs directly into the package plotting
-helpers.</p>
+<code class="sourceCode R"><span><span class="va">npv_analysis</span> <span class="op">&lt;-</span> <span class="va">portfolio_results_tech_detail</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>exposure_value_usd <span class="op">=</span> <span class="va">exposure_at_default</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Equity risk</strong> — average percentage NPV change per
 technology:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_npv_change_plot.html">pipeline_trisk_npv_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_npv_change_plot.html">pipeline_trisk_npv_change_plot</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span></code></pre></div>
-<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 <p>Resulting portfolio exposure change:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_exposure_change_plot.html">pipeline_trisk_exposure_change_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_exposure_change_plot.html">pipeline_trisk_exposure_change_plot</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, technology)`</span></span></code></pre></div>
-<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="700"></p>
 <p><strong>Bonds &amp; loans risk</strong> — average PDs at baseline and
 shock:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_term_plot.html">pipeline_trisk_pd_term_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_pd_term_plot.html">pipeline_trisk_pd_term_plot</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector, term)`</span></span></code></pre></div>
-<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="700"></p>
 <p>Resulting portfolio expected loss:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_expected_loss_plot.html">pipeline_trisk_expected_loss_plot</a></span><span class="op">(</span><span class="va">analysis_data</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_expected_loss_plot.html">pipeline_trisk_expected_loss_plot</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector)`</span></span></code></pre></div>
-<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="700"></p>
-</div>
+<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
@@ -1028,11 +292,6 @@ climate transition risk to a known book. Its
 <code>exposure_value_usd_share</code> lets you see how each loan’s
 exposure spreads across a company’s technologies, so you can spot which
 technology mix drives a counterparty’s risk.</li>
-<li>The <strong>full runner</strong> is the right tool when matching is
-non-trivial — you only have country-level exposures, or you need to
-reconcile messy company names — and when you want the equity (NPV
-change, exposure change) and credit (PD term, expected loss) views
-straight out of the box.</li>
 <li>A negative NPV change and a rising shock PD on the same technology
 flag where the transition both erodes asset value and lifts default
 probability — the positions to scrutinise first.</li>
@@ -1042,10 +301,6 @@ probability — the positions to scrutinise first.</li>
 <h2 id="caveats">Caveats<a class="anchor" aria-label="anchor" href="#caveats"></a>
 </h2>
 <ul>
-<li>The country-aggregate and fuzzy-name matching modes trade precision
-for coverage. Prefer <code>company_id</code> exact matching whenever IDs
-are available; fall back to name or country matching only when they are
-not.</li>
 <li>Exposure allocation in the simple runner is NPV-share based and
 reconciles to the original totals only up to floating-point tolerance —
 confirm the <code>gap</code> before relying on allocated figures.</li>

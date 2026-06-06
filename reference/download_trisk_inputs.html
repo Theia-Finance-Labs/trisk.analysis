@@ -24,7 +24,7 @@ Package-level variables for `endpoint` and `s3_prefix` are used if not provided 
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
-    <li><a class="dropdown-item" href="../articles/0_getting-started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Bank workflow</h6></li>
     <li><a class="dropdown-item" href="../articles/bank_1_inputs-and-outputs.html">Bank workflow 1: Inputs and outputs</a></li>
@@ -87,6 +87,17 @@ Package-level variables for `endpoint` and `s3_prefix` are used if not provided 
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>TRUE if all files are downloaded successfully, FALSE otherwise.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="provenance-dl-">Provenance (DL1)<a class="anchor" aria-label="anchor" href="#provenance-dl-"></a></h2>
+
+
+<p>This fetches the public reference **scenarios** dataset only. The other model
+inputs - `assets`, `financial_features`, and `ngfs_carbon_prices` - are **not**
+downloaded here; they are institution-specific and must be supplied by the user
+in the documented schema. Use [setup_trisk_inputs()] to scaffold a folder with
+the required files, column schemas, and filled samples for every input, and see
+the "Inputs and outputs" vignette for the expected formats.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

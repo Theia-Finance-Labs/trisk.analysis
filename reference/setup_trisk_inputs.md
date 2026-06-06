@@ -62,7 +62,7 @@ portfolio:
 
 - portfolio_ids:
 
-  \*\*Your loan book\*\*, keyed by \`company_id\` — the main,
+  \*\*Your loan book\*\*, keyed by \`company_id\` - the main,
   recommended portfolio input. You can instead match by company name
   (\`portfolio_names\`) or by country only (\`portfolio_countries\`);
   both are options. Add an \`internal_pd\` column for the

@@ -21,7 +21,8 @@ pipeline_trisk_pd_method_comparison(
 
 - analysis_data:
 
-  Raw output of \[run_trisk_on_portfolio()\].
+  Per-(company, technology) output of a TRISK runner (e.g.
+  \[run_trisk_on_simple_portfolio()\]).
 
 - internal_pd:
 
