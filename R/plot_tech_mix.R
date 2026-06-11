@@ -48,13 +48,26 @@ prepare_for_trisk_tech_mix <- function(analysis_data) {
     stop("pipeline_trisk_tech_mix(): missing columns: ",
          paste(miss, collapse = ", "), call. = FALSE)
   }
-  analysis_data |>
+  # NPV is a model output at company/technology grain, repeated across a
+  # company's loan rows (terms). De-duplicate on the model keys before summing
+  # so the NPV mix does not depend on how a loan is split into rows; EAD is a
+  # per-loan quantity and is summed directly. (Codex review, P2.)
+  npv_keys <- intersect(
+    c("run_id", "company_id", "country_iso2", "sector", "technology"),
+    colnames(analysis_data)
+  )
+  npv_tbl <- analysis_data |>
+    dplyr::select(dplyr::all_of(npv_keys), "net_present_value_baseline") |>
+    dplyr::distinct() |>
     dplyr::group_by(.data$sector, .data$technology) |>
-    dplyr::summarise(
-      npv = sum(.data$net_present_value_baseline, na.rm = TRUE),
-      ead = sum(.data[[ead_col]], na.rm = TRUE),
-      .groups = "drop"
-    ) |>
+    dplyr::summarise(npv = sum(.data$net_present_value_baseline, na.rm = TRUE),
+                     .groups = "drop")
+  ead_tbl <- analysis_data |>
+    dplyr::group_by(.data$sector, .data$technology) |>
+    dplyr::summarise(ead = sum(.data[[ead_col]], na.rm = TRUE), .groups = "drop")
+  dplyr::full_join(npv_tbl, ead_tbl, by = c("sector", "technology")) |>
+    dplyr::mutate(npv = tidyr::replace_na(.data$npv, 0),
+                  ead = tidyr::replace_na(.data$ead, 0)) |>
     dplyr::group_by(.data$sector) |>
     dplyr::mutate(
       # Non-negative weights (mirrors the add_exposure_share_from_npv guard); a
