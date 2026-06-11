@@ -61,6 +61,9 @@ Load the bundled test datasets:
 
 ```{r}
 assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model"))
+# NGFS 2024 scenarios start in 2023; the bundled assets reach back to 2022 and
+# TRISK errors on assets outside the scenario window, so scope to 2023 onward.
+assets_testdata <- assets_testdata[assets_testdata$production_year >= 2023, ]
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
@@ -222,8 +225,8 @@ providers (NGFS, WEO, IPR, Oxford, GECO and the Mission Possible Partnership for
 steel), each with one or more data vintages.
 
 Scenario names encode provider, vintage and scenario, e.g. `WEO2023_STEPS` is the
-IEA World Energy Outlook 2023 "Stated Policies" baseline; `NGFS2023GCAM_NZ2050`
-is the NGFS 2023 "Net Zero 2050" target run on the GCAM integrated-assessment
+IEA World Energy Outlook 2023 "Stated Policies" baseline; `NGFS2024GCAM_NZ2050`
+is the NGFS 2024 "Net Zero 2050" target run on the GCAM integrated-assessment
 model. As a rule, pick the baseline and target from the *same provider*.
 
 The bundled scenarios already expose the valid baseline/target pairings via
@@ -252,8 +255,8 @@ into two groups: scenario selection (which pathways to compare and where) and
 financial assumptions (the DCF and PD model knobs).
 
 ```{r}
-baseline_scenario <- "NGFS2023GCAM_CP"
-target_scenario <- "NGFS2023GCAM_NZ2050"
+baseline_scenario <- "NGFS2024GCAM_CP"
+target_scenario <- "NGFS2024GCAM_NZ2050"
 scenario_geography <- "Global"
 shock_year <- 2030
 
