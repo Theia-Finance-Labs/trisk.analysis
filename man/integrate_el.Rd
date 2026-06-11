@@ -40,8 +40,9 @@ List with `$portfolio`, `$portfolio_long`, `$aggregate`.
 \description{
 Applies one of three methods to translate the TRISK baseline-to-shock EL
 change into the bank's own internal EL scale. "absolute" and "relative"
-mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
-Vasicek recombination by transforming EL to an effective PD
+mirror the Shiny EL integration logic; "zscore" reuses the integrate_pd
+probit recombination engine (`apply_pd_method`, a Merton-style threshold
+recombination — not the Basel IRB / Vasicek capital formula) by transforming EL to an effective PD
 (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
 space, and converting back. All three methods return EL as a positive
 magnitude (post 59571f3 package-wide convention). The zscore method needs the

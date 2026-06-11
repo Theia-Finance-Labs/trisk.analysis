@@ -321,8 +321,9 @@ apply_pd_method <- function(internal, baseline, shock, method,
 #'
 #' Applies one of three methods to translate the TRISK baseline-to-shock EL
 #' change into the bank's own internal EL scale. "absolute" and "relative"
-#' mirror the Shiny EL integration logic; "zscore" adds a Basel IRB-aligned
-#' Vasicek recombination by transforming EL to an effective PD
+#' mirror the Shiny EL integration logic; "zscore" reuses the integrate_pd
+#' probit recombination engine (`apply_pd_method`, a Merton-style threshold
+#' recombination — not the Basel IRB / Vasicek capital formula) by transforming EL to an effective PD
 #' (|EL| / (EAD * LGD)), applying the z-score combination in normal-quantile
 #' space, and converting back. All three methods return EL as a positive
 #' magnitude (post 59571f3 package-wide convention). The zscore method needs the
@@ -487,21 +488,23 @@ apply_el_method <- function(internal, baseline, shock, method,
       internal * (1 + change_pct)
     },
     zscore = {
-      # Basel IRB style recombination, applied to EL via the effective-PD
-      # transform: EL = EAD * LGD * PD  -->  PD_eff = |EL| / (EAD*LGD), where
-      # `lgd_weighted_exp` is the LGD-weighted exposure (EAD*LGD). After z-score
-      # recombination in normal-quantile space, convert back via
-      # (EAD*LGD) * PD_adj. Returns a positive magnitude, matching the package's
-      # positive-EL convention (see 59571f3).
-      clip <- function(x) pmin(pmax(x, zscore_floor), zscore_cap)
+      # Reuse the SINGLE PD recombination engine (apply_pd_method, exactly as
+      # integrate_pd uses it) instead of duplicating the probit math here. EL only
+      # needs mapping into PD space first: EL = EAD*LGD*PD  -->  PD_eff =
+      # |EL| / (EAD*LGD), where `lgd_weighted_exp` is EAD*LGD. apply_pd_method
+      # clips and recombines in normal-quantile space; we convert back via
+      # (EAD*LGD) * PD_adj. Positive magnitude, per the package convention (59571f3).
+      # The |EL|/(EAD*LGD) map is why the EL columns and lgd_weighted_exp must
+      # share a basis (see the "EL zscore normalizer" caveat); it is intrinsic to
+      # accepting EL (not PD) as input, not a property of the recombination.
       safe_div <- function(x) ifelse(lgd_weighted_exp > 0, abs(x) / lgd_weighted_exp, 0)
-      pd_internal <- clip(safe_div(internal))
-      pd_baseline <- clip(safe_div(baseline))
-      pd_shock    <- clip(safe_div(shock))
-      adjusted_pd <- stats::pnorm(
-        stats::qnorm(pd_internal) +
-        stats::qnorm(pd_shock) -
-        stats::qnorm(pd_baseline)
+      adjusted_pd <- apply_pd_method(
+        internal     = safe_div(internal),
+        baseline     = safe_div(baseline),
+        shock        = safe_div(shock),
+        method       = "zscore",
+        zscore_floor = zscore_floor,
+        zscore_cap   = zscore_cap
       )
       lgd_weighted_exp * adjusted_pd
     }
