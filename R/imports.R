@@ -50,6 +50,66 @@ TRISK_HEX_ADJUSTED <- "#AA2A2B"
 #' @export
 STATUS_GREEN <- "#3D8B5E"
 
+#' TRISK sector colour system
+#'
+#' A base hue per climate-relevant sector. Technologies within a sector are
+#' rendered as shades of that base (darkest = most carbon-intensive) by
+#' [trisk_sector_shades()], used in [pipeline_trisk_tech_mix()].
+#'
+#' @format Named character vector of hex colours (one base colour per sector).
+#' @export
+TRISK_SECTOR_PALETTE <- c(
+  "Coal"       = "#2E2A26",
+  "Oil&Gas"    = "#8C2D20",
+  "Power"      = "#E8702A",
+  "Cement"     = "#5B6B7A",
+  "Steel"      = "#3E5C50",
+  "Automotive" = "#6B4A7A"
+)
+
+# Carbon-intensity order (dirtiest -> cleanest within each sector) so the darkest
+# shade maps to the most carbon-intensive technology. Covers every technology of
+# the sectors in TRISK_SECTOR_PALETTE; any unlisted technology sorts to the light
+# (clean) end.
+TRISK_TECH_INTENSITY_ORDER <- c(
+  "Coal",
+  "Oil", "Gas",
+  "CoalCap", "OilCap", "GasCap", "NuclearCap", "HydroCap", "RenewablesCap",
+  "Cement",
+  "BF-OHF", "BF-BOF", "BOF", "DRI-BOF", "BF-EAF", "DRI-EAF", "EAF",
+  "ICE", "Hybrid", "FuelCell", "Electric"
+)
+
+#' Sector-shaded technology colours
+#'
+#' Shades of a sector's base colour ([TRISK_SECTOR_PALETTE]) for its
+#' technologies, ordered dark (carbon-intensive) to light (clean).
+#'
+#' @param sector Sector name (key into [TRISK_SECTOR_PALETTE]; unknown sectors
+#'   fall back to neutral grey).
+#' @param technologies Character vector of technology names in that sector.
+#' @return Named character vector of hex colours, one per technology.
+#' @export
+trisk_sector_shades <- function(sector, technologies) {
+  base <- if (sector %in% names(TRISK_SECTOR_PALETTE)) {
+    TRISK_SECTOR_PALETTE[[sector]]
+  } else {
+    "#888780"
+  }
+  ord <- technologies[order(match(technologies, TRISK_TECH_INTENSITY_ORDER),
+                            technologies)]
+  if (length(ord) == 1L) {
+    return(stats::setNames(base, ord)) # single technology keeps the sector base hue
+  }
+  mix_to <- function(col, to, amt) {
+    grDevices::colorRampPalette(c(col, to))(100)[round(amt * 99) + 1]
+  }
+  ramp <- grDevices::colorRampPalette(
+    c(mix_to(base, "#000000", 0.22), base, mix_to(base, "#FFFFFF", 0.68))
+  )
+  stats::setNames(ramp(max(length(ord), 2))[seq_along(ord)], ord)
+}
+
 # Numeric constants used across the integration + plotting layer.
 # Default for `qnorm()` clip in the z-score effective-PD transform.
 ZSCORE_FLOOR_DEFAULT <- 1e-4

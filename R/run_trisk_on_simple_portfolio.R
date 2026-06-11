@@ -164,7 +164,10 @@ check_portfolio_simple <- function(portfolio_data) {
 #' Allocates \code{exposure_value_usd} to assets using each asset baseline NPV share.
 #' It mirrors the Python logic: compute run-level shares, average exposure share after
 #' dropping \code{run_id}, then re-scale so each original portfolio row keeps its total
-#' exposure.
+#' exposure. Non-negative guard: negative technology NPVs are clamped to 0 and a
+#' company whose total baseline NPV is non-positive is split equally across its
+#' technologies (with a warning), so allocated exposure stays non-negative and
+#' still reconciles to the original loan totals.
 #'
 #' @param portfolio_results Output of \code{run_trisk_on_simple_portfolio} before share allocation.
 #'
@@ -177,29 +180,44 @@ add_exposure_share_from_npv <- function(portfolio_results) {
   )
   grouping_keys <- grouping_keys[grouping_keys %in% colnames(portfolio_results)]
 
+  # G(NPV): NPV-share allocation needs non-negative weights. A negative
+  # technology NPV would allocate negative exposure, and an all-non-positive
+  # company NPV would silently drop the loan from every EAD-weighted aggregate.
+  # Guard: clamp component NPVs to >= 0 for the share; if a company's clamped
+  # total is 0 (every technology non-positive), fall back to an equal split.
   df <- portfolio_results |>
     dplyr::group_by(.data$.portfolio_index, .data$run_id) |>
     dplyr::mutate(
       has_trisk_npv = any(!is.na(.data$net_present_value_baseline)),
-      total_company_npv = dplyr::if_else(
-        .data$has_trisk_npv,
-        sum(.data$net_present_value_baseline, na.rm = TRUE),
-        NA_real_
-      )
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::mutate(
-      npv_share = dplyr::if_else(
-        is.na(.data$total_company_npv),
-        NA_real_,
-        dplyr::if_else(
-          .data$total_company_npv == 0,
-          0,
-          .data$net_present_value_baseline / .data$total_company_npv
-        )
+      npv_pos       = pmax(.data$net_present_value_baseline, 0),
+      total_pos     = sum(.data$npv_pos, na.rm = TRUE),
+      n_tech        = dplyr::n(),
+      npv_share = dplyr::case_when(
+        !.data$has_trisk_npv ~ NA_real_,
+        .data$total_pos > 0  ~ .data$npv_pos / .data$total_pos,
+        TRUE                 ~ 1 / .data$n_tech
       ),
       exposure_value_usd_share_run = .data$exposure_value_usd * .data$npv_share
-    )
+    ) |>
+    dplyr::ungroup()
+
+  # Surface the company/run groups where the guard bit, so the fallback is visible.
+  flagged <- portfolio_results |>
+    dplyr::group_by(.data$.portfolio_index, .data$run_id, .data$company_id) |>
+    dplyr::summarise(
+      bit = any(.data$net_present_value_baseline < 0, na.rm = TRUE) ||
+        (any(!is.na(.data$net_present_value_baseline)) &&
+          sum(pmax(.data$net_present_value_baseline, 0), na.rm = TRUE) == 0),
+      .groups = "drop"
+    ) |>
+    dplyr::filter(.data$bit)
+  if (nrow(flagged) > 0) {
+    warning("add_exposure_share_from_npv(): non-positive baseline NPV in ",
+            length(unique(flagged$company_id)), " company(ies); negative ",
+            "technology NPVs were clamped to 0 and all-non-positive companies were ",
+            "split equally across technologies. Affected company_id(s): ",
+            paste(unique(flagged$company_id), collapse = ", "), call. = FALSE)
+  }
 
   grouped <- df |>
     dplyr::group_by(dplyr::across(dplyr::all_of(grouping_keys))) |>
