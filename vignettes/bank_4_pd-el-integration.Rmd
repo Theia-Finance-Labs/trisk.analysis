@@ -75,6 +75,9 @@ is missing or out of range. Internal EL is **derived**, not stored:
 
 ```{r}
 assets_testdata    <- read.csv(system.file("testdata", "assets_testdata.csv",    package = "trisk.model"))
+# NGFS 2024 scenarios start in 2023; bundled assets reach 2022 and TRISK errors
+# on assets outside the scenario window, so scope to 2023 onward.
+assets_testdata    <- assets_testdata[assets_testdata$production_year >= 2023, ]
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 fin_testdata       <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 carbon_testdata    <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
@@ -194,8 +197,8 @@ simple_results <- run_trisk_on_simple_portfolio(
   financial_data     = fin_testdata,
   carbon_data        = carbon_testdata,
   portfolio_data     = portfolio_simple,
-  baseline_scenario  = "NGFS2023GCAM_CP",
-  target_scenario    = "NGFS2023GCAM_NZ2050",
+  baseline_scenario  = "NGFS2024GCAM_CP",
+  target_scenario    = "NGFS2024GCAM_NZ2050",
   scenario_geography = "Global"
 )
 # Expose the NPV-share-allocated exposure as `exposure_value_usd` so the
@@ -488,6 +491,12 @@ ggplot2::ggplot(el_compare_sector,
 - **PD level is not portable; only the shift is.** TRISK's Merton PD level is
   calibration-specific. The integration deliberately transports the
   baseline-to-shock *change*, not TRISK's absolute PD.
+- **Baseline alignment (double-counting risk).** The overlay transports only
+  TRISK's baseline-to-shock *shift*, which assumes your `internal_pd` is neutral
+  with respect to the transition baseline. If your internal PD already conditions
+  on a macro / credit-cycle view that overlaps TRISK's Current-Policies baseline,
+  that baseline is partly counted twice. Confirm the scenario basis of your
+  internal PD before integrating.
 - **Zero-baseline rows lose signal under `relative`.** When `pd_baseline = 0`
   the relative method returns the internal PD unchanged. Use `absolute` or
   `zscore` if that matters for your book.
