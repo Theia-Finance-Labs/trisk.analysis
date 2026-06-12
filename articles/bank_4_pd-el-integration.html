@@ -193,6 +193,9 @@ EL is <strong>derived</strong>, not stored:
 section).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,    package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># NGFS 2024 scenarios start in 2023; bundled assets reach 2022 and TRISK errors</span></span>
+<span><span class="co"># on assets outside the scenario window, so scope to 2023 onward.</span></span>
+<span><span class="va">assets_testdata</span>    <span class="op">&lt;-</span> <span class="va">assets_testdata</span><span class="op">[</span><span class="va">assets_testdata</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
 <span><span class="va">scenarios_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fin_testdata</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">carbon_testdata</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
@@ -322,8 +325,8 @@ book and use its per-technology detail as the analysis frame:</p>
 <span>  financial_data     <span class="op">=</span> <span class="va">fin_testdata</span>,</span>
 <span>  carbon_data        <span class="op">=</span> <span class="va">carbon_testdata</span>,</span>
 <span>  portfolio_data     <span class="op">=</span> <span class="va">portfolio_simple</span>,</span>
-<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
@@ -392,13 +395,13 @@ Gas
 5.00e-07
 </td>
 <td style="text-align:right;">
-0.0000472
+0.0000562
 </td>
 <td style="text-align:right;">
-31278.13
+33477.77
 </td>
 <td style="text-align:right;">
-10902.84
+11766.86
 </td>
 </tr>
 <tr>
@@ -421,10 +424,10 @@ Coal
 0.0000000
 </td>
 <td style="text-align:right;">
-8453239.83
+8800418.66
 </td>
 <td style="text-align:right;">
-3464740.72
+3639454.38
 </td>
 </tr>
 <tr>
@@ -444,13 +447,13 @@ Gas
 3.24e-05
 </td>
 <td style="text-align:right;">
-0.0002445
+0.0003722
 </td>
 <td style="text-align:right;">
-16458526.57
+17134142.10
 </td>
 <td style="text-align:right;">
-8743193.23
+8052294.99
 </td>
 </tr>
 <tr>
@@ -470,13 +473,13 @@ RenewablesCap
 1.20e-06
 </td>
 <td style="text-align:right;">
-0.0000002
+0.0000001
 </td>
 <td style="text-align:right;">
-83135863.75
+89669830.81
 </td>
 <td style="text-align:right;">
-114031784.03
+126997382.67
 </td>
 </tr>
 </tbody>
@@ -495,14 +498,14 @@ validation:</p>
 <code class="sourceCode R"><span><span class="va">run_meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">simple_results</span>, <span class="st">"trisk_run_meta"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">run_meta</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 6</span></span>
-<span><span class="co">#&gt;  $ baseline_scenario: chr "NGFS2023GCAM_CP"</span></span>
-<span><span class="co">#&gt;  $ target_scenario  : chr "NGFS2023GCAM_NZ2050"</span></span>
-<span><span class="co">#&gt;  $ run_id           : chr "b99dc692-da8d-49cf-826a-afa93a8d2950"</span></span>
+<span><span class="co">#&gt;  $ baseline_scenario: chr "NGFS2024GCAM_CP"</span></span>
+<span><span class="co">#&gt;  $ target_scenario  : chr "NGFS2024GCAM_NZ2050"</span></span>
+<span><span class="co">#&gt;  $ run_id           : chr "a899fb14-73a9-4e03-af7c-0944e219c531"</span></span>
 <span><span class="co">#&gt;  $ trisk_args       :List of 1</span></span>
 <span><span class="co">#&gt;   ..$ scenario_geography: chr "Global"</span></span>
 <span><span class="co">#&gt;  $ package_versions : Named chr [1:2] "1.2.3" "2.6.1"</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "names")= chr [1:2] "trisk.analysis" "trisk.model"</span></span>
-<span><span class="co">#&gt;  $ created_at       : POSIXct[1:1], format: "2026-06-06 07:49:52"</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ created_at       : POSIXct[1:1], format: "2026-06-12 09:11:51"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level4">
@@ -564,7 +567,7 @@ Oil&amp;Gas
 5.00e-07
 </td>
 <td style="text-align:right;">
-0.0000472
+0.0000562
 </td>
 <td style="text-align:right;">
 0.0250000
@@ -610,13 +613,13 @@ Oil&amp;Gas
 3.24e-05
 </td>
 <td style="text-align:right;">
-0.0002445
+0.0003722
 </td>
 <td style="text-align:right;">
-0.0496256
+0.0624542
 </td>
 <td style="text-align:right;">
-0.0196256
+0.0324542
 </td>
 </tr>
 <tr>
@@ -633,7 +636,7 @@ Power
 1.20e-06
 </td>
 <td style="text-align:right;">
-0.0000002
+0.0000001
 </td>
 <td style="text-align:right;">
 0.0150000
@@ -844,14 +847,14 @@ Adjustment %
 2.592%
 </td>
 <td style="text-align:right;">
-2.940%
+3.167%
 </td>
 <td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">+0.347
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">+0.575
 pp</span>
 </td>
 <td style="text-align:right;">
-13.404%
+22.166%
 </td>
 </tr></tbody>
 </table>
@@ -898,16 +901,16 @@ EL/exposure delta (bps)
 318.1K
 </td>
 <td style="text-align:right;">
-354.6K
+378.6K
 </td>
 <td style="text-align:right;">
-<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">36.6K</span>
+<span style=" font-weight: bold;    color: rgba(245, 61, 63, 255) !important;">60.5K</span>
 </td>
 <td style="text-align:right;">
-168.4 bps
+179.8 bps
 </td>
 <td style="text-align:right;">
-17.4 bps
+28.7 bps
 </td>
 </tr></tbody>
 </table>
@@ -991,13 +994,13 @@ Oil&amp;Gas
 88.1K
 </td>
 <td style="text-align:right;">
-124.7K
+148.6K
 </td>
 <td style="text-align:right;">
-36.6K
+60.5K
 </td>
 <td style="text-align:right;">
-224.0 bps
+266.9 bps
 </td>
 </tr>
 <tr>
@@ -1099,6 +1102,14 @@ magnitudes):</p>
 TRISK’s Merton PD level is calibration-specific. The integration
 deliberately transports the baseline-to-shock <em>change</em>, not
 TRISK’s absolute PD.</li>
+<li>
+<strong>Baseline alignment (double-counting risk).</strong> The
+overlay transports only TRISK’s baseline-to-shock <em>shift</em>, which
+assumes your <code>internal_pd</code> is neutral with respect to the
+transition baseline. If your internal PD already conditions on a macro /
+credit-cycle view that overlaps TRISK’s Current-Policies baseline, that
+baseline is partly counted twice. Confirm the scenario basis of your
+internal PD before integrating.</li>
 <li>
 <strong>Zero-baseline rows lose signal under
 <code>relative</code>.</strong> When <code>pd_baseline = 0</code> the

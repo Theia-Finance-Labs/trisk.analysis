@@ -44,6 +44,9 @@ data in the `trisk.model` package:
 ``` r
 
 assets_testdata <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
+# NGFS 2024 scenarios start in 2023; the bundled assets reach back to 2022 and
+# TRISK errors on assets outside the scenario window, so scope to 2023 onward.
+assets_testdata <- assets_testdata[assets_testdata$production_year >= 2023, ]
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
 ngfs_carbon_price_testdata <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
@@ -54,8 +57,8 @@ scenario, plus the geography to evaluate:
 
 ``` r
 
-baseline_scenario <- "NGFS2023GCAM_CP"
-target_scenario <- "NGFS2023GCAM_NZ2050"
+baseline_scenario <- "NGFS2024GCAM_CP"
+target_scenario <- "NGFS2024GCAM_NZ2050"
 scenario_geography <- "Global"
 ```
 
@@ -147,12 +150,12 @@ portfolio_results_tech_detail |>
 #> 5        103    5 Oil&Gas           Gas                  3728364
 #> 6        104    4   Power RenewablesCap                  9263702
 #>   net_present_value_baseline
-#> 1                   31278.13
-#> 2                   31278.13
-#> 3                   31278.13
-#> 4                 8453239.83
-#> 5                16458526.57
-#> 6                83135863.75
+#> 1                   33477.77
+#> 2                   33477.77
+#> 3                   33477.77
+#> 4                 8800418.66
+#> 5                17134142.10
+#> 6                89669830.81
 ```
 
 Because `exposure_value_usd_share` is computed after dropping `run_id`,
@@ -245,6 +248,25 @@ pipeline_trisk_expected_loss_plot(npv_analysis)
 ```
 
 ![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-12-1.png)
+
+## Technology mix: NPV value vs exposure
+
+[`pipeline_trisk_tech_mix()`](../reference/pipeline_trisk_tech_mix.md)
+shows each sector’s technology composition two ways — as a share of
+baseline NPV value and as a share of exposure (EAD) — with technologies
+rendered as shades of the sector’s colour (darkest = most
+carbon-intensive). The two bases can disagree: a technology can be a
+large share of *value* yet a small share of *exposure* (or the reverse),
+so reporting only one basis can mislead the credit read. On a small
+bundled book a sector may resolve to a single technology; richer
+multi-technology counterparties fill the mix out.
+
+``` r
+
+pipeline_trisk_tech_mix(npv_analysis)
+```
+
+![](bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-13-1.png)
 
 ## Interpretation
 

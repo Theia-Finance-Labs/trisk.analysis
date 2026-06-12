@@ -116,14 +116,17 @@ outputs</a> for <code><a href="../reference/setup_trisk_inputs.html">setup_trisk
 data in the <code>trisk.model</code> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># NGFS 2024 scenarios start in 2023; the bundled assets reach back to 2022 and</span></span>
+<span><span class="co"># TRISK errors on assets outside the scenario window, so scope to 2023 onward.</span></span>
+<span><span class="va">assets_testdata</span> <span class="op">&lt;-</span> <span class="va">assets_testdata</span><span class="op">[</span><span class="va">assets_testdata</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
 <span><span class="va">scenarios_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ngfs_carbon_price_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>They also share the same scenario settings — a baseline and a target
 scenario, plus the geography to evaluate:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_CP"</span></span>
-<span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2023GCAM_NZ2050"</span></span>
+<code class="sourceCode R"><span><span class="va">baseline_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2024GCAM_CP"</span></span>
+<span><span class="va">target_scenario</span> <span class="op">&lt;-</span> <span class="st">"NGFS2024GCAM_NZ2050"</span></span>
 <span><span class="va">scenario_geography</span> <span class="op">&lt;-</span> <span class="st">"Global"</span></span></code></pre></div>
 <p>The portfolio schema is covered in the example below.</p>
 </div>
@@ -208,12 +211,12 @@ exposure.</li>
 <span><span class="co">#&gt; 5        103    5 Oil&amp;Gas           Gas                  3728364</span></span>
 <span><span class="co">#&gt; 6        104    4   Power RenewablesCap                  9263702</span></span>
 <span><span class="co">#&gt;   net_present_value_baseline</span></span>
-<span><span class="co">#&gt; 1                   31278.13</span></span>
-<span><span class="co">#&gt; 2                   31278.13</span></span>
-<span><span class="co">#&gt; 3                   31278.13</span></span>
-<span><span class="co">#&gt; 4                 8453239.83</span></span>
-<span><span class="co">#&gt; 5                16458526.57</span></span>
-<span><span class="co">#&gt; 6                83135863.75</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                   33477.77</span></span>
+<span><span class="co">#&gt; 2                   33477.77</span></span>
+<span><span class="co">#&gt; 3                   33477.77</span></span>
+<span><span class="co">#&gt; 4                 8800418.66</span></span>
+<span><span class="co">#&gt; 5                17134142.10</span></span>
+<span><span class="co">#&gt; 6                89669830.81</span></span></code></pre></div>
 <p>Because <code>exposure_value_usd_share</code> is computed after
 dropping <code>run_id</code>, it is constant across runs for a given
 <code>(company_id, term, sector, technology)</code>.</p>
@@ -282,6 +285,22 @@ shock:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_expected_loss_plot.html">pipeline_trisk_expected_loss_plot</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(sector)`</span></span></code></pre></div>
 <p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
+</div>
+<div class="section level2">
+<h2 id="technology-mix-npv-value-vs-exposure">Technology mix: NPV value vs exposure<a class="anchor" aria-label="anchor" href="#technology-mix-npv-value-vs-exposure"></a>
+</h2>
+<p><code><a href="../reference/pipeline_trisk_tech_mix.html">pipeline_trisk_tech_mix()</a></code> shows each sector’s technology
+composition two ways — as a share of baseline NPV value and as a share
+of exposure (EAD) — with technologies rendered as shades of the sector’s
+colour (darkest = most carbon-intensive). The two bases can disagree: a
+technology can be a large share of <em>value</em> yet a small share of
+<em>exposure</em> (or the reverse), so reporting only one basis can
+mislead the credit read. On a small bundled book a sector may resolve to
+a single technology; richer multi-technology counterparties fill the mix
+out.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/pipeline_trisk_tech_mix.html">pipeline_trisk_tech_mix</a></span><span class="op">(</span><span class="va">npv_analysis</span><span class="op">)</span></span></code></pre></div>
+<p><img src="bank_2_simple-portfolio-analysis_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>

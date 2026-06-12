@@ -37,6 +37,9 @@ bank-specific, EAD-weighted result — so swapping in your own
 ``` r
 
 assets_testdata             <- read.csv(system.file("testdata", "assets_testdata.csv",             package = "trisk.model"))
+# All NGFS 2024 scenarios start in 2023; the bundled assets reach 2022 and TRISK
+# errors on assets outside the scenario window, so scope to 2023 onward once here.
+assets_testdata             <- assets_testdata[assets_testdata$production_year >= 2023, ]
 scenarios_testdata          <- read.csv(system.file("testdata", "scenarios_testdata.csv",          package = "trisk.model"))
 financial_features_testdata <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 ngfs_carbon_price_testdata  <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv",  package = "trisk.model"))
@@ -70,8 +73,8 @@ including the financial assumptions such as the discount rate (see
 run_params_base <- list(
   list(
     scenario_geography = "Global",
-    baseline_scenario  = "NGFS2023GCAM_CP",
-    target_scenario    = "NGFS2023GCAM_NZ2050",
+    baseline_scenario  = "NGFS2024GCAM_CP",
+    target_scenario    = "NGFS2024GCAM_NZ2050",
     shock_year         = 2030
   )
 )
@@ -102,12 +105,12 @@ knitr::kable(head(sa_base$pd[, c("run_id", "company_id", "sector", "term",
 
 | run_id | company_id | sector | term | pd_baseline | pd_shock |
 |:---|:---|:---|---:|---:|---:|
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000010 |
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 3 | 0.0000005 | 0.0000472 |
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 4 | 0.0000102 | 0.0003327 |
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 5 | 0.0000640 | 0.0010928 |
-| e6090cb1-a678-4472-a018-be07185524aa | 101 | Oil&Gas | 6 | 0.0002202 | 0.0024408 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 1 | 0.0000000 | 0.0000000 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 2 | 0.0000000 | 0.0000013 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 3 | 0.0000005 | 0.0000562 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 4 | 0.0000102 | 0.0003802 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 5 | 0.0000640 | 0.0012188 |
+| 339da096-dd65-4e0e-8498-c359d47bd4bf | 101 | Oil&Gas | 6 | 0.0002202 | 0.0026780 |
 
 ## Sweeping any model parameter
 
@@ -136,8 +139,8 @@ argument and `values` to the grid you want.
 # Hold one scenario fixed...
 base_run <- list(
   scenario_geography = "Global",
-  baseline_scenario  = "NGFS2023GCAM_CP",
-  target_scenario    = "NGFS2023GCAM_NZ2050",
+  baseline_scenario  = "NGFS2024GCAM_CP",
+  target_scenario    = "NGFS2024GCAM_NZ2050",
   shock_year         = 2030
 )
 
@@ -194,9 +197,9 @@ knitr::kable(sa_param$params[, c("run_id", param, "baseline_scenario", "target_s
 
 | run_id | discount_rate | baseline_scenario | target_scenario |
 |:---|---:|:---|:---|
-| 04404a29-4830-4b35-b7a9-1be5fa345c67 | 0.07 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 530c995d-cf54-4961-bc4c-30c317d0417b | 0.09 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
-| 69ed43b9-6bf8-429e-8d70-2f815641426e | 0.11 | NGFS2023GCAM_CP | NGFS2023GCAM_NZ2050 |
+| 0daaa23d-5077-4cd4-b59d-00e996c735c1 | 0.07 | NGFS2024GCAM_CP | NGFS2024GCAM_NZ2050 |
+| d5f5f912-5275-4b5e-8223-e8d82c1900b5 | 0.09 | NGFS2024GCAM_CP | NGFS2024GCAM_NZ2050 |
+| 4ba6358c-586c-4d80-8c40-e5013ba999de | 0.11 | NGFS2024GCAM_CP | NGFS2024GCAM_NZ2050 |
 
 A higher discount rate shrinks the present value of distant cash flows,
 so it lowers both the baseline and the shock NPV. Because the transition
@@ -320,22 +323,22 @@ TRAJ_PALETTE <- c("#1b324f", "#00c082", "#ff9623")  # matches plot_multi_traject
 
 What happens to portfolio PD when the policy shock hits earlier or
 later? This section sweeps `shock_year` across 2026 / 2030 / 2035,
-holding the scenario pair fixed at NGFS2023GCAM CP vs NZ2050.
+holding the scenario pair fixed at NGFS2024GCAM CP vs NZ2050.
 
 ``` r
 
 run_params_shockyear <- list(
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023GCAM_CP",
-       target_scenario    = "NGFS2023GCAM_NZ2050",
+       baseline_scenario  = "NGFS2024GCAM_CP",
+       target_scenario    = "NGFS2024GCAM_NZ2050",
        shock_year         = 2026),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023GCAM_CP",
-       target_scenario    = "NGFS2023GCAM_NZ2050",
+       baseline_scenario  = "NGFS2024GCAM_CP",
+       target_scenario    = "NGFS2024GCAM_NZ2050",
        shock_year         = 2030),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023GCAM_CP",
-       target_scenario    = "NGFS2023GCAM_NZ2050",
+       baseline_scenario  = "NGFS2024GCAM_CP",
+       target_scenario    = "NGFS2024GCAM_NZ2050",
        shock_year         = 2035)
 )
 
@@ -405,31 +408,30 @@ draw_pd_by_exposure(pd_shockyear, portfolio_terms, "shock year",
 
 ## IAM (integrated assessment model)
 
-Same transition story, different model: NGFS2023 publishes its CP and
+Same transition story, different model: NGFS2024 publishes its CP and
 NZ2050 scenarios under three IAMs — GCAM, REMIND, and MESSAGE. Bank
 readers who pick one IAM should know how their numbers move under the
 other two.
 
-> **Scope of the bundled IAM/ambition data.** NGFS2023 only publishes
-> the REMIND and MESSAGE models — and the B2DS / DT ambition variants
-> used in the next section — for the **Power sector**, spanning
-> **2023–2050**. The legacy multi-sector `NGFS2023GCAM_*` scenarios used
-> in the sections above run 2022–2100 across Coal, Oil & Gas, and Power.
-> Because TRISK derives its analysis window from the scenario’s own year
-> range, we scope the portfolio to that window before running these two
-> sections — keeping the cross-variant comparison apples-to-apples on
-> the bank’s power exposure.
+> **Scope of the bundled IAM/ambition data.** The bundled REMIND and
+> MESSAGE variants — and the B2DS / DT ambition variants used in the
+> next section — cover the **Power sector**, spanning **2023–2050**. The
+> multi-sector `NGFS2024GCAM_*` scenarios used in the sections above run
+> **2023–2100** across Coal, Oil & Gas, Power and Cement (the Cement
+> rows simply never join the bundled assets). Every 2024 scenario
+> therefore starts in 2023, which is why the assets were scoped to 2023
+> onward once at the top of the vignette; the IAM and ambition sweeps
+> additionally restrict to the bank’s **power** exposure (below) to keep
+> the cross-variant comparison apples-to-apples.
 
 ``` r
 
-# This filter is YEAR scoping only: the scenario-derived analysis window starts
-# at 2023 for these variants, and the model asserts every asset's production_year
-# falls inside that window (it errors rather than trimming), so we drop the lone
-# 2022 rows. It does NOT do sector scoping — assets_power still holds Coal and
-# Oil & Gas rows. The Power-only restriction happens automatically downstream:
-# the model inner-joins assets to the scenario technologies, which are Power-only
-# for these variants, so the other sectors drop out without error.
-assets_power <- assets_testdata[assets_testdata$production_year >= 2023, ]
+# assets_testdata is already scoped to 2023 onward (top of the vignette), so this
+# is just a Power-facing alias. It does NOT do sector scoping — assets_power still
+# holds Coal and Oil & Gas rows. The Power-only restriction happens automatically
+# downstream: the model inner-joins assets to the scenario technologies, which are
+# Power-only for these variants, so the other sectors drop out without error.
+assets_power <- assets_testdata
 
 # Scope the term table to the portfolio's Power exposure so the term-join
 # warning flags only genuine term-grid drops, not the Coal / Oil & Gas firms
@@ -439,16 +441,16 @@ portfolio_terms_power <- portfolio_terms[portfolio_terms$company_id %in% power_i
 
 run_params_iam <- list(
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_GCAM_CP",
-       target_scenario    = "NGFS2023_GCAM_NZ2050",
+       baseline_scenario  = "NGFS2024_GCAM_CP",
+       target_scenario    = "NGFS2024_GCAM_NZ2050",
        shock_year         = 2030),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_REMIND_CP",
-       target_scenario    = "NGFS2023_REMIND_NZ2050",
+       baseline_scenario  = "NGFS2024_REMIND_CP",
+       target_scenario    = "NGFS2024_REMIND_NZ2050",
        shock_year         = 2030),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_MESSAGE_CP",
-       target_scenario    = "NGFS2023_MESSAGE_NZ2050",
+       baseline_scenario  = "NGFS2024_MESSAGE_CP",
+       target_scenario    = "NGFS2024_MESSAGE_NZ2050",
        shock_year         = 2030)
 )
 
@@ -493,7 +495,7 @@ sa_iam <- run_trisk_sa(
 #> [1] "All runs completed: 3 succeeded, 0 failed."
 
 pd_iam <- label_by_variant(sa_iam, function(d) {
-  iam <- sub("^NGFS2023_([A-Z]+)_.*", "\\1", d$baseline_scenario)
+  iam <- sub("^NGFS2024_([A-Z]+)_.*", "\\1", d$baseline_scenario)
   factor(iam, levels = c("GCAM", "REMIND", "MESSAGE"))
 })
 ```
@@ -528,16 +530,16 @@ measured against Current Policies as the baseline?
 
 run_params_ambition <- list(
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_GCAM_CP",
-       target_scenario    = "NGFS2023_GCAM_NZ2050",
+       baseline_scenario  = "NGFS2024_GCAM_CP",
+       target_scenario    = "NGFS2024_GCAM_NZ2050",
        shock_year         = 2030),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_GCAM_CP",
-       target_scenario    = "NGFS2023_GCAM_B2DS",
+       baseline_scenario  = "NGFS2024_GCAM_CP",
+       target_scenario    = "NGFS2024_GCAM_B2DS",
        shock_year         = 2030),
   list(scenario_geography = "Global",
-       baseline_scenario  = "NGFS2023_GCAM_CP",
-       target_scenario    = "NGFS2023_GCAM_DT",
+       baseline_scenario  = "NGFS2024_GCAM_CP",
+       target_scenario    = "NGFS2024_GCAM_DT",
        shock_year         = 2030)
 )
 
@@ -582,7 +584,7 @@ sa_ambition <- run_trisk_sa(
 #> [1] "All runs completed: 3 succeeded, 0 failed."
 
 pd_ambition <- label_by_variant(sa_ambition, function(d) {
-  ambition <- sub("^NGFS2023_GCAM_(.*)$", "\\1", d$target_scenario)
+  ambition <- sub("^NGFS2024_GCAM_(.*)$", "\\1", d$target_scenario)
   factor(ambition, levels = c("NZ2050", "B2DS", "DT"))
 })
 ```

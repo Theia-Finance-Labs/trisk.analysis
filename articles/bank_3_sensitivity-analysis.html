@@ -109,6 +109,9 @@ is what makes every chart below reflect <em>your</em> book. (No
 lives in <a href="bank_4_pd-el-integration.html"><code>pd-el-integration</code></a>.)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets_testdata</span>             <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>,             package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># All NGFS 2024 scenarios start in 2023; the bundled assets reach 2022 and TRISK</span></span>
+<span><span class="co"># errors on assets outside the scenario window, so scope to 2023 onward once here.</span></span>
+<span><span class="va">assets_testdata</span>             <span class="op">&lt;-</span> <span class="va">assets_testdata</span><span class="op">[</span><span class="va">assets_testdata</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
 <span><span class="va">scenarios_testdata</span>          <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>,          package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">financial_features_testdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ngfs_carbon_price_testdata</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>,  package <span class="op">=</span> <span class="st">"trisk.model"</span><span class="op">)</span><span class="op">)</span></span>
@@ -143,8 +146,8 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <code class="sourceCode R"><span><span class="va">run_params_base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>    baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>    target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>    baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>    target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>    shock_year         <span class="op">=</span> <span class="fl">2030</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -190,7 +193,7 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">1</td>
@@ -198,44 +201,44 @@ rate (see <em>Sweeping any model parameter</em> below).</p>
 <td align="right">0.0000000</td>
 </tr>
 <tr class="even">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">2</td>
 <td align="right">0.0000000</td>
-<td align="right">0.0000010</td>
+<td align="right">0.0000013</td>
 </tr>
 <tr class="odd">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">3</td>
 <td align="right">0.0000005</td>
-<td align="right">0.0000472</td>
+<td align="right">0.0000562</td>
 </tr>
 <tr class="even">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">4</td>
 <td align="right">0.0000102</td>
-<td align="right">0.0003327</td>
+<td align="right">0.0003802</td>
 </tr>
 <tr class="odd">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">5</td>
 <td align="right">0.0000640</td>
-<td align="right">0.0010928</td>
+<td align="right">0.0012188</td>
 </tr>
 <tr class="even">
-<td align="left">e6090cb1-a678-4472-a018-be07185524aa</td>
+<td align="left">339da096-dd65-4e0e-8498-c359d47bd4bf</td>
 <td align="left">101</td>
 <td align="left">Oil&amp;Gas</td>
 <td align="right">6</td>
 <td align="right">0.0002202</td>
-<td align="right">0.0024408</td>
+<td align="right">0.0026780</td>
 </tr>
 </tbody>
 </table>
@@ -274,8 +277,8 @@ two lines under “vary ONE parameter” change to sweep something else: set
 <code class="sourceCode R"><span><span class="co"># Hold one scenario fixed...</span></span>
 <span><span class="va">base_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>  shock_year         <span class="op">=</span> <span class="fl">2030</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -343,22 +346,22 @@ two lines under “vary ONE parameter” change to sweep something else: set
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">04404a29-4830-4b35-b7a9-1be5fa345c67</td>
+<td align="left">0daaa23d-5077-4cd4-b59d-00e996c735c1</td>
 <td align="right">0.07</td>
-<td align="left">NGFS2023GCAM_CP</td>
-<td align="left">NGFS2023GCAM_NZ2050</td>
+<td align="left">NGFS2024GCAM_CP</td>
+<td align="left">NGFS2024GCAM_NZ2050</td>
 </tr>
 <tr class="even">
-<td align="left">530c995d-cf54-4961-bc4c-30c317d0417b</td>
+<td align="left">d5f5f912-5275-4b5e-8223-e8d82c1900b5</td>
 <td align="right">0.09</td>
-<td align="left">NGFS2023GCAM_CP</td>
-<td align="left">NGFS2023GCAM_NZ2050</td>
+<td align="left">NGFS2024GCAM_CP</td>
+<td align="left">NGFS2024GCAM_NZ2050</td>
 </tr>
 <tr class="odd">
-<td align="left">69ed43b9-6bf8-429e-8d70-2f815641426e</td>
+<td align="left">4ba6358c-586c-4d80-8c40-e5013ba999de</td>
 <td align="right">0.11</td>
-<td align="left">NGFS2023GCAM_CP</td>
-<td align="left">NGFS2023GCAM_NZ2050</td>
+<td align="left">NGFS2024GCAM_CP</td>
+<td align="left">NGFS2024GCAM_NZ2050</td>
 </tr>
 </tbody>
 </table>
@@ -482,20 +485,20 @@ same variant index gets the same colour everywhere:</p>
 </h2>
 <p>What happens to portfolio PD when the policy shock hits earlier or
 later? This section sweeps <code>shock_year</code> across 2026 / 2030 /
-2035, holding the scenario pair fixed at NGFS2023GCAM CP vs NZ2050.</p>
+2035, holding the scenario pair fixed at NGFS2024GCAM CP vs NZ2050.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_params_shockyear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2026</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2035</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -559,31 +562,30 @@ later? This section sweeps <code>shock_year</code> across 2026 / 2030 /
 <div class="section level2">
 <h2 id="iam-integrated-assessment-model">IAM (integrated assessment model)<a class="anchor" aria-label="anchor" href="#iam-integrated-assessment-model"></a>
 </h2>
-<p>Same transition story, different model: NGFS2023 publishes its CP and
+<p>Same transition story, different model: NGFS2024 publishes its CP and
 NZ2050 scenarios under three IAMs — GCAM, REMIND, and MESSAGE. Bank
 readers who pick one IAM should know how their numbers move under the
 other two.</p>
 <blockquote>
-<p><strong>Scope of the bundled IAM/ambition data.</strong> NGFS2023
-only publishes the REMIND and MESSAGE models — and the B2DS / DT
-ambition variants used in the next section — for the <strong>Power
-sector</strong>, spanning <strong>2023–2050</strong>. The legacy
-multi-sector <code>NGFS2023GCAM_*</code> scenarios used in the sections
-above run 2022–2100 across Coal, Oil &amp; Gas, and Power. Because TRISK
-derives its analysis window from the scenario’s own year range, we scope
-the portfolio to that window before running these two sections — keeping
-the cross-variant comparison apples-to-apples on the bank’s power
-exposure.</p>
+<p><strong>Scope of the bundled IAM/ambition data.</strong> The bundled
+REMIND and MESSAGE variants — and the B2DS / DT ambition variants used
+in the next section — cover the <strong>Power sector</strong>, spanning
+<strong>2023–2050</strong>. The multi-sector <code>NGFS2024GCAM_*</code>
+scenarios used in the sections above run <strong>2023–2100</strong>
+across Coal, Oil &amp; Gas, Power and Cement (the Cement rows simply
+never join the bundled assets). Every 2024 scenario therefore starts in
+2023, which is why the assets were scoped to 2023 onward once at the top
+of the vignette; the IAM and ambition sweeps additionally restrict to
+the bank’s <strong>power</strong> exposure (below) to keep the
+cross-variant comparison apples-to-apples.</p>
 </blockquote>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># This filter is YEAR scoping only: the scenario-derived analysis window starts</span></span>
-<span><span class="co"># at 2023 for these variants, and the model asserts every asset's production_year</span></span>
-<span><span class="co"># falls inside that window (it errors rather than trimming), so we drop the lone</span></span>
-<span><span class="co"># 2022 rows. It does NOT do sector scoping — assets_power still holds Coal and</span></span>
-<span><span class="co"># Oil &amp; Gas rows. The Power-only restriction happens automatically downstream:</span></span>
-<span><span class="co"># the model inner-joins assets to the scenario technologies, which are Power-only</span></span>
-<span><span class="co"># for these variants, so the other sectors drop out without error.</span></span>
-<span><span class="va">assets_power</span> <span class="op">&lt;-</span> <span class="va">assets_testdata</span><span class="op">[</span><span class="va">assets_testdata</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="co"># assets_testdata is already scoped to 2023 onward (top of the vignette), so this</span></span>
+<span><span class="co"># is just a Power-facing alias. It does NOT do sector scoping — assets_power still</span></span>
+<span><span class="co"># holds Coal and Oil &amp; Gas rows. The Power-only restriction happens automatically</span></span>
+<span><span class="co"># downstream: the model inner-joins assets to the scenario technologies, which are</span></span>
+<span><span class="co"># Power-only for these variants, so the other sectors drop out without error.</span></span>
+<span><span class="va">assets_power</span> <span class="op">&lt;-</span> <span class="va">assets_testdata</span></span>
 <span></span>
 <span><span class="co"># Scope the term table to the portfolio's Power exposure so the term-join</span></span>
 <span><span class="co"># warning flags only genuine term-grid drops, not the Coal / Oil &amp; Gas firms</span></span>
@@ -593,16 +595,16 @@ exposure.</p>
 <span></span>
 <span><span class="va">run_params_iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_GCAM_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_REMIND_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_REMIND_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_REMIND_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_REMIND_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_MESSAGE_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_MESSAGE_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_MESSAGE_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_MESSAGE_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -647,7 +649,7 @@ exposure.</p>
 <span><span class="co">#&gt; [1] "All runs completed: 3 succeeded, 0 failed."</span></span>
 <span></span>
 <span><span class="va">pd_iam</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_iam</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_([A-Z]+)_.*"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">baseline_scenario</span><span class="op">)</span></span>
+<span>  <span class="va">iam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2024_([A-Z]+)_.*"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">baseline_scenario</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">iam</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GCAM"</span>, <span class="st">"REMIND"</span>, <span class="st">"MESSAGE"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -674,16 +676,16 @@ measured against Current Policies as the baseline?</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_params_ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_NZ2050"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_GCAM_NZ2050"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_B2DS"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_GCAM_B2DS"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,</span>
-<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023_GCAM_CP"</span>,</span>
-<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2023_GCAM_DT"</span>,</span>
+<span>       baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024_GCAM_CP"</span>,</span>
+<span>       target_scenario    <span class="op">=</span> <span class="st">"NGFS2024_GCAM_DT"</span>,</span>
 <span>       shock_year         <span class="op">=</span> <span class="fl">2030</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -728,7 +730,7 @@ measured against Current Policies as the baseline?</p>
 <span><span class="co">#&gt; [1] "All runs completed: 3 succeeded, 0 failed."</span></span>
 <span></span>
 <span><span class="va">pd_ambition</span> <span class="op">&lt;-</span> <span class="fu">label_by_variant</span><span class="op">(</span><span class="va">sa_ambition</span>, <span class="kw">function</span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2023_GCAM_(.*)$"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">target_scenario</span><span class="op">)</span></span>
+<span>  <span class="va">ambition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^NGFS2024_GCAM_(.*)$"</span>, <span class="st">"\\1"</span>, <span class="va">d</span><span class="op">$</span><span class="va">target_scenario</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ambition</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NZ2050"</span>, <span class="st">"B2DS"</span>, <span class="st">"DT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">

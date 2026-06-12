@@ -109,6 +109,8 @@ Visualisations and summary tables for PD, EL, NPV, and exposure results.
   : Visualize Exposure and Value Loss Changes
 - [`pipeline_trisk_npv_change_plot()`](pipeline_trisk_npv_change_plot.md)
   : Visualize Sector-wise NPV Percentage Changes
+- [`pipeline_trisk_tech_mix()`](pipeline_trisk_tech_mix.md) : Technology
+  mix by sector, on two bases (NPV value and exposure)
 - [`plot_multi_trajectories()`](plot_multi_trajectories.md) : Visualize
   Trajectory Risks Over Time by Business Unit and Sector
 
@@ -123,3 +125,7 @@ Shared theme and palette used across the package plots.
   [`TRISK_HEX_GREY`](trisk_palette.md)
   [`TRISK_HEX_ADJUSTED`](trisk_palette.md)
   [`STATUS_GREEN`](trisk_palette.md) : TRISK plot palette constants
+- [`TRISK_SECTOR_PALETTE`](TRISK_SECTOR_PALETTE.md) : TRISK sector
+  colour system
+- [`trisk_sector_shades()`](trisk_sector_shades.md) : Sector-shaded
+  technology colours

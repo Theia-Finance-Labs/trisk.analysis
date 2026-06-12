@@ -69,6 +69,9 @@ stored: `internal_el = EAD * LGD * internal_pd` (see the EL section).
 ``` r
 
 assets_testdata    <- read.csv(system.file("testdata", "assets_testdata.csv",    package = "trisk.model"))
+# NGFS 2024 scenarios start in 2023; bundled assets reach 2022 and TRISK errors
+# on assets outside the scenario window, so scope to 2023 onward.
+assets_testdata    <- assets_testdata[assets_testdata$production_year >= 2023, ]
 scenarios_testdata <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model"))
 fin_testdata       <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model"))
 carbon_testdata    <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model"))
@@ -199,8 +202,8 @@ simple_results <- run_trisk_on_simple_portfolio(
   financial_data     = fin_testdata,
   carbon_data        = carbon_testdata,
   portfolio_data     = portfolio_simple,
-  baseline_scenario  = "NGFS2023GCAM_CP",
-  target_scenario    = "NGFS2023GCAM_NZ2050",
+  baseline_scenario  = "NGFS2024GCAM_CP",
+  target_scenario    = "NGFS2024GCAM_NZ2050",
   scenario_geography = "Global"
 )
 #> -- Start Trisk-- Retyping Dataframes. 
@@ -227,10 +230,10 @@ internal_pd_lookup$company_id <- as.character(internal_pd_lookup$company_id)
 
 | company_id | sector | technology | term | pd_baseline | pd_shock | net_present_value_baseline | net_present_value_shock |
 |:---|:---|:---|---:|---:|---:|---:|---:|
-| 101 | Oil&Gas | Gas | 3 | 5.00e-07 | 0.0000472 | 31278.13 | 10902.84 |
-| 102 | Coal | Coal | 1 | 0.00e+00 | 0.0000000 | 8453239.83 | 3464740.72 |
-| 103 | Oil&Gas | Gas | 5 | 3.24e-05 | 0.0002445 | 16458526.57 | 8743193.23 |
-| 104 | Power | RenewablesCap | 4 | 1.20e-06 | 0.0000002 | 83135863.75 | 114031784\.03 |
+| 101 | Oil&Gas | Gas | 3 | 5.00e-07 | 0.0000562 | 33477.77 | 11766.86 |
+| 102 | Coal | Coal | 1 | 0.00e+00 | 0.0000000 | 8800418.66 | 3639454.38 |
+| 103 | Oil&Gas | Gas | 5 | 3.24e-05 | 0.0003722 | 17134142.10 | 8052294.99 |
+| 104 | Power | RenewablesCap | 4 | 1.20e-06 | 0.0000001 | 89669830.81 | 126997382\.67 |
 
 ##### Reproducibility: the run audit trail
 
@@ -245,14 +248,14 @@ validation:
 run_meta <- attr(simple_results, "trisk_run_meta")
 str(run_meta)
 #> List of 6
-#>  $ baseline_scenario: chr "NGFS2023GCAM_CP"
-#>  $ target_scenario  : chr "NGFS2023GCAM_NZ2050"
-#>  $ run_id           : chr "b99dc692-da8d-49cf-826a-afa93a8d2950"
+#>  $ baseline_scenario: chr "NGFS2024GCAM_CP"
+#>  $ target_scenario  : chr "NGFS2024GCAM_NZ2050"
+#>  $ run_id           : chr "a899fb14-73a9-4e03-af7c-0944e219c531"
 #>  $ trisk_args       :List of 1
 #>   ..$ scenario_geography: chr "Global"
 #>  $ package_versions : Named chr [1:2] "1.2.3" "2.6.1"
 #>   ..- attr(*, "names")= chr [1:2] "trisk.analysis" "trisk.model"
-#>  $ created_at       : POSIXct[1:1], format: "2026-06-06 07:49:52"
+#>  $ created_at       : POSIXct[1:1], format: "2026-06-12 09:11:51"
 ```
 
 #### Integrate PD — three methods
@@ -278,10 +281,10 @@ result_zs  <- integrate_pd(analysis_data,
 
 | company_id | sector | internal_pd | pd_baseline | pd_shock | trisk_adjusted_pd | pd_adjustment |
 |:---|:---|---:|---:|---:|---:|---:|
-| 101 | Oil&Gas | 0.025 | 5.00e-07 | 0.0000472 | 0.0250000 | 0.0000000 |
+| 101 | Oil&Gas | 0.025 | 5.00e-07 | 0.0000562 | 0.0250000 | 0.0000000 |
 | 102 | Coal | 0.040 | 0.00e+00 | 0.0000000 | 0.0400000 | 0.0000000 |
-| 103 | Oil&Gas | 0.030 | 3.24e-05 | 0.0002445 | 0.0496256 | 0.0196256 |
-| 104 | Power | 0.015 | 1.20e-06 | 0.0000002 | 0.0150000 | 0.0000000 |
+| 103 | Oil&Gas | 0.030 | 3.24e-05 | 0.0003722 | 0.0624542 | 0.0324542 |
+| 104 | Power | 0.015 | 1.20e-06 | 0.0000001 | 0.0150000 | 0.0000000 |
 
 You can also override internal PDs on the fly — pass a numeric vector of
 length `nrow(analysis_data)` (or an alternate lookup) for a sanity-check
@@ -477,7 +480,7 @@ pipeline_trisk_pd_kpi_table(result_zs$aggregate)
 
 | Total Exposure (USD) | Weighted Internal PD | Weighted Adjusted PD | Weighted PD Adjustment (pp) | Adjustment % |
 |---:|---:|---:|---:|---:|
-| 21.06M | 2.592% | 2.940% | +0.347 pp | 13.404% |
+| 21.06M | 2.592% | 3.167% | +0.575 pp | 22.166% |
 
 **P3b — EL KPI table.** One-row EL summary. The headline bps metric is
 the **adjusted EL level as a loss rate**: `Adjusted EL / exposure` in
@@ -497,7 +500,7 @@ pipeline_trisk_el_kpi_table(result_el$aggregate)
 
 | Total Exposure (USD) | Total Internal EL | Total Adjusted EL | EL Adjustment | Adjusted EL (bps) | EL/exposure delta (bps) |
 |---:|---:|---:|---:|---:|---:|
-| 21.06M | 318.1K | 354.6K | 36.6K | 168.4 bps | 17.4 bps |
+| 21.06M | 318.1K | 378.6K | 60.5K | 179.8 bps | 28.7 bps |
 
 **P4 — EL sector breakdown.** One row per sector: exposure, internal EL,
 adjusted EL, signed delta, direction arrow, and the adjusted EL level as
@@ -586,6 +589,13 @@ ggplot2::ggplot(el_compare_sector,
 - **PD level is not portable; only the shift is.** TRISK’s Merton PD
   level is calibration-specific. The integration deliberately transports
   the baseline-to-shock *change*, not TRISK’s absolute PD.
+- **Baseline alignment (double-counting risk).** The overlay transports
+  only TRISK’s baseline-to-shock *shift*, which assumes your
+  `internal_pd` is neutral with respect to the transition baseline. If
+  your internal PD already conditions on a macro / credit-cycle view
+  that overlaps TRISK’s Current-Policies baseline, that baseline is
+  partly counted twice. Confirm the scenario basis of your internal PD
+  before integrating.
 - **Zero-baseline rows lose signal under `relative`.** When
   `pd_baseline = 0` the relative method returns the internal PD
   unchanged. Use `absolute` or `zscore` if that matters for your book.

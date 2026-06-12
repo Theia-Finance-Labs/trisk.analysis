@@ -138,6 +138,9 @@ shocks with your own PD/EL to get climate-adjusted expected loss.</li>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">trisk.analysis</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"assets_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># NGFS 2024 scenarios start in 2023; bundled assets reach 2022, and TRISK errors</span></span>
+<span><span class="co"># on assets outside the scenario window, so scope to 2023 onward.</span></span>
+<span><span class="va">assets</span> <span class="op">&lt;-</span> <span class="va">assets</span><span class="op">[</span><span class="va">assets</span><span class="op">$</span><span class="va">production_year</span> <span class="op">&gt;=</span> <span class="fl">2023</span>, <span class="op">]</span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"scenarios_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">financial_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"financial_features_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ngfs_carbon_price</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"ngfs_carbon_price_testdata.csv"</span>, package <span class="op">=</span> <span class="st">"trisk.model"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
@@ -152,8 +155,8 @@ shocks with your own PD/EL to get climate-adjusted expected loss.</li>
 <span>  financial_data <span class="op">=</span> <span class="va">financial_features</span>,</span>
 <span>  carbon_data <span class="op">=</span> <span class="va">ngfs_carbon_price</span>,</span>
 <span>  portfolio_data <span class="op">=</span> <span class="va">portfolio</span>,</span>
-<span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,</span>
-<span>  target_scenario <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,</span>
+<span>  baseline_scenario <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,</span>
+<span>  target_scenario <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,</span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Start Trisk-- Retyping Dataframes. </span></span>
@@ -195,8 +198,8 @@ prevailing market curve at your analysis date.</p>
 <span>  financial_data     <span class="op">=</span> <span class="va">financial_features</span>,</span>
 <span>  carbon_data        <span class="op">=</span> <span class="va">ngfs_carbon_price</span>,</span>
 <span>  portfolio_data     <span class="op">=</span> <span class="va">portfolio</span>,</span>
-<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2023GCAM_CP"</span>,       <span class="co"># business-as-usual scenario</span></span>
-<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2023GCAM_NZ2050"</span>,   <span class="co"># shock (policy) scenario</span></span>
+<span>  baseline_scenario  <span class="op">=</span> <span class="st">"NGFS2024GCAM_CP"</span>,       <span class="co"># business-as-usual scenario</span></span>
+<span>  target_scenario    <span class="op">=</span> <span class="st">"NGFS2024GCAM_NZ2050"</span>,   <span class="co"># shock (policy) scenario</span></span>
 <span>  scenario_geography <span class="op">=</span> <span class="st">"Global"</span>,                <span class="co"># region(s) to compute results for</span></span>
 <span>  carbon_price_model <span class="op">=</span> <span class="st">"no_carbon_tax"</span>,         <span class="co"># NGFS carbon-price pathway ("no_carbon_tax" to skip)</span></span>
 <span>  risk_free_rate     <span class="op">=</span> <span class="fl">0.045</span>,                   <span class="co"># risk-free rate (Merton PD model)</span></span>

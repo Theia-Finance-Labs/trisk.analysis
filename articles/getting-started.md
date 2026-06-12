@@ -67,6 +67,9 @@ library(trisk.analysis)
 ``` r
 
 assets <- read.csv(system.file("testdata", "assets_testdata.csv", package = "trisk.model", mustWork = TRUE))
+# NGFS 2024 scenarios start in 2023; bundled assets reach 2022, and TRISK errors
+# on assets outside the scenario window, so scope to 2023 onward.
+assets <- assets[assets$production_year >= 2023, ]
 scenarios <- read.csv(system.file("testdata", "scenarios_testdata.csv", package = "trisk.model", mustWork = TRUE))
 financial_features <- read.csv(system.file("testdata", "financial_features_testdata.csv", package = "trisk.model", mustWork = TRUE))
 ngfs_carbon_price <- read.csv(system.file("testdata", "ngfs_carbon_price_testdata.csv", package = "trisk.model", mustWork = TRUE))
@@ -81,8 +84,8 @@ results <- run_trisk_on_simple_portfolio(
   financial_data = financial_features,
   carbon_data = ngfs_carbon_price,
   portfolio_data = portfolio,
-  baseline_scenario = "NGFS2023GCAM_CP",
-  target_scenario = "NGFS2023GCAM_NZ2050",
+  baseline_scenario = "NGFS2024GCAM_CP",
+  target_scenario = "NGFS2024GCAM_NZ2050",
   scenario_geography = "Global"
 )
 #> -- Start Trisk-- Retyping Dataframes. 
@@ -129,8 +132,8 @@ results <- run_trisk_on_simple_portfolio(
   financial_data     = financial_features,
   carbon_data        = ngfs_carbon_price,
   portfolio_data     = portfolio,
-  baseline_scenario  = "NGFS2023GCAM_CP",       # business-as-usual scenario
-  target_scenario    = "NGFS2023GCAM_NZ2050",   # shock (policy) scenario
+  baseline_scenario  = "NGFS2024GCAM_CP",       # business-as-usual scenario
+  target_scenario    = "NGFS2024GCAM_NZ2050",   # shock (policy) scenario
   scenario_geography = "Global",                # region(s) to compute results for
   carbon_price_model = "no_carbon_tax",         # NGFS carbon-price pathway ("no_carbon_tax" to skip)
   risk_free_rate     = 0.045,                   # risk-free rate (Merton PD model)
