@@ -95,6 +95,7 @@ reference:
   - pipeline_trisk_expected_loss_plot
   - pipeline_trisk_exposure_change_plot
   - pipeline_trisk_npv_change_plot
+  - pipeline_trisk_tech_mix
   - plot_multi_trajectories
 
 - title: Plot styling
@@ -102,3 +103,5 @@ reference:
   contents:
   - TRISK_PLOT_THEME_FUNC
   - trisk_palette
+  - TRISK_SECTOR_PALETTE
+  - trisk_sector_shades
